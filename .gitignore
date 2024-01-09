@@ -11,5 +11,7 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 
-//yarn-error.log
-//yarn-error.log
+/vendor
+.env
+.env.backup
+.phpunit.result.cache
