@@ -184,8 +184,8 @@
                     if( e.keyCode == 13 ){
                         let scanQrCode = $('#txtScanQrCode').val();
                             splitQrCodeData = scanQrCode.split(' ').filter(Boolean);
-                            console.log('Object:', scanQrCode);
-                            console.log('Get QR Code Data:', scanQrCode[1].po);
+                            console.log('Object:', Object.values(scanQrCode));
+                            console.log('Get QR Code Data:', scanQrCode);
                             // searchPoDetails(splitQrCodeData[0]);
                         $('#mdlScanQrCode').modal('hide');
 
