@@ -274,11 +274,41 @@
         </div>
         <!-- /.modal -->
 
+           {{-- MODAL FOR PRINTING  --}}
+        <div class="modal fade" id="modalPrintQr">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"> Production - QR Code</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- PO 1 -->
+                            <div class="col-sm-12">
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <label id="img_barcode_PO_text"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="btnPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
+
     @endsection
 
     @section('js_content')
         <script type="text/javascript">
             var prodData = {};
+            var img_barcode_PO_text_hidden;
+
             $(document).ready(function(){
                 dtDatatableProd = $("#tblProd").DataTable({
                     "processing" : true,
@@ -348,20 +378,24 @@
                                 prodData = {};
                             },
                             success: function (response) {
-                                prodData['poReceiveData'] = response[0]
-                                $.ajax({
-                                    type: "get",
-                                    url: "get_data_req_for_prod_by_po",
-                                    data: {
-                                        "item_code" : response[0]['ItemCode']
-                                    },
-                                    dataType: "json",
-                                    success: function (result) {
-                                        $('#txtSearchMatName').val(response[0]['ItemName']);
-                                        prodData['drawings'] = result
-                                        console.log(prodData);
-                                    }
-                                });
+                                console.log(response);
+                                if(response.length > 0){
+                                    prodData['poReceiveData'] = response[0];
+                                    console.log(response);
+                                    $.ajax({
+                                        type: "get",
+                                        url: "get_data_req_for_prod_by_po",
+                                        data: {
+                                            "item_code" : response[0]['ItemCode']
+                                        },
+                                        dataType: "json",
+                                        success: function (result) {
+                                            $('#txtSearchMatName').val(response[0]['ItemName']);
+                                            prodData['drawings'] = result
+                                            console.log(prodData);
+                                        }
+                                    });
+                                }
                             }
                         });
                     }
@@ -393,7 +427,42 @@
                 $(document).on('click', '.btnPrintProdData', function(e){
                     let id = $(this).data('id');
                     printProdData(id);
-                })
+                });
+
+                $('#btnPrintQrCode').on('click', function(){
+                    popup = window.open();
+                    let content = '';
+                    
+                    content += '<html>';
+                    content += '<head>';
+                    content += '<title></title>';
+                    content += '<style type="text/css">';
+                    content += '@media print { .pagebreak { page-break-before: always; } }';
+                    content += '</style>';
+                    content += '</head>';
+                    content += '<body>';
+                    for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                        content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                            content += '<tr style="width: 290px;">';
+                                content += '<td style="vertical-align: bottom;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[i]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                content += '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[i]['text'] + '</td>';
+                            content += '</tr>';
+                        content += '</table>';
+                        content += '<br>';
+                        if( i < img_barcode_PO_text_hidden.length-1 ){
+                            content += '<div class="pagebreak"> </div>';
+                        }
+                    }
+                    content += '</body>';
+                    content += '</html>';
+                    popup.document.write(content);
+                    
+                    popup.focus(); //required for IE
+                    popup.print();
+                    popup.close();
+                });
             });
         </script>
     @endsection

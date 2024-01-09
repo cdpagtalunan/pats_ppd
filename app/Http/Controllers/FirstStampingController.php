@@ -128,8 +128,9 @@ class FirstStampingController extends Controller
         //     // 'poReceiveData' => $po_receive_data,
         //     'drawings'      => $get_drawing[0]
         // ]);
-
-        return $get_drawing[0];
+        if(count($get_drawing) > 0){
+            return $get_drawing[0];
+        }
     }
 
     public function get_prod_data_view(Request $request){
@@ -140,12 +141,62 @@ class FirstStampingController extends Controller
     }
 
     public function print_qr_code(Request $request){
-        $data = FirstStampingProduction::where('id', $request->id)
-        ->first('po_num', 'part_code', 'material_name' , 'material_lot_no', 'po_qty', 'ship_output');
+        $prod_data = FirstStampingProduction::where('id', $request->id)
+        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'material_lot_no AS mat_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
 
-        // return $data;
+        // return $prod_data;
         $qrcode = QrCode::format('png')
         ->size(200)->errorCorrection('H')
-        ->generate($data);
+        ->generate($prod_data);
+
+        $QrCode = "data:image/png;base64," . base64_encode($qrcode);
+
+        $data[] = array(
+            'img' => $QrCode, 
+            'text' =>  "<strong>$prod_data->po</strong><br>
+            <strong>$prod_data->code</strong><br>
+            <strong>$prod_data->name</strong><br>
+            <strong>$prod_data->mat_lot_no</strong><br>
+            <strong>$prod_data->output_qty</strong><br>
+            <strong>$prod_data->qty</strong><br>"
+        );
+
+        // $label = 'PO No.: ' . $prod_data->po 
+        // . '<br>Material Code: ' . $prod_data->code
+        // . '<br>Material Name: '.$prod_data->name
+        // . '<br>Material Lot #: ' .$prod_data->mat_lot_no
+        // . '<br>Shipment Output: ' .$prod_data->output_qty
+        // . '<br>PO Quantity: ' .$prod_data->qty;
+
+        $label = "
+            <table class='table table-sm table-borderless' style='width: 100%;'> 
+                <tr>
+                    <td>PO No.:</td>
+                    <td>$prod_data->po</td>
+                </tr>
+                <tr>
+                    <td>Material Code:</td>
+                    <td>$prod_data->code</td>
+                </tr>
+                <tr>
+                    <td>Material Name:</td>
+                    <td>$prod_data->name</td>
+                </tr>
+                <tr>
+                    <td>Material Lot #:</td>
+                    <td>$prod_data->mat_lot_no</td>
+                </tr>
+                <tr>
+                    <td>Shipment Output:</td>
+                    <td>$prod_data->output_qty</td>
+                </tr>
+                <tr>
+                <td>PO Quantity:</td>
+                <td>$prod_data->qty</td>
+            </tr>
+            </table>
+        ";
+
+        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label]);
     }
 }

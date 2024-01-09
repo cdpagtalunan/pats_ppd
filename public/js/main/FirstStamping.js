@@ -147,7 +147,12 @@ const printProdData = async (id) => {
         },
         dataType: "json",
         success: function (response) {
-            
+            console.log(response);
+            $("#img_barcode_PO").attr('src', response['qrCode']);
+            $("#img_barcode_PO_text").html(response['label']);
+            img_barcode_PO_text_hidden = response['label_hidden'];
+            $('#modalPrintQr').modal('show');
+
         }
     });
 }
