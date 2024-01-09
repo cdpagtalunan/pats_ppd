@@ -133,9 +133,28 @@ Route::controller(StampingIpqcController::class)->group(function () {
 Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
     Route::get('/get_whs_transaction_by_id', 'getWhsTransactionById')->name('get_whs_transaction_by_id');
+    Route::get('/get_family', 'getFamily')->name('get_family');
+    Route::get('/get_inspection_level', 'getInspectionLevel')->name('get_inspection_level');
     //http://192.168.3.246/pmi-subsystem/iqcdbgetitemdetails
     //http://192.168.3.246/pmi-subsystem/iqcdbgetongoing
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {

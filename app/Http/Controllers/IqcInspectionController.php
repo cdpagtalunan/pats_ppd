@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use DataTables;
 use App\Models\TblWarehouse;
 use Illuminate\Http\Request;
+use App\Models\DropdownIqcFamily;
 use Illuminate\Support\Facades\DB;
 use App\Models\TblWarehouseTransaction;
-use DataTables;
 
 class IqcInspectionController extends Controller
 {
@@ -97,7 +98,28 @@ class IqcInspectionController extends Controller
             WHERE whs_trasaction.pkid = '.$request->whs_trasaction_id.'
             LIMIT 0,1
         ');
-        
+    }
 
+    public function getFamily(){
+        $dropdown_iqc_family =  DropdownIqcFamily::get();
+        foreach ($dropdown_iqc_family as $key => $value_dropdown_iqc_family) {
+            $arr_dropdown_iqc_family_id[] =$value_dropdown_iqc_family['id'];
+            $arr_dropdown_iqc_family_value[] =$value_dropdown_iqc_family['family_name'];
+        }
+        return response()->json([
+            'id'    =>  $arr_dropdown_iqc_family_id,
+            'value' =>  $arr_dropdown_iqc_family_value
+        ]);
+    }
+    public function getInspectionLevel(){
+        $dropdown_iqc_family =  DropdownIqcFamily::get();
+        foreach ($dropdown_iqc_family as $key => $value_dropdown_iqc_family) {
+            $arr_dropdown_iqc_family_id[] =$value_dropdown_iqc_family['id'];
+            $arr_dropdown_iqc_family_value[] =$value_dropdown_iqc_family['family_name'];
+        }
+        return response()->json([
+            'id'    =>  $arr_dropdown_iqc_family_id,
+            'value' =>  $arr_dropdown_iqc_family_value
+        ]);
     }
 }

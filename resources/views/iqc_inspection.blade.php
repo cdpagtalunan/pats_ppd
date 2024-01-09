@@ -185,7 +185,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Family</span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="family" name="family"></select>
+                                        <select class="form-select form-control" id="family" name="family">
+                                            {{-- <option value="" selected disabled>-Select-</option> --}}
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mt-3">
@@ -217,7 +219,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Inspection Classification</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="classification" name="classification">
+                                        <select class="form-select form-control-sm" id="classification" name="classification"></select>
                                     </div>
                                 </div>
                             </div>
@@ -234,13 +236,23 @@
                                             <span class="input-group-text w-100" id="basic-addon1">Type of Inspection</span>
                                         </div>
                                             {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
-                                            <select class="form-select form-control-sm" id="type_of_inspection" name="type_of_inspection"></select>
+                                            <select class="form-select form-control-sm" id="type_of_inspection" name="type_of_inspection">
+                                                <option value="" selected disabled>-Select-</option>
+                                                <option value="1">Single</option>
+                                                <option value="2">Double</option>
+                                                <option value="3">Label Check</option>
+                                            </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Severity of Inspection</span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="severity_of_inspection" name="severity_of_inspection"></select>
+                                        <select class="form-select form-control-sm" id="severity_of_inspection" name="severity_of_inspection">
+                                            <option value="" selected disabled>-Select-</option>
+                                            <option value="1">Normal</option>
+                                            <option value="2">Tightened</option>
+                                            <option value="3">Label Check</option>
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -291,7 +303,11 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Shift</span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="shift" name="shift"></select>
+                                        <select class="form-select form-control-sm" id="shift" name="shift">
+                                            <option value="" selected disabled>-Select-</option>
+                                            <option value="1">A</option>
+                                            <option value="2">B</option>
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-30">
@@ -314,13 +330,22 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Submission</span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="submission" name="submission"></select>
+                                        <select class="form-select form-control-sm" id="submission" name="submission">
+                                            <option value="" selected disabled>-Select-</option>
+                                            <option value="1">1st</option>
+                                            <option value="2">2nd</option>
+                                            <option value="3">3rd</option>
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Category</span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="category" name="category"></select>
+                                        <select class="form-select form-control-sm" id="category" name="category">
+                                            <option value="" selected disabled>-Select-</option>
+                                            <option value="1">Old</option>
+                                            <option value="2">New</option>
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -441,17 +466,7 @@
                 ],
         });
 
-
-        $('#tblIqcInspection').on('click','#btnEditIqcInspection', function () {
-            $('#modalEditInspection').modal('show');
-        });
-
-        $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
-            let whs_trasaction_id = $(this).attr('whs-trasaction-id')
-            $('#whs_trasaction_id').val(whs_trasaction_id);
-            getWhsTransactionById(whs_trasaction_id);
-        });
-        const getWhsTransactionById = (whs_trasaction_id) => {
+        const getWhsTransactionById = function (whs_trasaction_id) {
             $.ajax({
                 type: "GET",
                 url: "get_whs_transaction_by_id",
@@ -466,6 +481,62 @@
                 }
             });
         }
+        const getFamily = function () {
+            $.ajax({
+                type: "GET",
+                url: "get_family",
+                data: "data",
+                dataType: "json",
+                success: function (response) {
+                    let families_id = response['id'];
+                    let families_name = response['value'];
+                    form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                    for (let i = 0; i < families_id.length; i++) {
+                        const el_families_id = families_id[i];
+                        const el_families_name = families_name[i];
+                        let opt = `<option value="${el_families_id}">${el_families_name}</option>`;
+                        form.iqcInspection.find('#family').append(opt);
+                    }
+                }
+            });
+        }
+        const getInspectionLevel = function () {
+            $.ajax({
+                type: "GET",
+                url: "get_inspection_level",
+                data: "data",
+                dataType: "json",
+                success: function (response) {
+                    let families_id = response['id'];
+                    let families_name = response['value'];
+                    form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                    for (let i = 0; i < families_id.length; i++) {
+                        const el_families_id = families_id[i];
+                        const el_families_name = families_name[i];
+                        let opt = `<option value="${el_families_id}">${el_families_name}</option>`;
+                        form.iqcInspection.find('#family').append(opt);
+                    }
+                }
+            });
+        }
+
+        $('#tblIqcInspection').on('click','#btnEditIqcInspection', function () {
+            $('#modalEditInspection').modal('show');
+        });
+
+        $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
+            let whs_trasaction_id = $(this).attr('whs-trasaction-id')
+            $('#whs_trasaction_id').val(whs_trasaction_id);
+            getWhsTransactionById(whs_trasaction_id);
+            getFamily();
+        });
+
+        // form.iqcInspection.find('#family').click(function (e) {
+        //     e.preventDefault();
+        //     getFamily();
+
+        // });
+
         </script>
         {{-- <script type="text/javascript">
             let datatableProcesss;
