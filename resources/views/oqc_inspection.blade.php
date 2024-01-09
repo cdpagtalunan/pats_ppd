@@ -202,7 +202,15 @@
 
                             "columns":[
                                 { "data" : "action", orderable:false, searchable:false },
+<<<<<<< HEAD
                                 { "data" : "po_number" },
+=======
+<<<<<<< HEAD
+                                { "data" : "po_number" },
+=======
+                                { "data" : "po_num" },
+>>>>>>> fc236f3e351948eea529953957c3b6c5ca166ebe
+>>>>>>> ea8a468f9ce2e3dfbcf43b9dd62d8fc7fb4d993c
                                 { "data" : "fy_ww" },
                                 { "data" : "date_inspected" },
                                 { "data" : "device_name" },
