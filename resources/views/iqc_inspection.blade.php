@@ -92,7 +92,8 @@
                                                     <th>Status</th>
                                                     {{-- <th>Date Inspected</th> --}}
                                                     {{-- <th>Time Inspected</th> --}}
-                                                    <th>App Ctrl No.</th>
+                                                    {{-- <th>App Ctrl No.</th> --}}
+                                                    <th>Invoice No.</th>
                                                     {{-- <th>Classification</th> --}}
                                                     {{-- <th>Family</th> --}}
                                                     {{-- <th>Category</th> --}}
@@ -161,25 +162,25 @@
                                             <span class="input-group-text w-100" id="basic-addon1">Invoice No.</span>
                                         </div>
                                             {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
-                                        <input type="text" class="form-control form-control-sm" id="invoice_no" name="invoice_no">
+                                        <input type="text" class="form-control form-control-sm" id="invoice_no" name="invoice_no" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Part Code</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="partcode" name="partcode">
+                                        <input type="text" class="form-control form-control-sm" id="partcode" name="partcode" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Part Name</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="partname" name="partname">
+                                        <input type="text" class="form-control form-control-sm" id="partname" name="partname" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Supplier</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="supplier" name="supplier">
+                                        <input type="text" class="form-control form-control-sm" id="supplier" name="supplier" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -201,7 +202,10 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Die No.</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="die_no" name="die_no">
+                                        {{-- <input type="text" class="form-control form-control-sm" id="die_no" name="die_no"> --}}
+                                        <select class="form-select form-control-sm" id="die_no" name="die_no">
+
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -213,13 +217,22 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
                                         </div>
-                                        <button type="button" class="form-control form-control-sm bg-info" id="txtOutput">Lot Number</button>
+                                        <button type="button" class="form-control form-control-sm bg-info" id="btnLotNo">Lot Number</button>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Inspection Classification</span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="classification" name="classification"></select>
+                                        <!--NOTE: Get all classification in Rapid/Warehouse Transaction, this field must be the same-->
+                                        <select class="form-select form-control-sm" id="classification" name="classification">
+                                            <option value="" selected disabled>-Select-</option>
+                                            <option value="1">PPS-Molding Plastic Resin</option>
+                                            <option value="2">PPS-Molding Metal Parts</option>
+                                            <option value="3">For grinding</option>
+                                            <option value="4">PPS-Stamping</option>
+                                            <option value="5">YEC - Stock</option>
+                                        </select>
+                                        {{-- <select class="form-select form-control-sm" id="classification" name="classification"></select> --}}
                                     </div>
                                 </div>
                             </div>
@@ -404,7 +417,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Mode of Defect</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="mode_of_defects" name="mode_of_defects">
+                                        <button type="button" class="form-control form-control-sm bg-warning" id="btnMod">Mode of Defects</button>
                                     </div>
                                 </div>
                             </div>
@@ -435,121 +448,140 @@
 
     @section('js_content')
         <script type="text/javascript">
-        const tbl = {
-            iqcInspection:'#tblIqcInspection'
-        };
-        const dt = {};
-        const form = {
-            iqcInspection : $('#formIqcInspection')
-        };
+            const tbl = {
+                iqcInspection:'#tblIqcInspection'
+            };
+            const dt = {};
+            const form = {
+                iqcInspection : $('#formIqcInspection')
+            };
+            /**
+                *TODO: Get data only for Applied Inspection
+                *TODO: Save Data
+                *TODO: Auto Time
+                *TODO: AQL
+                *TODO: Lot Number and QTY
+                *TODO: No of Defects based on MOD total qty
+            */
+            dt.iqcInspection = $(tbl.iqcInspection).DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_whs_transaction",
+                        data: function (param){
+                            param.status = $("#selEmpStat").val();
+                        }
+                    },
+                    fixedHeader: true,
+                    "columns":[
 
-        dt.iqcInspection = $(tbl.iqcInspection).DataTable({
-                "processing" : true,
-                "serverSide" : true,
-                "ajax" : {
-                    url: "load_whs_transaction",
-                    data: function (param){
-                        param.status = $("#selEmpStat").val();
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "InvoiceNo" },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "whs_trasaction_lastupdate" },
+
+                    ],
+            });
+
+            const getWhsTransactionById = function (whs_trasaction_id) {
+                $.ajax({
+                    type: "GET",
+                    url: "get_whs_transaction_by_id",
+                    data: {"whs_trasaction_id" : whs_trasaction_id},
+                    dataType: "json",
+                    success: function (response) {
+                        $('#modalEditInspection').modal('show');
+                        form.iqcInspection.find('#invoice_no').val(response[0]['InvoiceNo']);
+                        form.iqcInspection.find('#partcode').val(response[0]['PartNumber']);
+                        form.iqcInspection.find('#partname').val(response[0]['MaterialType']);
+                        form.iqcInspection.find('#supplier').val(response[0]['Supplier']);
                     }
-                },
-                fixedHeader: true,
-                "columns":[
-
-                    { "data" : "action", orderable:false, searchable:false },
-                    { "data" : "status", orderable:false, searchable:false },
-                    { "data" : "TransferSlipNo" },
-                    { "data" : "Supplier" },
-                    { "data" : "PartNumber" },
-                    { "data" : "MaterialType" },
-                    { "data" : "whs_trasaction_lastupdate" },
-
-                ],
-        });
-
-        const getWhsTransactionById = function (whs_trasaction_id) {
-            $.ajax({
-                type: "GET",
-                url: "get_whs_transaction_by_id",
-                data: {"whs_trasaction_id" : whs_trasaction_id},
-                dataType: "json",
-                success: function (response) {
-                    $('#modalEditInspection').modal('show');
-                    form.iqcInspection.find('#invoice_no').val(response[0]['InvoiceNo']);
-                    form.iqcInspection.find('#partcode').val(response[0]['PartNumber']);
-                    form.iqcInspection.find('#partname').val(response[0]['MaterialType']);
-                    form.iqcInspection.find('#supplier').val(response[0]['Supplier']);
-                }
-            });
-        }
-        const getFamily = function () {
-            $.ajax({
-                type: "GET",
-                url: "get_family",
-                data: "data",
-                dataType: "json",
-                success: function (response) {
-                    let families_id = response['id'];
-                    let families_name = response['value'];
-                    form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                    for (let i = 0; i < families_id.length; i++) {
-                        let opt = `<option value="${families_id[i]}">${families_name[i]}</option>`;
-                        form.iqcInspection.find('#family').append(opt);
+                });
+            }
+            const getFamily = function () {
+                $.ajax({
+                    type: "GET",
+                    url: "get_family",
+                    data: "data",
+                    dataType: "json",
+                    success: function (response) {
+                        let families_id = response['id'];
+                        let families_name = response['value'];
+                        form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                        for (let i = 0; i < families_id.length; i++) {
+                            let opt = `<option value="${families_id[i]}">${families_name[i]}</option>`;
+                            form.iqcInspection.find('#family').append(opt);
+                        }
                     }
-                }
-            });
-        }
-        const getInspectionLevel = function () {
-            $.ajax({
-                type: "GET",
-                url: "get_inspection_level",
-                data: "data",
-                dataType: "json",
-                success: function (response) {
-                    let dropdown_inspection_level_id = response['id'];
-                    let dropdown_inspection_level_name = response['value'];
-                    form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                    for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
-                        let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
-                        form.iqcInspection.find('#inspection_lvl').append(opt);
+                });
+            }
+            const getInspectionLevel = function () {
+                $.ajax({
+                    type: "GET",
+                    url: "get_inspection_level",
+                    data: "data",
+                    dataType: "json",
+                    success: function (response) {
+                        let dropdown_inspection_level_id = response['id'];
+                        let dropdown_inspection_level_name = response['value'];
+                        form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                        for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
+                            let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
+                            form.iqcInspection.find('#inspection_lvl').append(opt);
+                        }
                     }
+                });
+            }
+            const getAql = function () {
+                $.ajax({
+                    type: "GET",
+                    url: "get_aql",
+                    data: "data",
+                    dataType: "json",
+                    success: function (response) {
+                        let dropdown_aql_id = response['id'];
+                        let dropdown_aql_name = response['value'];
+                        form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                        for (let i = 0; i < dropdown_aql_id.length; i++) {
+                            let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
+                            form.iqcInspection.find('#aql').append(opt);
+                        }
+                    }
+                });
+            }
+            const getDieNo = function () {
+
+                form.iqcInspection.find('#die_no').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                for (let i = 0; i < 15; i++) {
+                    let opt = `<option value="${i+1}">${i+1}</option>`;
+                    form.iqcInspection.find('#die_no').append(opt);
                 }
+            }
+
+            $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
+                let whs_trasaction_id = $(this).attr('whs-trasaction-id')
+                $('#whs_trasaction_id').val(whs_trasaction_id);
+                getWhsTransactionById(whs_trasaction_id);
+                getFamily();
+                getInspectionLevel();
+                getAql();
+                getDieNo();
+                var strDate = new Date(); // By default Date empty constructor give you Date.now
+                twoDigitYear = strDate.getFullYear().toString().substr(-2);
+                twoDigitMonth = (strDate.getMonth() + 1).toString().padStart(2, "0");
+                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
             });
-        }
-        const getAql = function () {
-            $.ajax({
-                type: "GET",
-                url: "get_aql",
-                data: "data",
-                dataType: "json",
-                success: function (response) {
-                    // let dropdown_inspection_level_id = response['id'];
-                    // let dropdown_inspection_level_name = response['value'];
-                    // form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                    // for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
-                    //     let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
-                    //     form.iqcInspection.find('#inspection_lvl').append(opt);
-                    // }
-                }
+            $('#btnLotNo').click(function (e) {
+                e.preventDefault();
+                alert('btnLotNo')
             });
-        }
-
-        $('#tblIqcInspection').on('click','#btnEditIqcInspection', function () {
-            $('#modalEditInspection').modal('show');
-        });
-
-        $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
-            let whs_trasaction_id = $(this).attr('whs-trasaction-id')
-            $('#whs_trasaction_id').val(whs_trasaction_id);
-            getWhsTransactionById(whs_trasaction_id);
-            getFamily();
-            getInspectionLevel();
-        });
-
-        // form.iqcInspection.find('#family').click(function (e) {
-        //     e.preventDefault();
-        //     getFamily();
-
-        // });
+            $('#btnMod').click(function (e) {
+                e.preventDefault();
+                alert('btnMod')
+            });
 
         </script>
         {{-- <script type="text/javascript">
