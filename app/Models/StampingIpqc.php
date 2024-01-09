@@ -11,8 +11,8 @@ class StampingIpqc extends Model
 
     protected $table = 'stamping_ipqcs';
 
-    public function first_stamping_production()
-    {
-    	return $this->hasOne(FirstStampingProduction::class, 'po_num', 'po_number');
-    }
+    // public function first_stamping_production()
+    // {
+    // 	return $this->hasOne(FirstStampingProduction::class, 'po_num', 'po_number');
+    // }
 }

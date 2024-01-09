@@ -12,19 +12,23 @@ use App\Models\FirstStampingProduction;
 class StampingIpqcController extends Controller
 {
     public function view_stamping_ipqc_data(Request $request){
-        $first_stamping_data_orig = FirstStampingProduction::
-                            // with('first_stamping_production')
-                            whereNull('deleted_at')
-                            ->where('po_num', $request->po_number)
-                            // ->when($request->po_number, function ($query) use ($request) {
-                            //     return $query ->where('po_num', 'like', '%-'.$request->po_number.'-%');
-                            // })
-                            ->get();
+        // $ipqc_data = StampingIpqc::with('first_stamping_production')->select('fs_productions_id','ipqc_inspector_name','status')
+        //                             ->where('fs_productions_id', $first_stamping_data_orig[0]->id )
+        //                             ->where('logdel', 0)
+        //                             ->get();
 
-                            // return $first_stamping_data_orig;
+        $first_stamping_data = FirstStampingProduction::with('stamping_ipqc')
+                                                        ->whereNull('deleted_at')
+                                                        ->where('po_num', $request->po_number)
+                                                        // ->when($request->po_number, function ($query) use ($request) {
+                                                        //     return $query ->where('po_num', 'like', '%-'.$request->po_number.'-%');
+                                                        // })
+                                                        ->get();
 
-        if(isset($first_stamping_data_orig)){
-            $ipqc_data = StampingIpqc::select('fs_productions_id','ipqc_inspector_name','status')->where('fs_productions_id', $first_stamping_data_orig[0]->id )->where('logdel', 0)->get();
+        // return $first_stamping_data;
+
+        // if(isset($first_stamping_data_orig)){
+            // $ipqc_data = StampingIpqc::select('fs_productions_id','ipqc_inspector_name','status')->where('fs_productions_id', $first_stamping_data_orig[0]->id )->where('logdel', 0)->get();
             // $first_stamping_data = $first_stamping_data->concat;
             // return $ipqc_data[0]->fs_productions_id;
             // $first_stamping_data_orig.push()
@@ -33,13 +37,14 @@ class StampingIpqcController extends Controller
                 // array_push($first_stamping_data_orig, $ipqc_data[0]->ipqc_inspector_name);
                 // array_push($first_stamping_data_orig, $ipqc_data[0]->status);
 
-$first_stamping_data_orig = $first_stamping_data_orig->push(($ipqc_data)['fs_productions_id' => 'test']);
+            // $first_stamping_data_orig = $first_stamping_data_orig->push((object)['fs_productions_id' => 'test']);
+// $        games = $games->push((object)['fs_productions_id' => 'test']);
             // }
             // return $first_stamping_data_orig;, 'ipqc_inspector_name' => $ipqc_data[0]->ipqc_inspector_name, 'status' => $ipqc_data[0]->status
             // array_push($first_stamping_data_orig, $ipqc_data);
             // $first_stamping_data = $first_stamping_data_orig->merge($ipqc_data);
-        }
-        return $first_stamping_data_orig;
+        // }
+        // return $first_stamping_data_orig;
 
         return DataTables::of($first_stamping_data)
         ->addColumn('action', function($first_stamping_data){

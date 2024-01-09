@@ -97,7 +97,7 @@ class IqcInspectionController extends Controller
             WHERE whs_trasaction.pkid = '.$request->whs_trasaction_id.'
             LIMIT 0,1
         ');
-        
+
 
     }
 }
