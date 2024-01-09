@@ -492,9 +492,7 @@
                     let families_name = response['value'];
                     form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
                     for (let i = 0; i < families_id.length; i++) {
-                        const el_families_id = families_id[i];
-                        const el_families_name = families_name[i];
-                        let opt = `<option value="${el_families_id}">${el_families_name}</option>`;
+                        let opt = `<option value="${families_id[i]}">${families_name[i]}</option>`;
                         form.iqcInspection.find('#family').append(opt);
                     }
                 }
@@ -507,15 +505,30 @@
                 data: "data",
                 dataType: "json",
                 success: function (response) {
-                    let families_id = response['id'];
-                    let families_name = response['value'];
-                    form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                    for (let i = 0; i < families_id.length; i++) {
-                        const el_families_id = families_id[i];
-                        const el_families_name = families_name[i];
-                        let opt = `<option value="${el_families_id}">${el_families_name}</option>`;
-                        form.iqcInspection.find('#family').append(opt);
+                    let dropdown_inspection_level_id = response['id'];
+                    let dropdown_inspection_level_name = response['value'];
+                    form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                    for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
+                        let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
+                        form.iqcInspection.find('#inspection_lvl').append(opt);
                     }
+                }
+            });
+        }
+        const getAql = function () {
+            $.ajax({
+                type: "GET",
+                url: "get_aql",
+                data: "data",
+                dataType: "json",
+                success: function (response) {
+                    // let dropdown_inspection_level_id = response['id'];
+                    // let dropdown_inspection_level_name = response['value'];
+                    // form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                    // for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
+                    //     let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
+                    //     form.iqcInspection.find('#inspection_lvl').append(opt);
+                    // }
                 }
             });
         }
@@ -529,6 +542,7 @@
             $('#whs_trasaction_id').val(whs_trasaction_id);
             getWhsTransactionById(whs_trasaction_id);
             getFamily();
+            getInspectionLevel();
         });
 
         // form.iqcInspection.find('#family').click(function (e) {

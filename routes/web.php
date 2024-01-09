@@ -135,6 +135,7 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_whs_transaction_by_id', 'getWhsTransactionById')->name('get_whs_transaction_by_id');
     Route::get('/get_family', 'getFamily')->name('get_family');
     Route::get('/get_inspection_level', 'getInspectionLevel')->name('get_inspection_level');
+    Route::get('/get_aql', 'getAql')->name('get_aql');
     //http://192.168.3.246/pmi-subsystem/iqcdbgetitemdetails
     //http://192.168.3.246/pmi-subsystem/iqcdbgetongoing
 });

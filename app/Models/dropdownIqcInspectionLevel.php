@@ -7,5 +7,4 @@ use Illuminate\Database\Eloquent\Model;
 
 class DropdownIqcInspectionLevel extends Model
 {
-    use HasFactory;
 }

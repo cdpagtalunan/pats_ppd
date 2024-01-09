@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\DropdownIqcFamily;
 use Illuminate\Support\Facades\DB;
 use App\Models\TblWarehouseTransaction;
+use App\Models\DropdownIqcInspectionLevel;
 
 class IqcInspectionController extends Controller
 {
@@ -112,14 +113,25 @@ class IqcInspectionController extends Controller
         ]);
     }
     public function getInspectionLevel(){
-        $dropdown_iqc_family =  DropdownIqcFamily::get();
-        foreach ($dropdown_iqc_family as $key => $value_dropdown_iqc_family) {
-            $arr_dropdown_iqc_family_id[] =$value_dropdown_iqc_family['id'];
-            $arr_dropdown_iqc_family_value[] =$value_dropdown_iqc_family['family_name'];
+        $dropdown_inspection_level =  DropdownIqcInspectionLevel::get();
+        foreach ($dropdown_inspection_level as $key => $value_dropdown_inspection_level) {
+            $arr_dropdown_inspection_level_id[] =$value_dropdown_inspection_level['id'];
+            $arr_dropdown_inspection_level_value[] =$value_dropdown_inspection_level['inspection_type'];
         }
         return response()->json([
-            'id'    =>  $arr_dropdown_iqc_family_id,
-            'value' =>  $arr_dropdown_iqc_family_value
+            'id'    =>  $arr_dropdown_inspection_level_id,
+            'value' =>  $arr_dropdown_inspection_level_value
+        ]);
+    }
+    public function getAql(){
+        $dropdown_inspection_level =  DropdownIqcInspectionLevel::get();
+        foreach ($dropdown_inspection_level as $key => $value_dropdown_inspection_level) {
+            $arr_dropdown_inspection_level_id[] =$value_dropdown_inspection_level['id'];
+            $arr_dropdown_inspection_level_value[] =$value_dropdown_inspection_level['inspection_type'];
+        }
+        return response()->json([
+            'id'    =>  $arr_dropdown_inspection_level_id,
+            'value' =>  $arr_dropdown_inspection_level_value
         ]);
     }
 }
