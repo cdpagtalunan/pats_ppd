@@ -138,6 +138,16 @@ const getProdDataToView = async (id) => {
     });
 }
 
-const printProdData = (data) => {
-    console.log(data);
+const printProdData = async (id) => {
+    await $.ajax({
+        type: "get",
+        url: "print_qr_code",
+        data: {
+            "id" : id
+        },
+        dataType: "json",
+        success: function (response) {
+            
+        }
+    });
 }

@@ -113,6 +113,7 @@ Route::controller(FirstStampingController::class)->group(function () {
     Route::get('/view_first_stamp_prod', 'view_first_stamp_prod')->name('view_first_stamp_prod');
     Route::get('/get_data_req_for_prod_by_po', 'get_data_req_for_prod_by_po')->name('get_data_req_for_prod_by_po');
     Route::get('/get_prod_data_view', 'get_prod_data_view')->name('get_prod_data_view');
+    Route::get('/print_qr_code', 'print_qr_code')->name('print_qr_code');
 });
 
 // STAMPING -> IPQC CONTROLLER
