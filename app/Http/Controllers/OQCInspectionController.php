@@ -20,7 +20,7 @@ class OQCInspectionController extends Controller
     public function viewOqcInspection(Request $request){
         date_default_timezone_set('Asia/Manila');
 
-        $oqc_inspections = StampingIpqc::where('po_number', $request->poNo)->get();
+        $oqc_inspections = StampingIpqc::with(['first_stamping_production'])->where('po_number', $request->poNo)->where('status', 1)->get();
         return DataTables::of($oqc_inspections)
         
         ->addColumn('action', function($oqc_packing_instections){

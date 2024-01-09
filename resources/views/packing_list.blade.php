@@ -90,11 +90,21 @@
                                                 <tr>
                                                     <th><center><i  class="fa fa-cog"></i></center></th>
                                                     <th>Status</th>
-                                                    <th>Status</th>
-                                                    <th>Status</th>
-                                                    <th>Status</th>
-                                                    <th>Status</th>
-                                                    <th>Status</th>
+                                                    <th>Ctrl #</th>
+                                                    <th>Lot #</th>
+                                                    <th>Qty</th>
+                                                    <th>Sold to</th>
+                                                    <th>Ship to</th>
+                                                    <th>Pick-up Time</th>
+                                                    <th>Pick-up Date</th>
+                                                    {{-- <th><center>Status</center></th>
+                                                    <th><center>Ctrl #</center></th>
+                                                    <th><center>Lot #</center></th>
+                                                    <th><center>Qty</center></th>
+                                                    <th><center>Sold to</center></th>
+                                                    <th><center>Ship to</center></th>
+                                                    <th><center>P/U Time</center></th>
+                                                    <th><center>P/U Date</center></th> --}}
                                                 </tr>
                                             </thead>
                                         </table>
