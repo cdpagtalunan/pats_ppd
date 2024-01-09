@@ -39,6 +39,7 @@ Route::view('/process','process')->name('process');
 /* MIGZ IQC INSPECTION VIEW */
 Route::view('/iqc_inspection','iqc_inspection')->name('iqc_inspection');
 
+
 // Route::post('/edit_user_authentication', [UserController::class, 'editUserAuthentication'])->name('edit_user_authentication');
 
 // * STAMPING VIEW
@@ -49,6 +50,10 @@ Route::view('/ipqc_inspection','ipqc_inspection')->name('ipqc_inspection');
 
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');
+
+
+/* PACKING LIST */
+Route::view('/packing_list','packing_list')->name('packing_list');
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
@@ -113,6 +118,7 @@ Route::controller(FirstStampingController::class)->group(function () {
     Route::get('/view_first_stamp_prod', 'view_first_stamp_prod')->name('view_first_stamp_prod');
     Route::get('/get_data_req_for_prod_by_po', 'get_data_req_for_prod_by_po')->name('get_data_req_for_prod_by_po');
     Route::get('/get_prod_data_view', 'get_prod_data_view')->name('get_prod_data_view');
+    Route::get('/print_qr_code', 'print_qr_code')->name('print_qr_code');
 });
 
 // STAMPING -> IPQC CONTROLLER

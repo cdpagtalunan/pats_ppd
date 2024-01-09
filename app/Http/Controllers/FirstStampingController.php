@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\FirstStampingProduction;
 use Illuminate\Support\Facades\Validator;
 
+use QrCode;
+
 class FirstStampingController extends Controller
 {
     public function view_first_stamp_prod(Request $request){
@@ -135,5 +137,15 @@ class FirstStampingController extends Controller
             'user'
         ])
         ->where('id', $request->id)->first();
+    }
+
+    public function print_qr_code(Request $request){
+        $data = FirstStampingProduction::where('id', $request->id)
+        ->first('po_num', 'part_code', 'material_name' , 'material_lot_no', 'po_qty', 'ship_output');
+
+        // return $data;
+        $qrcode = QrCode::format('png')
+        ->size(200)->errorCorrection('H')
+        ->generate($data);
     }
 }

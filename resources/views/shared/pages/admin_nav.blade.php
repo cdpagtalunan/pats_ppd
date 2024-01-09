@@ -98,6 +98,15 @@
                         </li>
                     </ul>
                   </li>
+
+                  <li class="nav-item">
+                    <a href="{{ route('packing_list') }}" class="nav-link">
+                      <i class="fas fa-shipping-fast"></i>
+                      <p>
+                        Packing List
+                      </p>
+                    </a>
+                  </li>
             </ul>
         </nav>
     </div><!-- Sidebar -->

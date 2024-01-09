@@ -32,6 +32,10 @@ class StampingIpqcController extends Controller
                 array_push($first_stamping_data_orig, $ipqc_data[0]->fs_productions_id);
                 array_push($first_stamping_data_orig, $ipqc_data[0]->ipqc_inspector_name);
                 array_push($first_stamping_data_orig, $ipqc_data[0]->status);
+
+                $first_stamping_data_orig = $first_stamping_data_orig->push(new Game(['fs_productions_id' => $ipqc_data[0]->fs_productions_id,
+                                                                                      'ipqc_inspector_name' => $ipqc_data[0]->ipqc_inspector_name,
+                                                                                      'status' => $ipqc_data[0]->status]));
             // }
             // array_push($first_stamping_data_orig, $ipqc_data);
             // $first_stamping_data = $first_stamping_data_orig->merge($ipqc_data);

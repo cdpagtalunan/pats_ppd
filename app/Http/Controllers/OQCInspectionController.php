@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 use Auth;
 use DataTables;
 
-use App\Models\FirstStampingProduction;
+use App\Models\StampingIpqc;
 
 class OQCInspectionController extends Controller
 {
@@ -20,7 +20,7 @@ class OQCInspectionController extends Controller
     public function viewOqcInspection(Request $request){
         date_default_timezone_set('Asia/Manila');
 
-        $oqc_inspections = FirstStampingProduction::where('po_num', $request->poNo)->get();
+        $oqc_inspections = StampingIpqc::where('po_number', $request->poNo)->get();
         return DataTables::of($oqc_inspections)
         
         ->addColumn('action', function($oqc_packing_instections){
