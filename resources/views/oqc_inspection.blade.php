@@ -202,7 +202,7 @@
 
                             "columns":[
                                 { "data" : "action", orderable:false, searchable:false },
-                                { "data" : "po_no" },
+                                { "data" : "po_num" },
                                 { "data" : "fy_ww" },
                                 { "data" : "date_inspected" },
                                 { "data" : "device_name" },
