@@ -13,6 +13,7 @@ use App\Http\Controllers\FirstStampingController;
 use App\Http\Controllers\IqcInspectionController;
 use App\Http\Controllers\OQCInspectionController;
 use App\Http\Controllers\MaterialProcessController;
+use App\Http\Controllers\CustomerDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +55,7 @@ Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');
 
 /* PACKING LIST */
 Route::view('/packing_list','packing_list')->name('packing_list');
+Route::view('/packing_list_settings','packing_list_settings')->name('packing_list_settings');
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
@@ -72,6 +74,10 @@ Route::controller(UserController::class)->group(function () {
     Route::post('/reset_password', 'reset_password');
     Route::get('/generate_user_qrcode', 'generate_user_qrcode');
     Route::post('/import_user', 'import_user');
+
+
+
+    Route::get('/get_emp_details_by_id', 'get_emp_details_by_id')->name('get_emp_details_by_id');
 });
 
 // USER LEVEL CONTROLLER
@@ -140,4 +146,9 @@ Route::controller(IqcInspectionController::class)->group(function () {
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {
     Route::get('/view_oqc_inspection', 'viewOqcInspection')->name('view_oqc_inspection');
+});
+
+// Packing List 
+Route::controller(CustomerDetailsController::class)->group(function () {
+    Route::get('/view_company_details', 'viewCompanyDetails')->name('view_company_details');
 });

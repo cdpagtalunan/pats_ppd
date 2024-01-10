@@ -1037,3 +1037,17 @@ function GetUserList(cboElement){
         }
     });
 }
+
+const getEmpIdData = (id) => {
+    $.ajax({
+        type: "get",
+        url: "get_emp_details_by_id",
+        data: {
+            "empId" : id
+        },
+        dataType: "json",
+        success: function (response) {
+            
+        }
+    });
+}

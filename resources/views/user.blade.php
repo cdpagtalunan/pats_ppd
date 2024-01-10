@@ -55,10 +55,10 @@
                   <div style="float: right;">
                     <button class="btn btn-dark" data-keyboard="false" id="btnShowModalPrintBatchUser" disabled><i class="fa fa-print"></i> Print Batch QR Code (<span id="lblNoOfPrintBatchSelUser">0</span>)</button>
 
-                    @if(Auth::user()->user_level_id == 1)
+                    {{-- @if(Auth::user()->user_level_id == 1)
                       <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalImportUser" id="btnShowImport" title="Import User"><i class="fa fa-file-excel"></i> Import</button>
-                    @endif
-
+                    @endif --}}
+                    <button class="btn btn-danger" id="btnNewAddFunction" data-bs-toggle="modal" data-bs-target="#modalAddUserNew">Hello Add</button>
                     <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalAddUser" id="btnShowAddUserModal"><i class="fa fa-user-plus"></i> Add User</button>
                   </div> <br><br>
                   <div class="table-responsive">
@@ -416,6 +416,112 @@
   </div>
   <!-- /.modal -->
 
+  <!-- MODALS -->
+  <div class="modal fade" id="modalAddUserNew">
+    <div class="modal-dialog">
+      <div class="modal-content"> 
+        <div class="modal-header">
+          <h4 class="modal-title"><i class="fa fa-user-plus"></i> Add User</h4>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post" id="formAddUserNew">
+          @csrf
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Employee ID</label>
+              <input type="text" class="form-control" name="employee_id" id="txtAddUserEmpIdNew" oninput="this.value = this.value.toUpperCase()">
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Name</label>
+                    <input type="text" class="form-control" name="name" id="txtAddUserNameNew">
+                </div>
+
+                <div class="form-group">
+                  <label>Username</label>
+                    <input type="text" class="form-control" name="username" id="txtAddUserUserNameNew">
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <input type="checkbox" name="with_email" id="chkAddUserWithEmailNew" checked="checked">
+                        <label>Email</label>
+                      </div>
+                      <div class="col-sm-6">
+                        <input type="checkbox" name="send_email" id="chkAddUserSendEmailNew" checked="checked">
+                        <label>Send Password to Email</label>
+                      </div>
+                    </div>
+                    
+                    <input type="text" class="form-control" name="email" id="txtAddUserEmailNew">
+                </div>
+
+                <div class="form-group">
+                  <label>User Level</label>
+                    <select class="form-control select2bs4 selectUserLevel" name="user_level_id" id="selAddUserLevelNew" style="width: 100%;">
+                      <!-- Code generated -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Position</label>
+                    <select class="form-control select2bs4" name="position" style="width: 100%;" id="selAddUserPositionNew">
+                      <option selected value="0">N/A</option>
+                      <option value="1">Prod'n Supervisor</option>
+                      <option value="2">QC Supervisor</option>
+                      <option value="3">Material Handler</option>
+                      <option value="4">Operator</option>
+                      <option value="5">Inspector</option>
+                      <option value="6">Warehouse</option>
+                      <option value="7">PPC - Planner</option>
+                      <option value="8">PPC - Sr. Planner</option>
+                      <option value="9">Engineer</option>
+                    </select>
+                </div>
+
+               
+{{-- 
+                <div class="form-group">
+                        <input type="checkbox" name="with_oqc_stamp" id="chkAddUserWithOQCStamp">
+                        <label>OQC Stamp</label>                  
+                    <input type="text" class="form-control" name="oqc_stamp" id="txtAddUserOQCStamp" disabled="disabled">
+                </div> --}}
+
+                <!-- <div class="form-group">
+                  <label>Employee ID</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" name="employee_id" id="txtAddUserEmpId">
+                      <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="btnAddUserGenBarcode" title="Generate"><i class="fas fa-qrcode"></i></button>
+                      </div>
+                    </div>
+                    <div>
+                      <center>
+                        <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')
+                          ->size(150)->errorCorrection('H')
+                          ->generate('0')) !!}" id="imgAddUserBarcode" style="max-width: 200px;"> <br>
+                          <label id="lblAddUserQRCodeVal">0</label>
+                      </center>
+                    </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" id="btnAddUserNew" class="btn btn-dark"><i id="iBtnAddUserIcon" class="fa fa-check"></i> Save</button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
   @endsection
 
   @section('js_content')
@@ -425,6 +531,7 @@
     let imgResultUserQrCode = '';
     let qrCodeName = '';
     let arrSelectedUsers = [];
+
     $(document).ready(function () {
       //Initialize Select2 Elements
       $('.select2').select2();
@@ -848,6 +955,13 @@
           popup.focus(); //required for IE
           popup.print();
           popup.close();
+        });
+
+        $('#txtAddUserEmpIdNew').on('keyup', function(e){
+          if(e.keyCode == 13){
+            e.preventDefault();
+            getEmpIdData($(this).val());
+          }
         });
       });
   </script>
