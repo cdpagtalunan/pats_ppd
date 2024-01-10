@@ -14,6 +14,9 @@ use App\Http\Controllers\IqcInspectionController;
 use App\Http\Controllers\OQCInspectionController;
 use App\Http\Controllers\MaterialProcessController;
 use App\Http\Controllers\CustomerDetailsController;
+use App\Http\Controllers\CarrierDetailsController;
+use App\Http\Controllers\LoadingPortDetailsController;
+use App\Http\Controllers\DestinationPortDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -147,22 +150,6 @@ Route::controller(IqcInspectionController::class)->group(function () {
 });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {
     Route::get('/view_oqc_inspection', 'viewOqcInspection')->name('view_oqc_inspection');
@@ -172,3 +159,18 @@ Route::controller(OQCInspectionController::class)->group(function () {
 Route::controller(CustomerDetailsController::class)->group(function () {
     Route::get('/view_company_details', 'viewCompanyDetails')->name('view_company_details');
 });
+Route::controller(CarrierDetailsController::class)->group(function () {
+    Route::get('/view_carrier_details', 'viewCarrierDetails')->name('view_carrier_details');
+});
+Route::controller(LoadingPortDetailsController::class)->group(function () {
+    Route::get('/view_loading_port_details', 'viewLoadingPortDetails')->name('view_loading_port_details');
+});
+Route::controller(DestinationPortDetailsController::class)->group(function () {
+    Route::get('/view_destination_port_details', 'viewDestinationPortDetails')->name('view_destination_port_details');
+});
+
+
+
+
+
+

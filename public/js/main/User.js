@@ -159,7 +159,10 @@ function GetUserByIdToEdit(userId){
             let user = JsonObject['user'];
             let qrcode = JsonObject['qrcode'];
             if(user.length > 0){
-                $("#txtEditUserName").val(user[0].name);
+                // $("#txtEditUserName").val(user[0].name);
+                $("#txtEditfirstName").val(user[0].firstname);
+                $("#txtEditMiddleName").val(user[0].middlename);
+                $("#txtEditLastName").val(user[0].lastname);
                 $("#txtEditUserUserName").val(user[0].username);
                 $("#txtEditUserEmail").val(user[0].email);
                 $("#txtEditUserCurrEmail").val(user[0].email);
@@ -1047,7 +1050,18 @@ const getEmpIdData = (id) => {
         },
         dataType: "json",
         success: function (response) {
-            
+            console.log(response);
+            let middlename = "";
+            $('#txtAddfirstName').val(response['empInfo'][0]['FirstName']);
+            $('#txtAddMiddleName').val(response['empInfo'][0]['MiddleName']);
+            $('#txtAddLastName').val(response['empInfo'][0]['LastName']);
+
+		    // $username = strtolower(substr($fname, 0, 1).substr($mname, 0,1).$lname);
+            if(/^[a-zA-Z0-9]*$/.test(response['empInfo'][0]['MiddleName'].substring(0,1)) == true) {
+                middlename = response['empInfo'][0]['MiddleName'].substring(0,1);
+            }
+            let username = response['empInfo'][0]['FirstName'].substring(0,1)+middlename+response['empInfo'][0]['LastName'];
+            $('#txtAddUserUserName').val(username.toLowerCase())
         }
     });
 }

@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Mail;
+use QrCode;
+use DataTables;
 use App\Models\User;
 use App\Model\OQCStamp;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
+use App\Models\HRISDetails;
 use Illuminate\Support\Str;
-use DataTables;
-use Mail;
+use Illuminate\Http\Request;
 // use App\Jobs\SendUserPasswordJob;
-use Auth;
-use QrCode;
-use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\CSVUserImport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -238,7 +239,13 @@ class UserController extends Controller
             ->addColumn('checkbox', function($user){
                 return '<center><input type="checkbox" class="chkUser" user-id="' . $user->id . '"></center>';
             })
-            ->rawColumns(['label1', 'action1', 'checkbox'])
+            ->addColumn('fullname', function($user){
+                $result = "";
+
+                $result = "$user->firstname $user->middlename $user->lastname";
+                return $result; 
+            })
+            ->rawColumns(['label1', 'action1', 'checkbox', 'fullname'])
             ->make(true);
     }
 
@@ -254,7 +261,7 @@ class UserController extends Controller
         $password = 'pmi12345';
 
         $rules = [
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'employee_id' => 'required|string|max:255|unique:users',
             'user_level_id' => 'required|string|max:255',
@@ -281,7 +288,10 @@ class UserController extends Controller
 
             try{
                 $user_id = User::insertGetId([
-                    'name' => $request->name,
+                    // 'name' => $request->name,
+                    'firstname' => $request->fname, 
+                    'firstname' => $request->mname, 
+                    'firstname' => $request->lname, 
                     'username' => $request->username,
                     'email' => $request->email,
                     'employee_id' => $request->employee_id,
@@ -608,6 +618,18 @@ class UserController extends Controller
     }
 
     public function get_emp_details_by_id(Request $request){
-        
+        $hris_data = DB::connection('mysql_systemone_hris')
+        ->select("SELECT * FROM tbl_EmployeeInfo WHERE EmpNo = '$request->empId'");
+
+        if(count($hris_data) > 0){
+            return response()->json(['empInfo' => $hris_data]);
+        }
+        else{
+            $subcon_data = DB::connection('mysql_systemone_subcon')
+            ->select("SELECT * FROM tbl_EmployeeInfo WHERE EmpNo = '$request->empId'");
+
+            return response()->json(['empInfo' => $subcon_data]);
+
+        }
     }
 }

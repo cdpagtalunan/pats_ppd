@@ -58,7 +58,6 @@
                     {{-- @if(Auth::user()->user_level_id == 1)
                       <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalImportUser" id="btnShowImport" title="Import User"><i class="fa fa-file-excel"></i> Import</button>
                     @endif --}}
-                    <button class="btn btn-danger" id="btnNewAddFunction" data-bs-toggle="modal" data-bs-target="#modalAddUserNew">Hello Add</button>
                     <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalAddUser" id="btnShowAddUserModal"><i class="fa fa-user-plus"></i> Add User</button>
                   </div> <br><br>
                   <div class="table-responsive">
@@ -95,7 +94,7 @@
   <!-- /.content-wrapper -->
 
   <!-- MODALS -->
-  <div class="modal fade" id="modalAddUser">
+  {{-- <div class="modal fade" id="modalAddUser">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -197,7 +196,7 @@
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-  </div>
+  </div> --}}
   <!-- /.modal -->
 
   <div class="modal fade" id="modalEditUser">
@@ -216,8 +215,29 @@
               <div class="col-sm-12">
                 <input type="hidden" class="form-control" name="user_id" id="txtEditUserId">
                 <div class="form-group">
-                  <label>Name</label>
-                    <input type="text" class="form-control" name="name" id="txtEditUserName">
+                  <label>Employee ID</label>
+                  <input type="text" class="form-control" name="employee_id" id="txtEditUserEmpId" oninput="this.value = this.value.toUpperCase()" readonly>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Firstname</label>
+                        <input type="text" class="form-control" name="fname" id="txtEditfirstName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Middlename</label>
+                        <input type="text" class="form-control" name="mname" id="txtEditMiddleName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Lastname</label>
+                      <input type="text" class="form-control" name="lname" id="txtEditLastName" readonly>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -253,11 +273,6 @@
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
                     </select>
-                </div>
-
-                <div class="form-group">
-                  <label>Employee ID</label>
-                    <input type="text" class="form-control" name="employee_id" id="txtEditUserEmpId">
                 </div>
 
                 <div class="form-group">
@@ -417,7 +432,7 @@
   <!-- /.modal -->
 
   <!-- MODALS -->
-  <div class="modal fade" id="modalAddUserNew">
+  <div class="modal fade" id="modalAddUser">
     <div class="modal-dialog">
       <div class="modal-content"> 
         <div class="modal-header">
@@ -426,50 +441,70 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <form method="post" id="formAddUserNew">
+        <form method="post" id="formAddUser">
           @csrf
           <div class="modal-body">
             <div class="form-group">
               <label>Employee ID</label>
-              <input type="text" class="form-control" name="employee_id" id="txtAddUserEmpIdNew" oninput="this.value = this.value.toUpperCase()">
+              <input type="text" class="form-control" name="employee_id" id="txtAddUserEmpId" oninput="this.value = this.value.toUpperCase()">
             </div>
             <div class="row">
               <div class="col-sm-12">
-                <div class="form-group">
+                {{-- <div class="form-group">
                   <label>Name</label>
-                    <input type="text" class="form-control" name="name" id="txtAddUserNameNew">
-                </div>
+                    <input type="text" class="form-control" name="name" id="txtAddUserName">
+                </div> --}}
 
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Firstname</label>
+                        <input type="text" class="form-control" name="fname" id="txtAddfirstName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Middlename</label>
+                        <input type="text" class="form-control" name="mname" id="txtAddMiddleName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Lastname</label>
+                      <input type="text" class="form-control" name="lname" id="txtAddLastName" readonly>
+                    </div>
+                  </div>
+                </div>
                 <div class="form-group">
                   <label>Username</label>
-                    <input type="text" class="form-control" name="username" id="txtAddUserUserNameNew">
+                    <input type="text" class="form-control" name="username" id="txtAddUserUserName">
                 </div>
 
                 <div class="form-group">
                     <div class="row">
                       <div class="col-sm-6">
-                        <input type="checkbox" name="with_email" id="chkAddUserWithEmailNew" checked="checked">
+                        <input type="checkbox" name="with_email" id="chkAddUserWithEmail" checked="checked">
                         <label>Email</label>
                       </div>
                       <div class="col-sm-6">
-                        <input type="checkbox" name="send_email" id="chkAddUserSendEmailNew" checked="checked">
+                        <input type="checkbox" name="send_email" id="chkAddUserSendEmail" checked="checked">
                         <label>Send Password to Email</label>
                       </div>
                     </div>
                     
-                    <input type="text" class="form-control" name="email" id="txtAddUserEmailNew">
+                    <input type="text" class="form-control" name="email" id="txtAddUserEmail">
                 </div>
 
                 <div class="form-group">
                   <label>User Level</label>
-                    <select class="form-control select2bs4 selectUserLevel" name="user_level_id" id="selAddUserLevelNew" style="width: 100%;">
+                    <select class="form-control select2bs4 selectUserLevel" name="user_level_id" id="selAddUserLevel" style="width: 100%;">
                       <!-- Code generated -->
                     </select>
                 </div>
 
                 <div class="form-group">
                   <label>Position</label>
-                    <select class="form-control select2bs4" name="position" style="width: 100%;" id="selAddUserPositionNew">
+                    <select class="form-control select2bs4" name="position" style="width: 100%;" id="selAddUserPosition">
                       <option selected value="0">N/A</option>
                       <option value="1">Prod'n Supervisor</option>
                       <option value="2">QC Supervisor</option>
@@ -483,13 +518,11 @@
                     </select>
                 </div>
 
-               
-{{-- 
                 <div class="form-group">
                         <input type="checkbox" name="with_oqc_stamp" id="chkAddUserWithOQCStamp">
                         <label>OQC Stamp</label>                  
                     <input type="text" class="form-control" name="oqc_stamp" id="txtAddUserOQCStamp" disabled="disabled">
-                </div> --}}
+                </div>
 
                 <!-- <div class="form-group">
                   <label>Employee ID</label>
@@ -513,7 +546,7 @@
           </div>
           <div class="modal-footer justify-content-between">
             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-            <button type="button" id="btnAddUserNew" class="btn btn-dark"><i id="iBtnAddUserIcon" class="fa fa-check"></i> Save</button>
+            <button type="button" id="btnAddUser" class="btn btn-dark"><i id="iBtnAddUserIcon" class="fa fa-check"></i> Save</button>
           </div>
         </form>
       </div>
@@ -561,7 +594,7 @@
           "columns":[
             { "data" : "checkbox", searchable: false, orderable: false },
             { "data" : "id" },
-            { "data" : "name" },
+            { "data" : "fullname"},
             { "data" : "username" },
             { "data" : "email" },
             { "data" : "employee_id" },
@@ -957,7 +990,7 @@
           popup.close();
         });
 
-        $('#txtAddUserEmpIdNew').on('keyup', function(e){
+        $('#txtAddUserEmpId').on('keyup', function(e){
           if(e.keyCode == 13){
             e.preventDefault();
             getEmpIdData($(this).val());
