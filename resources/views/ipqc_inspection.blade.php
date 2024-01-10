@@ -68,13 +68,19 @@
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <button type="button" class="btn btn-dark" id="btnScanPo" data-toggle="modal" data-target="#mdlScanQrCode"><i class="fa fa-qrcode w-100"></i></button> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" aria-label="Username" name="po_number" id="txtSearchPONum">
+                                                <input type="text" class="form-control" placeholder="PO Number" aria-label="Username" name="po_number" id="txtSearchPONum" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Part Code</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Product Code" aria-label="Partcode" id="txtSearchPartCode" readonly>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Material Name" aria-label="Username" id="txtSearchMatName" readonly>
+                                                <input type="text" class="form-control" placeholder="Material Name" aria-label="Materialname" id="txtSearchMatName" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -84,14 +90,15 @@
                     </div>
 
                     <!-- Start Scan QR Modal -->
-                    <div class="modal fade" id="mdlScanQrCode" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal fade" id="mdlScanQrCode" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
                         <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                             <div class="modal-content">
                                 <div class="modal-header border-bottom-0 pb-0">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                 </div>
                                 <div class="modal-body pt-0">
-                                    <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                                    {{-- hidden_scanner_input --}}
+                                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
                                     <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                                 </div>
                             </div>
@@ -109,19 +116,21 @@
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
-                                    <div style="float: right;">
-                                        {{-- @if(Auth::user()->user_level_id == 1)
+                                    {{-- <div style="float: right;">
+                                        @if(Auth::user()->user_level_id == 1)
                                         <button class="btn btn-primary" data-toggle="modal" data-target="#modalImportPackingMatrix" id="btnShowImport" title="Import Packing Matrix"><i class="fa fa-file-excel"></i> Import</button>
                                         @else
                                         @if(Auth::user()->position == 7 || Auth::user()->position == 8)
                                             <button class="btn btn-primary" data-toggle="modal" data-target="#modalImportPackingMatrix" id="btnShowImport" title="Import Packing Matrix"><i class="fa fa-file-excel"></i> Import</button>
                                         @endif
-                                        @endif --}}
+                                        @endif
 
+                                        ##CLARK NOTE##
                                         <button class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#modalIpqcInspection" id="btnAddProdData">
                                             <i class="fa-solid fa-plus"></i> Add IPQC Inspection</button>
-                                    </div> <br><br>
+
+                                    </div> --}}
                                     <div class="table-responsive">
                                         <!-- style="max-height: 600px; overflow-y: auto;" -->
                                         <table id="tblIpqcInspection" class="table table-sm table-bordered table-striped table-hover"
@@ -133,9 +142,8 @@
                                                     <th>PO Number</th>
                                                     <th>Parts Code</th>
                                                     <th>Material Name</th>
-                                                    <th>PO Quantity</th>
-                                                    <th>Material Lot #</th>
                                                     <th>Inspector Name</th>
+                                                    <th>Inspected Date</th>
                                                     {{-- <th>IPQC Status</th> --}}
                                                     {{-- <th>Measdata Attachment</th> --}}
                                                 </tr>
@@ -159,29 +167,25 @@
         <!-- MODALS -->
         {{-- * ADD --}}
         <div class="modal fade" id="modalIpqcInspection" data-bs-backdrop="static">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-plus"></i> Add Production Data</h4>
+                        <h4 class="modal-title"><i class="fa fa-plus"></i> Add IPQC Inspection Data</h4>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="post" id="formProdData" autocomplete="off">
+                    <form method="post" id="formIPQCInspectionData" autocomplete="off">
                         @csrf
                         <div class="modal-body">
                             <input type="hidden" id="txtProcessId" name="id">
                             <div class="row">
-                                <div class="col-sm-4">
+                                <div class="col-sm-6">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label class="form-label">PO Number:</label>
                                                 <input type="text" class="form-control form-control-sm" name="po_num" id="txtPoNumber" readonly>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">PO Quantity:</label>
-                                                <input type="text" class="form-control form-control-sm" name="po_qty" id="txtPoQty" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Part Code:</label>
@@ -191,91 +195,47 @@
                                                 <label class="form-label">Material Name:</label>
                                                 <input type="text" class="form-control form-control-sm" name="mat_name" id="txtMatName" readonly>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Material Lot No.:</label>
-                                                <input type="text" class="form-control form-control-sm" name="mat_lot_no" id="txtMatLotNo">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Drawing No.:</label>
-                                                <input type="text" class="form-control form-control-sm" name="drawing_no" id="txtDrawingNo" readonly>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Drawing Revision:</label>
-                                                <input type="text" class="form-control form-control-sm" name="drawing_rev" id="txtDrawingRev" readonly>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Operator Name:</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card">
+                                        <div class="card-body"><div class="form-group">
+                                                <label class="form-label">Inspector Name:</label>
                                                 <input type="hidden" class="form-control form-control-sm" name="opt_id" id="txtOptID" readonly value="@php echo Auth::user()->id; @endphp">
                                                 <input type="text" class="form-control form-control-sm" name="opt_name" id="txtOptName" readonly value="@php echo Auth::user()->name; @endphp">
                                             </div>
+                                            {{-- DROPDOWN --}}
                                             <div class="form-group">
-                                                <label class="form-label">Shift:</label>
-                                                <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift">
+                                                <label class="form-label">Document No.:</label>
+                                                <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="card">
-                                        <div class="card-body">
+                                            {{-- <div class="form-group">
+                                                <label class="form-label">MeasData Attachment:</label>
+                                                <input type="text" class="form-control form-control-sm" name="drawing_no" id="txtDrawingNo" readonly>
+                                            </div> --}}
+                                            {{-- ATTACHMENT --}}
                                             <div class="form-group">
-                                                <label class="form-label">Production Date:</label>
-                                                <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
+                                                <div id="AttachmentDiv">
+                                                    <label class="form-control-label">MeasData Attachment:</label>
+                                                </div>
+                                                    <input type="file" class="" id="txtAddFile" name="uploaded_file" accept=".png, .jpg, .jpeg" style="width:100%;" required>
+                                                    <input type="text" class="form-control d-none" name="uploaded_file" id="txtEditUploadedFile" disabled>
+                                                <div class="form-group form-check d-none m-0" id="btnReuploadTriggerDiv">
+                                                    <input type="checkbox" class="form-check-input d-none" id="btnReuploadTrigger">
+                                                    <label class="d-none" id="btnReuploadTriggerLabel"> Re-upload Drawing</label>
+                                                </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Production Lot #:</label>
-                                                <input type="text" class="form-control form-control-sm" name="prod_lot_no" id="txtProdLotNo">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Input Coil Weight (kg):</label>
-                                                <input type="number" class="form-control form-control-sm" name="inpt_coil_weight" id="txtInptCoilWeight">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">PPC Target Output (Pins):</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Input Coil Weight / 0.005)"></i>
-
-                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="target_output" id="txtTargetOutput" readonly>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Planned Loss (10%) (Pins):</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(PPC Target Output * 0.1)"></i>
-                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="planned_loss" id="txtPlannedLoss" readonly>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Set-up Pins:</label>
-                                                <input type="number" class="form-control form-control-sm" name="setup_pins" id="txtSetupPin">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Adjustment Pins:</label>
-                                                <input type="number" class="form-control form-control-sm" name="adj_pins" id="txtAdjPin">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">QC Samples:</label>
-                                                <input type="number" class="form-control form-control-sm" name="qc_samp" id="txtQcSamp">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Prod. Samples:</label>
-                                                <input type="number" class="form-control form-control-sm" name="prod_samp" id="txtProdSamp">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="form-group">
-                                                <label class="form-label">Total Machine Output:</label>
-                                                <input type="number" class="form-control form-control-sm" name="ttl_mach_output" id="txtTtlMachOutput">
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Shipment Output:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Set-up Pins + Adjustment Pins + QC Samples + Prod. Samples / Total Machin Output)"></i>
-                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="ship_output" id="txtShipOutput" readonly>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Material Yield:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Total Machine Output / Shipment Output) Percent"></i>
-                                                <input type="text" class="form-control form-control-sm" placeholder="Auto Compute" name="mat_yield" id="txtMatYield" readonly>
+                                            {{-- ATTACHMENT --}}
+                                            <br>
+                                            <div class="form-group text-center">
+                                                {{-- <label class="form-label">ILQCM Link:</label> --}}
+                                                <a href="http://rapidx/ilqcm/dashboard" target="_blank">
+                                                    <button type="button" class="btn btn-primary" id="btnilqcmlink">
+                                                        <i class="fa-solid fa-pen"></i>Update In-Line QC Monitoring
+                                                    </button>
+                                                </a>
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Update In-Line QC Monitoring Thru our ILQCM System in RapidX"></i>
                                             </div>
                                         </div>
                                     </div>
@@ -303,9 +263,36 @@
             $(document).ready(function(){
                 let dtIpqcInspection;
 
-                $('#formProdData').submit(function(e){
+                $('#formIPQCInspectionData').submit(function(e){
                     e.preventDefault();
                     submitProdData();
+                });
+
+                dtIpqcInspection = $("#tblIpqcInspection").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_stamping_ipqc_data",
+                        data: function(param){
+                        param.po_number =  $("input[name='po_number']").val();
+                        }
+                    },
+                    fixedHeader: true,
+                    "columns":[
+
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "ipqc_status" },
+                        { "data" : "po_num" },
+                        { "data" : "part_code" },
+                        { "data" : "material_name" },
+                        // { "data" : "po_qty" },
+                        // { "data" : "material_lot_no" },
+                        { "data" : "ipqc_inspector_name" },
+                        { "data" : "ipqc_inspected_date" },
+                        // { "data" : "inspector_name" },
+                        // { "data" : "document_no" },
+                        // { "data" : "measdata_attachment" },
+                    ],
                 });
 
                 // $('#txtInptCoilWeight').on('keyup', function(e){
@@ -357,105 +344,69 @@
                 //     }
                 // });
 
-                $(document).on('keypress', '#txtSearchPONum', function(e){
-                    if(e.keyCode == 13){
-                        $.ajax({
-                            type: "get",
-                            url: "get_search_po",
-                            data: {
-                                "po" : $(this).val()
-                            },
-                            dataType: "json",
-                            beforeSend: function(){
-                                prodData = {};
-                            },
-                            success: function (response) {
-                                // prodData['result'] = response[0]
-                                if(response[0] == undefined){
-                                    toastr.error('PO does not exists')
-                                }else{
-                                    // console.log('otid');
-                                    $.ajax({
-                                    type: "get",
-                                    url: "get_po_from_pps_db",
-                                    data: {
-                                        "item_code" : response[0]['ItemCode']
-                                    },
-                                    dataType: "json",
-                                    success: function (result) {
-                                        $('#txtSearchMatName').val(response[0]['ItemName']);
-                                        // prodData['drawings'] = result
-                                        dtIpqcInspection = $("#tblIpqcInspection").DataTable({
-                                            "processing" : true,
-                                            "serverSide" : true,
-                                            "ajax" : {
-                                                url: "view_stamping_ipqc_data",
-                                                data: function(param){
-                                                param.po_number =  $("input[name='po_number']").val();
-                                            }
-                                            },
-                                            fixedHeader: true,
-                                            "columns":[
+                $('#btnScanPo').on('click', function(e){
+                    e.preventDefault();
+                    // $('#mdlScanQrCode').modal('show');
+                    $('#mdlScanQrCode').on('shown.bs.modal', function () {
+                        $('#txtScanQrCode').focus();
+                        const mdlScanQrCode = document.querySelector("#mdlScanQrCode");
+                        const inptQrCode = document.querySelector("#txtScanQrCode");
+                        let focus = false;
 
-                                                { "data" : "action", orderable:false, searchable:false },
-                                                { "data" : "stamping_ipqc[0].status" },
-                                                { "data" : "po_num" },
-                                                { "data" : "part_code" },
-                                                { "data" : "material_name" },
-                                                { "data" : "po_qty" },
-                                                { "data" : "material_lot_no" },
-                                                { "data" : "stamping_ipqc[0].inspector_name" },
-                                                // { "data" : "inspector_name" },
-                                                // { "data" : "document_no" },
-                                                // { "data" : "measdata_attachment" },
-                                            ],
-                                        });
-                                        // dtIpqcInspection.draw();
-                                        // console.log(prodData);
-                                        }
-                                    });
-                                }
+                        mdlScanQrCode.addEventListener("mouseover", () => {
+                            if (inptQrCode === document.activeElement) {
+                                focus = true;
+                            } else {
+                                focus = false;
                             }
                         });
-                    }
+
+                        mdlScanQrCode.addEventListener("click", () => {
+                            if (focus) {
+                                inptQrCode.focus()
+                            }
+                        });
+                    });
                 });
 
-                // $('#btnAddProdData').on('click', function(e){
-                //     // console.log(prodData);
-                //     $('#txtPoNumber').val(prodData['poReceiveData'][0]['OrderNo']);
-                //     $('#txtPoQty').val(prodData['poReceiveData'][0]['OrderQty']);
-                //     $('#txtPartCode').val(prodData['poReceiveData'][0]['ItemCode']);
-                //     $('#txtMatName').val(prodData['poReceiveData'][0]['ItemName']);
-                //     $('#txtDrawingNo').val(prodData['drawings']['drawing_no']);
-                //     $('#txtDrawingRev').val(prodData['drawings']['rev']);
-                // });
-
-                // gg
-
-                // $('#btnScanPo').on('click', function(e){
-                //     e.preventDefault();
-                //     $('#mdlScanQrCode').modal('show');
-                //     $('#mdlScanQrCode').on('shown.bs.modal', function () {
-                //         $('#txtScanQrCode').focus();
-                //         const mdlScanQrCodeOqcInspection = document.querySelector("#mdlScanQrCode");
-                //         const inptQrCodeOqcInspection = document.querySelector("#txtScanQrCode");
-                //         let focus = false;
-
-                //         mdlScanQrCodeOqcInspection.addEventListener("mouseover", () => {
-                //             if (inptQrCodeOqcInspection === document.activeElement) {
-                //                 focus = true;
-                //             } else {
-                //                 focus = false;
-                //             }
-                //         });
-
-                //         mdlScanQrCodeOqcInspection.addEventListener("click", () => {
-                //             if (focus) {
-                //                 inptQrCodeOqcInspection.focus()
-                //             }
-                //         });
-                //     });
-                // });
+                $(document).on('keypress', function(e){
+                        if(e.keyCode == 13){
+                            $.ajax({
+                                type: "get",
+                                url: "get_search_po",
+                                data: {
+                                    "po" : $('#txtScanQrCode').val()
+                                },
+                                dataType: "json",
+                                beforeSend: function(){
+                                    prodData = {};
+                                },
+                                success: function (response) {
+                                    if(response[0] == undefined){
+                                        toastr.error('PO does not exists')
+                                    }else{
+                                        $.ajax({
+                                        type: "get",
+                                        url: "get_po_from_pps_db",
+                                        data: {
+                                            "item_code" : response[0]['ItemCode']
+                                        },
+                                        dataType: "json",
+                                        success: function (result) {
+                                            $('#txtSearchPONum').val(response[0]['ProductPONo']);
+                                            $('#txtSearchPartCode').val(response[0]['ItemCode']);
+                                            $('#txtSearchMatName').val(response[0]['ItemName']);
+                                            $('#txtScanQrCode').val('');
+                                            $('#mdlScanQrCode').modal('hide');
+                                            dtIpqcInspection.draw();
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    // }
+                });
             });
         </script>
     @endsection

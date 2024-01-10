@@ -67,7 +67,6 @@
                     </ul>
                   </li>
 
-
                   <li class="nav-item has-treeview">
                       <a href="#" class="nav-link">
                         <i class="fa-solid fa-box-open"></i>
@@ -99,14 +98,43 @@
                     </ul>
                   </li>
 
-                  <li class="nav-item">
-                    <a href="{{ route('packing_list') }}" class="nav-link">
+                  <li class="nav-header mt-3">PACKING LIST</li>
+                  <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link">
                       <i class="fas fa-shipping-fast"></i>
-                      <p>
-                        Packing List
-                      </p>
+                      <p> Packing List </p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"></i>
                     </a>
-                  </li>
+
+                    <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{{route('packing_list_settings')}}" class="nav-link">
+                          {{-- <i class="fas fa-map-marked-alt"></i> --}}
+                          {{-- <i class="fas fa-cog"></i> --}}
+                          <i class="fas fa-circle nav-icon"></i>
+                          <p>Packing List Settings</p>
+                        </a>
+                      </li>
+                    </ul>
+
+                    <ul class="nav nav-treeview">
+                        <li class="nav-item">
+                          <a href="{{route('packing_list')}}" class="nav-link">
+                            {{-- <i class="fas fa-dolly"></i> --}}
+                            <i class="fas fa-circle nav-icon"></i>
+                            <p>Packing List Details</p>
+                          </a>
+                        </li>
+                    </ul>
+                
+                    {{-- <ul class="nav nav-treeview">
+                      <li class="nav-item">
+                        <a href="{{route('oqc_inspection')}}" class="nav-link">
+                          <i class="far fa-circle nav-icon"></i>
+                          <p>OQC Inspection</p>
+                        </a>
+                      </li>
+                    </ul> --}}
+                </li>
             </ul>
         </nav>
     </div><!-- Sidebar -->

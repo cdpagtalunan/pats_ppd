@@ -16,57 +16,72 @@ class StampingIpqcController extends Controller
         //                             ->where('fs_productions_id', $first_stamping_data_orig[0]->id )
         //                             ->where('logdel', 0)
         //                             ->get();
+        if(!isset($request->po_number)){
+            return [];
+        }else{
+            $ipqc_data = StampingIpqc::when($request->po_number, function ($query) use ($request){
+                return $query ->where('po_number', $request->po_number);
+            })
+            ->where('logdel', 0)->get();
 
-        $first_stamping_data = FirstStampingProduction::with('stamping_ipqc')
-                                                        ->whereNull('deleted_at')
-                                                        ->where('po_num', $request->po_number)
-                                                        // ->when($request->po_number, function ($query) use ($request) {
-                                                        //     return $query ->where('po_num', 'like', '%-'.$request->po_number.'-%');
-                                                        // })
-                                                        ->get();
+            $first_stamping_data = FirstStampingProduction::when($ipqc_data, function ($query){
+                return $query ->with(['stamping_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'name'); }]);
+            })
+            ->when($ipqc_data, function ($query) use ($ipqc_data){
+                return $query ->where('id', $ipqc_data[0]->fs_productions_id);
+            })
+            ->whereNull('deleted_at')
+            ->when($request->po_number, function ($query) use ($request){
+                    return $query ->where('po_num', $request->po_number);
+            })
+            ->get();
 
-        // return $first_stamping_data;
+            return DataTables::of($first_stamping_data)
+            ->addColumn('action', function($first_stamping_data){
+                $stamping_ipqc = $first_stamping_data->stamping_ipqc;
+                $result = "";
+                $result .= "<center>";
+                $result .= "<button class='btn btn-info btn-sm btnViewIPQCData' data-id='$stamping_ipqc->id'><i class='fa-solid fa-eye'></i></button>";
+                $result .= "&nbsp;";
+                $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' data-bs-toggle='modal' data-bs-target='#modalIpqcInspection' data-id='$stamping_ipqc->id'><i class='fa-solid fa-file-pen'></i></button>";
+                $result .= "</center>";
+                return $result;
+            })
 
-        // if(isset($first_stamping_data_orig)){
-            // $ipqc_data = StampingIpqc::select('fs_productions_id','ipqc_inspector_name','status')->where('fs_productions_id', $first_stamping_data_orig[0]->id )->where('logdel', 0)->get();
-            // $first_stamping_data = $first_stamping_data->concat;
-            // return $ipqc_data[0]->fs_productions_id;
-            // $first_stamping_data_orig.push()
-            // for($i = 0; $i < $ipqc_data->count(); $i++){
-                // array_push($first_stamping_data_orig, $ipqc_data[0]->fs_productions_id);
-                // array_push($first_stamping_data_orig, $ipqc_data[0]->ipqc_inspector_name);
-                // array_push($first_stamping_data_orig, $ipqc_data[0]->status);
+            ->addColumn('ipqc_status', function ($first_stamping_data) {
+                $result1 = "";
+                switch($first_stamping_data->stamping_ipqc->status){
+                    case 0: //Pending
+                        $result1 .= '<center><span class="badge badge-pill badge-warning">Pending</span></center>';
+                        break;
+                    case 1: //Completed
+                        $result1 .= '<center><span class="badge badge-pill badge-success">Completed</span></center>';
+                        break;
+                }
+                return $result1;
+            })
+            ->addColumn('ipqc_inspector_name', function ($first_stamping_data) {
+                $result2 = "";
+                if(isset($first_stamping_data->stamping_ipqc)){
+                    $result2 = $first_stamping_data->stamping_ipqc->ipqc_insp_name->name;
+                }else{
+                    $result2 .= '<center><span class="badge badge-pill badge-secondary">Not Yet Inspected</span></center>';
+                }
+                return $result2;
+            })
+            ->addColumn('ipqc_inspected_date', function ($first_stamping_data) {
+                $result3 = "";
+                if(isset($first_stamping_data->stamping_ipqc)){
+                    $result3 = $first_stamping_data->stamping_ipqc->updated_at;
+                }else{
+                    $result3 .= '<center><span class="badge badge-pill badge-secondary">Not Yet Inspected</span></center>';
+                }
+                return $result3;
+            })
 
-            // $first_stamping_data_orig = $first_stamping_data_orig->push((object)['fs_productions_id' => 'test']);
-// $        games = $games->push((object)['fs_productions_id' => 'test']);
-            // }
-            // return $first_stamping_data_orig;, 'ipqc_inspector_name' => $ipqc_data[0]->ipqc_inspector_name, 'status' => $ipqc_data[0]->status
-            // array_push($first_stamping_data_orig, $ipqc_data);
-            // $first_stamping_data = $first_stamping_data_orig->merge($ipqc_data);
-        // }
-        // return $first_stamping_data_orig;
-
-        return DataTables::of($first_stamping_data)
-        ->addColumn('action', function($first_stamping_data){
-            $result = "";
-            $result .= "<center>";
-            $result .= "<button class='btn btn-info btn-sm btnViewIPQCData' data-id='$first_stamping_data->id'><i class='fa-solid fa-eye'></i></button>";
-            $result .= "&nbsp;";
-            $result .= "<button class='btn btn-info btn-sm btnUpdateIPQCData' data-id='$first_stamping_data->id'><i class='fa-solid fa-file-pen'></i></button>";
-            $result .= "</center>";
-            return $result;
-        })
-        // ->addColumn('status', function($first_stamping_data){
-        //     $result = "";
-        //     $result .= "<center>";
-        //     $result .= "<button class='btn btn-info btn-sm btnViewIPQCData' data-id='$first_stamping_data->id'><i class='fa-solid fa-eye'></i></button>";
-        //     $result .= "&nbsp;";
-        //     $result .= "<button class='btn btn-info btn-sm btnUpdateIPQCData' data-id='$first_stamping_data->id'><i class='fa-solid fa-file-pen'></i></button>";
-        //     $result .= "</center>";
-        //     return $result;
-        // })
-        ->rawColumns(['action'])
-        ->make(true);
+            ->rawColumns(['action','ipqc_status','ipqc_inspector_name','ipqc_inspected_date'])
+            ->make(true);
+        }
     }
 
     public function get_po_from_pps_db(Request $request){

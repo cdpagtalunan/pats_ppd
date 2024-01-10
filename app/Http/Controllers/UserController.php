@@ -606,4 +606,8 @@ class UserController extends Controller
             return response()->json(['result' => $e]);
         }
     }
+
+    public function get_emp_details_by_id(Request $request){
+        
+    }
 }

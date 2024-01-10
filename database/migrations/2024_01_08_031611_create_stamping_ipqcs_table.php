@@ -20,6 +20,7 @@ class CreateStampingIpqcsTable extends Migration
             $table->string('part_code')->nullable();
             $table->string('material_name')->nullable();
             $table->unsignedBigInteger('ipqc_inspector_name')->nullable();
+            $table->string('document_no')->nullable();
             $table->string('measdata_attachment')->nullable();
             $table->string('ilqcm_attachment')->nullable();
             $table->tinyInteger('status')->default(0)->comment = '0-Pending, 1-Done';

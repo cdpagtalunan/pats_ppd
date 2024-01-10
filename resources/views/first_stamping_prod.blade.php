@@ -111,7 +111,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Action</th>
-                                                    <th>Status</th>
+                                                    {{-- <th>Status</th> --}}
                                                     <th>PO Number</th>
                                                     <th>Parts Code</th>
                                                     <th>Material Name</th>
@@ -315,12 +315,15 @@
                     "serverSide" : true,
                     "ajax" : {
                         url: "view_first_stamp_prod",
+                         data: function (param){
+                            param.po = $("#txtSearchPONum").val();
+                        }
                     },
                 fixedHeader: true,
                 "columns":[
                 
                     { "data" : "action", orderable:false, searchable:false },
-                    { "data" : "status" },
+                    // { "data" : "status" },
                     { "data" : "po_num" },
                     { "data" : "part_code" },
                     { "data" : "material_name" },
@@ -393,6 +396,7 @@
                                             $('#txtSearchMatName').val(response[0]['ItemName']);
                                             prodData['drawings'] = result
                                             console.log(prodData);
+                                            dtDatatableProd.draw();
                                         }
                                     });
                                 }
