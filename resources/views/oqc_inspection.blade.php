@@ -184,7 +184,8 @@
                     if( e.keyCode == 13 ){
                         let scanQrCode = $('#txtScanQrCode').val();
                             splitQrCodeData = scanQrCode.split(' ').filter(Boolean);
-                            console.log('Get QR Code Data:', splitQrCodeData[0]);
+                            console.log('Object:', Object.values(scanQrCode));
+                            console.log('Get QR Code Data:', scanQrCode);
                             // searchPoDetails(splitQrCodeData[0]);
                         $('#mdlScanQrCode').modal('hide');
 
@@ -202,7 +203,6 @@
 
                             "columns":[
                                 { "data" : "action", orderable:false, searchable:false },
-                                { "data" : "po_number" },
                                 { "data" : "fy_ww" },
                                 { "data" : "date_inspected" },
                                 { "data" : "device_name" },

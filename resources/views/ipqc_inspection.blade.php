@@ -129,15 +129,15 @@
                                             <thead>
                                                 <tr>
                                                     <th>Action</th>
-                                                    <th>Status</th>
+                                                    <th>IPQC Status</th>
                                                     <th>PO Number</th>
                                                     <th>Parts Code</th>
                                                     <th>Material Name</th>
                                                     <th>PO Quantity</th>
                                                     <th>Material Lot #</th>
-                                                    {{-- <th>Inspector Name</th>
-                                                    <th>Document No</th>
-                                                    <th>Measdata Attachment</th> --}}
+                                                    <th>Inspector Name</th>
+                                                    {{-- <th>IPQC Status</th> --}}
+                                                    {{-- <th>Measdata Attachment</th> --}}
                                                 </tr>
                                             </thead>
                                         </table>
@@ -398,12 +398,13 @@
                                             "columns":[
 
                                                 { "data" : "action", orderable:false, searchable:false },
-                                                { "data" : "status" },
+                                                { "data" : "stamping_ipqc[0].status" },
                                                 { "data" : "po_num" },
                                                 { "data" : "part_code" },
                                                 { "data" : "material_name" },
                                                 { "data" : "po_qty" },
                                                 { "data" : "material_lot_no" },
+                                                { "data" : "stamping_ipqc[0].inspector_name" },
                                                 // { "data" : "inspector_name" },
                                                 // { "data" : "document_no" },
                                                 // { "data" : "measdata_attachment" },
