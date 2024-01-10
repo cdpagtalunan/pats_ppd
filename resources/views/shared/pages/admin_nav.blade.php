@@ -98,8 +98,8 @@
                     </ul>
                   </li>
 
+                  <li class="nav-header mt-3">PACKING LIST</li>
                   <li class="nav-item has-treeview">
-                    
                     <a href="#" class="nav-link">
                       <i class="fas fa-shipping-fast"></i>
                       <p> Packing List </p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"></i>
@@ -109,7 +109,8 @@
                       <li class="nav-item">
                         <a href="{{route('packing_list_settings')}}" class="nav-link">
                           {{-- <i class="fas fa-map-marked-alt"></i> --}}
-                          <i class="fas fa-cog"></i>
+                          {{-- <i class="fas fa-cog"></i> --}}
+                          <i class="fas fa-circle nav-icon"></i>
                           <p>Packing List Settings</p>
                         </a>
                       </li>
@@ -118,7 +119,8 @@
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
                           <a href="{{route('packing_list')}}" class="nav-link">
-                            <i class="fas fa-dolly"></i>
+                            {{-- <i class="fas fa-dolly"></i> --}}
+                            <i class="fas fa-circle nav-icon"></i>
                             <p>Packing List Details</p>
                           </a>
                         </li>
