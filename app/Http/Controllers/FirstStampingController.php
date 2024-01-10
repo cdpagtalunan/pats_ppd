@@ -15,8 +15,12 @@ use QrCode;
 class FirstStampingController extends Controller
 {
     public function view_first_stamp_prod(Request $request){
-        $stamping_data = FirstStampingProduction::whereNull('deleted_at')
-        ->get();
+        // $stamping_data = FirstStampingProduction::whereNull('deleted_at')
+        // ->where('po_num', $request->po)
+        // ->get();
+
+        $stamping_data = DB::connection('mysql')
+        ->select("SELECT * FROM first_stamping_productions WHERE deleted_at IS NULL AND po_num = '$request->po'");
 
         return DataTables::of($stamping_data)
         ->addColumn('action', function($stamping_data){
@@ -110,24 +114,9 @@ class FirstStampingController extends Controller
 
     public function get_data_req_for_prod_by_po(Request $request){
 
-        // return $request->all();
-        // $po_receive_data = DB::connection('mysql_rapid_pps')
-        // ->select("
-        //     SELECT * FROM tbl_POReceived WHERE OrderNo = $request->po
-        // ");
-        // if($po_receive_data == ""){
-        //     return response()->json([
-        //         'msg' => 'No Data for selected PO'
-        //     ]);
-        // }
-
         $get_drawing = DB::connection('mysql_rapid_stamping_dmcms')
         ->select("SELECT * FROM tbl_device WHERE `device_code` = '".$request->item_code."'");
 
-        // return response()->json([
-        //     // 'poReceiveData' => $po_receive_data,
-        //     'drawings'      => $get_drawing[0]
-        // ]);
         if(count($get_drawing) > 0){
             return $get_drawing[0];
         }
@@ -160,13 +149,6 @@ class FirstStampingController extends Controller
             <strong>$prod_data->output_qty</strong><br>
             <strong>$prod_data->qty</strong><br>"
         );
-
-        // $label = 'PO No.: ' . $prod_data->po 
-        // . '<br>Material Code: ' . $prod_data->code
-        // . '<br>Material Name: '.$prod_data->name
-        // . '<br>Material Lot #: ' .$prod_data->mat_lot_no
-        // . '<br>Shipment Output: ' .$prod_data->output_qty
-        // . '<br>PO Quantity: ' .$prod_data->qty;
 
         $label = "
             <table class='table table-sm table-borderless' style='width: 100%;'> 

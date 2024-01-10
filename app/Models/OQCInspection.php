@@ -10,7 +10,14 @@ use App\Models\StampingIpqc;
 
 class OQCInspection extends Model
 {
-    public function wbs_oqc_inspection_info(){
-        return $this->hasOne(WbsOqcInspection::class, '','');
+    protected $table = "oqc_inspections";
+    protected $connection = "mysql";
+
+    public function ipqc_info(){
+        return $this->hasOne(StampingIpqc::class, 'po_number','po_no');
     }
+
+    // public function wbs_oqc_inspection_info(){
+    //     return $this->hasOne(WbsOqcInspection::class, '','');
+    // }
 }

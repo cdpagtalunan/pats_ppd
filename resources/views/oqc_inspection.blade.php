@@ -79,7 +79,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><Strong>Device Name:</Strong></span>
                                             </div>
-                                            <input type="text" class="form-control" id="txtDeviceName" placeholder="---------------" readonly>
+                                            <input type="search" class="form-control" id="txtPoNumber" placeholder="---------------" readonly>
                                         </div>
                                     </div>
 
@@ -182,27 +182,28 @@
 
                 $('#txtScanQrCode').on('keypress',function(e){
                     if( e.keyCode == 13 ){
-                        let scanQrCode = $('#txtScanQrCode').val();
-                            splitQrCodeData = scanQrCode.split(' ').filter(Boolean);
-                            console.log('Object:', Object.values(scanQrCode));
-                            console.log('Get QR Code Data:', scanQrCode);
-                            // searchPoDetails(splitQrCodeData[0]);
+                        // splitQrCodeData = scanQrCode.split(' ').filter(Boolean);
+
+                        const scanQrCode = $('#txtScanQrCode').val();
+                        const getPoNo = JSON.parse(scanQrCode);
+                            // console.log('Get QR Code Data:', JSON.parse(scanQrCode.po));
+                            // console.log('Get QR Code Data:', getPoNo['po']);
                         $('#mdlScanQrCode').modal('hide');
 
                         // ======================= START DLABEL DATA TABLE =======================
                         dataTableOQCInspection = $("#tblOqcInspection").DataTable({
                             "processing"    : false,
                             "serverSide"    : true,
-                            "destroy"       : true,
                             "ajax" : {
                                 url: "view_oqc_inspection",
                                 data: function (pamparam){
-                                    pamparam.poNo = splitQrCodeData[0];
+                                    pamparam.poNo = getPoNo.po;
                                 },
                             },
 
                             "columns":[
                                 { "data" : "action", orderable:false, searchable:false },
+                                { "data" : "po_no" },
                                 { "data" : "fy_ww" },
                                 { "data" : "date_inspected" },
                                 { "data" : "device_name" },
@@ -225,11 +226,11 @@
                             "columnDefs": [
                                 // { className: "align-center", targets: [1, 2] },
                             ],
-                        });// END DLABEL DATA TABLE
+                        });
                     }
                 });
-            });
 
+            });
         </script>
     @endsection
 @endauth
