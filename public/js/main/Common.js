@@ -88,3 +88,18 @@ $("#modalMachineOp").on('hidden.bs.modal', function () {
     console.log('hidden.bs.modal');
     resetFormProdValues();
 });
+
+/* Select 2 Attr */
+
+$('.select2bs4').each(function () {
+    $(this).select2({
+        theme: 'bootstrap-5',
+        dropdownParent: $(this).parent(),
+    });
+});
+
+$(this).on('select2:open', function(e) {
+    setTimeout(function () {
+        document.querySelector('input.select2-search__field').focus();
+    }, 0);
+});

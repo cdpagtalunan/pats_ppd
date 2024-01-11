@@ -92,7 +92,7 @@
                                               <th>Device Code</th>
                                               <th>Device Name</th>
                                               <th>Process</th>
-                                              
+
                                           </tr>
                                       </thead>
                                   </table>
@@ -695,20 +695,14 @@
   <script type="text/javascript">
     // Device
     let dataTableDevices;
-    
+
     // Material Process
     let dataTableMatProcess;
     let selectedDeviceId = 0;
     let selectedDeviceName = '';
 
     $(document).ready(function () {
-      //Initialize Select2 Elements
-      $('.select2').select2();
 
-      //Initialize Select2 Elements
-      $('.select2bs4').select2({
-        theme: 'bootstrap-5'
-      });
       getMaterialProcessForInputs();
 
       // GetUserList($(".selUser"));
@@ -717,7 +711,7 @@
 
       // GetMaterialKittingList($(".selWBSMatKitItem"));
       // GetSakidashiList($(".selWBSSakIssuItem"));
-      // GetEmbossList($(".selWBSEmbossIssuItem")); 
+      // GetEmbossList($(".selWBSEmbossIssuItem"));
 
       $(document).on('click','#tblDevices tbody tr',function(e){
         $(this).closest('tbody').find('tr').removeClass('table-active');
@@ -746,7 +740,7 @@
           // $("#selAddMatProcMatKitItem").prop('disabled', false);
           // $("#selAddMatProcSakIssuItem").prop('disabled', false);
           // alert('uncheck');
-          $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', true); 
+          $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', true);
           $("#chkAddMatProcReqOQCBeforeEmboss").prop('checked', false);
         }
       });
@@ -791,7 +785,7 @@
           },
           fixedHeader: true,
           "columns":[
-          
+
             { "data" : "action", orderable:false, searchable:false },
             { "data" : "label" },
             { "data" : "code" },
@@ -805,7 +799,7 @@
           // "scrollCollapse": true,
         });//end of dataTableDevices
 
-        // Add Device 
+        // Add Device
         $("#formAddDevice").submit(function(event){
           event.preventDefault();
           AddDevice();
@@ -861,7 +855,7 @@
           $("#txtChangeDeviceStatDeviceStat").val(deviceStat);
 
           if(deviceStat == 1){
-            $("#lblChangeDeviceStatLabel").text('Are you sure to activate?'); 
+            $("#lblChangeDeviceStatLabel").text('Are you sure to activate?');
             $("#h4ChangeDeviceTitle").html('<i class="fa fa-user"></i> Activate Device');
           }
           else{
@@ -893,7 +887,7 @@
                 param.status = $("#selFilterMatProcStat").val();
             }
           },
-          
+
           "columns":[
             { "data" : "action" },
             // { "data" : "mat_status" },
@@ -929,7 +923,7 @@
         });
 
         $("#btnShowAddMatProcModal").click(function(){
-          
+
           toastr.options = {
             "closeButton": false,
             "debug": false,
@@ -947,7 +941,7 @@
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut",
           };
-          
+
           if(selectedDeviceId != 0){
             $("#txtAddMatProcDevId").val(selectedDeviceId);
             $("#txtAddMatProcDeviceName").val(selectedDeviceName);
@@ -970,7 +964,7 @@
 
         $(document).on('click', '.aEditMatProc', function(){
           let matProcId = $(this).data('id');
-          
+
           if(selectedDeviceId != 0){
             $("#txtEditMatProcId").val(matProcId);
             // $("#modalEditMatProc").modal('show');
@@ -989,13 +983,13 @@
           }
         });
 
-        // Add Material Process 
+        // Add Material Process
         $("#formAddMatProc").submit(function(event){
           event.preventDefault();
           AddMaterialProcess();
         });
 
-        // Edit Material Process 
+        // Edit Material Process
         $("#formEditMatProc").submit(function(event){
           event.preventDefault();
           EditMaterialProcess();
@@ -1015,7 +1009,7 @@
           $("#txtChangeMatProcStatMatProcStat").val(matProcStat);
 
           if(matProcStat == 0){
-            $("#lblChangeMatProcStatLabel").text('Are you sure to activate?'); 
+            $("#lblChangeMatProcStatLabel").text('Are you sure to activate?');
             $("#h4ChangeMatProcTitle").html('<i class="fa fa-default"></i> Activate Material Process');
           }
           else{
@@ -1053,7 +1047,7 @@
                       let trFailedResults = '';
 
                       for(let index = 0; index < JsonObject['failed_barcode'].length; index++){
-                        trFailedResults += '<tr><td colspan="2" style="color: red;"><center>' + JsonObject['failed_barcode'][index] + '</center></td></tr>';                 
+                        trFailedResults += '<tr><td colspan="2" style="color: red;"><center>' + JsonObject['failed_barcode'][index] + '</center></td></tr>';
                       }
 
                       $("#tblImportResult tbody").html(trFailedResults);
@@ -1120,7 +1114,7 @@
                   default:
                   break;
                 }
-              }            
+              }
             }//key
           }
         });
@@ -1154,7 +1148,7 @@
           $("#btnMaximizeColMatProc").css({display: 'block'});
         });
 
-        
+
 
       });
   </script>

@@ -99,7 +99,7 @@
                                                     <th>Supplier</th>
                                                     <th>Part Code</th>
                                                     <th>Part Name</th>
-                                                    {{-- <th>Lot No.</th> --}}
+                                                    <th>Lot No.</th>
                                                     {{-- <th>Lot Qty.</th> --}}
                                                     {{-- <th>Total Lot Size</th> --}}
                                                     {{-- <th>AQL</th> --}}
@@ -118,7 +118,7 @@
         </div>
 
         <!-- MODALS -->
-        <div class="modal fade" id="modalEditInspection" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalSaveIqcInspection" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -127,7 +127,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="post" id="formIqcInspection" autocomplete="off">
+                    <form method="post" id="formSaveIqcInspection" autocomplete="off">
                         @csrf
                         <div class="modal-body">
                             <div class="row">
@@ -136,7 +136,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">WHS ID</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="whs_trasaction_id" name="whs_trasaction_id">
+                                        <input type="text" class="form-control form-control-sm" id="whs_transaction_id" name="whs_transaction_id">
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mt-3">
@@ -448,290 +448,332 @@
             </div>
         </div>
 
+        <div class="modal fade" id="modalLotNo" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa fa-edit"></i> Lot Details</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" id="formSaveIqcInspection" autocomplete="off">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-12 mt-3">
+                                    <table class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 80%;">Lot No.</th>
+                                            <th style="width: 20%;">Lot Qty.</th>
+                                        </tr>
+                                        </thead>
+                                        {{-- <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>2</td>
+                                            </tr>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>2</td>
+                                            </tr>
+                                        </tbody> --}}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-end">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalModeOfDefect" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa fa-edit"></i> Mode of Defects Details</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 mt-2">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
+                                    </div>
+                                    <select class="form-control select2bs4" name="mod_lot_no" id="mod_lot_no" style="width: 50%;">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Mode of Defect</span>
+                                    </div>
+                                    <select class="form-control select2bs4" name="mode_of_defect" id="mode_of_defect" style="width: 50%;">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-12">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
+                                    </div>
+                                    <select class="form-control select2bs4" name="mod_quantity" id="mod_quantity" style="width: 50%;">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 mt-3">
+
+                                <table class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Lot No.</th>
+                                            <th>Mode of Defects</th>
+                                            <th>Quantity</th>
+                                        </tr>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>2</td>
+                                            <td>3</td>
+                                        <tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     @endsection
 
     @section('js_content')
-    <link rel="stylesheet" href="/path/to/cdn/bootstrap.min.css" />
-<link rel="stylesheet" href="/path/to/timepicker.css" />
-
         <script type="text/javascript">
-            const tbl = {
-                iqcInspection:'#tblIqcInspection'
-            };
-            const dt = {};
-            const form = {
-                iqcInspection : $('#formIqcInspection')
-            };
-            const strDate = {
-                dateToday : new Date() // By default Date empty constructor give you Date.now
-            }
+            $(document).ready(function () {
 
-            /**
-                *TODO: Get data only for Applied Inspection
-                *TODO: Save Data
-                *TODO: Auto Time
-                *TODO: AQL
-                *TODO: Lot Number and QTY
-                *TODO: No of Defects based on MOD total qty
-            */
-            dt.iqcInspection = $(tbl.iqcInspection).DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "load_whs_transaction",
-                        data: function (param){
-                            param.status = $("#selEmpStat").val();
-                        }
-                    },
-                    fixedHeader: true,
-                    "columns":[
-
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status", orderable:false, searchable:false },
-                        { "data" : "InvoiceNo" },
-                        { "data" : "Supplier" },
-                        { "data" : "PartNumber" },
-                        { "data" : "MaterialType" },
-                        { "data" : "whs_trasaction_lastupdate" },
-
-                    ],
-            });
-
-            const getWhsTransactionById = function (whs_trasaction_id) {
-                $.ajax({
-                    type: "GET",
-                    url: "get_whs_transaction_by_id",
-                    data: {"whs_trasaction_id" : whs_trasaction_id},
-                    dataType: "json",
-                    success: function (response) {
-                        $('#modalEditInspection').modal('show');
-                        form.iqcInspection.find('#invoice_no').val(response[0]['InvoiceNo']);
-                        form.iqcInspection.find('#partcode').val(response[0]['PartNumber']);
-                        form.iqcInspection.find('#partname').val(response[0]['MaterialType']);
-                        form.iqcInspection.find('#supplier').val(response[0]['Supplier']);
-                    }
-                });
-            }
-            const getFamily = function () {
-                $.ajax({
-                    type: "GET",
-                    url: "get_family",
-                    data: "data",
-                    dataType: "json",
-                    success: function (response) {
-                        let families_id = response['id'];
-                        let families_name = response['value'];
-                        form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                        for (let i = 0; i < families_id.length; i++) {
-                            let opt = `<option value="${families_id[i]}">${families_name[i]}</option>`;
-                            form.iqcInspection.find('#family').append(opt);
-                        }
-                    }
-                });
-            }
-            const getInspectionLevel = function () {
-                $.ajax({
-                    type: "GET",
-                    url: "get_inspection_level",
-                    data: "data",
-                    dataType: "json",
-                    success: function (response) {
-                        let dropdown_inspection_level_id = response['id'];
-                        let dropdown_inspection_level_name = response['value'];
-                        form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                        for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
-                            let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
-                            form.iqcInspection.find('#inspection_lvl').append(opt);
-                        }
-                    }
-                });
-            }
-            const getAql = function () {
-                $.ajax({
-                    type: "GET",
-                    url: "get_aql",
-                    data: "data",
-                    dataType: "json",
-                    success: function (response) {
-                        let dropdown_aql_id = response['id'];
-                        let dropdown_aql_name = response['value'];
-                        form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                        for (let i = 0; i < dropdown_aql_id.length; i++) {
-                            let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
-                            form.iqcInspection.find('#aql').append(opt);
-                        }
-                    }
-                });
-            }
-            const getDieNo = function () {
-
-                form.iqcInspection.find('#die_no').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                for (let i = 0; i < 15; i++) {
-                    let opt = `<option value="${i+1}">${i+1}</option>`;
-                    form.iqcInspection.find('#die_no').append(opt);
+                const tbl = {
+                    iqcInspection:'#tblIqcInspection'
+                };
+                const dt = {};
+                const form = {
+                    iqcInspection : $('#formSaveIqcInspection')
+                };
+                const strDate = {
+                    dateToday : new Date() // By default Date empty constructor give you Date.now
                 }
-            }
-            const getLarDppm = function (){
-                $.ajax({
-                    type: "GET",
-                    url: "get_lar_dppm",
-                    data: "data",
-                    dataType: "json",
-                    success: function (response) {
-                        console.log(response['lar_value'][0]);
-                        console.log(response['dppm_value'][0]);
-                        form.iqcInspection.find('#target_dppm').val(response['lar_value'][0]);
-                        form.iqcInspection.find('#target_lar').val(response['dppm_value'][0]);
-                        // let dropdown_aql_id = response['id'][];
-                        // let dropdown_aql_name = response['value'][];
-                        // form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                        // for (let i = 0; i < dropdown_aql_id.length; i++) {
-                        //     let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
-                        //     form.iqcInspection.find('#aql').append(opt);
-                        // }
-                    }
+
+                /**
+                    *TODO: Get data only for Applied Inspection
+                    *TODO: Save Data
+                    *TODO: Auto Time
+                    *TODO: AQL
+                    *TODO: Lot Number and QTY
+                    *TODO: No of Defects based on MOD total qty
+                */
+                dt.iqcInspection = $(tbl.iqcInspection).DataTable({
+                        "processing" : true,
+                        "serverSide" : true,
+                        "ajax" : {
+                            url: "load_whs_transaction",
+                            data: function (param){
+                                param.status = $("#selEmpStat").val();
+                            }
+                        },
+                        fixedHeader: true,
+                        "columns":[
+
+                            { "data" : "action", orderable:false, searchable:false },
+                            { "data" : "status", orderable:false, searchable:false },
+                            { "data" : "InvoiceNo" },
+                            { "data" : "Supplier" },
+                            { "data" : "PartNumber" },
+                            { "data" : "MaterialType" },
+                            { "data" : "Lot_number" },
+                            { "data" : "whs_transaction_lastupdate" },
+
+                        ],
                 });
-            }
 
-            $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
-                let whs_trasaction_id = $(this).attr('whs-trasaction-id')
-                let twoDigitYear = strDate.dateToday.getFullYear().toString().substr(-2);
-                let twoDigitMonth = (strDate.dateToday.getMonth() + 1).toString().padStart(2, "0");
+                const getWhsTransactionById = function (whs_transaction_id) {
+                    $.ajax({
+                        type: "GET",
+                        url: "get_whs_transaction_by_id",
+                        data: {"whs_transaction_id" : whs_transaction_id},
+                        dataType: "json",
+                        success: function (response) {
+                            let lot_no = response[0]['Lot_number'];
+                            let lot_qty = response[0]['In'];
 
-                getWhsTransactionById(whs_trasaction_id);
-                getFamily();
-                getInspectionLevel();
-                getAql();
-                getDieNo();
-                getLarDppm();
+                            $('#modalSaveIqcInspection').modal('show');
+                            form.iqcInspection.find('#invoice_no').val(response[0]['InvoiceNo']);
+                            form.iqcInspection.find('#partcode').val(response[0]['PartNumber']);
+                            form.iqcInspection.find('#partname').val(response[0]['MaterialType']);
+                            form.iqcInspection.find('#supplier').val(response[0]['Supplier']);
 
-                form.iqcInspection.find('#whs_trasaction_id').val(whs_trasaction_id);
-                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
-                // console.log(strDate.dateToday.getHours())
-                // console.log(strDate.dateToday.getMinutes())
-            });
-            $('#btnLotNo').click(function (e) {
-                e.preventDefault();
-                alert('btnLotNo')
-            });
-            $('#btnMod').click(function (e) {
-                e.preventDefault();
-                alert('btnMod')
-            });
-            $(form.iqcInspection).submit(function (e) {
-                e.preventDefault();
-                console.log(e);
-                $.ajax({
-                    type: "GET",
-                    url: "save_iqc_inspection",
-                    data: $(this).serialize(),
-                    dataType: "json",
-                    success: function (response) {
-                        console.log(response);
+                            $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
+                            $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
+                            for (let i = 0; i < response.length; i++) {
+                                let opt_lot_no = `<option value="${lot_no}">${lot_no}</option>`;
+                                let opt_lot_qty = `<option value="${lot_qty}">${lot_qty}</option>`;
+                                $('#mod_lot_no').append(opt_lot_no);
+                                $('#mod_quantity').append(opt_lot_qty);
+                                console.log(opt_lot_qty);
+                            }
+                        }
+                    });
+                }
+                const getFamily = function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "get_family",
+                        data: "data",
+                        dataType: "json",
+                        success: function (response) {
+                            let families_id = response['id'];
+                            let families_name = response['value'];
+                            form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                            for (let i = 0; i < families_id.length; i++) {
+                                let opt = `<option value="${families_id[i]}">${families_name[i]}</option>`;
+                                form.iqcInspection.find('#family').append(opt);
+                            }
+                        }
+                    });
+                }
+                const getInspectionLevel = function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "get_inspection_level",
+                        data: "data",
+                        dataType: "json",
+                        success: function (response) {
+                            let dropdown_inspection_level_id = response['id'];
+                            let dropdown_inspection_level_name = response['value'];
+                            form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                            for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
+                                let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
+                                form.iqcInspection.find('#inspection_lvl').append(opt);
+                            }
+                        }
+                    });
+                }
+                const getAql = function () {
+                    $.ajax({
+                        type: "GET",
+                        url: "get_aql",
+                        data: "data",
+                        dataType: "json",
+                        success: function (response) {
+                            let dropdown_aql_id = response['id'];
+                            let dropdown_aql_name = response['value'];
+                            form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                            for (let i = 0; i < dropdown_aql_id.length; i++) {
+                                let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
+                                form.iqcInspection.find('#aql').append(opt);
+                            }
+                        }
+                    });
+                }
+                const getDieNo = function () {
+
+                    form.iqcInspection.find('#die_no').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                    for (let i = 0; i < 15; i++) {
+                        let opt = `<option value="${i+1}">${i+1}</option>`;
+                        form.iqcInspection.find('#die_no').append(opt);
                     }
+                }
+                const getLarDppm = function (){
+                    $.ajax({
+                        type: "GET",
+                        url: "get_lar_dppm",
+                        data: "data",
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response['lar_value'][0]);
+                            console.log(response['dppm_value'][0]);
+                            form.iqcInspection.find('#target_dppm').val(response['lar_value'][0]);
+                            form.iqcInspection.find('#target_lar').val(response['dppm_value'][0]);
+                            // let dropdown_aql_id = response['id'][];
+                            // let dropdown_aql_name = response['value'][];
+                            // form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                            // for (let i = 0; i < dropdown_aql_id.length; i++) {
+                            //     let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
+                            //     form.iqcInspection.find('#aql').append(opt);
+                            // }
+                        }
+                    });
+                }
+                const getModeOfDefect = function (){
+                    $.ajax({
+                        type: "GET",
+                        url: "get_mode_of_defect",
+                        data: "data",
+                        dataType: "json",
+                        success: function (response) {
+                            let dropdown_iqc_mode_of_defect_id = response['id'];
+                            let dropdown_iqc_mode_of_defect = response['value'];
+                            $('#mode_of_defect').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                            for (let i = 0; i < dropdown_iqc_mode_of_defect_id.length; i++) {
+                                let opt = `<option value="${dropdown_iqc_mode_of_defect_id[i]}">${dropdown_iqc_mode_of_defect[i]}</option>`;
+                                $('#mode_of_defect').append(opt);
+                            }
+                        }
+                    });
+                }
+
+                $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
+                    let whs_transaction_id = $(this).attr('whs-trasaction-id')
+                    let twoDigitYear = strDate.dateToday.getFullYear().toString().substr(-2);
+                    let twoDigitMonth = (strDate.dateToday.getMonth() + 1).toString().padStart(2, "0");
+                    let arr_data = {
+                        'whs_transaction_id': whs_transaction_id
+                    }
+                    getWhsTransactionById(whs_transaction_id);
+                    getFamily();
+                    getInspectionLevel();
+                    getAql();
+                    getDieNo();
+                    getLarDppm();
+                    getModeOfDefect();
+                    form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
+                    form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
+
                 });
+                $('#btnLotNo').click(function (e) {
+                    e.preventDefault();
+                    $('#modalLotNo').modal('show');
+                });
+                $('#btnMod').click(function (e) {
+                    e.preventDefault();
+                    $('#modalModeOfDefect').modal('show');
+                });
+                $(form.iqcInspection).submit(function (e) {
+                    e.preventDefault();
+                    console.log(e);
+                    $.ajax({
+                        type: "GET",
+                        url: "save_iqc_inspection",
+                        data: $(this).serialize(),
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                        }
+                    });
+                });
+
+
             });
         </script>
-        {{-- <script type="text/javascript">
-            let datatableProcesss;
-
-            datatableProcesss = $("#tblProcess").DataTable({
-                "processing" : true,
-                "serverSide" : true,
-                "ajax" : {
-                    url: "view_process",
-                    // data: function (param){
-                    //     param.status = $("#selEmpStat").val();
-                    // }
-                },
-            fixedHeader: true,
-            "columns":[
-
-                { "data" : "action", orderable:false, searchable:false },
-                { "data" : "label" },
-                { "data" : "process_name" }
-            ],
-            });//end of dataTableDevices
-
-            $('#formProcess').submit(function(e){
-                e.preventDefault();
-                $.ajax({
-                    type: "post",
-                    url: "add_process",
-                    data: $('#formProcess').serialize(),
-                    dataType: "json",
-                    success: function (response) {
-                        if(response['result'] == 1){
-                            datatableProcesss.draw();
-                            $('#modalAddProcess').modal('hide');
-                        }
-                    }
-                });
-            });
-
-            $(document).on('click', '.btnEdit', function(e){
-                let pId = $(this).data('id');
-                $.ajax({
-                    type: "get",
-                    url: "get_process_by_id",
-                    data: {
-                        "id" : pId
-                    },
-                    dataType: "json",
-                    success: function (response) {
-
-
-                        $('#txtProcessId').val(response['id']);
-                        $('#txtProcessName').val(response['process_name']);
-
-                        $('#modalAddProcess').modal('show');
-
-                    }
-                });
-            });
-
-            $(document).on('click', '.btnDisable', function(e){
-                let pId = $(this).data('id');
-
-                Swal.fire({
-                    // title: "Are you sure?",
-                    text: "Are you sure you want to disable this process",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Yes"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            type: "post",
-                            url: "update_status",
-                            data: {
-                                "_token": "{{ csrf_token() }}",
-                                "id" : pId,
-                            },
-                            dataType: "json",
-                            success: function (response) {
-                            }
-                        });
-                    }
-                });
-
-            })
-
-            function resetFormValues() {
-                // Reset values
-                $("#formProcess")[0].reset();
-
-
-            }
-
-            $("#modalAddProcess").on('hidden.bs.modal', function () {
-                console.log('hidden.bs.modal');
-                resetFormValues();
-            });
-
-
-        </script> --}}
     @endsection
 @endauth

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\DropdownIqcTargetLar;
 use App\Models\DropdownIqcTargetDppm;
 use App\Models\TblWarehouseTransaction;
+use App\Models\DropdownIqcModeOfDefect;
 use App\Models\DropdownIqcInspectionLevel;
 use App\Http\Requests\IqcInspectionRequest;
 
@@ -23,18 +24,18 @@ class IqcInspectionController extends Controller
 
         $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
         ->select('
-            SELECT whs_trasaction.*,whs_trasaction.pkid as "whs_trasaction_id",whs_trasaction.Username as "whs_trasaction_username",
-            whs_trasaction.LastUpdate as "whs_trasaction_lastupdate",whs_trasaction.inspection_class,
+            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
             whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            FROM tbl_WarehouseTransaction whs_trasaction
-            INNER JOIN tbl_Warehouse whs on whs.id = whs_trasaction.fkid
-            WHERE whs.MaterialType LIKE "%CN171S%"
+            FROM tbl_WarehouseTransaction whs_transaction
+            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+            WHERE whs_transaction.inspection_class = 0
             ORDER BY whs.PartNumber DESC
             LIMIT 0,100
         ');
-        //WHERE whs_trasaction.inspection_class = 1
+        //WHERE whs_transaction.inspection_class = 1
         //WHERE whs.PartNumber = 103587401 CN171S
-        //ORDER BY whs_trasaction.LastUpdate DESC inspection_class 1-Fo
+        //ORDER BY whs_transaction.LastUpdate DESC inspection_class 1-Fo
 
 
         return DataTables::of($tbl_whs_trasanction)
@@ -42,7 +43,7 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_trasaction_id."' id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."' id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -64,9 +65,9 @@ class IqcInspectionController extends Controller
 
         return $tbl_whs_trasanction[0]->TransferSlipNo; //Application Ctrl. No
 
-        return $tbl_whs_trasanction[0]->whs_trasaction_id;
-        return $tbl_whs_trasanction[0]->whs_trasaction_lastupdate;
-        return $tbl_whs_trasanction[0]->whs_trasaction_username;
+        return $tbl_whs_trasanction[0]->whs_transaction_id;
+        return $tbl_whs_trasanction[0]->whs_transaction_lastupdate;
+        return $tbl_whs_trasanction[0]->whs_transaction_username;
         return $tbl_whs_trasanction[0]->whs_id;
         return $tbl_whs_trasanction[0]->whs_lastupdate;
         return $tbl_whs_trasanction[0]->whs_username;
@@ -74,9 +75,9 @@ class IqcInspectionController extends Controller
 
         /*
             InvoiceNo
-            whs_trasaction_username,whs_username
-            whs_trasaction_lastupdate,whs_lastupdate
-            whs_trasaction_lastupdate,whs_lastupdate
+            whs_transaction_username,whs_username
+            whs_transaction_lastupdate,whs_lastupdate
+            whs_transaction_lastupdate,whs_lastupdate
             *Inspection Times*
             *Application Ctrl. No*
             *FY#*
@@ -92,15 +93,15 @@ class IqcInspectionController extends Controller
     }
 
     public function getWhsTransactionById(Request $request){
-        // return $request->whs_trasaction_id;
+        // return $request->whs_transaction_id;
         return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
         ->select('
-            SELECT whs_trasaction.*,whs_trasaction.pkid as "whs_trasaction_id",whs_trasaction.Username as "whs_trasaction_username",
-            whs_trasaction.LastUpdate as "whs_trasaction_lastupdate",whs_trasaction.inspection_class,
+            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
             whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            FROM tbl_WarehouseTransaction whs_trasaction
-            INNER JOIN tbl_Warehouse whs on whs.id = whs_trasaction.fkid
-            WHERE whs_trasaction.pkid = '.$request->whs_trasaction_id.'
+            FROM tbl_WarehouseTransaction whs_transaction
+            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+            WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
             LIMIT 0,1
         ');
     }
@@ -141,6 +142,18 @@ class IqcInspectionController extends Controller
         ]);
     }
 
+    public function getLotNumberByWhsTransactionId(){
+        $dropdown_aql =  DropdownIqcAql::get();
+        foreach ($dropdown_aql as $key => $value_dropdown_aql) {
+            $arr_dropdown_aql_id[] =$value_dropdown_aql['id'];
+            $arr_dropdown_aql_value[] =$value_dropdown_aql['aql_percentage'];
+        }
+        return response()->json([
+            'id'    =>  $arr_dropdown_aql_id,
+            'value' =>  $arr_dropdown_aql_value
+        ]);
+    }
+
     public function getLarDppm(){
         $dropdown_iqc_target_lar =  DropdownIqcTargetLar::where('status','1')->get();
         $dropdown_iqc_target_dppm =  DropdownIqcTargetDppm::where('status','1')->get();
@@ -163,13 +176,14 @@ class IqcInspectionController extends Controller
         ]);
     }
 
+
     public function saveIqcInspection(IqcInspectionRequest $request){
         // return $request->all();
         // return 'true';
         return $attr = $request->validated();
 
         /**{
-            "whs_trasaction_id": "19928",
+            "whs_transaction_id": "19928",
             "iqc_inspection_id": null,
             "invoice_no": "0092449618",
             "partcode": "108032201",
@@ -205,5 +219,17 @@ class IqcInspectionController extends Controller
         */
     }
 
+    public function getModeOfDefect(){
+        // return 'true';
+        $dropdown_iqc_mode_of_defect = DropdownIqcModeOfDefect::get();
+        foreach ($dropdown_iqc_mode_of_defect as $key => $value_dropdown_iqc_mode_of_defect) {
+            $arr_dropdown_iqc_mode_of_defect_id[] = $value_dropdown_iqc_mode_of_defect['id'];
+            $arr_dropdown_iqc_mode_of_defect_value[] = $value_dropdown_iqc_mode_of_defect['mode_of_defects'];
+        }
+        return response()->json([
+            'id'    =>  $arr_dropdown_iqc_mode_of_defect_id,
+            'value' =>  $arr_dropdown_iqc_mode_of_defect_value
+        ]);
+    }
 
 }
