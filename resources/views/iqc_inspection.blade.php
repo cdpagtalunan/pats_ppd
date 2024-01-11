@@ -65,7 +65,6 @@
                                 <div class="card-header">
                                     <h3 class="card-title">IQC Inspection Table</h3>
                                 </div>
-
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
@@ -211,7 +210,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty">
+                                        <input type="number" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -287,14 +286,14 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Accept</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="accept" name="accept">
+                                        <input type="number" class="form-control form-control-sm" id="accept" name="accept">
 
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Reject</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="reject" name="reject">
+                                        <input type="number" class="form-control form-control-sm" id="reject" name="reject">
                                     </div>
                                 </div>
                             </div>
@@ -336,8 +335,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Inspector</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="inspector" name="inspector">
-
+                                        <select class="form-select" name="inspector" id="inspector">
+                                            <option value="{{ Auth::user()->username }}">{{Auth::user()->firstname.' '.Auth::user()->lastname}}</option>
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -364,14 +364,14 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Target LAR</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="target_lar" name="target_lar" min="0">
+                                        <input type="number" class="form-control form-control-sm" id="target_lar" name="target_lar" min="0" readonly>
 
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Target DPPM</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="target_dppm" name="target_dppm" min="0">
+                                        <input type="number" class="form-control form-control-sm" id="target_dppm" name="target_dppm" min="0" readonly>
 
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
@@ -411,7 +411,11 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Judgement</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="judgement" name="judgement">
+                                        <select class="form-select form-control-sm" id="judgement" name="judgement">
+                                            <option value="" selected disabled>-Select-</option>
+                                            <option value="1">Accept</option>
+                                            <option value="2">Reject</option>
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -447,6 +451,9 @@
     @endsection
 
     @section('js_content')
+    <link rel="stylesheet" href="/path/to/cdn/bootstrap.min.css" />
+<link rel="stylesheet" href="/path/to/timepicker.css" />
+
         <script type="text/javascript">
             const tbl = {
                 iqcInspection:'#tblIqcInspection'
@@ -455,6 +462,10 @@
             const form = {
                 iqcInspection : $('#formIqcInspection')
             };
+            const strDate = {
+                dateToday : new Date() // By default Date empty constructor give you Date.now
+            }
+
             /**
                 *TODO: Get data only for Applied Inspection
                 *TODO: Save Data
@@ -560,19 +571,44 @@
                     form.iqcInspection.find('#die_no').append(opt);
                 }
             }
+            const getLarDppm = function (){
+                $.ajax({
+                    type: "GET",
+                    url: "get_lar_dppm",
+                    data: "data",
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response['lar_value'][0]);
+                        console.log(response['dppm_value'][0]);
+                        form.iqcInspection.find('#target_dppm').val(response['lar_value'][0]);
+                        form.iqcInspection.find('#target_lar').val(response['dppm_value'][0]);
+                        // let dropdown_aql_id = response['id'][];
+                        // let dropdown_aql_name = response['value'][];
+                        // form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
+                        // for (let i = 0; i < dropdown_aql_id.length; i++) {
+                        //     let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
+                        //     form.iqcInspection.find('#aql').append(opt);
+                        // }
+                    }
+                });
+            }
 
             $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
                 let whs_trasaction_id = $(this).attr('whs-trasaction-id')
-                $('#whs_trasaction_id').val(whs_trasaction_id);
+                let twoDigitYear = strDate.dateToday.getFullYear().toString().substr(-2);
+                let twoDigitMonth = (strDate.dateToday.getMonth() + 1).toString().padStart(2, "0");
+
                 getWhsTransactionById(whs_trasaction_id);
                 getFamily();
                 getInspectionLevel();
                 getAql();
                 getDieNo();
-                var strDate = new Date(); // By default Date empty constructor give you Date.now
-                twoDigitYear = strDate.getFullYear().toString().substr(-2);
-                twoDigitMonth = (strDate.getMonth() + 1).toString().padStart(2, "0");
+                getLarDppm();
+
+                form.iqcInspection.find('#whs_trasaction_id').val(whs_trasaction_id);
                 form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
+                // console.log(strDate.dateToday.getHours())
+                // console.log(strDate.dateToday.getMinutes())
             });
             $('#btnLotNo').click(function (e) {
                 e.preventDefault();
@@ -582,7 +618,19 @@
                 e.preventDefault();
                 alert('btnMod')
             });
-
+            $(form.iqcInspection).submit(function (e) {
+                e.preventDefault();
+                console.log(e);
+                $.ajax({
+                    type: "GET",
+                    url: "save_iqc_inspection",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            });
         </script>
         {{-- <script type="text/javascript">
             let datatableProcesss;

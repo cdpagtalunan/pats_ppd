@@ -8,8 +8,11 @@ use Illuminate\Http\Request;
 use App\Models\DropdownIqcAql;
 use App\Models\DropdownIqcFamily;
 use Illuminate\Support\Facades\DB;
+use App\Models\DropdownIqcTargetLar;
+use App\Models\DropdownIqcTargetDppm;
 use App\Models\TblWarehouseTransaction;
 use App\Models\DropdownIqcInspectionLevel;
+use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
@@ -113,6 +116,7 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_iqc_family_value
         ]);
     }
+
     public function getInspectionLevel(){
         $dropdown_inspection_level =  DropdownIqcInspectionLevel::get();
         foreach ($dropdown_inspection_level as $key => $value_dropdown_inspection_level) {
@@ -124,6 +128,7 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_inspection_level_value
         ]);
     }
+
     public function getAql(){
         $dropdown_aql =  DropdownIqcAql::get();
         foreach ($dropdown_aql as $key => $value_dropdown_aql) {
@@ -135,4 +140,70 @@ class IqcInspectionController extends Controller
             'value' =>  $arr_dropdown_aql_value
         ]);
     }
+
+    public function getLarDppm(){
+        $dropdown_iqc_target_lar =  DropdownIqcTargetLar::where('status','1')->get();
+        $dropdown_iqc_target_dppm =  DropdownIqcTargetDppm::where('status','1')->get();
+
+        foreach ($dropdown_iqc_target_lar as $key => $value_dropdown_iqc_target_lar) {
+            $arr_dropdown_iqc_target_lar_id[] =$value_dropdown_iqc_target_lar['id'];
+            $arr_dropdown_iqc_target_lar_value[] =$value_dropdown_iqc_target_lar['lar'];
+        }
+
+        foreach ($dropdown_iqc_target_dppm as $key => $value_dropdown_iqc_target_dppm) {
+            $arr_dropdown_target_dppm_id[] =$value_dropdown_iqc_target_dppm['id'];
+            $arr_dropdown_target_dppm_value[] =$value_dropdown_iqc_target_dppm['dppm'];
+        }
+
+        return response()->json([
+            'lar_id'    =>  $arr_dropdown_iqc_target_lar_id,
+            'lar_value' =>  $arr_dropdown_iqc_target_lar_value,
+            'dppm_id'    =>  $arr_dropdown_target_dppm_id,
+            'dppm_value' =>  $arr_dropdown_target_dppm_value
+        ]);
+    }
+
+    public function saveIqcInspection(IqcInspectionRequest $request){
+        // return $request->all();
+        // return 'true';
+        return $attr = $request->validated();
+
+        /**{
+            "whs_trasaction_id": "19928",
+            "iqc_inspection_id": null,
+            "invoice_no": "0092449618",
+            "partcode": "108032201",
+            "partname": "CN171S-05#ME-VE",
+            "supplier": "YEC",
+            "family": "2",
+            "app_no": "PPS-2401-",
+            "die_no": "4",
+            "total_lot_qty": "321",
+            "iqc_inspection_id": "",
+            "type_of_inspection": "3",
+            "severity_of_inspection": "2",
+            "inspection_lvl": "3",
+            "aql": "0.04",
+            "accept": "1",
+            "reject": "0",
+            "date_inspected": "2024-01-10",
+            "shift": "2",
+            "time_ins_from": "15:08",
+            "time_ins_to": "15:08",
+            "inspector": "mclegaspi",
+            "submission": "2",
+            "category": "1",
+            "target_lar": "1.19",
+            "target_dppm": "1.19",
+            "remarks": "dsa",
+            "lot_inspected": "1",
+            "accepted": "1",
+            "sampling_size": "50",
+            "no_of_defects": "21",
+            "judgement": "1"
+        }
+        */
+    }
+
+
 }
