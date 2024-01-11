@@ -185,7 +185,7 @@
                                             <div class="form-group">
                                                 <label class="form-label">Operator Name:</label>
                                                 {{-- <input type="hidden" class="form-control form-control-sm" name="opt_id" id="txtOptID" readonly value="@php echo Auth::user()->id; @endphp"> --}}
-                                                <input type="text" class="form-control form-control-sm" name="opt_name" id="txtOptName" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="opt_name" id="txtOptName" value="{{ Auth::user()->firstname." ".Auth::user()->lastname }}" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shift:</label>
@@ -407,15 +407,16 @@
 
                 $('#btnAddProdData').on('click', function(e){
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
+                        checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'])
                         // console.log(prodData);
-                        $('#txtPoNumber').val(prodData['poReceiveData']['OrderNo']);
-                        $('#txtPoQty').val(prodData['poReceiveData']['OrderQty']);
-                        $('#txtPartCode').val(prodData['poReceiveData']['ItemCode']);
-                        $('#txtMatName').val(prodData['poReceiveData']['ItemName']);
-                        $('#txtDrawingNo').val(prodData['drawings']['drawing_no']);
-                        $('#txtDrawingRev').val(prodData['drawings']['rev']);
-                        $('#txtOptName').val($('#globalSessionName').val());
-                        $('#modalMachineOp').modal('show');
+                        // $('#txtPoNumber').val(prodData['poReceiveData']['OrderNo']);
+                        // $('#txtPoQty').val(prodData['poReceiveData']['OrderQty']);
+                        // $('#txtPartCode').val(prodData['poReceiveData']['ItemCode']);
+                        // $('#txtMatName').val(prodData['poReceiveData']['ItemName']);
+                        // $('#txtDrawingNo').val(prodData['drawings']['drawing_no']);
+                        // $('#txtDrawingRev').val(prodData['drawings']['rev']);
+                        // // $('#txtOptName').val($('#globalSessionName').val());
+                        // $('#modalMachineOp').modal('show');
                     }
                     else{
                         toastr.error('Please input PO.')

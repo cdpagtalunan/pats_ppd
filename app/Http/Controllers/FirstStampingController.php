@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use QrCode;
 use DataTables;
+use App\Models\Device;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
+use App\Models\MaterialProcess;
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Support\Facades\Auth;
 use App\Models\FirstStampingProduction;
 use Illuminate\Support\Facades\Validator;
-
-use QrCode;
 
 class FirstStampingController extends Controller
 {
@@ -180,5 +182,46 @@ class FirstStampingController extends Controller
         ";
 
         return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label]);
+    }
+
+    public function check_matrix(Request $request){
+        // return $request->all();
+
+        $device =  Device::where('code', $request->code)
+        ->where('name', $request->name)
+        ->where('status', 1)
+        ->first();
+        
+        if(isset($device)){
+
+            $mat_process = MaterialProcess::with([
+                'process_details'
+            ])
+            ->where('status', 0)
+            ->get();
+
+            $collection = collect($mat_process)->pluck('process_details.process_name')->toArray();
+
+            if(!in_array("1st Stamping", $collection)){
+                return response()->json([
+                    'result' => 2,
+                    'msg' => 'Material dont have 1st stamping on material process.'
+                ]);
+            }
+            else{
+                return response()->json([
+                    'result' => 1,
+                    'msg' => 'Material is registered on matrix.'
+                ]);
+            }
+
+        }
+        else{
+            return response()->json([
+                'result' => 2,
+                'msg' => 'Material not registered on matrix.'
+            ]);
+        }
+
     }
 }

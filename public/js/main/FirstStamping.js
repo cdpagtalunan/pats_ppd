@@ -120,7 +120,7 @@ const getProdDataToView = async (id) => {
             $('#txtMatLotNo').val(response['material_lot_no'])
             $('#txtDrawingNo').val(response['drawing_no'])
             $('#txtDrawingRev').val(response['drawing_rev'])
-            $('#txtOptName').val(response['user']['name'])
+            $('#txtOptName').val(response['user']['firstname']+" "+response['user']['lastname'])
             $('#txtOptShift').val(response['shift'])
             $('#txtProdDate').val(response['prod_date'])
             $('#txtProdLotNo').val(response['prod_lot_no'])
@@ -153,6 +153,34 @@ const printProdData = async (id) => {
             img_barcode_PO_text_hidden = response['label_hidden'];
             $('#modalPrintQr').modal('show');
 
+        }
+    });
+}
+
+const checkMatrix = (code, name) => {
+    $.ajax({
+        type: "get",
+        url: "check_matrix",
+        data: {
+            "code" : code,
+            "name" : name
+        },
+        dataType: "json",
+        success: function (response) {
+            if(response['result'] == 2){
+                toastr.error(`${response['msg']}`);
+            }
+            else{
+                $('#txtPoNumber').val(prodData['poReceiveData']['OrderNo']);
+                $('#txtPoQty').val(prodData['poReceiveData']['OrderQty']);
+                $('#txtPartCode').val(prodData['poReceiveData']['ItemCode']);
+                $('#txtMatName').val(prodData['poReceiveData']['ItemName']);
+                $('#txtDrawingNo').val(prodData['drawings']['drawing_no']);
+                $('#txtDrawingRev').val(prodData['drawings']['rev']);
+                // $('#txtOptName').val($('#globalSessionName').val());
+                $('#modalMachineOp').modal('show');
+            }
+            
         }
     });
 }

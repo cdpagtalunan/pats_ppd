@@ -128,12 +128,15 @@ Route::controller(FirstStampingController::class)->group(function () {
     Route::get('/get_data_req_for_prod_by_po', 'get_data_req_for_prod_by_po')->name('get_data_req_for_prod_by_po');
     Route::get('/get_prod_data_view', 'get_prod_data_view')->name('get_prod_data_view');
     Route::get('/print_qr_code', 'print_qr_code')->name('print_qr_code');
+    Route::get('/check_matrix', 'check_matrix')->name('check_matrix');
 });
 
 // STAMPING -> IPQC CONTROLLER
 Route::controller(StampingIpqcController::class)->group(function () {
     Route::get('/view_stamping_ipqc_data', 'view_stamping_ipqc_data')->name('view_stamping_ipqc_data');
     Route::get('/get_po_from_pps_db', 'get_po_from_pps_db')->name('get_po_from_pps_db');
+    Route::get('/get_data_from_acdcs', 'get_data_from_acdcs')->name('get_data_from_acdcs');
+    Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
 });
 
 
@@ -153,14 +156,18 @@ Route::controller(IqcInspectionController::class)->group(function () {
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {
     Route::get('/view_oqc_inspection', 'viewOqcInspection')->name('view_oqc_inspection');
+
 });
 
-// Packing List 
+// Packing List
 Route::controller(CustomerDetailsController::class)->group(function () {
     Route::get('/view_company_details', 'viewCompanyDetails')->name('view_company_details');
+    Route::post('/add_customer_details', 'addCustomerDetails')->name('add_customer_details');
+    Route::get('/get_customer_details', 'getCustomerDetailsById')->name('get_customer_details');
 });
 Route::controller(CarrierDetailsController::class)->group(function () {
     Route::get('/view_carrier_details', 'viewCarrierDetails')->name('view_carrier_details');
+    Route::post('/add_carrier_details', 'addCarrierDetails')->name('add_carrier_details');
 });
 Route::controller(LoadingPortDetailsController::class)->group(function () {
     Route::get('/view_loading_port_details', 'viewLoadingPortDetails')->name('view_loading_port_details');
