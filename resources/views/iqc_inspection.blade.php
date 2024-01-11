@@ -529,29 +529,29 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row  justify-content-end">
+                            <div class="col-sm-2">
+                                <button type="button" class="btn btn-primary" id="btnAddModLotNumber">Add</button>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-sm-12 mt-3">
 
-                                <table class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                <table id="tblModeOfDefect" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
                                     <thead>
                                         <tr>
                                             <th>Lot No.</th>
                                             <th>Mode of Defects</th>
                                             <th>Quantity</th>
                                         </tr>
-                                        <tr>
-                                            <td>1</td>
-                                            <td>2</td>
-                                            <td>3</td>
-                                        <tr>
                                     </thead>
+                                    <tbody></tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer justify-content-between">
+                    <div class="modal-footer justify-content-end">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </div>
@@ -573,7 +573,22 @@
                 const strDate = {
                     dateToday : new Date() // By default Date empty constructor give you Date.now
                 }
-
+                // const arrMod = [];
+                // const arrmodeOfDefects = [];
+                // const arrlotQty = [];
+                const arrCounter= {
+                    ctr : -1
+                }
+                const arrTableMod = {
+                    lotNo : [],
+                    modeOfDefects : [],
+                    lotQty : [],
+                };
+                const mod = {
+                    lotNo : [],
+                    modeOfDefects : [],
+                    lotQty : []
+                };
                 /**
                     *TODO: Get data only for Applied Inspection
                     *TODO: Save Data
@@ -725,7 +740,7 @@
                             let dropdown_iqc_mode_of_defect = response['value'];
                             $('#mode_of_defect').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
                             for (let i = 0; i < dropdown_iqc_mode_of_defect_id.length; i++) {
-                                let opt = `<option value="${dropdown_iqc_mode_of_defect_id[i]}">${dropdown_iqc_mode_of_defect[i]}</option>`;
+                                let opt = `<option value="${dropdown_iqc_mode_of_defect[i]}">${dropdown_iqc_mode_of_defect[i]}</option>`;
                                 $('#mode_of_defect').append(opt);
                             }
                         }
@@ -739,6 +754,16 @@
                     let arr_data = {
                         'whs_transaction_id': whs_transaction_id
                     }
+                    // arrTableMod.lotNo = []
+                    // arrTableMod.modeOfDefects =[]
+                    // arrTableMod.lotQty = []
+
+                    mod.lotNo =[];
+                    mod.modeOfDefects =[];
+                    mod.lotQty =[];
+
+                    console.log(arrTableMod);
+
                     getWhsTransactionById(whs_transaction_id);
                     getFamily();
                     getInspectionLevel();
@@ -748,7 +773,6 @@
                     getModeOfDefect();
                     form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
                     form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
-
                 });
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -772,8 +796,48 @@
                     });
                 });
 
+                $('#btnAddModLotNumber').click(function (e) {
+                    e.preventDefault();
+                    mod.lotNo =[];
+                    mod.modeOfDefects =[];
+                    mod.lotQty =[];
+                    mod.lotNo.push($('#mod_lot_no').val());
+                    mod.modeOfDefects.push($('#mode_of_defect').val());
+                    mod.lotQty.push($('#mod_quantity').val());
 
+                    arrCounter.ctr++;
+                    for(var i=0; i<mod.lotNo.length; i++) {
+                        let index = i+1;
+                        var html_body  = '<tr>';
+                            html_body += '<td>'+mod.lotNo[i]+'</td>';
+                            html_body += '<td>'+mod.modeOfDefects[i]+'</td>';
+                            html_body += '<td>'+mod.lotQty[i]+'</td>';
+                            html_body += '<td><a href="#" class="btn btn-sm btn-danger" id="btnRemoveModLotNumber" row-id = "'+arrCounter.ctr+'"><i class="fas fa-trash-alt"></i> Remove </a></td>';
+                            html_body += '</tr>';
+                        $('#tblModeOfDefect tbody').append(html_body);
+                        arrTableMod.lotNo.push(mod.lotNo[i]);
+                        arrTableMod.modeOfDefects.push(mod.modeOfDefects[i]);
+                        arrTableMod.lotQty.push(mod.lotQty[i]);
+                        console.log(arrTableMod);
+                    }
+                });
+
+                $('#tblModeOfDefect tbody').on('click','#btnRemoveModLotNumber', function() {
+                    var row = $(this).closest('tr');
+                    var rowId = $(this).attr('row-id');
+                    row.remove();
+                    let indexArrTableModlotNo = arrTableMod.lotNo.indexOf(rowId);
+                    let indexArrTableMod = arrTableMod.modeOfDefects.indexOf(rowId);
+                    let indexArrTableModLotQty = arrTableMod.lotQty.indexOf(rowId);
+
+                    arrTableMod.lotNo.splice(indexArrTableModlotNo, 1);
+                    arrTableMod.modeOfDefects.splice(indexArrTableMod, 1);
+                    arrTableMod.lotQty.splice(indexArrTableModLotQty, 1);
+
+                    console.log(arrTableMod);
+                });
             });
+
         </script>
     @endsection
 @endauth
