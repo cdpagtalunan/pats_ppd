@@ -67,7 +67,7 @@
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
                                                 {{-- <button class="btn btn-primary"><i class="fa-solid fa-qrcode"></i></button> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" aria-label="Username" id="txtSearchPONum">
+                                                <input type="text" class="form-control" placeholder="PO Number" aria-label="Username" id="txtSearchPONum" value="450244133600010">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -113,6 +113,7 @@
                                                     <th>Action</th>
                                                     {{-- <th>Status</th> --}}
                                                     <th>PO Number</th>
+                                                    <th>Production Lot No.</th>
                                                     <th>Parts Code</th>
                                                     <th>Material Name</th>
                                                     <th>PO Quantity</th>
@@ -138,7 +139,7 @@
         <!-- MODALS -->
         {{-- * ADD --}}
         <div class="modal fade" id="modalMachineOp" data-bs-backdrop="static">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog modal-sm-xl" style="min-width: 80% !important;">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title"><i class="fa fa-plus"></i> Add Production Data</h4>
@@ -154,6 +155,7 @@
                                 <div class="col-sm-4">
                                     <div class="card">
                                         <div class="card-body">
+                                            <input type="hidden" name="ctrl_counter" id="txtCtrlCounter">
                                             <div class="form-group">
                                                 <label class="form-label">PO Number:</label>
                                                 <input type="text" class="form-control form-control-sm" name="po_num" id="txtPoNumber" readonly>
@@ -170,10 +172,10 @@
                                                 <label class="form-label">Material Name:</label>
                                                 <input type="text" class="form-control form-control-sm" name="mat_name" id="txtMatName" readonly>
                                             </div>
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label class="form-label">Material Lot No.:</label>
                                                 <input type="text" class="form-control form-control-sm" name="mat_lot_no" id="txtMatLotNo">
-                                            </div>
+                                            </div> --}}
                                             <div class="form-group">
                                                 <label class="form-label">Drawing No.:</label>
                                                 <input type="text" class="form-control form-control-sm" name="drawing_no" id="txtDrawingNo" readonly>
@@ -185,7 +187,9 @@
                                             <div class="form-group">
                                                 <label class="form-label">Operator Name:</label>
                                                 {{-- <input type="hidden" class="form-control form-control-sm" name="opt_id" id="txtOptID" readonly value="@php echo Auth::user()->id; @endphp"> --}}
-                                                <input type="text" class="form-control form-control-sm" name="opt_name" id="txtOptName" value="{{ Auth::user()->firstname." ".Auth::user()->lastname }}" readonly>
+                                                {{-- <input type="text" class="form-control form-control-sm select2bs4" name="opt_name[]" id="txtOptName" readonly> --}}
+                                                <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple>
+                                                </select>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shift:</label>
@@ -201,10 +205,7 @@
                                                 <label class="form-label">Production Date:</label>
                                                 <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Production Lot #:</label>
-                                                <input type="text" class="form-control form-control-sm" name="prod_lot_no" id="txtProdLotNo">
-                                            </div>
+                                          
                                             <div class="form-group">
                                                 <label class="form-label">Input Coil Weight (kg):</label>
                                                 <input type="number" class="form-control form-control-sm" name="inpt_coil_weight" id="txtInptCoilWeight">
@@ -256,9 +257,47 @@
                                                 <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Total Machine Output / Shipment Output) Percent"></i>
                                                 <input type="text" class="form-control form-control-sm" placeholder="Auto Compute" name="mat_yield" id="txtMatYield" readonly>
                                             </div>
+                                            {{-- <div class="form-group">
+                                                <label class="form-label">Production Lot #:</label>
+                                                <input type="text" class="form-control form-control-sm" name="prod_lot_no" id="txtProdLotNo">
+                                            </div> --}}
+
+                                            <label class="form-label">Production Lot #:</label>
+                                            <div class="input-group input-group-sm mb-3" id="divProdLotInput">
+                                                <input type="text" class="form-control w-25" id="prodLotNoAuto" name="prod_log_no_auto" oninput="this.value = this.value.toUpperCase()" readonly>
+                                                {{-- <span class="input-group-text">-</span> --}}
+                                                <input type="text" class="form-control" id="prodLotNoExt1" name="prod_log_no_ext_1" oninput="this.value = this.value.toUpperCase()">
+                                                <span class="input-group-text">-</span>
+                                                <input type="text" class="form-control" id="prodLotNoExt2" name="prod_log_no_ext_2" oninput="this.value = this.value.toUpperCase()">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3 d-none" id="divProdLotView">
+                                                <input type="text" class="form-control" id="txtProdLotView" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="float-end">
+                                                <button class="btn btn-danger btn-sm d-none" id="btnRemoveMatNo">Remove</button>
+                                                <button class="btn btn-info btn-sm" id="btnAddMatNo">Add</button>
+                                            </div>
+                                            <br>
+                                            <label class="form-label">Material Lot No.:</label> 
+
+                                            <div class="input-group mb-1">
+                                                <input type="text" class="form-control form-control-sm" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0">
+                                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                            </div>
+                                            <input type="text" class="hidden_scanner_input" id="multipleCounter" value="0">
+                                            <div id="divMultipleMatLot">
+                                                {{-- <label class="form-label">Material Lot No.:</label>  --}}
+                                                {{-- <input type="number" class="form-control form-control-sm" name="material_no" id="txtTtlMachOutput_0"> --}}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
@@ -302,14 +341,40 @@
         </div>
 
 
+        <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        {{-- hidden_scanner_input --}}
+                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
+                        <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        <div class="text-center text-secondary">Please scan the material lot #.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     @endsection
 
     @section('js_content')
         <script type="text/javascript">
             var prodData = {};
             var img_barcode_PO_text_hidden;
-
+            var multipleMatId;
             $(document).ready(function(){
+                $('.select2').select2();
+
+                //Initialize Select2 Elements
+                $('.select2bs4').select2({
+                    theme: 'bootstrap-5'
+                });
+
+                getOperatorList($('.selOpName'));
+
                 dtDatatableProd = $("#tblProd").DataTable({
                     "processing" : true,
                     "serverSide" : true,
@@ -325,10 +390,14 @@
                     { "data" : "action", orderable:false, searchable:false },
                     // { "data" : "status" },
                     { "data" : "po_num" },
+                    { "data" : "prod_lot_no" },
                     { "data" : "part_code" },
                     { "data" : "material_name" },
                     { "data" : "po_qty" },
-                    { "data" : "material_lot_no" },
+                    { "data" : "material" },
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": "_all"}
                 ],
                 });//end of dataTableDevices
 
@@ -408,6 +477,7 @@
                 $('#btnAddProdData').on('click', function(e){
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
                         checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'])
+                        getProdLotNoCtrl();
                         // console.log(prodData);
                         // $('#txtPoNumber').val(prodData['poReceiveData']['OrderNo']);
                         // $('#txtPoQty').val(prodData['poReceiveData']['OrderQty']);
@@ -467,6 +537,53 @@
                     popup.focus(); //required for IE
                     popup.print();
                     popup.close();
+                });
+
+                $('#btnAddMatNo').on('click', function(e){
+                    e.preventDefault();
+                    let newCount = Number($('#multipleCounter').val()) + Number(1);
+                    if(newCount > 0){
+                        $('#btnRemoveMatNo').removeClass('d-none');
+                    }
+                    $('#multipleCounter').val(newCount);
+                    let inputGroup = `
+                            <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
+                                <input type='text' class='form-control form-control-sm' name='material_no[]' id='txtTtlMachOutput_${newCount}' required>
+                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                            </div>
+                    `;
+                    $('#divMultipleMatLot').append(inputGroup)
+                });
+
+                $('#btnRemoveMatNo').on('click', function(e){
+                    e.preventDefault();
+                    let counter = $('#multipleCounter').val();
+
+                    $(`#divInput_${counter}`).remove();
+
+                    let newCount = $('#multipleCounter').val() - 1;
+                    $('#multipleCounter').val(newCount)
+
+                    if(newCount == 0){
+                        $('#btnRemoveMatNo').addClass('d-none');
+                    }
+                });
+                
+                $(document).on('click', '.btnQr', function(){
+                    multipleMatId = $(this).offsetParent().children().attr('id');
+                    console.log($(this).offsetParent().children().attr('id'));
+                    $('#modalScanQr').modal('show');
+                    $('#modalScanQr').on('shown.bs.modal', function () {
+                        $('#txtScanQrCode').focus();
+                    });
+                });
+
+                $('#txtScanQrCode').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        $(`#${multipleMatId}`).val($(this).val());
+                        $(this).val('');
+                        $('#modalScanQr').modal('hide');
+                    }
                 });
             });
         </script>

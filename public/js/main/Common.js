@@ -81,6 +81,12 @@ function resetFormProdValues() {
     $("#formProdData")[0].reset();
     $('#formProdData').find('input').removeClass('is-invalid'); // remove all invalid
     $('#saveProdData').show();
+    $('.appendDiv').remove();
+    $('#btnRemoveMatNo').addClass('d-none');
+    $('#divProdLotInput').removeClass('d-none');
+    $('#divProdLotView').addClass('d-none');
+    $('select[name="opt_name[]"]').val(0).trigger('change');
+
 
 }
 

@@ -33,25 +33,38 @@ class FirstStampingController extends Controller
             $result .= "</center>";
             return $result;
         })
-        ->rawColumns(['action'])
+        ->addColumn('material', function($stamping_data){
+            $result = "";
+            $result .= "<center>";
+            $exploded_mat_no = explode(', ', $stamping_data->material_lot_no);
+
+            for ($i=0; $i <  count($exploded_mat_no); $i++) { 
+                $result .= "<span class='badge bg-primary mr-1'>$exploded_mat_no[$i]</span>";
+            }
+
+            $result .= "</center>";
+            return $result;
+        })
+        ->rawColumns(['action', 'material'])
         ->make(true);
     }
 
     public function save_prod_data(Request $request){
         date_default_timezone_set('Asia/Manila');
+        // return $request->all();
         $data = $request->all();
         $validation = array(
             'po_num'           => ['required'],
             'po_qty'           => ['required'],
             'part_code'        => ['required'],
             'mat_name'         => ['required'],
-            'mat_lot_no'       => ['required'],
+            // 'mat_lot_no'       => ['required'],
             'drawing_no'       => ['required'],
             'drawing_rev'      => ['required'],
             'opt_name'         => ['required'],
             'opt_shift'        => ['required'],
             'prod_date'        => ['required'],
-            'prod_lot_no'      => ['required'],
+            // 'prod_lot_no'      => ['required'],
             'inpt_coil_weight' => ['required'],
             'target_output'    => ['required'],
             'planned_loss'     => ['required'],
@@ -72,16 +85,22 @@ class FirstStampingController extends Controller
         else{
             DB::beginTransaction();
             try{
+                $imploded_mat_no = implode($request->material_no, ', ');
+                $imploded_operator = implode($request->opt_name, ', ');
+                // return $imploded_mat_no;
+                // return $request->all();
+                // return ;
                 $prod_array = array(
+                    'ctrl_counter'      => $request->ctrl_counter,
                     'po_num'            => $request->po_num,
                     'po_qty'            => $request->po_qty,
                     'part_code'         => $request->part_code,
                     'material_name'     => $request->mat_name,
-                    'material_lot_no'   => $request->mat_lot_no,
+                    'material_lot_no'   => $imploded_mat_no,
                     'drawing_no'        => $request->drawing_no,
                     'drawing_rev'       => $request->drawing_rev,
                     'prod_date'         => $request->prod_date,
-                    'prod_lot_no'       => $request->prod_lot_no,
+                    'prod_lot_no'       => $request->prod_log_no_auto."".$request->prod_log_no_ext_1."-".$request->prod_log_no_ext_2,
                     'input_coil_weight' => $request->inpt_coil_weight,
                     'ppc_target_output' => $request->target_output,
                     'planned_loss'      => $request->planned_loss,
@@ -92,6 +111,8 @@ class FirstStampingController extends Controller
                     'total_mach_output' => $request->ttl_mach_output,
                     'ship_output'       => $request->ship_output,
                     'mat_yield'         => $request->mat_yield,
+                    'shift'             => $request->opt_shift,
+                    'operator'          => $imploded_operator,
                     'created_by'        => Auth::user()->id,
                     'created_at'        => NOW()
                 );
@@ -133,7 +154,7 @@ class FirstStampingController extends Controller
 
     public function print_qr_code(Request $request){
         $prod_data = FirstStampingProduction::where('id', $request->id)
-        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'material_lot_no AS mat_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
+        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
 
         // return $prod_data;
         $qrcode = QrCode::format('png')
@@ -147,7 +168,7 @@ class FirstStampingController extends Controller
             'text' =>  "<strong>$prod_data->po</strong><br>
             <strong>$prod_data->code</strong><br>
             <strong>$prod_data->name</strong><br>
-            <strong>$prod_data->mat_lot_no</strong><br>
+            <strong>$prod_data->production_lot_no</strong><br>
             <strong>$prod_data->output_qty</strong><br>
             <strong>$prod_data->qty</strong><br>"
         );
@@ -167,8 +188,8 @@ class FirstStampingController extends Controller
                     <td>$prod_data->name</td>
                 </tr>
                 <tr>
-                    <td>Material Lot #:</td>
-                    <td>$prod_data->mat_lot_no</td>
+                    <td>Production Lot #:</td>
+                    <td>$prod_data->production_lot_no</td>
                 </tr>
                 <tr>
                     <td>Shipment Output:</td>
@@ -222,6 +243,33 @@ class FirstStampingController extends Controller
                 'msg' => 'Material not registered on matrix.'
             ]);
         }
+
+    }
+
+    public function get_prod_lot_no_ctrl(Request $request){
+        date_default_timezone_set('Asia/Manila');
+
+        $date  = date('Y-m-d');
+        $year  = date('y');
+        $month = date('m');
+        $day   = date('d');
+
+        $ctrl_count = DB::connection('mysql')
+        ->select("SELECT MAX(ctrl_counter) as ctrl FROM first_stamping_productions WHERE `created_at` LIKE '%$date%'");
+
+        $ctrl_counter = $ctrl_count[0]->ctrl + 1;
+        return response()->json([
+            'year'  => $year,
+            'month' => $month,
+            'day'   => $day,
+            'ctrl'  => str_pad($ctrl_counter, 2, '0', STR_PAD_LEFT)
+
+        ]);
+    }
+
+    public function get_operator_list(Request $request){
+        return DB::connection('mysql')
+        ->select("SELECT * FROM users WHERE position = 4");
 
     }
 }

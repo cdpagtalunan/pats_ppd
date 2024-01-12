@@ -109,6 +109,9 @@ const getProdDataToView = async (id) => {
             "id" : id
         },
         beforeSend: function(){
+            $('#divProdLotView').removeClass('d-none');
+            $('#divProdLotInput').addClass('d-none');
+
         },
         dataType: "json",
         success: function (response) {
@@ -123,10 +126,10 @@ const getProdDataToView = async (id) => {
             // $('#txtMatLotNo').val(response['material_lot_no'])
             $('#txtDrawingNo').val(response['drawing_no'])
             $('#txtDrawingRev').val(response['drawing_rev'])
-            $('#txtOptName').val(response['user']['firstname']+" "+response['user']['lastname'])
+            // $('#txtOptName').val(response['user']['firstname']+" "+response['user']['lastname'])
             $('#txtOptShift').val(response['shift'])
             $('#txtProdDate').val(response['prod_date'])
-            $('#txtProdLotNo').val(response['prod_lot_no'])
+            // $('#txtProdLotNo').val(response['prod_lot_no'])
             $('#txtInptCoilWeight').val(response['input_coil_weight'])
             $('#txtTargetOutput').val(response['ppc_target_output'])
             $('#txtPlannedLoss').val(response['planned_loss'])
@@ -138,9 +141,11 @@ const getProdDataToView = async (id) => {
             $('#txtShipOutput').val(response['ship_output'])
             $('#txtMatYield').val(response['mat_yield'])
 
-            let arrayMatLotNo = response['material_lot_no'].split(", ");
+            $('#txtProdLotView').val(response['prod_lot_no']);
 
-            console.log(arrayMatLotNo.length);
+            let arrayMatLotNo = response['material_lot_no'].split(", ");
+            let arrayOperators = response['operator'].split(", ");
+
             for(let x = 0; x < arrayMatLotNo.length; x++){
                 if($('#multipleCounter').val() != counter){
                     $('#btnAddMatNo').click();
@@ -148,6 +153,8 @@ const getProdDataToView = async (id) => {
                 $(`#txtTtlMachOutput_${x}`).val(arrayMatLotNo[x]);
                 counter++
             }
+            $('#selOperator').val(arrayOperators).trigger('change');
+            
         }
     });
 }
@@ -208,6 +215,24 @@ const getProdLotNoCtrl = () => {
         success: function (response) {
             $('#txtCtrlCounter').val(response['ctrl']);
             $('#prodLotNoAuto').val(`${prodData['drawings']['rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`)
+        }
+    });
+}
+
+const getOperatorList = async (cboElement) => {
+    await $.ajax({
+        type: "get",
+        url: "get_operator_list",
+        data: "",
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            let result = "";
+            for(let x = 0; x<response.length; x++){
+                result += `<option value="${response[x]['id']}">${response[x]['firstname']} ${response[x]['lastname']}</option>`;
+            }
+
+            cboElement.html(result);
         }
     });
 }

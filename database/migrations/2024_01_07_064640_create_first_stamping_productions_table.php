@@ -16,6 +16,7 @@ class CreateFirstStampingProductionsTable extends Migration
         Schema::create('first_stamping_productions', function (Blueprint $table) {
             $table->id();
             $table->integer('status')->default(0);
+            $table->integer('ctrl_counter');
             $table->string('po_num');
             $table->integer('po_qty');
             $table->string('part_code');
@@ -23,6 +24,7 @@ class CreateFirstStampingProductionsTable extends Migration
             $table->string('material_lot_no');
             $table->string('drawing_no');
             $table->string('drawing_rev');
+            $table->string('operator')->comment = "id from users";
             $table->string('shift');
             $table->date('prod_date');
             $table->string('prod_lot_no');
