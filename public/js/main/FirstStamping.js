@@ -108,8 +108,11 @@ const getProdDataToView = async (id) => {
         data: {
             "id" : id
         },
+        beforeSend: function(){
+        },
         dataType: "json",
         success: function (response) {
+            var counter = 0;
             $('#modalMachineOp').modal('show');
             $('#saveProdData').hide();
             
@@ -117,7 +120,7 @@ const getProdDataToView = async (id) => {
             $('#txtPoQty').val(response['po_qty'])
             $('#txtPartCode').val(response['part_code'])
             $('#txtMatName').val(response['material_name'])
-            $('#txtMatLotNo').val(response['material_lot_no'])
+            // $('#txtMatLotNo').val(response['material_lot_no'])
             $('#txtDrawingNo').val(response['drawing_no'])
             $('#txtDrawingRev').val(response['drawing_rev'])
             $('#txtOptName').val(response['user']['firstname']+" "+response['user']['lastname'])
@@ -134,6 +137,17 @@ const getProdDataToView = async (id) => {
             $('#txtTtlMachOutput').val(response['total_mach_output'])
             $('#txtShipOutput').val(response['ship_output'])
             $('#txtMatYield').val(response['mat_yield'])
+
+            let arrayMatLotNo = response['material_lot_no'].split(", ");
+
+            console.log(arrayMatLotNo.length);
+            for(let x = 0; x < arrayMatLotNo.length; x++){
+                if($('#multipleCounter').val() != counter){
+                    $('#btnAddMatNo').click();
+                }
+                $(`#txtTtlMachOutput_${x}`).val(arrayMatLotNo[x]);
+                counter++
+            }
         }
     });
 }
@@ -157,8 +171,8 @@ const printProdData = async (id) => {
     });
 }
 
-const checkMatrix = (code, name) => {
-    $.ajax({
+const checkMatrix = async (code, name) => {
+    await $.ajax({
         type: "get",
         url: "check_matrix",
         data: {
@@ -181,6 +195,19 @@ const checkMatrix = (code, name) => {
                 $('#modalMachineOp').modal('show');
             }
             
+        }
+    });
+}
+
+const getProdLotNoCtrl = () => {
+    $.ajax({
+        type: "get",
+        url: "get_prod_lot_no_ctrl",
+        data: "",
+        dataType: "json",
+        success: function (response) {
+            $('#txtCtrlCounter').val(response['ctrl']);
+            $('#prodLotNoAuto').val(`${prodData['drawings']['rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`)
         }
     });
 }
