@@ -462,23 +462,14 @@
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col-sm-12 mt-3">
-                                    <table class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                    <table  id="tblLotNumber" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
                                         <thead>
                                         <tr>
                                             <th style="width: 80%;">Lot No.</th>
                                             <th style="width: 20%;">Lot Qty.</th>
                                         </tr>
                                         </thead>
-                                        {{-- <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>2</td>
-                                            </tr>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>2</td>
-                                            </tr>
-                                        </tbody> --}}
+                                        <tbody></tbody>
                                     </table>
                                 </div>
                             </div>
@@ -524,14 +515,18 @@
                                     <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
                                     </div>
-                                    <select class="form-control select2bs4" name="mod_quantity" id="mod_quantity" style="width: 50%;">
-                                    </select>
+                                    <input class="form-control" type="number" name="mod_quantity" id="mod_quantity" value="0" min =0>
+                                    {{-- <select class="form-control select2bs4" name="mod_quantity" id="mod_quantity" style="width: 50%;">
+                                    </select> --}}
                                 </div>
                             </div>
                         </div>
-                        <div class="row  justify-content-end">
+                        <div class="row justify-content-between">
+                            <div class="col-sm-3">
+                                <button type="button" class="btn btn-sm btn-danger" id="btnRemoveModLotNumber" disabled><i class="fas fa-trash-alt"></i> Remove </a></button>
+                            </div>
                             <div class="col-sm-2">
-                                <button type="button" class="btn btn-primary" id="btnAddModLotNumber">Add</button>
+                                <button type="button" class="btn btn-sm btn-primary" id="btnAddModLotNumber"><i class="fas fa-plus"></i>Add</button>
                             </div>
                         </div>
                         <div class="row">
@@ -573,22 +568,22 @@
                 const strDate = {
                     dateToday : new Date() // By default Date empty constructor give you Date.now
                 }
-                // const arrMod = [];
-                // const arrmodeOfDefects = [];
-                // const arrlotQty = [];
+                
                 const arrCounter= {
-                    ctr : -1
+                    ctr : 0
                 }
+
+                const btn = {
+                    removeModLotNumber : $('#btnRemoveModLotNumber')
+                }
+
                 const arrTableMod = {
-                    lotNo : [],
-                    modeOfDefects : [],
-                    lotQty : [],
-                };
-                const mod = {
                     lotNo : [],
                     modeOfDefects : [],
                     lotQty : []
                 };
+
+
                 /**
                     *TODO: Get data only for Applied Inspection
                     *TODO: Save Data
@@ -628,8 +623,8 @@
                         data: {"whs_transaction_id" : whs_transaction_id},
                         dataType: "json",
                         success: function (response) {
-                            let lot_no = response[0]['Lot_number'];
-                            let lot_qty = response[0]['In'];
+                            let lotNo = response[0]['Lot_number'];
+                            let lotQty = response[0]['In'];
 
                             $('#modalSaveIqcInspection').modal('show');
                             form.iqcInspection.find('#invoice_no').val(response[0]['InvoiceNo']);
@@ -637,15 +632,26 @@
                             form.iqcInspection.find('#partname').val(response[0]['MaterialType']);
                             form.iqcInspection.find('#supplier').val(response[0]['Supplier']);
 
+                            /*Mode of Defects Modal*/
                             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                             for (let i = 0; i < response.length; i++) {
-                                let opt_lot_no = `<option value="${lot_no}">${lot_no}</option>`;
-                                let opt_lot_qty = `<option value="${lot_qty}">${lot_qty}</option>`;
-                                $('#mod_lot_no').append(opt_lot_no);
-                                $('#mod_quantity').append(opt_lot_qty);
-                                console.log(opt_lot_qty);
+                                let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
+                                let optLotQty = `<option value="${lotQty}">${lotQty}</option>`;
+                                $('#mod_lot_no').append(optLotNo);
+                                $('#mod_quantity').append(optLotQty);
+                                console.log(optLotQty);
                             }
+
+                            /*Lot Number*/
+                            
+                            // $('#tblLotNumber tbody').empty();
+                            // var html_body  = '<tr>';
+                            //     html_body += '<td>'+lotNo+'</td>';
+                            //     html_body += '<td>'+lotQty+'</td>';
+                            //     html_body += '</tr>';
+                            // $('#tblLotNumber tbody').append(html_body);
+                            
                         }
                     });
                 }
@@ -747,6 +753,14 @@
                     });
                 }
 
+                const disabledEnabledButton = function(arrCounter){
+                    if(arrCounter === 0 ){
+                        btn.removeModLotNumber.prop('disabled',true);
+                    }else{
+                        btn.removeModLotNumber.prop('disabled',false);
+                    }
+                }
+
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
                     let whs_transaction_id = $(this).attr('whs-trasaction-id')
                     let twoDigitYear = strDate.dateToday.getFullYear().toString().substr(-2);
@@ -754,16 +768,11 @@
                     let arr_data = {
                         'whs_transaction_id': whs_transaction_id
                     }
-                    // arrTableMod.lotNo = []
-                    // arrTableMod.modeOfDefects =[]
-                    // arrTableMod.lotQty = []
+                    arrTableMod.lotNo =[];
+                    arrTableMod.modeOfDefects =[];
+                    arrTableMod.lotQty =[];
 
-                    mod.lotNo =[];
-                    mod.modeOfDefects =[];
-                    mod.lotQty =[];
-
-                    console.log(arrTableMod);
-
+                    $('#tblModeOfDefect tbody').empty();
                     getWhsTransactionById(whs_transaction_id);
                     getFamily();
                     getInspectionLevel();
@@ -782,13 +791,58 @@
                     e.preventDefault();
                     $('#modalModeOfDefect').modal('show');
                 });
+
+                $('#btnAddModLotNumber').click(function (e) {
+                    e.preventDefault();
+
+                    /* Selected Value */
+                    let selectedLotNo = $('#mod_lot_no').val();
+                    let selectedMod = $('#mode_of_defect').val();
+                    let selectedLotQty = $('#mod_quantity').val();
+
+                    if(selectedLotNo === null || selectedMod === null || selectedLotQty <= 0){
+                        toastr.error('Error: Please Fill up all fields !');
+                        return false;
+                    }
+                    
+                    /* Counter and Disabled Removed Button */
+                    arrCounter.ctr++;
+                    disabledEnabledButton(arrCounter.ctr)
+
+                    /* Get selected array to the table */
+                    var html_body  = '<tr>';
+                        html_body += '<td>'+arrCounter.ctr+'</td>';
+                        html_body += '<td>'+selectedLotNo+'</td>';
+                        html_body += '<td>'+selectedMod+'</td>';
+                        html_body += '<td>'+selectedLotQty+'</td>';
+                        html_body += '</tr>';
+                    $('#tblModeOfDefect tbody').append(html_body);
+
+                    arrTableMod.lotNo.push(selectedLotNo);
+                    arrTableMod.modeOfDefects.push(selectedMod);
+                    arrTableMod.lotQty.push(selectedLotQty);
+                    console.log('check',arrTableMod);
+                });
+
+                btn.removeModLotNumber.click(function() {
+                    arrCounter.ctr --;
+                    disabledEnabledButton(arrCounter.ctr)
+                    
+                    $('#tblModeOfDefect tr:last').remove();
+                    arrTableMod.lotNo.splice(arrCounter.ctr, 1);
+                    arrTableMod.modeOfDefects.splice(arrCounter.ctr, 1);
+                    arrTableMod.lotQty.splice(arrCounter.ctr, 1);
+                    console.log(arrTableMod);
+                });
+
+
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    console.log(e);
+
                     $.ajax({
                         type: "GET",
                         url: "save_iqc_inspection",
-                        data: $(this).serialize(),
+                        data: $(this).serialize() + '&' +$.param(arrTableMod),
                         dataType: "json",
                         success: function (response) {
                             console.log(response);
@@ -796,46 +850,23 @@
                     });
                 });
 
-                $('#btnAddModLotNumber').click(function (e) {
-                    e.preventDefault();
-                    mod.lotNo =[];
-                    mod.modeOfDefects =[];
-                    mod.lotQty =[];
-                    mod.lotNo.push($('#mod_lot_no').val());
-                    mod.modeOfDefects.push($('#mode_of_defect').val());
-                    mod.lotQty.push($('#mod_quantity').val());
+                // $(form.iqcInspection).submit(function (e) {
+                //     e.preventDefault();
+                //     console.log(e);
+                //     $.ajax({
+                //         type: "GET",
+                //         url: "save_iqc_inspection",
+                //         data: $(this).serialize() + '&' +$.param(arrTableMod),
+                //         dataType: "json",
+                //         success: function (response) {
+                //             console.log(response);
+                //         }
+                //     });
+                // });
+            
 
-                    arrCounter.ctr++;
-                    for(var i=0; i<mod.lotNo.length; i++) {
-                        let index = i+1;
-                        var html_body  = '<tr>';
-                            html_body += '<td>'+mod.lotNo[i]+'</td>';
-                            html_body += '<td>'+mod.modeOfDefects[i]+'</td>';
-                            html_body += '<td>'+mod.lotQty[i]+'</td>';
-                            html_body += '<td><a href="#" class="btn btn-sm btn-danger" id="btnRemoveModLotNumber" row-id = "'+arrCounter.ctr+'"><i class="fas fa-trash-alt"></i> Remove </a></td>';
-                            html_body += '</tr>';
-                        $('#tblModeOfDefect tbody').append(html_body);
-                        arrTableMod.lotNo.push(mod.lotNo[i]);
-                        arrTableMod.modeOfDefects.push(mod.modeOfDefects[i]);
-                        arrTableMod.lotQty.push(mod.lotQty[i]);
-                        console.log(arrTableMod);
-                    }
-                });
-
-                $('#tblModeOfDefect tbody').on('click','#btnRemoveModLotNumber', function() {
-                    var row = $(this).closest('tr');
-                    var rowId = $(this).attr('row-id');
-                    row.remove();
-                    let indexArrTableModlotNo = arrTableMod.lotNo.indexOf(rowId);
-                    let indexArrTableMod = arrTableMod.modeOfDefects.indexOf(rowId);
-                    let indexArrTableModLotQty = arrTableMod.lotQty.indexOf(rowId);
-
-                    arrTableMod.lotNo.splice(indexArrTableModlotNo, 1);
-                    arrTableMod.modeOfDefects.splice(indexArrTableMod, 1);
-                    arrTableMod.lotQty.splice(indexArrTableModLotQty, 1);
-
-                    console.log(arrTableMod);
-                });
+                
+                
             });
 
         </script>
