@@ -176,7 +176,10 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Carrier</label>
-                                    <input type="text" class="form-control form-control-sm" name="carrier" id="textCarrier" autocomplete="off">
+                                    {{-- <input type="text" class="form-control form-control-sm" name="carrier" id="textCarrier" autocomplete="off"> --}}
+                                    <select class="form-select select2" id="selectCarrier" name="carrier">
+                                        <!-- Auto Generated -->
+                                    </select>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -250,6 +253,7 @@
         //                         // datesDisabled: disabledDays,
                             
         // });
+        getCarrier($('#selectCarrier'));
        
         </script>
     @endsection

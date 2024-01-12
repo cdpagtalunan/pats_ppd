@@ -19,7 +19,12 @@ class CustomerDetailsController extends Controller
         ->addColumn('action', function($customer_data){
             $result = "";
             $result .= "<center>";
-            $result .= "<button class='btn btn-primary btn-sm btnEditCustomerDetails' data-id='$customer_data->id'><i class='fa-solid fa-edit'></i></button>";
+            if($customer_data->status == 0){
+                $result .= "<button class='btn btn-info btn-sm btnEditCustomerDetails' data-id='$customer_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+                $result .= "<button class='btn btn-danger btn-sm btnEditCustomerDetailsStatus' data-id='$customer_data->id'><i class='fa-solid fa-x'></i></button>";
+            }else{
+                $result .= "<button class='btn btn-info btn-sm btnRestoreCustomerDetailsStatus' data-id='$customer_data->id'><i class='fa-solid fa-undo'></i></button>";
+            }   
             $result .= "</center>";
             return $result;
         })
@@ -28,7 +33,7 @@ class CustomerDetailsController extends Controller
             $result .= "<center>";
 
             if($customer_data->status == 0){
-                $result .= '<span class="badge bg-info">Active</span>';
+                $result .= '<span class="badge bg-success">Active</span>';
             }
             else{
                 $result .= '<span class="badge bg-danger">Disabled</span>';
@@ -64,7 +69,6 @@ class CustomerDetailsController extends Controller
                     'contact_person' => $request->company_contact_person,
                     'status'        => 0,
                     'created_at'    => date('Y-m-d H:i:s'),
-                    // 'created_by' => $_SESSION['rapidx_username'],
                 ];
                 if(isset($request->customer_details_id)){ // edit
                     CustomerDetails::where('id', $request->customer_details_id)
@@ -85,9 +89,25 @@ class CustomerDetailsController extends Controller
         $customerDetails = CustomerDetails::
         where('id', $request->customer_details_id)
         ->get();
-
         // return $customerDetails;
-
         return response()->json(['customerDetails' => $customerDetails]);
     }
+
+    public function editCompanyDetailsStatus(Request $request){
+        CustomerDetails::where('id', $request->company_details_id)
+        ->update([
+            'status' => 1,
+        ]);
+        return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+    }
+
+    public function restoreCompanyDetailsStatus(Request $request){
+        CustomerDetails::where('id', $request->company_details_id)
+        ->update([
+            'status' => 0,
+        ]);
+        return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+    }
+
+    
 }

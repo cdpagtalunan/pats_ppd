@@ -19,7 +19,12 @@ class CarrierDetailsController extends Controller
         ->addColumn('action', function($carrier_data){
             $result = "";
             $result .= "<center>";
-            $result .= "<button class='btn btn-primary btn-sm btnEditCustomerDetails' data-id='$carrier_data->id'><i class='fa-solid fa-edit'></i></button>";
+            if($carrier_data->status == 0){
+                $result .= "<button class='btn btn-info btn-sm btnEditCarrierDetails' data-id='$carrier_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+                $result .= "<button class='btn btn-danger btn-sm btnEditCarrierDetailsStatus' data-id='$carrier_data->id'><i class='fa-solid fa-x'></i></button>";
+            }else{
+                $result .= "<button class='btn btn-info btn-sm btnRestoreCarrierDetailsStatus' data-id='$carrier_data->id'><i class='fa-solid fa-undo'></i></button>";
+            }   
             $result .= "</center>";
             return $result;
         })
@@ -28,7 +33,7 @@ class CarrierDetailsController extends Controller
             $result .= "<center>";
 
             if($carrier_data->status == 0){
-                $result .= '<span class="badge bg-info">Active</span>';
+                $result .= '<span class="badge bg-success">Active</span>';
             }
             else{
                 $result .= '<span class="badge bg-danger">Disabled</span>';
@@ -58,7 +63,6 @@ class CarrierDetailsController extends Controller
                     'carrier_name'     => $request->carrier_name,
                     'status'        => 0,
                     'created_at'    => date('Y-m-d H:i:s'),
-                    // 'created_by' => $_SESSION['rapidx_username'],
                 ];
                 if(isset($request->carrier_details_id)){ // edit
                     CarrierDetails::where('id', $request->carrier_details_id)
@@ -73,5 +77,31 @@ class CarrierDetailsController extends Controller
         else{
             return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
         }
+    }
+
+    public function getCarrierDetailsById(Request $request){
+        $carrier_details = CarrierDetails::
+        where('id', $request->carrier_details_id)
+        ->get();
+
+        // return $CarrierDetails;
+
+        return response()->json(['carrierDetails' => $carrier_details]);
+    }
+
+    public function editCarrierDetailsStatus(Request $request){
+        CarrierDetails::where('id', $request->carrier_details_id)
+        ->update([
+            'status' => 1,
+        ]);
+        return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+    }
+
+    public function restoreCarrierDetailsStatus(Request $request){
+        CarrierDetails::where('id', $request->carrier_details_id)
+        ->update([
+            'status' => 0,
+        ]);
+        return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
     }
 }
