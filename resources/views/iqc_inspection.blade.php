@@ -195,7 +195,8 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Application Ctrl. No.</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="app_no" name="app_no">
+                                        <input type="text" class="form-control form-control-sm" id="app_no" name="app_no" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="app_no_extension" name="app_no_extension">
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -216,7 +217,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
                                         </div>
-                                        <button type="button" class="form-control form-control-sm bg-info" id="btnLotNo">Lot Number</button>
+                                        <input type="text" class="form-control form-control-sm" id="lot_no" name="lot_no" min="0">
+
+                                        {{-- <button type="button" class="form-control form-control-sm bg-info" id="btnLotNo">Lot Number</button> --}}
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -448,39 +451,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="modalLotNo" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-md">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-edit"></i> Lot Details</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form method="post" id="formSaveIqcInspection" autocomplete="off">
-                        @csrf
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-sm-12 mt-3">
-                                    <table  id="tblLotNumber" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
-                                        <thead>
-                                        <tr>
-                                            <th style="width: 80%;">Lot No.</th>
-                                            <th style="width: 20%;">Lot Qty.</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-end">
-                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
+    
         <div class="modal fade" id="modalModeOfDefect" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
@@ -631,6 +602,8 @@
                             form.iqcInspection.find('#partcode').val(response[0]['PartNumber']);
                             form.iqcInspection.find('#partname').val(response[0]['MaterialType']);
                             form.iqcInspection.find('#supplier').val(response[0]['Supplier']);
+                            form.iqcInspection.find('#total_lot_qty').val(lotQty);
+                            form.iqcInspection.find('#lot_no').val(lotNo);
 
                             /*Mode of Defects Modal*/
                             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
@@ -644,14 +617,7 @@
                             }
 
                             /*Lot Number*/
-                            
-                            // $('#tblLotNumber tbody').empty();
-                            // var html_body  = '<tr>';
-                            //     html_body += '<td>'+lotNo+'</td>';
-                            //     html_body += '<td>'+lotQty+'</td>';
-                            //     html_body += '</tr>';
-                            // $('#tblLotNumber tbody').append(html_body);
-                            
+
                         }
                     });
                 }
