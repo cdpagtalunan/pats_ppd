@@ -48,8 +48,10 @@
     };
 </script>
 
+
 <script src="{{ asset('public/js/main/Common.js?n=1') }}" async></script>
 <script src="{{ asset('public/js/main/User.js?n=6') }}"></script>
+
 <script src="{{ asset('public/js/main/UserLevel.js?n=1') }}"></script>
 <script src="{{ asset('public/js/main/Device.js?n=3') }}"></script>
 <script src="{{ asset('public/js/main/MaterialProcess.js?n=6') }}"></script>

@@ -60,7 +60,7 @@ class UserController extends Controller
     }
 
     // Change Password
-    public function change_pass(Request $request){        
+    public function change_pass(Request $request){
         date_default_timezone_set('Asia/Manila');
         $user_data = array(
             'username' => $request->username,
@@ -83,7 +83,7 @@ class UserController extends Controller
             if(Auth::attempt($user_data)){
                 try{
                     User::where('id', Auth::user()->id)
-                        ->increment('update_version', 1, 
+                        ->increment('update_version', 1,
                             [
                                 'is_password_changed' => 1,
                                 'password' => Hash::make($request->new_password),
@@ -98,8 +98,8 @@ class UserController extends Controller
                     DB::rollback();
                     // throw $e;
                     return response()->json(['result' => "0"]);
-                }  
-                
+                }
+
                 return response()->json(['result' => 1]);
             }
             else{
@@ -112,7 +112,7 @@ class UserController extends Controller
     }
 
     // Change User Status
-    public function change_user_stat(Request $request){        
+    public function change_user_stat(Request $request){
         date_default_timezone_set('Asia/Manila');
 
         $data = $request->all();
@@ -125,7 +125,7 @@ class UserController extends Controller
         if($validator->passes()){
             try{
                 User::where('id', $request->user_id)
-                    ->increment('update_version', 1, 
+                    ->increment('update_version', 1,
                         [
                             'status' => $request->status,
                             'last_updated_by' => Auth::user()->id,
@@ -139,8 +139,8 @@ class UserController extends Controller
                 DB::rollback();
                 // throw $e;
                 return response()->json(['result' => "0"]);
-            }  
-            
+            }
+
             return response()->json(['result' => 1]);
         }
         else{
@@ -149,7 +149,7 @@ class UserController extends Controller
     }
 
     // Reset Password
-    public function reset_password(Request $request){        
+    public function reset_password(Request $request){
         date_default_timezone_set('Asia/Manila');
 
         // $password = 'pmi1234' . Str::random(10);
@@ -157,7 +157,7 @@ class UserController extends Controller
 
         try{
             User::where('id', $request->user_id)
-                ->increment('update_version', 1, 
+                ->increment('update_version', 1,
                     [
                         'is_password_changed' => 0,
                         'password' => Hash::make($password),
@@ -185,16 +185,16 @@ class UserController extends Controller
             DB::rollback();
             // throw $e;
             return response()->json(['result' => "0"]);
-        } 
+        }
     }
 
     //View Users
 	public function view_users(){
     	$users = User::with([
-                    'user_level', 
+                    'user_level',
                     // 'oqc_stamps' => function($query) {
                     //     $query->where('status', 1);
-                    //     $query->orderBy('id', 'desc');    
+                    //     $query->orderBy('id', 'desc');
                     // }
                 ])
                 ->get();
@@ -215,7 +215,7 @@ class UserController extends Controller
             ->addColumn('action1', function($user){
                 $result = '<center><div class="btn-group">
                           <button type="button" class="btn btn-dark dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Action">
-                            <i class="fa fa-cog"></i> 
+                            <i class="fa fa-cog"></i>
                           </button>
                           <div class="dropdown-menu dropdown-menu-right">';
                 if($user->status == 1){
@@ -230,7 +230,7 @@ class UserController extends Controller
                 else{
                     $result .= '<button class="dropdown-item aChangeUserStat" type="button" style="padding: 1px 1px; text-align: center;" user-id="' . $user->id . '" status="1" data-bs-toggle="modal" data-bs-target="#modalChangeUserStat" data-bs-keyboard="false">Activate</button>';
                 }
-                            
+
                 $result .= '</div>
                         </div></center>';
 
@@ -305,7 +305,7 @@ class UserController extends Controller
                     'update_version' => 1,
                     'updated_at' => date('Y-m-d H:i:s'),
                     'created_at' => date('Y-m-d H:i:s')
-                ]); 
+                ]);
 
                 if(isset($request->oqc_stamp)){
                     OQCStamp::insert([
@@ -344,10 +344,10 @@ class UserController extends Controller
         $user = User::with([
                             // 'oqc_stamps' => function($query) {
                             //     $query->where('status', 1);
-                            //     $query->orderBy('id', 'desc');    
+                            //     $query->orderBy('id', 'desc');
                             // }
                         ])->where('id', $request->user_id)->get();
-        
+
         $qrcode = QrCode::format('png')
                             ->size(200)->errorCorrection('H')
                             ->generate($user[0]->employee_id);
@@ -504,7 +504,7 @@ class UserController extends Controller
 
     public function generate_user_qrcode(Request $request){
         // action: 1-Add, 2-Edit, 3-Generate Only
-        
+
         // $user = [];
         // if($request->action == "1" || $request->action == "3"){
         //     $user = User::where('employee_id', $request->qrcode)->get();
@@ -512,7 +512,7 @@ class UserController extends Controller
         // else if($request->action == "2"){
         //     $user = User::where('employee_id', $request->qrcode)
         //                 ->where('id', '!=', $request->user_id)
-        //                 ->get();   
+        //                 ->get();
         // }
 
         // $user = User::where('id', $request->user_id)->get();
@@ -610,7 +610,7 @@ class UserController extends Controller
             DB::commit();
 
             return response()->json(['result' => "1"]);
-        }    
+        }
         catch(\Exception $e) {
             DB::rollback();
             return response()->json(['result' => $e]);
@@ -618,6 +618,7 @@ class UserController extends Controller
     }
 
     public function get_emp_details_by_id(Request $request){
+
         $hris_data = DB::connection('mysql_systemone_hris')
         ->select("SELECT * FROM tbl_EmployeeInfo WHERE EmpNo = '$request->empId'");
 
@@ -631,5 +632,6 @@ class UserController extends Controller
             return response()->json(['empInfo' => $subcon_data]);
 
         }
+
     }
 }

@@ -129,7 +129,7 @@
                         <label>Send Password to Email</label>
                       </div>
                     </div>
-                    
+
                     <input type="text" class="form-control" name="email" id="txtAddUserEmail">
                 </div>
 
@@ -163,7 +163,7 @@
 
                 <div class="form-group">
                         <input type="checkbox" name="with_oqc_stamp" id="chkAddUserWithOQCStamp">
-                        <label>OQC Stamp</label>                  
+                        <label>OQC Stamp</label>
                     <input type="text" class="form-control" name="oqc_stamp" id="txtAddUserOQCStamp" disabled="disabled">
                 </div>
 
@@ -278,7 +278,7 @@
 
                 <div class="form-group">
                     <input type="checkbox" name="with_oqc_stamp" id="chkEditUserWithOQCStamp">
-                        <label>OQC Stamp</label>                  
+                        <label>OQC Stamp</label>
                     <input type="text" class="form-control" name="oqc_stamp" id="txtEditUserOQCStamp" disabled="disabled">
                 </div>
 
@@ -435,7 +435,7 @@
   <!-- MODALS -->
   <div class="modal fade" id="modalAddUser">
     <div class="modal-dialog">
-      <div class="modal-content"> 
+      <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title"><i class="fa fa-user-plus"></i> Add User</h4>
           <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
@@ -492,6 +492,7 @@
                         <label>Send Password to Email</label>
                       </div>
                     </div>
+
                     
                     <input type="text" class="form-control" name="email" id="txtAddUserEmail">
                 </div>
@@ -520,9 +521,10 @@
                     </select>
                 </div>
 
+
                 <div class="form-group">
                         <input type="checkbox" name="with_oqc_stamp" id="chkAddUserWithOQCStamp">
-                        <label>OQC Stamp</label>                  
+                        <label>OQC Stamp</label>
                     <input type="text" class="form-control" name="oqc_stamp" id="txtAddUserOQCStamp" disabled="disabled">
                 </div>
 
@@ -568,14 +570,6 @@
     let arrSelectedUsers = [];
 
     $(document).ready(function () {
-      //Initialize Select2 Elements
-      $('.select2').select2();
-
-      //Initialize Select2 Elements
-      $('.select2bs4').select2({
-        theme: 'bootstrap-5'
-      });
-
       $(document).on('click','#tblUsers tbody tr',function(e){
         $(this).closest('tbody').find('tr').removeClass('table-active');
         $(this).closest('tr').addClass('table-active');
@@ -592,7 +586,7 @@
             //     param.status = $("#selEmpStat").val();
             // }
           },
-          
+
           "columns":[
             { "data" : "checkbox", searchable: false, orderable: false },
             { "data" : "id" },
@@ -633,7 +627,7 @@
                   display: function (data, type, row) {
                     if (row.position == 0) {
                       return "N/A";
-                    } 
+                    }
                     else if (row.position == 1) {
                       return "Prod'n Supervisor";
                     }
@@ -669,7 +663,7 @@
             { "data" : "action1", orderable:false, searchable:false }
           ],
 
-          "columnDefs": [ 
+          "columnDefs": [
             {
               "targets": [3, 5],
               "data": null,
@@ -703,7 +697,7 @@
                     arrSelectedUsers.push(userId);
                 }
             }
-            else{  
+            else{
                 // Unchecked
                 let index = arrSelectedUsers.indexOf(userId);
                 arrSelectedUsers.splice(index, 1);
@@ -747,6 +741,7 @@
               $("#lblNoOfPrintBatchSelUser").text('0');
           }
         });
+
 
         // Add User 
         $("#btnAddUser").on('click', function(event){
@@ -861,7 +856,7 @@
           $("#txtChangeUserStatUserStat").val(userStat);
 
           if(userStat == 1){
-            $("#lblChangeUserStatLabel").text('Are you sure to activate?'); 
+            $("#lblChangeUserStatLabel").text('Are you sure to activate?');
             $("#h4ChangeUserTitle").html('<i class="fa fa-user"></i> Activate User');
           }
           else{
@@ -897,7 +892,7 @@
                 },
                 // dataType: "json",
                 beforeSend: function(){
-                    
+
                 },
                 success: function(JsonObject){
               if(JsonObject['result'] == 1){
@@ -910,7 +905,7 @@
                 },
                 error: function(data, xhr, status){
                     alert('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                    
+
                 }
             });
         });
