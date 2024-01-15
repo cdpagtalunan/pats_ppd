@@ -17,6 +17,7 @@ use App\Http\Controllers\CustomerDetailsController;
 use App\Http\Controllers\CarrierDetailsController;
 use App\Http\Controllers\LoadingPortDetailsController;
 use App\Http\Controllers\DestinationPortDetailsController;
+use App\Http\Controllers\PackingListDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -89,7 +90,7 @@ Route::get('/get_user_levels',  [UserLevelController::class, 'get_user_levels'])
 // COMMON CONTROLLER
 Route::controller(CommonController::class)->group(function () {
     Route::get('/get_search_po', 'get_search_po')->name('get_search_po');
-
+    Route::get('/validate_user', 'validate_user')->name('validate_user');
 });
 
 // DEVICE CONTROLLER
@@ -129,16 +130,23 @@ Route::controller(FirstStampingController::class)->group(function () {
     Route::get('/get_prod_data_view', 'get_prod_data_view')->name('get_prod_data_view');
     Route::get('/print_qr_code', 'print_qr_code')->name('print_qr_code');
     Route::get('/check_matrix', 'check_matrix')->name('check_matrix');
+    Route::get('/get_prod_lot_no_ctrl', 'get_prod_lot_no_ctrl')->name('get_prod_lot_no_ctrl');
+    Route::get('/get_operator_list', 'get_operator_list')->name('get_operator_list');
 });
 
 // STAMPING -> IPQC CONTROLLER
 Route::controller(StampingIpqcController::class)->group(function () {
     Route::get('/view_stamping_ipqc_data', 'view_stamping_ipqc_data')->name('view_stamping_ipqc_data');
-    Route::get('/get_po_from_pps_db', 'get_po_from_pps_db')->name('get_po_from_pps_db');
+    // Route::get('/get_po_from_pps_db', 'get_po_from_pps_db')->name('get_po_from_pps_db');
+    Route::get('/get_data_from_fs_production', 'get_data_from_fs_production')->name('get_data_from_fs_production');
     Route::get('/get_data_from_acdcs', 'get_data_from_acdcs')->name('get_data_from_acdcs');
     Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
-});
+    Route::post('/update_status_of_ipqc_inspection', 'update_status_of_ipqc_inspection')->name('update_status_of_ipqc_inspection');
+    Route::get('/download_file/{id}', 'download_file')->name('download_file');
 
+    //EXCEL REPORT FOR PACKING LIST
+    Route::get('/export/{CtrlNo}', 'excel')->name('export');
+});
 
 
 //IQC Inspection
@@ -156,7 +164,16 @@ Route::controller(IqcInspectionController::class)->group(function () {
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {
     Route::get('/view_oqc_inspection', 'viewOqcInspection')->name('view_oqc_inspection');
-
+    Route::post('/update_oqc_inspection', 'updateOqcInspection')->name('update_oqc_inspection');
+    Route::get('/get_oqc_inspection_by_id', 'getOqcInspectionById')->name('get_oqc_inspection_by_id');
+    Route::get('/get_oqc_assembly_line', 'getAssemblyLine')->name('get_oqc_assembly_line');
+    Route::get('/get_oqc_family', 'getFamily')->name('get_oqc_family');
+    Route::get('/get_oqc_inspection_type', 'getInspectionType')->name('get_oqc_inspection_type');
+    Route::get('/get_oqc_inspection_level', 'getInspectionLevel')->name('get_oqc_inspection_level');
+    Route::get('/get_oqc_severity_inspection', 'getSeverityInspection')->name('get_oqc_severity_inspection');
+    Route::get('/get_oqc_aql', 'getAQL')->name('get_oqc_aql');
+    Route::get('/get_oqc_inspection_mod', 'getMOD')->name('get_oqc_inspection_mod');
+    Route::get('/scan_user_id', 'scanUserId')->name('scan_user_id');
 });
 
 // Packing List
@@ -164,17 +181,45 @@ Route::controller(CustomerDetailsController::class)->group(function () {
     Route::get('/view_company_details', 'viewCompanyDetails')->name('view_company_details');
     Route::post('/add_customer_details', 'addCustomerDetails')->name('add_customer_details');
     Route::get('/get_customer_details', 'getCustomerDetailsById')->name('get_customer_details');
+    Route::get('/edit_company_details_status', 'editCompanyDetailsStatus')->name('edit_company_details_status');
+    Route::get('/restore_company_status', 'restoreCompanyDetailsStatus')->name('restore_company_status');
 });
 Route::controller(CarrierDetailsController::class)->group(function () {
     Route::get('/view_carrier_details', 'viewCarrierDetails')->name('view_carrier_details');
     Route::post('/add_carrier_details', 'addCarrierDetails')->name('add_carrier_details');
+    Route::get('/get_carrier_details', 'getCarrierDetailsById')->name('get_carrier_details');
+    Route::get('/edit_carrier_details_status', 'editCarrierDetailsStatus')->name('edit_carrier_details_status');
+    Route::get('/restore_carrier_status', 'restoreCarrierDetailsStatus')->name('restore_carrier_status');
 });
 Route::controller(LoadingPortDetailsController::class)->group(function () {
     Route::get('/view_loading_port_details', 'viewLoadingPortDetails')->name('view_loading_port_details');
+    Route::post('add_loading_port_details', 'addLoadingPortDetails')->name('add_loading_port_details');
+    Route::get('/get_loading_port_details', 'getLoadingPortDetailsById')->name('get_loading_port_details');
+    Route::get('/edit_loading_port_details_status', 'editLoadingPortDetailsStatus')->name('edit_loading_port_details_status');
+    Route::get('/restore_loading_port_status', 'restoreLoadingPortDetailsStatus')->name('restore_loading_port_status');
 });
 Route::controller(DestinationPortDetailsController::class)->group(function () {
     Route::get('/view_destination_port_details', 'viewDestinationPortDetails')->name('view_destination_port_details');
+    Route::post('/add_destination_port_details', 'addDestinationPortDetails')->name('add_destination_port_details');
+    Route::get('/get_destination_port_details', 'getDestinationPortDetailsById')->name('get_destination_port_details');
+    Route::get('/edit_destination_port_details_status', 'editDestinationPortDetailsStatus')->name('edit_destination_port_details_status');
+    Route::get('/restore_destination_port_status', 'restoreDestinationPortDetailsStatus')->name('restore_destination_port_status');
 });
+
+Route::controller(PackingListDetailsController::class)->group(function () {
+    Route::get('/view_packing_list_data', 'viewPackingListData')->name('view_packing_list_data');
+    Route::get('/view_production_data', 'viewProductionData')->name('view_production_data');
+    Route::get('/get_customer_data', 'getCustomerDetails')->name('get_customer_data');
+    Route::get('/get_carrier_data', 'getCarrierDetails')->name('get_carrier_data');
+    Route::get('/get_loading_port_data', 'getLoadingPortDetails')->name('get_loading_port_data');
+    Route::get('/get_destination_port_data', 'getDestinationPortDetails')->name('get_destination_port_data');
+    Route::get('/get_data_from_production', 'getDataFromProduction')->name('get_data_from_production');
+    Route::post('/add_packing_list_details', 'addPackingListData')->name('add_packing_list_details');
+    Route::get('/get_ppc_clerk_details', 'getPpcClerk')->name('get_ppc_clerk_details');
+    Route::get('/get_ppc_sr_planner', 'getPpcSrPlanner')->name('get_ppc_sr_planner');
+    Route::get('/get_carbon_copy_user', 'carbonCopyUser')->name('get_carbon_copy_user');
+});
+
 
 
 

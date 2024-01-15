@@ -210,9 +210,12 @@ class FirstStampingController extends Controller
 
     public function print_qr_code(Request $request){
         $prod_data = FirstStampingProduction::where('id', $request->id)
-        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
+        ->first(['po_num AS po', 'part_code AS code', DB::Raw('CONCAT(material_name, "-", "X") AS name') , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
 
-        // return $prod_data;
+        // $prod_data = DB::connection('mysql')
+        // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM first_stamping_productions WHERE id = '".$request->id."'");
+        
+        // return $prod_data[0];
         $qrcode = QrCode::format('png')
         ->size(200)->errorCorrection('H')
         ->generate($prod_data);

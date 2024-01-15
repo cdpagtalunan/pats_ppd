@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PackingListDetails extends Model
+class DropdownOqcAql extends Model
 {
-    use HasFactory;
-    protected $table = "packing_list_details";
+    protected $table = "dropdown_oqc_aqls";
     protected $connection = "mysql";
 }

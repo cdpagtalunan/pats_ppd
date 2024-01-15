@@ -327,7 +327,7 @@
 
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="btnAddLoadingPortDetails" class="btn btn-primary"><i id="btnAddLoadingPortDetailsIcon"
+                        <button type="submit" id="btnAddDestinationPortDetails" class="btn btn-primary"><i id="btnAddDestinationPortDetailsIcon"
                                 class="fa fa-check"></i> Save</button>
                     </div>
                 </form>
@@ -978,6 +978,8 @@
                         }
                     });
                 });
+
+                
                 
 
                 // txtDestinationPort

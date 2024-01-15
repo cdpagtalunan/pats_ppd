@@ -67,7 +67,8 @@
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
                                                 {{-- <button class="btn btn-primary"><i class="fa-solid fa-qrcode"></i></button> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010">
+                                                {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
+                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -123,6 +124,7 @@
                                                     <th>Parts Code</th>
                                                     <th>Material Name</th>
                                                     <th>PO Quantity</th>
+                                                    <th>Shipment Output</th>
                                                     <th>Material Lot #</th>
                                                 </tr>
                                             </thead>
@@ -421,10 +423,16 @@
                         { "data" : "part_code" },
                         { "data" : "material_name" },
                         { "data" : "po_qty" },
+                        { "data" : "ship_output" },
                         { "data" : "material" },
                     ],
                     "columnDefs": [
-                        {"className": "dt-center", "targets": "_all"}
+                        {"className": "dt-center", "targets": "_all"},
+                        {
+                            "targets": [7],
+                            "data": null,
+                            "defaultContent": "---"
+                        },
                     ],
                 });//end of dataTableDevices
 

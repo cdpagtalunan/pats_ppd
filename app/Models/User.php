@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable // Authenticatable this will allow the use of Auth::user()
 {
     use HasFactory;
-    
+
     protected $table = "users";
     protected $connection = "mysql";
 

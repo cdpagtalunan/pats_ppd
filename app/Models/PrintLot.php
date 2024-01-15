@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PackingListDetails extends Model
+class PrintLot extends Model
 {
-    use HasFactory;
-    protected $table = "packing_list_details";
+    protected $table = "print_lots";
     protected $connection = "mysql";
 }
