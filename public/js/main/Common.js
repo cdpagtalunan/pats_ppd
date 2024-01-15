@@ -89,8 +89,53 @@ $("#modalMachineOp").on('hidden.bs.modal', function () {
     resetFormProdValues();
 });
 
-/* Select 2 Attr */
+function fnSelect2EmployeeName(comboId){
+    comboId.select2({
+            placeholder: "",
+            minimumInputLength: 1,
+            allowClear: true,
+            placeholder: {
+            id: "",
+            placeholder: "Leave blank to ..."
+            },
+            ajax:{
+                type: "GET",
+                url: "get_family",
+                data: "data",
+                dataType: "json",
+                data: function (params) {
+                    // console.log(params);
+                    return {
+                        search: params.term, // search term
+                    };
+                },
+                processResults: function (response){
+                    return{
+                        results: response
+                    };
+                },
+                cache: true
+            }
+    });
+}
 
+function fnGetSelect2Value(comboId,dataValue){
+    // $('#formEditSa select[name="select_checked_by_qc[]"]').select2({
+        console.log(dataValue);
+
+
+    comboId.select2({
+        // data : response['iqc_qc_checkedby']
+        data : dataValue
+    });
+    var arrValue = [];
+    $.each(dataValue, function(key, value){
+        arrValue.push(value['id'])
+    });
+
+    comboId.val(arrValue).trigger('change');
+}
+/* Select 2 Attr */
 $('.select2bs4').each(function () {
     $(this).select2({
         theme: 'bootstrap-5',

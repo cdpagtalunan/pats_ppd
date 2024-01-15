@@ -45,7 +45,7 @@
     };
 </script>
 
-<script src="{{ asset('public/js/main/Common.js?n=6') }}"></script>
+<script src="{{ asset('public/js/main/Common.js?n=123431212') }}"></script>
 <script src="{{ asset('public/js/main/User.js?n=4') }}"></script>
 <script src="{{ asset('public/js/main/UserLevel.js?n=1') }}"></script>
 <script src="{{ asset('public/js/main/Device.js?n=3') }}"></script>

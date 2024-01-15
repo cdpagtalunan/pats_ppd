@@ -118,7 +118,7 @@
         </div>
 
         <!-- MODALS -->
-        <div class="modal fade" id="modalSaveIqcInspection" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade" id="modalSaveIqcInspection" tabindex="-1" role="dialog" aria-hidden="true"  data-bs-backdrop="static">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -185,7 +185,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Family</span>
                                         </div>
-                                        <select class="form-select form-control" id="family" name="family">
+                                        <select class="form-select form-control select2bs4" id="family" name="family" >
                                             {{-- <option value="" selected disabled>-Select-</option> --}}
                                         </select>
                                     </div>
@@ -338,8 +338,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Inspector</span>
                                         </div>
+                                        {{-- <input class="form-control" value="{{ Auth::user()->username }}" readonly> --}}
                                         <select class="form-select" name="inspector" id="inspector">
-                                            <option value="{{ Auth::user()->username }}">{{Auth::user()->firstname.' '.Auth::user()->lastname}}</option>
+                                            <option value="{{ Auth::user()->username }}" selected>{{Auth::user()->firstname.' '.Auth::user()->lastname}}</option>
                                         </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
@@ -408,7 +409,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">No. of Defectives</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="no_of_defects" name="no_of_defects" min="0">
+                                        <input type="number" class="form-control form-control-sm" id="no_of_defects" name="no_of_defects" min="0" placeholder="auto-compute" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -451,7 +452,7 @@
             </div>
         </div>
 
-    
+
         <div class="modal fade" id="modalModeOfDefect" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
@@ -502,7 +503,6 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12 mt-3">
-
                                 <table id="tblModeOfDefect" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
                                     <thead>
                                         <tr>
@@ -517,6 +517,7 @@
                         </div>
                     </div>
                     <div class="modal-footer justify-content-end">
+                        <button type="button" class="btn btn-sm btn-primary" id="btnSaveComputation" disabled><i class="fas fa-save"></i> Compute</button>
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -539,22 +540,18 @@
                 const strDate = {
                     dateToday : new Date() // By default Date empty constructor give you Date.now
                 }
-                
                 const arrCounter= {
                     ctr : 0
                 }
-
                 const btn = {
-                    removeModLotNumber : $('#btnRemoveModLotNumber')
+                    removeModLotNumber : $('#btnRemoveModLotNumber'),
+                    saveComputation : $('#btnSaveComputation')
                 }
-
                 const arrTableMod = {
                     lotNo : [],
                     modeOfDefects : [],
                     lotQty : []
                 };
-
-
                 /**
                     *TODO: Get data only for Applied Inspection
                     *TODO: Save Data
@@ -587,6 +584,37 @@
                         ],
                 });
 
+                const getFamily = function () {
+                    $.ajax({
+                        url: "get_family",
+                        method: "get",
+                        dataType: "json",
+
+                        beforeSend: function(){
+                            result = '<option value="" selected disabled> -- Loading -- </option>';
+                            form.iqcInspection.find('select[name=family]').html(result);
+                        },
+                        success: function(response){
+                            console.log(response);
+                            result = '';
+                            let families_id = response['id'];
+                            let families_name = response['value'];
+                            // console.log(response['value']);
+                            
+                            if(response['id'].length > 0){
+                                result = '<option selected disabled> --- Select --- </option>';
+                                for(let index = 0; index < response['id'].length; index++){
+                                    result += '<option value="' + response['id'][index]+'">'+ response['value'][index]+'</option>';
+                                }
+                            }
+                            else{
+                                result = '<option value="0" selected disabled> No record found </option>';
+                            }
+                            form.iqcInspection.find('select[name="family"]').html(result);
+                        }
+                    });
+                }
+
                 const getWhsTransactionById = function (whs_transaction_id) {
                     $.ajax({
                         type: "GET",
@@ -594,17 +622,57 @@
                         data: {"whs_transaction_id" : whs_transaction_id},
                         dataType: "json",
                         success: function (response) {
-                            let lotNo = response[0]['Lot_number'];
-                            let lotQty = response[0]['In'];
+                            let lotNo = response[0]['lot_no'];
+                            let lotQty = response[0]['total_lot_qty'];
+                            let iqcInspectionId = response[0]['iqc_inspections_id'];
 
+                            // console.log('date_inspected',response[0]['date_inspected']);
                             $('#modalSaveIqcInspection').modal('show');
-                            form.iqcInspection.find('#invoice_no').val(response[0]['InvoiceNo']);
-                            form.iqcInspection.find('#partcode').val(response[0]['PartNumber']);
-                            form.iqcInspection.find('#partname').val(response[0]['MaterialType']);
-                            form.iqcInspection.find('#supplier').val(response[0]['Supplier']);
+                            form.iqcInspection.find('#iqc_inspection_id').val(iqcInspectionId);
+                            form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
+                            form.iqcInspection.find('#partcode').val(response[0]['partcode']);
+                            form.iqcInspection.find('#partname').val(response[0]['partname']);
+                            form.iqcInspection.find('#supplier').val(response[0]['supplier']);
                             form.iqcInspection.find('#total_lot_qty').val(lotQty);
                             form.iqcInspection.find('#lot_no').val(lotNo);
+                            form.iqcInspection.find('#app_no_extension').val(response[0]['app_no_extension']);
+                            
+                            form.iqcInspection.find('#die_no').val(response[0]['die_no']);
+                            form.iqcInspection.find('#classification').val(response[0]['classification']);
 
+                            form.iqcInspection.find('#type_of_inspection').val(response[0]['type_of_inspection']);
+                            form.iqcInspection.find('#severity_of_inspection').val(response[0]['severity_of_inspection']);
+                            form.iqcInspection.find('#accept').val(response[0]['accept']);
+                            form.iqcInspection.find('#reject').val(response[0]['reject']);
+                            form.iqcInspection.find('#shift').val(response[0]['shift']);
+                            form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
+                            form.iqcInspection.find('#time_ins_from').val(response[0]['time_ins_from']);
+                            form.iqcInspection.find('#time_ins_to').val(response[0]['time_ins_to']);
+                            form.iqcInspection.find('#inspector').val(response[0]['inspector']).trigger('change');
+                            form.iqcInspection.find('#submission').val(response[0]['submission']);
+                            form.iqcInspection.find('#category').val(response[0]['category']);
+                            form.iqcInspection.find('#target_lar').val(response[0]['target_lar']);
+                            form.iqcInspection.find('#target_dppm').val(response[0]['target_dppm']);
+                            form.iqcInspection.find('#sampling_size').val(response[0]['sampling_size']);
+                            form.iqcInspection.find('#no_of_defects').val(response[0]['no_of_defects']);
+                            form.iqcInspection.find('#lot_inspected').val(response[0]['lot_inspected']);
+                            form.iqcInspection.find('#accepted').val(response[0]['accepted']);
+                            form.iqcInspection.find('#judgement').val(response[0]['judgement']);
+                            form.iqcInspection.find('#remarks').val(response[0]['remarks']);
+
+                            setTimeout(() => {
+                                form.iqcInspection.find('#family').val(response[0]['family']).trigger("change");
+                                form.iqcInspection.find('#inspection_lvl').val(response[0]['inspection_lvl']).trigger("change");
+                                form.iqcInspection.find('#aql').val(response[0]['aql']).trigger("change");
+                                // form.iqcInspection.find('#aql').val(response[0]['aql']).trigger("change");
+                                
+                            }, 300);
+
+                            arrTableMod.lotNo = [];
+                            arrTableMod.modeOfDefects = [];
+                            arrTableMod.lotQty = [];
+                            arrCounter.ctr = 0;
+                            console.log(arrTableMod);
                             /*Mode of Defects Modal*/
                             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
@@ -614,26 +682,6 @@
                                 $('#mod_lot_no').append(optLotNo);
                                 $('#mod_quantity').append(optLotQty);
                                 console.log(optLotQty);
-                            }
-
-                            /*Lot Number*/
-
-                        }
-                    });
-                }
-                const getFamily = function () {
-                    $.ajax({
-                        type: "GET",
-                        url: "get_family",
-                        data: "data",
-                        dataType: "json",
-                        success: function (response) {
-                            let families_id = response['id'];
-                            let families_name = response['value'];
-                            form.iqcInspection.find('#family').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                            for (let i = 0; i < families_id.length; i++) {
-                                let opt = `<option value="${families_id[i]}">${families_name[i]}</option>`;
-                                form.iqcInspection.find('#family').append(opt);
                             }
                         }
                     });
@@ -647,6 +695,7 @@
                         success: function (response) {
                             let dropdown_inspection_level_id = response['id'];
                             let dropdown_inspection_level_name = response['value'];
+                            form.iqcInspection.find('#inspection_lvl').empty();
                             form.iqcInspection.find('#inspection_lvl').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
                             for (let i = 0; i < dropdown_inspection_level_id.length; i++) {
                                 let opt = `<option value="${dropdown_inspection_level_id[i]}">${dropdown_inspection_level_name[i]}</option>`;
@@ -656,6 +705,7 @@
                     });
                 }
                 const getAql = function () {
+                    form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
                     $.ajax({
                         type: "GET",
                         url: "get_aql",
@@ -664,7 +714,6 @@
                         success: function (response) {
                             let dropdown_aql_id = response['id'];
                             let dropdown_aql_name = response['value'];
-                            form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
                             for (let i = 0; i < dropdown_aql_id.length; i++) {
                                 let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
                                 form.iqcInspection.find('#aql').append(opt);
@@ -673,7 +722,6 @@
                     });
                 }
                 const getDieNo = function () {
-
                     form.iqcInspection.find('#die_no').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
                     for (let i = 0; i < 15; i++) {
                         let opt = `<option value="${i+1}">${i+1}</option>`;
@@ -691,13 +739,6 @@
                             console.log(response['dppm_value'][0]);
                             form.iqcInspection.find('#target_dppm').val(response['lar_value'][0]);
                             form.iqcInspection.find('#target_lar').val(response['dppm_value'][0]);
-                            // let dropdown_aql_id = response['id'][];
-                            // let dropdown_aql_name = response['value'][];
-                            // form.iqcInspection.find('#aql').empty().prepend(`<option value="0" selected disabled>-Select-</option>`)
-                            // for (let i = 0; i < dropdown_aql_id.length; i++) {
-                            //     let opt = `<option value="${dropdown_aql_name[i]}">${dropdown_aql_name[i]}</option>`;
-                            //     form.iqcInspection.find('#aql').append(opt);
-                            // }
                         }
                     });
                 }
@@ -718,13 +759,17 @@
                         }
                     });
                 }
-
                 const disabledEnabledButton = function(arrCounter){
                     if(arrCounter === 0 ){
                         btn.removeModLotNumber.prop('disabled',true);
+                        btn.saveComputation.prop('disabled',true);
                     }else{
                         btn.removeModLotNumber.prop('disabled',false);
+                        btn.saveComputation.prop('disabled',false);
                     }
+                }
+                const getSum = function (total, num) {
+                    return total + Math.round(num);
                 }
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
@@ -738,14 +783,16 @@
                     arrTableMod.modeOfDefects =[];
                     arrTableMod.lotQty =[];
 
-                    $('#tblModeOfDefect tbody').empty();
                     getWhsTransactionById(whs_transaction_id);
                     getFamily();
-                    getInspectionLevel();
                     getAql();
+                    getInspectionLevel();
                     getDieNo();
                     getLarDppm();
                     getModeOfDefect();
+
+                    $('#tblModeOfDefect tbody').empty();
+                    $('input [type="number"]').val(0);
                     form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
                     form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
                 });
@@ -770,7 +817,7 @@
                         toastr.error('Error: Please Fill up all fields !');
                         return false;
                     }
-                    
+
                     /* Counter and Disabled Removed Button */
                     arrCounter.ctr++;
                     disabledEnabledButton(arrCounter.ctr)
@@ -790,18 +837,22 @@
                     console.log('check',arrTableMod);
                 });
 
+                btn.saveComputation.click(function (e) {
+                    e.preventDefault();
+                    $('#modalModeOfDefect').modal('hide');
+                    form.iqcInspection.find('#no_of_defects').val(arrTableMod.lotQty.reduce(getSum, 0));
+                });
+
                 btn.removeModLotNumber.click(function() {
                     arrCounter.ctr --;
                     disabledEnabledButton(arrCounter.ctr)
-                    
+
                     $('#tblModeOfDefect tr:last').remove();
                     arrTableMod.lotNo.splice(arrCounter.ctr, 1);
                     arrTableMod.modeOfDefects.splice(arrCounter.ctr, 1);
                     arrTableMod.lotQty.splice(arrCounter.ctr, 1);
                     console.log(arrTableMod);
                 });
-
-
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
 
@@ -811,28 +862,20 @@
                         data: $(this).serialize() + '&' +$.param(arrTableMod),
                         dataType: "json",
                         success: function (response) {
-                            console.log(response);
+                            if (response['result'] === 1){
+                                Swal.fire({
+                                    position: "center",
+                                    icon: "success",
+                                    title: "Your work has been saved",
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+                            }else{
+
+                            }
                         }
                     });
                 });
-
-                // $(form.iqcInspection).submit(function (e) {
-                //     e.preventDefault();
-                //     console.log(e);
-                //     $.ajax({
-                //         type: "GET",
-                //         url: "save_iqc_inspection",
-                //         data: $(this).serialize() + '&' +$.param(arrTableMod),
-                //         dataType: "json",
-                //         success: function (response) {
-                //             console.log(response);
-                //         }
-                //     });
-                // });
-            
-
-                
-                
             });
 
         </script>

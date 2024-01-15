@@ -5,13 +5,15 @@ namespace App\Http\Controllers;
 use DataTables;
 use App\Models\TblWarehouse;
 use Illuminate\Http\Request;
+use App\Models\IqcInspection;
 use App\Models\DropdownIqcAql;
 use App\Models\DropdownIqcFamily;
+use App\Models\IqcInspectionsMod;
 use Illuminate\Support\Facades\DB;
 use App\Models\DropdownIqcTargetLar;
 use App\Models\DropdownIqcTargetDppm;
-use App\Models\TblWarehouseTransaction;
 use App\Models\DropdownIqcModeOfDefect;
+use App\Models\TblWarehouseTransaction;
 use App\Models\DropdownIqcInspectionLevel;
 use App\Http\Requests\IqcInspectionRequest;
 
@@ -43,7 +45,7 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."' id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -57,22 +59,6 @@ class IqcInspectionController extends Controller
         })
         ->rawColumns(['action','status'])
         ->make(true);
-        return $tbl_whs_trasanction;
-        return $tbl_whs_trasanction[0]->InvoiceNo;
-        return $tbl_whs_trasanction[0]->PartNumber;
-        return $tbl_whs_trasanction[0]->MaterialType;
-        return $tbl_whs_trasanction[0]->Supplier; //Application Ctrl. No
-
-        return $tbl_whs_trasanction[0]->TransferSlipNo; //Application Ctrl. No
-
-        return $tbl_whs_trasanction[0]->whs_transaction_id;
-        return $tbl_whs_trasanction[0]->whs_transaction_lastupdate;
-        return $tbl_whs_trasanction[0]->whs_transaction_username;
-        return $tbl_whs_trasanction[0]->whs_id;
-        return $tbl_whs_trasanction[0]->whs_lastupdate;
-        return $tbl_whs_trasanction[0]->whs_username;
-
-
         /*
             InvoiceNo
             whs_transaction_username,whs_username
@@ -94,16 +80,33 @@ class IqcInspectionController extends Controller
 
     public function getWhsTransactionById(Request $request){
         // return $request->whs_transaction_id;
-        return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-        ->select('
-            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
-            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
-            whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            FROM tbl_WarehouseTransaction whs_transaction
-            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-            WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
-            LIMIT 0,1
-        ');
+
+        $is_exist_iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$request->whs_transaction_id)->exists();
+
+        if($is_exist_iqc_inspection_by_whs_trasaction_id == 1){
+            // return $tbl_whs_trasanction = IqcInspection::where('whs_transaction_id',$request->whs_transaction_id)->get();
+            return $tbl_whs_trasanction = DB::connection('mysql')
+            ->select('
+                SELECT *, id as "iqc_inspections_id"
+                FROM iqc_inspections
+                WHERE whs_transaction_id = '.$request->whs_transaction_id.'
+                LIMIT 0,1
+            ');
+        }else{
+            return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+            ->select('
+                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+                whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
+                whs_transaction.InvoiceNo as "invoice_no",whs_transaction.Lot_number as "lot_no",whs_transaction.In as "total_lot_qty",
+                whs.PartNumber as "partcode",whs.MaterialType as "partname",whs.Supplier as supplier,
+                whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
+                FROM tbl_WarehouseTransaction whs_transaction
+                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                WHERE whs_transaction.pkid = '.$request->whs_transaction_id.'
+                LIMIT 0,1
+            ');
+        }
+
     }
 
     public function getFamily(){
@@ -178,45 +181,59 @@ class IqcInspectionController extends Controller
 
 
     public function saveIqcInspection(IqcInspectionRequest $request){
-        // return $request->all();
-        // return 'true';
-        return $attr = $request->validated();
-
-        /**{
-            "whs_transaction_id": "19928",
-            "iqc_inspection_id": null,
-            "invoice_no": "0092449618",
-            "partcode": "108032201",
-            "partname": "CN171S-05#ME-VE",
-            "supplier": "YEC",
-            "family": "2",
-            "app_no": "PPS-2401-",
-            "die_no": "4",
-            "total_lot_qty": "321",
-            "iqc_inspection_id": "",
-            "type_of_inspection": "3",
-            "severity_of_inspection": "2",
-            "inspection_lvl": "3",
-            "aql": "0.04",
-            "accept": "1",
-            "reject": "0",
-            "date_inspected": "2024-01-10",
-            "shift": "2",
-            "time_ins_from": "15:08",
-            "time_ins_to": "15:08",
-            "inspector": "mclegaspi",
-            "submission": "2",
-            "category": "1",
-            "target_lar": "1.19",
-            "target_dppm": "1.19",
-            "remarks": "dsa",
-            "lot_inspected": "1",
-            "accepted": "1",
-            "sampling_size": "50",
-            "no_of_defects": "21",
-            "judgement": "1"
+        date_default_timezone_set('Asia/Manila');
+        try {
+            if(isset($request->iqc_inspection_id)){ /* Edit */
+                
+                $update_iqc_inspection = IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated());
+                IqcInspection::where('id', $request->iqc_inspection_id)
+                ->update([
+                    'no_of_defects' => $request->no_of_defects,
+                    'remarks' => $request->remarks
+                ]);
+            
+                $iqc_inspections_id = $request->iqc_inspection_id;
+                
+            }else{ /* Add */
+                
+                /* All required fields is the $request validated, check the column is IqcInspectionRequest
+                    NOTE: the name of fields must be match in column name
+                */
+                $create_iqc_inspection = IqcInspection::create($request->validated());
+                /*  All not required fields should to be inside the update method below
+                    NOTE: the name of fields must be match in column name
+                */
+                IqcInspection::where('id', $create_iqc_inspection->id)
+                ->update([
+                    'no_of_defects' => $request->no_of_defects,
+                    'remarks' => $request->remarks
+                ]);
+            
+                $iqc_inspections_id = $create_iqc_inspection->id;
+                
+            }
+            /* Get iqc_inspections_id, delete the previos MOD then  save new MOD*/
+            if(isset($request->modeOfDefects)){
+                IqcInspectionsMod::where('iqc_inspections_id', $iqc_inspections_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                foreach ($request->lotQty as $key => $mod_lot_qty) {
+                    
+                    IqcInspectionsMod::insert([
+                        'iqc_inspections_id'    => $iqc_inspections_id,
+                        'lot_no'                => $request->lotNo[$key],
+                        'mode_of_defects'       => $request->modeOfDefects[$key],
+                        'quantity'              => $request->lotQty[$key],
+                        'created_at'            => date('Y-m-d H:i:s'),
+                    ]);
+                }
+            }
+            return response()->json( [ 'result' => 1 ] );
+        } catch (\Throwable $th) {
+            throw $th;
         }
-        */
+            
+
     }
 
     public function getModeOfDefect(){
