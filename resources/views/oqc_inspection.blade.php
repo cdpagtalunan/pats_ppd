@@ -581,9 +581,9 @@
                 GetInspectionLevel($('.inspectionLevelDropdown'))
                 GetSeverityInspection($('.severityInspectionDropdown'))
 
-                $('.select2bs4').select2({
-                    theme: 'bootstrap-5'
-                });
+                // $('.select2bs4').select2({
+                //     theme: 'bootstrap-5'
+                // });
 
                 $('#smartwizard').smartWizard({
                     selected        :   0,

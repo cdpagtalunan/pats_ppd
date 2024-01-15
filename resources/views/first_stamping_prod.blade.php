@@ -397,12 +397,12 @@
             var img_barcode_PO_text_hidden;
             var multipleMatId;
             $(document).ready(function(){
-                $('.select2').select2();
+                // $('.select2').select2();
 
-                //Initialize Select2 Elements
-                $('.select2bs4').select2({
-                    theme: 'bootstrap-5'
-                });
+                // //Initialize Select2 Elements
+                // $('.select2bs4').select2({
+                //     theme: 'bootstrap-5'
+                // });
 
                 dtDatatableProd = $("#tblProd").DataTable({
                     "processing" : true,

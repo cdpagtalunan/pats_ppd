@@ -379,12 +379,12 @@
         <script type="text/javascript">
             var prodData;
             $(document).ready(function(){
-                $('.select2').select2();
+                // $('.select2').select2();
 
-                //Initialize Select2 Elements
-                $('.select2bs4').select2({
-                    theme: 'bootstrap4'
-                });
+                // //Initialize Select2 Elements
+                // $('.select2bs4').select2({
+                //     theme: 'bootstrap4'
+                // });
 
                 let dtIpqcInspection;
                 dtIpqcInspection = $("#tblIpqcInspection").DataTable({
