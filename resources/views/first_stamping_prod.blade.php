@@ -67,13 +67,19 @@
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
                                                 {{-- <button class="btn btn-primary"><i class="fa-solid fa-qrcode"></i></button> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" aria-label="Username" id="txtSearchPONum" value="450244133600010">
+                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Material Name" aria-label="Username" id="txtSearchMatName" readonly>
+                                                <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMatName" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">PO Quantity</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="PO Quantity" id="txtSearchPO" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -111,7 +117,7 @@
                                             <thead>
                                                 <tr>
                                                     <th>Action</th>
-                                                    {{-- <th>Status</th> --}}
+                                                    <th>Status</th>
                                                     <th>PO Number</th>
                                                     <th>Production Lot No.</th>
                                                     <th>Parts Code</th>
@@ -150,12 +156,22 @@
                     <form method="post" id="formProdData" autocomplete="off">
                         @csrf
                         <div class="modal-body">
-                            <input type="hidden" id="txtProcessId" name="id">
+                            <input type="hidden" id="txtProdDataId" name="id">
                             <div class="row">
                                 <div class="col-sm-4">
                                     <div class="card">
                                         <div class="card-body">
                                             <input type="hidden" name="ctrl_counter" id="txtCtrlCounter">
+
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="status" id="radioIQC" value="0" disabled>
+                                                <label class="form-check-label" for="radioIQC">For IQC</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="status" id="radioMassProd" value="1" disabled>
+                                                <label class="form-check-label" for="radioMassProd">For Mass Production</label>
+                                            </div>
+
                                             <div class="form-group">
                                                 <label class="form-label">PO Number:</label>
                                                 <input type="text" class="form-control form-control-sm" name="po_num" id="txtPoNumber" readonly>
@@ -201,6 +217,19 @@
                                 <div class="col-sm-4">
                                     <div class="card">
                                         <div class="card-body">
+                                            <div class="form-group d-md-inline-flex">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="cut_point" id="radioCutPointWithout" value="0" checked>
+                                                    <label class="form-check-label" for="radioCutPointWithout">w/o Cut Points</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="cut_point" id="radioCutPointWith" value="1">
+                                                    <label class="form-check-label" for="radioCutPointWith">w/ Cut Points</label>
+                                                </div>
+                                                <div>
+                                                    <input type="text" class="form-control" name="no_cut" id="txtNoCut" placeholder="No. of Cut" readonly>
+                                                </div>
+                                            </div>
                                             <div class="form-group">
                                                 <label class="form-label">Production Date:</label>
                                                 <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
@@ -212,9 +241,9 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">PPC Target Output (Pins):</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Input Coil Weight / 0.005)"></i>
+                                                {{-- <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Input Coil Weight / 0.005)"></i> --}}
 
-                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="target_output" id="txtTargetOutput" readonly>
+                                                <input type="number" class="form-control form-control-sm" name="target_output" id="txtTargetOutput">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Planned Loss (10%) (Pins):</label>
@@ -249,12 +278,12 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shipment Output:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Set-up Pins + Adjustment Pins + QC Samples + Prod. Samples / Total Machin Output)"></i>
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Total Machine Output - Set-up Pins + Adjustment Pins + QC Samples + Prod. Samples)"></i>
                                                 <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="ship_output" id="txtShipOutput" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Yield:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Total Machine Output / Shipment Output) Percent"></i>
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) Percent"></i>
                                                 <input type="text" class="form-control form-control-sm" placeholder="Auto Compute" name="mat_yield" id="txtMatYield" readonly>
                                             </div>
                                             {{-- <div class="form-group">
@@ -286,7 +315,7 @@
                                             <label class="form-label">Material Lot No.:</label> 
 
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0">
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
                                             <input type="text" class="hidden_scanner_input" id="multipleCounter" value="0">
@@ -349,8 +378,8 @@
                     </div>
                     <div class="modal-body pt-0">
                         {{-- hidden_scanner_input --}}
-                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
-                        <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan the material lot #.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
@@ -373,8 +402,6 @@
                     theme: 'bootstrap-5'
                 });
 
-                getOperatorList($('.selOpName'));
-
                 dtDatatableProd = $("#tblProd").DataTable({
                     "processing" : true,
                     "serverSide" : true,
@@ -384,38 +411,54 @@
                             param.po = $("#txtSearchPONum").val();
                         }
                     },
-                fixedHeader: true,
-                "columns":[
-                
-                    { "data" : "action", orderable:false, searchable:false },
-                    // { "data" : "status" },
-                    { "data" : "po_num" },
-                    { "data" : "prod_lot_no" },
-                    { "data" : "part_code" },
-                    { "data" : "material_name" },
-                    { "data" : "po_qty" },
-                    { "data" : "material" },
-                ],
-                "columnDefs": [
-                    {"className": "dt-center", "targets": "_all"}
-                ],
+                    fixedHeader: true,
+                    "columns":[
+                    
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "label" },
+                        { "data" : "po_num" },
+                        { "data" : "prod_lot_no" },
+                        { "data" : "part_code" },
+                        { "data" : "material_name" },
+                        { "data" : "po_qty" },
+                        { "data" : "material" },
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": "_all"}
+                    ],
                 });//end of dataTableDevices
 
                 $('#formProdData').submit(function(e){
                     e.preventDefault();
-                    submitProdData();
+                    $('#modalScanQRSave').modal('show');
                 });
 
-                $('#txtInptCoilWeight').on('keyup', function(e){
-                    // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
-                    let ppcTargtOut = 0;
-                    let planLoss = 0;
-                    let inputCoilWeight = $(this).val(); 
+                $('#txtScanUserId').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        // console.log($(this).val());
+                        validateUser($(this).val(), 4, function(result){
 
-                    ppcTargtOut = inputCoilWeight/0.005;
+                            if(result == true){
+                                submitProdData();
+                            }
+                            else{ // Error Handler
+
+                            }
+                            
+                        });
+                        $(this).val('');
+                    }
+                });
+                $('#txtTargetOutput').on('keyup', function(e){
+                    // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
+                    // let ppcTargtOut = 0;
+                    let planLoss = 0;
+                    let ppcTargtOut = $(this).val(); 
+
+                    // ppcTargtOut = inputCoilWeight/0.005;
                     planLoss = ppcTargtOut*0.1;
 
-                    $('#txtTargetOutput').val(ppcTargtOut);
+                    // $('#txtTargetOutput').val(ppcTargtOut);
                     $('#txtPlannedLoss').val(planLoss);
                 });
 
@@ -463,6 +506,7 @@
                                         dataType: "json",
                                         success: function (result) {
                                             $('#txtSearchMatName').val(response[0]['ItemName']);
+                                            $('#txtSearchPO').val(response[0]['OrderQty']);
                                             prodData['drawings'] = result
                                             console.log(prodData);
                                             dtDatatableProd.draw();
@@ -478,6 +522,7 @@
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
                         checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'])
                         getProdLotNoCtrl();
+
                         // console.log(prodData);
                         // $('#txtPoNumber').val(prodData['poReceiveData']['OrderNo']);
                         // $('#txtPoQty').val(prodData['poReceiveData']['OrderQty']);
@@ -487,6 +532,11 @@
                         // $('#txtDrawingRev').val(prodData['drawings']['rev']);
                         // // $('#txtOptName').val($('#globalSessionName').val());
                         // $('#modalMachineOp').modal('show');
+                        $('#txtProdSamp').prop('readonly', true);
+                        $('#txtTtlMachOutput').prop('readonly', true);
+                        $('#txtProdDate').prop('readonly', true);
+                        $('#radioIQC').prop('checked', true);
+                        $('#radioMassProd').prop('checked', false);
                     }
                     else{
                         toastr.error('Please input PO.')
@@ -496,7 +546,9 @@
 
                 $(document).on('click', '.btnViewProdData', function(e){
                     let id = $(this).data('id');
-                    getProdDataToView(id);
+                    let btnFunction = $(this).data('function');
+                    // getProdDataToView(id);
+                    getProdDataById(id, btnFunction);
                 });
 
                 $(document).on('click', '.btnPrintProdData', function(e){
@@ -548,7 +600,7 @@
                     $('#multipleCounter').val(newCount);
                     let inputGroup = `
                             <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
-                                <input type='text' class='form-control form-control-sm' name='material_no[]' id='txtTtlMachOutput_${newCount}' required>
+                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                             </div>
                     `;
@@ -585,6 +637,26 @@
                         $('#modalScanQr').modal('hide');
                     }
                 });
+
+                $(document).on('click', '.btnMassProd', function(e){
+                    let id = $(this).data('id');
+                    let btnFunction = $(this).data('function');
+                    // console.log(btnFunction);
+                    getProdDataById(id, btnFunction);
+                });
+
+                $('input[name="cut_point"]').on('change', function(){
+                    if($(this).val() == 0){
+                        $('#txtNoCut').prop('readonly', true);
+
+                    }
+                    else{
+                        $('#txtNoCut').prop('readonly', false);
+                    }
+                });
+
+                getOperatorList($('.selOpName'));
+
             });
         </script>
     @endsection

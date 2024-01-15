@@ -87,10 +87,55 @@ function resetFormProdValues() {
     $('#divProdLotView').addClass('d-none');
     $('select[name="opt_name[]"]').val(0).trigger('change');
 
+    // $('input',)
+    $('#txtProdSamp').prop('readonly', false);
+    $('#txtTtlMachOutput').prop('readonly', false);
+    $('#txtProdDate').prop('readonly', false);
 
+    $('#selOperator').prop('disabled', false);
+    $('#txtOptShift').prop('readonly', false);
+    $('#txtInptCoilWeight').prop('readonly', false);
+    $('#txtSetupPin').prop('readonly', false);
+    $('#txtAdjPin').prop('readonly', false);
+    $('#txtQcSamp').prop('readonly', false);
+    $('#selOperator').prop('readonly', false);
+    $('#txtTargetOutput').prop('readonly', false);
+    $('#prodLotNoExt1').prop('readonly', false);
+    $('#prodLotNoExt2').prop('readonly', false);
+    // $('.matNo').prop('readonly', false);
+    $('input[name="cut_point"]').prop('disabled', false);
+    $('#radioCutPointWithout').prop('checked', true);
+
+
+
+    // $('#radioIQC').attr('checked', false);
+    // $('#radioMassProd').attr('checked', false);
 }
 
 $("#modalMachineOp").on('hidden.bs.modal', function () {
     console.log('hidden.bs.modal');
     resetFormProdValues();
 });
+
+function validateUser(userId, validPosition, callback){ // this function will accept scanned id and validPosition based on user table (number only)
+    $.ajax({
+        type: "get",
+        url: "validate_user",
+        data: {
+            'id'    : userId,
+            'pos'   : validPosition
+        },
+        dataType: "json",
+        success: function (response) {
+            let value1
+            if(response['result'] == 1){
+                value1 = true;
+            }
+            else{
+                value1 = false;
+            }
+
+            callback(value1);
+        }
+    });
+}

@@ -272,6 +272,7 @@
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
+                      <option value="10">PPC - Clerk</option>
                     </select>
                 </div>
 
@@ -515,6 +516,7 @@
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
+                      <option value="10">PPC - Clerk</option>
                     </select>
                 </div>
 
@@ -747,7 +749,7 @@
         });
 
         // Add User 
-        $("#formAddUser").submit(function(event){
+        $("#btnAddUser").on('click', function(event){
           event.preventDefault();
           AddUser();
         });

@@ -31,7 +31,6 @@
 </head>
 <body class="hold-transition sidebar-mini ">
 <div class="wrapper">
-  <input type="hidden" id="globalSessionName" value="<?php echo Auth::user()->name; ?>">
   @include('shared.pages.header')
 
   @include('shared.pages.admin_nav')

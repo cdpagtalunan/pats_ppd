@@ -290,8 +290,8 @@ class UserController extends Controller
                 $user_id = User::insertGetId([
                     // 'name' => $request->name,
                     'firstname' => $request->fname, 
-                    'firstname' => $request->mname, 
-                    'firstname' => $request->lname, 
+                    'middlename' => $request->mname, 
+                    'lastname' => $request->lname, 
                     'username' => $request->username,
                     'email' => $request->email,
                     'employee_id' => $request->employee_id,
@@ -401,7 +401,7 @@ class UserController extends Controller
 
         if(isset($request->with_email)){
             $validator = Validator::make($data, [
-                'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
+                // 'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
                 'username' => 'required|string|max:255|unique:users,username,'. $request->user_id,
                 'employee_id' => 'required|string|max:255|unique:users,employee_id,'. $request->user_id,
                 'email' => 'required|string|max:255|unique:users,email,'. $request->user_id,
@@ -411,7 +411,7 @@ class UserController extends Controller
         }
         else{
             $validator = Validator::make($data, [
-                'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
+                // 'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
                 'username' => 'required|string|max:255|unique:users,username,'. $request->user_id,
                 'employee_id' => 'required|string|max:255|unique:users,employee_id,'. $request->user_id,
                 'user_level_id' => 'required|string|max:255|',
@@ -427,7 +427,7 @@ class UserController extends Controller
 
             try{
                 $edit_array = array(
-                    'name' => $request->name,
+                    // 'name' => $request->name,
                     'username' => $request->username,
                     'email' => $request->email,
                     'employee_id' => $request->employee_id,
@@ -496,7 +496,7 @@ class UserController extends Controller
             }
             catch(\Exception $e) {
                 DB::rollback();
-                // throw $e;
+                throw $e;
                 return response()->json(['result' => "0"]);
             }
         }

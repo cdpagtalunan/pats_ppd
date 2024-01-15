@@ -28,9 +28,37 @@ class FirstStampingController extends Controller
         ->addColumn('action', function($stamping_data){
             $result = "";
             $result .= "<center>";
-            $result .= "<button class='btn btn-info btn-sm btnViewProdData mr-1' data-id='$stamping_data->id'><i class='fa-solid fa-eye'></i></button>";
-            $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id'><i class='fa-solid fa-qrcode'></i></button>";
+            /*
+                * data-function on buttons will be the trigger point for viewing and editing for mass production
+                * 0 => viewing only, 1 => for mass production entry of data
+            */
+            $result .= "<button class='btn btn-info btn-sm btnViewProdData mr-1' data-id='$stamping_data->id' data-function='0'><i class='fa-solid fa-eye'></i></button>";
+
+            if($stamping_data->status == 1){
+                $result .= "<button class='btn btn-warning btn-sm btnMassProd' data-id='$stamping_data->id' data-function='1'><i class='fa-solid fa-up-right-from-square'></i></button>";
+            }
+            else if($stamping_data->status == 2){
+                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id'><i class='fa-solid fa-qrcode'></i></button>";
+
+            }
             $result .= "</center>";
+            return $result;
+        })
+        ->addColumn('label', function($stamping_data){
+            $result = "";
+            if($stamping_data->status == 0){
+                $result = "<span class='badge bg-warning'>For IPQC Inspection</span>";
+
+            }
+            else if($stamping_data->status == 1){
+                $result = "<span class='badge bg-info'>Ready for mass production</span>";
+
+            }
+            else if($stamping_data->status == 2){
+                $result = "<span class='badge bg-success'>Done</span>";
+
+            }
+
             return $result;
         })
         ->addColumn('material', function($stamping_data){
@@ -45,7 +73,7 @@ class FirstStampingController extends Controller
             $result .= "</center>";
             return $result;
         })
-        ->rawColumns(['action', 'material'])
+        ->rawColumns(['action', 'material', 'label'])
         ->make(true);
     }
 
@@ -53,29 +81,38 @@ class FirstStampingController extends Controller
         date_default_timezone_set('Asia/Manila');
         // return $request->all();
         $data = $request->all();
-        $validation = array(
-            'po_num'           => ['required'],
-            'po_qty'           => ['required'],
-            'part_code'        => ['required'],
-            'mat_name'         => ['required'],
-            // 'mat_lot_no'       => ['required'],
-            'drawing_no'       => ['required'],
-            'drawing_rev'      => ['required'],
-            'opt_name'         => ['required'],
-            'opt_shift'        => ['required'],
-            'prod_date'        => ['required'],
-            // 'prod_lot_no'      => ['required'],
-            'inpt_coil_weight' => ['required'],
-            'target_output'    => ['required'],
-            'planned_loss'     => ['required'],
-            'setup_pins'       => ['required'],
-            'adj_pins'         => ['required'],
-            'qc_samp'          => ['required'],
-            'prod_samp'        => ['required'],
-            'ttl_mach_output'  => ['required'],
-            'ship_output'      => ['required'],
-            'mat_yield'        => ['required'],
-        );
+     
+        if(isset($request->id)){
+            $validation = array(
+                // 'mat_lot_no'       => ['required'],
+                'prod_date'        => ['required'],
+                // 'prod_lot_no'      => ['required'],
+                'prod_samp'        => ['required'],
+                'ttl_mach_output'  => ['required'],
+                'ship_output'      => ['required'],
+                'mat_yield'        => ['required'],
+            );
+        }
+        else{
+            $validation = array(
+                'po_num'           => ['required'],
+                'po_qty'           => ['required'],
+                'part_code'        => ['required'],
+                'mat_name'         => ['required'],
+                'drawing_no'       => ['required'],
+                'drawing_rev'      => ['required'],
+                'opt_name'         => ['required'],
+                'opt_shift'        => ['required'],
+                'inpt_coil_weight' => ['required'],
+                'target_output'    => ['required'],
+                'planned_loss'     => ['required'],
+                'setup_pins'       => ['required'],
+                'adj_pins'         => ['required'],
+                'qc_samp'          => ['required'],
+               
+            );
+        }
+        
 
         $validator = Validator::make($data, $validation);
 
@@ -85,40 +122,59 @@ class FirstStampingController extends Controller
         else{
             DB::beginTransaction();
             try{
-                $imploded_mat_no = implode($request->material_no, ', ');
-                $imploded_operator = implode($request->opt_name, ', ');
-                // return $imploded_mat_no;
-                // return $request->all();
-                // return ;
-                $prod_array = array(
-                    'ctrl_counter'      => $request->ctrl_counter,
-                    'po_num'            => $request->po_num,
-                    'po_qty'            => $request->po_qty,
-                    'part_code'         => $request->part_code,
-                    'material_name'     => $request->mat_name,
-                    'material_lot_no'   => $imploded_mat_no,
-                    'drawing_no'        => $request->drawing_no,
-                    'drawing_rev'       => $request->drawing_rev,
-                    'prod_date'         => $request->prod_date,
-                    'prod_lot_no'       => $request->prod_log_no_auto."".$request->prod_log_no_ext_1."-".$request->prod_log_no_ext_2,
-                    'input_coil_weight' => $request->inpt_coil_weight,
-                    'ppc_target_output' => $request->target_output,
-                    'planned_loss'      => $request->planned_loss,
-                    'set_up_pins'       => $request->setup_pins,
-                    'adj_pins'          => $request->adj_pins,
-                    'qc_samp'           => $request->qc_samp,
-                    'prod_samp'         => $request->prod_samp,
-                    'total_mach_output' => $request->ttl_mach_output,
-                    'ship_output'       => $request->ship_output,
-                    'mat_yield'         => $request->mat_yield,
-                    'shift'             => $request->opt_shift,
-                    'operator'          => $imploded_operator,
-                    'created_by'        => Auth::user()->id,
-                    'created_at'        => NOW()
-                );
 
-                FirstStampingProduction::insert($prod_array);
-                DB::commit();
+                // return $request->all();
+                if(isset($request->id)){
+                    FirstStampingProduction::where('id', $request->id)
+                    ->update([
+                        'status'            => 2,
+                        'prod_date'         => $request->prod_date,
+                        'prod_samp'         => $request->prod_samp,
+                        'total_mach_output' => $request->ttl_mach_output,
+                        'ship_output'       => $request->ship_output,
+                        'mat_yield'         => $request->mat_yield,
+                        
+                    ]);
+
+                    DB::commit();
+                }
+                else{
+
+                    $imploded_mat_no = implode($request->material_no, ', ');
+                    $imploded_operator = implode($request->opt_name, ', ');
+                    $prod_array = array(
+                        'ctrl_counter'      => $request->ctrl_counter,
+                        'po_num'            => $request->po_num,
+                        'po_qty'            => $request->po_qty,
+                        'part_code'         => $request->part_code,
+                        'material_name'     => $request->mat_name,
+                        'material_lot_no'   => $imploded_mat_no,
+                        'drawing_no'        => $request->drawing_no,
+                        'drawing_rev'       => $request->drawing_rev,
+                        // 'prod_date'         => $request->prod_date,
+                        'cut_off_point'     => $request->cut_point,
+                        'no_of_cuts'        => $request->no_cut,
+                        'prod_lot_no'       => $request->prod_log_no_auto."".$request->prod_log_no_ext_1."-".$request->prod_log_no_ext_2,
+                        'input_coil_weight' => $request->inpt_coil_weight,
+                        'ppc_target_output' => $request->target_output,
+                        'planned_loss'      => $request->planned_loss,
+                        'set_up_pins'       => $request->setup_pins,
+                        'adj_pins'          => $request->adj_pins,
+                        'qc_samp'           => $request->qc_samp,
+                        // 'prod_samp'         => $request->prod_samp,
+                        'total_mach_output' => $request->ttl_mach_output,
+                        'ship_output'       => $request->ship_output,
+                        'mat_yield'         => $request->mat_yield,
+                        'shift'             => $request->opt_shift,
+                        'operator'          => $imploded_operator,
+                        'created_by'        => Auth::user()->id,
+                        'created_at'        => NOW()
+                    );
+    
+                    FirstStampingProduction::insert($prod_array);
+                    DB::commit();
+                }
+                
 
                 return response()->json([
                     'result' => 1,
