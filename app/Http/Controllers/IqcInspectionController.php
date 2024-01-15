@@ -50,11 +50,36 @@ class IqcInspectionController extends Controller
             return $result;
         })
         ->addColumn('status', function($row){
+            $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
             $result = '';
+            $backgound = '';
+            $judgement = '';
             $result .= '<center>';
-                $result .= "<span class='badge rounded-pill bg-primary'>On going</span>";
-            $result .= '</center>';
 
+            if( count($iqc_inspection_by_whs_trasaction_id) != 0 ){
+                foreach ($iqc_inspection_by_whs_trasaction_id as $key => $value){
+                    switch ($value['judgement']) {
+                        case 1:
+                            $judgement = 'Accepted';
+                            $backgound = 'bg-success';
+
+                            break;
+                        case 2:
+                            $judgement = 'Reject';
+                            $backgound = 'bg-danger';
+                            break;
+
+                        default:
+                            $judgement = 'On-going';
+                            $backgound = 'bg-primary';
+                            break;
+                    }
+                }
+                $result .= '<span class="badge rounded-pill '.$backgound.' ">'.$judgement.'</span>';
+            }else{
+                $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+            }
+            $result .= '</center>';
             return $result;
         })
         ->rawColumns(['action','status'])
@@ -79,19 +104,14 @@ class IqcInspectionController extends Controller
     }
 
     public function getWhsTransactionById(Request $request){
-        // return $request->whs_transaction_id;
 
         $is_exist_iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$request->whs_transaction_id)->exists();
 
         if($is_exist_iqc_inspection_by_whs_trasaction_id == 1){
-            // return $tbl_whs_trasanction = IqcInspection::where('whs_transaction_id',$request->whs_transaction_id)->get();
-            return $tbl_whs_trasanction = DB::connection('mysql')
-            ->select('
-                SELECT *, id as "iqc_inspections_id"
-                FROM iqc_inspections
-                WHERE whs_transaction_id = '.$request->whs_transaction_id.'
-                LIMIT 0,1
-            ');
+            return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
+            ->where('whs_transaction_id',$request->whs_transaction_id)
+            ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
+
         }else{
             return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('
@@ -184,18 +204,18 @@ class IqcInspectionController extends Controller
         date_default_timezone_set('Asia/Manila');
         try {
             if(isset($request->iqc_inspection_id)){ /* Edit */
-                
+
                 $update_iqc_inspection = IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated());
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
                     'no_of_defects' => $request->no_of_defects,
                     'remarks' => $request->remarks
                 ]);
-            
+
                 $iqc_inspections_id = $request->iqc_inspection_id;
-                
+
             }else{ /* Add */
-                
+
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
@@ -208,19 +228,21 @@ class IqcInspectionController extends Controller
                     'no_of_defects' => $request->no_of_defects,
                     'remarks' => $request->remarks
                 ]);
-            
+
                 $iqc_inspections_id = $create_iqc_inspection->id;
-                
+
             }
+
+            // return $iqc_inspections_id;
             /* Get iqc_inspections_id, delete the previos MOD then  save new MOD*/
             if(isset($request->modeOfDefects)){
-                IqcInspectionsMod::where('iqc_inspections_id', $iqc_inspections_id)->update([
+                IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
                 ]);
                 foreach ($request->lotQty as $key => $mod_lot_qty) {
-                    
+
                     IqcInspectionsMod::insert([
-                        'iqc_inspections_id'    => $iqc_inspections_id,
+                        'iqc_inspection_id'    => $iqc_inspections_id,
                         'lot_no'                => $request->lotNo[$key],
                         'mode_of_defects'       => $request->modeOfDefects[$key],
                         'quantity'              => $request->lotQty[$key],
@@ -232,7 +254,7 @@ class IqcInspectionController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-            
+
 
     }
 

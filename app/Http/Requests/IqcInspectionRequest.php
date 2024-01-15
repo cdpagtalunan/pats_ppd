@@ -73,6 +73,8 @@ class IqcInspectionRequest extends FormRequest
             'app_no_extension'=>'required',
             'die_no'=>'required',
             'total_lot_qty'=>'required',
+            'lot_no'=>'required',
+            'classification'=>'required',
             'type_of_inspection'=>'required',
             'severity_of_inspection'=>'required',
             'inspection_lvl'=>'required',

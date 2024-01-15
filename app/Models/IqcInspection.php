@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\IqcInspectionsMod;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IqcInspection extends Model
 {
@@ -21,6 +22,8 @@ class IqcInspection extends Model
         'app_no_extension',
         'die_no',
         'total_lot_qty',
+        'lot_no',
+        'classification',
         'type_of_inspection',
         'severity_of_inspection',
         'inspection_lvl',
@@ -28,6 +31,7 @@ class IqcInspection extends Model
         'accept',
         'reject',
         'shift',
+        'date_inspected',
         'time_ins_from',
         'time_ins_to',
         'inspector',
@@ -43,4 +47,8 @@ class IqcInspection extends Model
         'remarks',
         // 'iqc_inspection_id',
     ];
+
+    public function IqcInspectionsMods(){
+        return $this->hasMany(IqcInspectionsMod::class)->whereNull('deleted_at');
+    }
 }

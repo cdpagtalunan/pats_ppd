@@ -211,13 +211,13 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty">
+                                        <input type="number" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty"  min="0" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="lot_no" name="lot_no" min="0">
+                                        <input type="text" class="form-control form-control-sm" id="lot_no" name="lot_no" readonly>
 
                                         {{-- <button type="button" class="form-control form-control-sm bg-info" id="btnLotNo">Lot Number</button> --}}
                                     </div>
@@ -234,7 +234,6 @@
                                             <option value="4">PPS-Stamping</option>
                                             <option value="5">YEC - Stock</option>
                                         </select>
-                                        {{-- <select class="form-select form-control-sm" id="classification" name="classification"></select> --}}
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +249,6 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Type of Inspection</span>
                                         </div>
-                                            {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
                                             <select class="form-select form-control-sm" id="type_of_inspection" name="type_of_inspection">
                                                 <option value="" selected disabled>-Select-</option>
                                                 <option value="1">Single</option>
@@ -289,14 +287,14 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Accept</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="accept" name="accept">
+                                        <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0">
 
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Reject</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="reject" name="reject">
+                                        <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0">
                                     </div>
                                 </div>
                             </div>
@@ -506,6 +504,7 @@
                                 <table id="tblModeOfDefect" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
                                     <thead>
                                         <tr>
+                                            <th>Counter</th>
                                             <th>Lot No.</th>
                                             <th>Mode of Defects</th>
                                             <th>Quantity</th>
@@ -533,7 +532,9 @@
                 const tbl = {
                     iqcInspection:'#tblIqcInspection'
                 };
-                const dt = {};
+                const dt = {
+                    iqcInspection:''
+                };
                 const form = {
                     iqcInspection : $('#formSaveIqcInspection')
                 };
@@ -595,12 +596,10 @@
                             form.iqcInspection.find('select[name=family]').html(result);
                         },
                         success: function(response){
-                            console.log(response);
                             result = '';
                             let families_id = response['id'];
                             let families_name = response['value'];
-                            // console.log(response['value']);
-                            
+
                             if(response['id'].length > 0){
                                 result = '<option selected disabled> --- Select --- </option>';
                                 for(let index = 0; index < response['id'].length; index++){
@@ -622,12 +621,16 @@
                         data: {"whs_transaction_id" : whs_transaction_id},
                         dataType: "json",
                         success: function (response) {
+                            let twoDigitYear = strDate.dateToday.getFullYear().toString().substr(-2);
+                            let twoDigitMonth = (strDate.dateToday.getMonth() + 1).toString().padStart(2, "0");
                             let lotNo = response[0]['lot_no'];
                             let lotQty = response[0]['total_lot_qty'];
-                            let iqcInspectionId = response[0]['iqc_inspections_id'];
+                            let iqcInspectionId = response[0]['iqc_inspection_id'];
+                            let iqcInspectionsMods = response[0].iqc_inspections_mods;
 
-                            // console.log('date_inspected',response[0]['date_inspected']);
+                            console.log('lotNo',lotNo);
                             $('#modalSaveIqcInspection').modal('show');
+                            form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
                             form.iqcInspection.find('#iqc_inspection_id').val(iqcInspectionId);
                             form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
                             form.iqcInspection.find('#partcode').val(response[0]['partcode']);
@@ -635,8 +638,9 @@
                             form.iqcInspection.find('#supplier').val(response[0]['supplier']);
                             form.iqcInspection.find('#total_lot_qty').val(lotQty);
                             form.iqcInspection.find('#lot_no').val(lotNo);
+                            form.iqcInspection.find('#app_no').val(response[0]['app_no']);
                             form.iqcInspection.find('#app_no_extension').val(response[0]['app_no_extension']);
-                            
+
                             form.iqcInspection.find('#die_no').val(response[0]['die_no']);
                             form.iqcInspection.find('#classification').val(response[0]['classification']);
 
@@ -664,15 +668,39 @@
                                 form.iqcInspection.find('#family').val(response[0]['family']).trigger("change");
                                 form.iqcInspection.find('#inspection_lvl').val(response[0]['inspection_lvl']).trigger("change");
                                 form.iqcInspection.find('#aql').val(response[0]['aql']).trigger("change");
-                                // form.iqcInspection.find('#aql').val(response[0]['aql']).trigger("change");
-                                
+
                             }, 300);
 
-                            arrTableMod.lotNo = [];
-                            arrTableMod.modeOfDefects = [];
-                            arrTableMod.lotQty = [];
-                            arrCounter.ctr = 0;
-                            console.log(arrTableMod);
+                            console.log(iqcInspectionsMods);
+                            $('#tblModeOfDefect tbody').empty();
+                            if(iqcInspectionsMods === undefined){
+                                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
+
+                                arrTableMod.lotNo = [];
+                                arrTableMod.modeOfDefects = [];
+                                arrTableMod.lotQty = [];
+                                arrCounter.ctr = 0;
+                            }else{
+                                btn.removeModLotNumber.prop('disabled',false);
+                                for (let i = 0; i < iqcInspectionsMods.length; i++) {
+                                    let selectedLotNo = iqcInspectionsMods[i].lot_no
+                                    let selectedMod = iqcInspectionsMods[i].mode_of_defects
+                                    let selectedLotQty = iqcInspectionsMods[i].quantity
+                                    arrCounter.ctr = i+1;
+                                    var html_body  = '<tr>';
+                                        html_body += '<td>'+arrCounter.ctr+'</td>';
+                                        html_body += '<td>'+selectedLotNo+'</td>';
+                                        html_body += '<td>'+selectedMod+'</td>';
+                                        html_body += '<td>'+selectedLotQty+'</td>';
+                                        html_body += '</tr>';
+                                    $('#tblModeOfDefect tbody').append(html_body);
+
+                                    arrTableMod.lotNo.push(selectedLotNo);
+                                    arrTableMod.modeOfDefects.push(selectedMod);
+                                    arrTableMod.lotQty.push(selectedLotQty);
+                                    console.log(arrTableMod.lotNo);
+                                }
+                            }
                             /*Mode of Defects Modal*/
                             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                             $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
@@ -681,8 +709,9 @@
                                 let optLotQty = `<option value="${lotQty}">${lotQty}</option>`;
                                 $('#mod_lot_no').append(optLotNo);
                                 $('#mod_quantity').append(optLotQty);
-                                console.log(optLotQty);
+
                             }
+                            console.log('show_edit',arrTableMod.lotQty);
                         }
                     });
                 }
@@ -735,8 +764,8 @@
                         data: "data",
                         dataType: "json",
                         success: function (response) {
-                            console.log(response['lar_value'][0]);
-                            console.log(response['dppm_value'][0]);
+                            // console.log(response['lar_value'][0]);
+                            // console.log(response['dppm_value'][0]);
                             form.iqcInspection.find('#target_dppm').val(response['lar_value'][0]);
                             form.iqcInspection.find('#target_lar').val(response['dppm_value'][0]);
                         }
@@ -774,15 +803,10 @@
 
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
                     let whs_transaction_id = $(this).attr('whs-trasaction-id')
-                    let twoDigitYear = strDate.dateToday.getFullYear().toString().substr(-2);
-                    let twoDigitMonth = (strDate.dateToday.getMonth() + 1).toString().padStart(2, "0");
+
                     let arr_data = {
                         'whs_transaction_id': whs_transaction_id
                     }
-                    arrTableMod.lotNo =[];
-                    arrTableMod.modeOfDefects =[];
-                    arrTableMod.lotQty =[];
-
                     getWhsTransactionById(whs_transaction_id);
                     getFamily();
                     getAql();
@@ -791,10 +815,10 @@
                     getLarDppm();
                     getModeOfDefect();
 
-                    $('#tblModeOfDefect tbody').empty();
-                    $('input [type="number"]').val(0);
-                    form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
-                    form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
+                    form.iqcInspection.find('input').removeClass('is-invalid')
+                    form.iqcInspection.find('input').attr('title', '')
+                    form.iqcInspection.find('select').removeClass('is-invalid')
+                    form.iqcInspection.find('select').attr('title', '')
                 });
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -834,7 +858,8 @@
                     arrTableMod.lotNo.push(selectedLotNo);
                     arrTableMod.modeOfDefects.push(selectedMod);
                     arrTableMod.lotQty.push(selectedLotQty);
-                    console.log('check',arrTableMod);
+                    console.log('click',arrTableMod.lotQty);
+                    // console.log('check',arrTableMod);
                 });
 
                 btn.saveComputation.click(function (e) {
@@ -851,11 +876,11 @@
                     arrTableMod.lotNo.splice(arrCounter.ctr, 1);
                     arrTableMod.modeOfDefects.splice(arrCounter.ctr, 1);
                     arrTableMod.lotQty.splice(arrCounter.ctr, 1);
-                    console.log(arrTableMod);
+                    console.log('deleted',arrTableMod.lotQty);
+                    // console.log(arrTableMod);
                 });
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-
                     $.ajax({
                         type: "GET",
                         url: "save_iqc_inspection",
@@ -863,6 +888,8 @@
                         dataType: "json",
                         success: function (response) {
                             if (response['result'] === 1){
+                                $('#modalSaveIqcInspection').modal('hide');
+                                dt.iqcInspection.draw();
                                 Swal.fire({
                                     position: "center",
                                     icon: "success",
@@ -870,12 +897,50 @@
                                     showConfirmButton: false,
                                     timer: 1500
                                 });
+                            }
+                        },error: function (data, xhr, status){
+                            let errors = data.responseJSON.errors ;
+                            console.log(data.status);
+                            if(data.status === 422){
+                                errorHandler(errors.accept,form.iqcInspection.find('#accept'));
+                                errorHandler(errors.family,form.iqcInspection.find('#family'));
+                                errorHandler(errors.app_no_extension,form.iqcInspection.find('#app_no_extension'));
+                                errorHandler(errors.die_no,form.iqcInspection.find('#die_no'));
+                                errorHandler(errors.lot_no,form.iqcInspection.find('#lot_no'));
+                                errorHandler(errors.classification,form.iqcInspection.find('#classification'));
+                                errorHandler(errors.type_of_inspection,form.iqcInspection.find('#type_of_inspection'));
+                                errorHandler(errors.severity_of_inspection,form.iqcInspection.find('#severity_of_inspection'));
+                                errorHandler(errors.inspection_lvl,form.iqcInspection.find('#inspection_lvl'));
+                                errorHandler(errors.aql,form.iqcInspection.find('#aql'));
+                                errorHandler(errors.accept,form.iqcInspection.find('#accept'));
+                                errorHandler(errors.reject,form.iqcInspection.find('#reject'));
+                                errorHandler(errors.shift,form.iqcInspection.find('#shift'));
+                                errorHandler(errors.date_inspected,form.iqcInspection.find('#date_inspected'));
+                                errorHandler(errors.time_ins_from,form.iqcInspection.find('#time_ins_from'));
+                                errorHandler(errors.time_ins_to,form.iqcInspection.find('#time_ins_to'));
+                                errorHandler(errors.inspector,form.iqcInspection.find('#inspector'));
+                                errorHandler(errors.submission,form.iqcInspection.find('#submission'));
+                                errorHandler(errors.category,form.iqcInspection.find('#category'));
+                                errorHandler(errors.sampling_size,form.iqcInspection.find('#sampling_size'));
+                                errorHandler(errors.lot_inspected,form.iqcInspection.find('#lot_inspected'));
+                                errorHandler(errors.accepted,form.iqcInspection.find('#accepted'));
+                                errorHandler(errors.judgement,form.iqcInspection.find('#judgement'));
                             }else{
-
+                                toastr.error('Error');
                             }
                         }
                     });
                 });
+
+                const errorHandler = function (errors,formInput){
+                    if(errors === undefined){
+                        formInput.removeClass('is-invalid')
+                        formInput.attr('title', '')
+                    }else {
+                        formInput.addClass('is-invalid');
+                        formInput.attr('title', errors[0])
+                    }
+                }
             });
 
         </script>
