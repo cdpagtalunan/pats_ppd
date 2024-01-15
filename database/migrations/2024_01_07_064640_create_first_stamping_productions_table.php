@@ -15,7 +15,8 @@ class CreateFirstStampingProductionsTable extends Migration
     {
         Schema::create('first_stamping_productions', function (Blueprint $table) {
             $table->id();
-            $table->integer('status')->default(0);
+            $table->integer('status')->default(0)->comment = "0-For IQC, 1-For Mass Prod, 2-Done";
+            $table->integer('ctrl_counter');
             $table->string('po_num');
             $table->integer('po_qty');
             $table->string('part_code');
@@ -23,7 +24,11 @@ class CreateFirstStampingProductionsTable extends Migration
             $table->string('material_lot_no');
             $table->string('drawing_no');
             $table->string('drawing_rev');
+            $table->string('operator')->comment = "id from users";
             $table->string('shift');
+            $table->date('prod_date')->nullable();
+            $table->integer('cut_off_point')->comment = "0-without, 1-with";
+            $table->integer('no_of_cuts')->nullable();
             $table->date('prod_date');
             $table->string('prod_lot_no');
             $table->integer('input_coil_weight');
@@ -32,10 +37,10 @@ class CreateFirstStampingProductionsTable extends Migration
             $table->integer('set_up_pins');
             $table->integer('adj_pins');
             $table->integer('qc_samp');
-            $table->integer('prod_samp');
-            $table->integer('total_mach_output');
-            $table->integer('ship_output');
-            $table->string('mat_yield');
+            $table->integer('prod_samp')->nullable();
+            $table->integer('total_mach_output')->nullable();
+            $table->integer('ship_output')->nullable();
+            $table->string('mat_yield')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();

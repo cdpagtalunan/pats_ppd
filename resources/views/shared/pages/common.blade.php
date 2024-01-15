@@ -55,6 +55,29 @@
 </div>
 <!-- /.modal -->
 
+  <!-- MODALS -->
+  <div class="modal fade" id="modalScanQRSave">
+    <div class="modal-dialog modal-dialog-center">
+      <div class="modal-content modal-sm ">
+        {{-- <div class="modal-header">
+          <h4 class="modal-title"><i class="fa fa-user"></i> Logout</h4>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div> --}}
+        <div class="modal-body">
+          {{-- hidden_scanner_input --}}
+          {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_qr_code" autocomplete="off"> --}}
+          <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_id" autocomplete="off">
+          <div class="text-center text-secondary">Please scan employee ID.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+      </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
 <script>
   $(document).ready(function(){
     $("#formSignOut").submit(function(event){
@@ -69,6 +92,10 @@
     });
     $(document).on("show.bs.modal", function () {
         $("body").css({"overflow-y" : "hidden"});
+    });
+
+    $('#modalScanQRSave').on('shown.bs.modal', function () {
+        $('#txtScanUserId').focus();
     });
   });
 </script>

@@ -15,7 +15,7 @@
         <li class="nav-item dropdown">
             <button class="btn dropdown-toggle theme-color" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 {{-- {{ ucwords($_SESSION["session_firstname"]) .' '. ucwords($_SESSION["session_lastname"]) }}&nbsp;<i class="far fa-user"></i> --}}
-                {{ Auth::user()->name }}
+                {{ Auth::user()->firstname." ".Auth::user()->lastname}}
             </button>
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-left">
                 {{-- <li>

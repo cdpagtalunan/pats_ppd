@@ -81,7 +81,35 @@ function resetFormProdValues() {
     $("#formProdData")[0].reset();
     $('#formProdData').find('input').removeClass('is-invalid'); // remove all invalid
     $('#saveProdData').show();
+    $('.appendDiv').remove();
+    $('#btnRemoveMatNo').addClass('d-none');
+    $('#divProdLotInput').removeClass('d-none');
+    $('#divProdLotView').addClass('d-none');
+    $('select[name="opt_name[]"]').val(0).trigger('change');
 
+    // $('input',)
+    $('#txtProdSamp').prop('readonly', false);
+    $('#txtTtlMachOutput').prop('readonly', false);
+    $('#txtProdDate').prop('readonly', false);
+
+    $('#selOperator').prop('disabled', false);
+    $('#txtOptShift').prop('readonly', false);
+    $('#txtInptCoilWeight').prop('readonly', false);
+    $('#txtSetupPin').prop('readonly', false);
+    $('#txtAdjPin').prop('readonly', false);
+    $('#txtQcSamp').prop('readonly', false);
+    $('#selOperator').prop('readonly', false);
+    $('#txtTargetOutput').prop('readonly', false);
+    $('#prodLotNoExt1').prop('readonly', false);
+    $('#prodLotNoExt2').prop('readonly', false);
+    // $('.matNo').prop('readonly', false);
+    $('input[name="cut_point"]').prop('disabled', false);
+    $('#radioCutPointWithout').prop('checked', true);
+
+
+
+    // $('#radioIQC').attr('checked', false);
+    // $('#radioMassProd').attr('checked', false);
 }
 
 $("#modalMachineOp").on('hidden.bs.modal', function () {
@@ -148,3 +176,27 @@ $(this).on('select2:open', function(e) {
         document.querySelector('input.select2-search__field').focus();
     }, 0);
 });
+
+function validateUser(userId, validPosition, callback){ // this function will accept scanned id and validPosition based on user table (number only)
+    $.ajax({
+        type: "get",
+        url: "validate_user",
+        data: {
+            'id'    : userId,
+            'pos'   : validPosition
+        },
+        dataType: "json",
+        success: function (response) {
+            let value1
+            if(response['result'] == 1){
+                value1 = true;
+            }
+            else{
+                value1 = false;
+            }
+
+            callback(value1);
+        }
+    });
+}
+
