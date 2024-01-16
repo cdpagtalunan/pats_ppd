@@ -11,9 +11,11 @@ use App\Models\DropdownIqcFamily;
 use App\Models\IqcInspectionsMod;
 use Illuminate\Support\Facades\DB;
 use App\Models\DropdownIqcTargetLar;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\DropdownIqcTargetDppm;
 use App\Models\DropdownIqcModeOfDefect;
 use App\Models\TblWarehouseTransaction;
+use Illuminate\Support\Facades\Storage;
 use App\Models\DropdownIqcInspectionLevel;
 use App\Http\Requests\IqcInspectionRequest;
 
@@ -202,20 +204,28 @@ class IqcInspectionController extends Controller
 
     public function saveIqcInspection(IqcInspectionRequest $request){
         date_default_timezone_set('Asia/Manila');
-        try {
-            if(isset($request->iqc_inspection_id)){ /* Edit */
+    
 
+        try {
+            if(isset($request->iqc_coc_file)){
+                $original_filename = $request->file('iqc_coc_file')->getClientOriginalName();
+                Storage::putFileAs('public/iqc_inspection_coc', $request->iqc_coc_file,  $original_filename);
+            }else{
+                $original_filename = '';
+            }
+
+            if(isset($request->iqc_inspection_id)){ /* Edit */
                 $update_iqc_inspection = IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated());
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
                     'no_of_defects' => $request->no_of_defects,
-                    'remarks' => $request->remarks
+                    'remarks' => $request->remarks,
+                    'iqc_coc_file' => $original_filename
                 ]);
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
 
             }else{ /* Add */
-
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
@@ -226,14 +236,14 @@ class IqcInspectionController extends Controller
                 IqcInspection::where('id', $create_iqc_inspection->id)
                 ->update([
                     'no_of_defects' => $request->no_of_defects,
-                    'remarks' => $request->remarks
+                    'remarks' => $request->remarks,
+                    'iqc_coc_file' => $original_filename
                 ]);
 
                 $iqc_inspections_id = $create_iqc_inspection->id;
 
             }
 
-            // return $iqc_inspections_id;
             /* Get iqc_inspections_id, delete the previos MOD then  save new MOD*/
             if(isset($request->modeOfDefects)){
                 IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
@@ -269,6 +279,26 @@ class IqcInspectionController extends Controller
             'id'    =>  $arr_dropdown_iqc_mode_of_defect_id,
             'value' =>  $arr_dropdown_iqc_mode_of_defect_value
         ]);
+    }
+
+    public function viewCocFileAttachment(Request $request){    
+
+        $iqc_coc_file_name = IqcInspection::where('id',$request->iqc_inspection_id)->get('iqc_coc_file');
+        $memo_file_path = 'storage/app/public/iqc_inspection_coc/'.$iqc_coc_file_name[0]['iqc_coc_file'];
+        $memo_file_name = $iqc_coc_file_name[0]['iqc_coc_file'];
+        if (file_exists($memo_file_path)) {
+            /* Viewing of PDF */
+            header('Content-type: application/pdf');
+            header('Content-Disposition: inline; filename="' . $memo_file_name . '"');
+            header('Content-Transfer-Encoding: binary');
+            header('Accept-Ranges: bytes');
+            //Read the file
+            @readfile($memo_file_path);
+            exit;
+        }else{
+            echo 'File Not Exist';
+            exit;
+        }
     }
 
 }

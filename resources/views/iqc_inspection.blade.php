@@ -130,7 +130,7 @@
                     <form method="post" id="formSaveIqcInspection" autocomplete="off">
                         @csrf
                         <div class="modal-body">
-                            <div class="row">
+                            <div class="row d-none">
                                 <div class="col-sm-6 mt-3">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -429,6 +429,12 @@
                                         </div>
                                         <input type="file" class="form-control form-control-sm" id="iqc_coc_file" name="iqc_coc_file" accept=".pdf">
                                     </div>
+                                    <div class="input-group input-group-sm mb-3 d-none" id="fileIqcCocDownload">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Attachment</span>
+                                        </div>
+                                        &nbsp;&nbsp; <a href="#" target="_blank" id="iqc_coc_file_download" class="link-primary"> <i class="fas fa-file"></i> Click to download attachment</a>
+                                    </div>
                                 </div>
                             </div>
                             {{-- <div class="row">
@@ -643,13 +649,12 @@
                                 form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
                                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-
+                                
                             }else{
                                 form.iqcInspection.find('#app_no').val(response[0]['app_no']);
                                 form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
                                 console.log(response[0]['date_inspected']);
                                 form.iqcInspection.find('#time_ins_from').val(response[0]['time_ins_from']);
-
                             }
 
                             form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
@@ -682,6 +687,7 @@
                             form.iqcInspection.find('#accepted').val(response[0]['accepted']);
                             form.iqcInspection.find('#judgement').val(response[0]['judgement']);
                             form.iqcInspection.find('#remarks').val(response[0]['remarks']);
+                            form.iqcInspection.find('#iqc_coc_file').val('');
 
                             setTimeout(() => {
                                 form.iqcInspection.find('#family').val(response[0]['family']).trigger("change");
@@ -896,13 +902,35 @@
                     console.log('deleted',arrTableMod.lotQty);
                     // console.log(arrTableMod);
                 });
+                form.iqcInspection.find('#iqc_coc_file_download').click(function (e) {
+                    e.preventDefault();
+                    let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
+                    $.ajax({
+                        type: "GET",
+                        url: "view_coc_file_attachment",
+                        data: { iqc_inspection_id : iqc_inspection_id},
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response.iqc_coc_file_name[0].iqc_coc_file);
+                            window.open(`reports/pdf_download/user_manual.php`);
+                        }
+                    });
+                    console.log(iqc_inspection_id);
+                    // window.open("reports/pdf_download/user_manual.php");
+
+                });
+                
+                /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
                     $.ajax({
-                        type: "GET",
+                        type: "POST",
                         url: "save_iqc_inspection",
-                        data: $(this).serialize() + '&' +$.param(arrTableMod),
+                        data: new FormData(this),
                         dataType: "json",
+                        cache: false,
+                        contentType: false,
+                        processData: false,
                         success: function (response) {
                             if (response['result'] === 1){
                                 $('#modalSaveIqcInspection').modal('hide');
@@ -948,7 +976,7 @@
                         }
                     });
                 });
-
+            
                 const errorHandler = function (errors,formInput){
                     if(errors === undefined){
                         formInput.removeClass('is-invalid')
