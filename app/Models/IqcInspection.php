@@ -45,6 +45,7 @@ class IqcInspection extends Model
         'no_of_defects',
         'judgement',
         'remarks',
+        'iqc_coc_file',
         // 'iqc_inspection_id',
     ];
 

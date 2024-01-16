@@ -167,8 +167,9 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_aql', 'getAql')->name('get_aql');
     Route::get('/get_lar_dppm', 'getLarDppm')->name('get_lar_dppm');
     Route::get('/get_mode_of_defect', 'getModeOfDefect')->name('get_mode_of_defect');
+    Route::get('/view_coc_file_attachment', 'viewCocFileAttachment')->name('view_coc_file_attachment');
 
-    Route::get('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
+    Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
     //http://192.168.3.246/pmi-subsystem/iqcdbgetitemdetails
     //http://192.168.3.246/pmi-subsystem/iqcdbgetongoing
 });
