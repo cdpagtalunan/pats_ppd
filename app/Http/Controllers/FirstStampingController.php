@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use QrCode;
 use DataTables;
 use App\Models\Device;
+use App\Models\StampingIpqc;
+
 use Illuminate\Http\Request;
-
 use App\Models\MaterialProcess;
-use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FirstStampingProduction;
 use Illuminate\Support\Facades\Validator;
@@ -39,6 +40,9 @@ class FirstStampingController extends Controller
             }
             else if($stamping_data->status == 2){
                 $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id'><i class='fa-solid fa-qrcode'></i></button>";
+            }
+            else if ($stamping_data->status == 3){
+                $result .= "<button class='btn btn-danger btn-sm btnViewResetup' data-id='$stamping_data->id' data-function='2'><i class='fa-solid fa-repeat'></i></button>";
 
             }
             $result .= "</center>";
@@ -56,6 +60,9 @@ class FirstStampingController extends Controller
             }
             else if($stamping_data->status == 2){
                 $result = "<span class='badge bg-success'>Done</span>";
+            }
+            else if($stamping_data->status == 3){
+                $result = "<span class='badge bg-danger'>Lot Rejected</span>";
 
             }
 
@@ -79,19 +86,26 @@ class FirstStampingController extends Controller
 
     public function save_prod_data(Request $request){
         date_default_timezone_set('Asia/Manila');
-        // return $request->all();
         $data = $request->all();
      
         if(isset($request->id)){
-            $validation = array(
-                // 'mat_lot_no'       => ['required'],
-                'prod_date'        => ['required'],
-                // 'prod_lot_no'      => ['required'],
-                'prod_samp'        => ['required'],
-                'ttl_mach_output'  => ['required'],
-                'ship_output'      => ['required'],
-                'mat_yield'        => ['required'],
-            );
+            if($request->status == 2){
+                $validation = array(
+                    'ng_count'        => ['required'],
+                );
+            }
+            else{
+                $validation = array(
+                    // 'mat_lot_no'       => ['required'],
+                    'prod_date'        => ['required'],
+                    // 'prod_lot_no'      => ['required'],
+                    'prod_samp'        => ['required'],
+                    'ttl_mach_output'  => ['required'],
+                    'ship_output'      => ['required'],
+                    'mat_yield'        => ['required'],
+                );
+            }
+           
         }
         else{
             $validation = array(
@@ -125,17 +139,31 @@ class FirstStampingController extends Controller
 
                 // return $request->all();
                 if(isset($request->id)){
-                    FirstStampingProduction::where('id', $request->id)
-                    ->update([
-                        'status'            => 2,
-                        'prod_date'         => $request->prod_date,
-                        'prod_samp'         => $request->prod_samp,
-                        'total_mach_output' => $request->ttl_mach_output,
-                        'ship_output'       => $request->ship_output,
-                        'mat_yield'         => $request->mat_yield,
-                        
-                    ]);
+                    if($request->status == 2){
+                        FirstStampingProduction::where('id', $request->id)
+                        ->update([
+                            'status'            => 0,
+                            'ng_count'          => $request->ng_count
+                        ]);
 
+                        StampingIpqc::where('fs_productions_id', $request->id)
+                        ->update([
+                            'status'            => 5,
+                        ]);
+                    }
+                    else{
+                        FirstStampingProduction::where('id', $request->id)
+                        ->update([
+                            'status'            => 2,
+                            'prod_date'         => $request->prod_date,
+                            'prod_samp'         => $request->prod_samp,
+                            'total_mach_output' => $request->ttl_mach_output,
+                            'ship_output'       => $request->ship_output,
+                            'mat_yield'         => $request->mat_yield,
+                            
+                        ]);
+                    }
+                    
                     DB::commit();
                 }
                 else{
@@ -210,7 +238,7 @@ class FirstStampingController extends Controller
 
     public function print_qr_code(Request $request){
         $prod_data = FirstStampingProduction::where('id', $request->id)
-        ->first(['po_num AS po', 'part_code AS code', DB::Raw('CONCAT(material_name, "-", "X") AS name') , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
+        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
 
         // $prod_data = DB::connection('mysql')
         // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM first_stamping_productions WHERE id = '".$request->id."'");
@@ -226,7 +254,7 @@ class FirstStampingController extends Controller
             'img' => $QrCode, 
             'text' =>  "<strong>$prod_data->po</strong><br>
             <strong>$prod_data->code</strong><br>
-            <strong>$prod_data->name</strong><br>
+            <strong>$prod_data->name-X</strong><br>
             <strong>$prod_data->production_lot_no</strong><br>
             <strong>$prod_data->output_qty</strong><br>
             <strong>$prod_data->qty</strong><br>"
@@ -244,7 +272,7 @@ class FirstStampingController extends Controller
                 </tr>
                 <tr>
                     <td>Material Name:</td>
-                    <td>$prod_data->name</td>
+                    <td>$prod_data->name-X</td>
                 </tr>
                 <tr>
                     <td>Production Lot #:</td>

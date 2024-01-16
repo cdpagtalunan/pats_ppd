@@ -14,6 +14,7 @@ use App\Models\CarrierDetails;
 use App\Models\LoadingPortDetails;
 use App\Models\DestinationPortDetails;
 use App\Models\FirstStampingProduction;
+use App\Models\OQCInspection;
 use App\Models\User;
 
 class PackingListDetailsController extends Controller
@@ -86,45 +87,37 @@ class PackingListDetailsController extends Controller
 
     public function viewPackingListData(Request $request){
         $packing_list_data = PackingListDetails::
-        where('status', 0)
+        where('shipment_status', 1)
         ->get();
 
         return DataTables::of($packing_list_data)
-            ->addColumn('action', function($packing_list_data){
-                $result = "";
-                $result .= "<center>";
-                if($packing_list_data->status == 0 ){
-                    // $result .= "<input class='test d-none packing_$packing_list_data->id' data-packing-id='$packing_list_data->id' type'text' style='width: 30px; text-align: center;' id='boxNoId' name='box_no[]' disabled>";
-                }
-                $result .= "</center>";
-                return $result;
-            })
             ->addColumn('status', function($packing_list_data){
                 $result = "";
                 $result .= "<center>";
 
-                if($packing_list_data->status == 0){
-                    $result .= '<span class="badge bg-success">Active</span>';
+                if($packing_list_data->shipment_status == 1){
+                    $result .= '<span class="badge bg-success">Completed</span>';
                 }
                 else{
-                    $result .= '<span class="badge bg-danger">Disabled</span>';
+                    $result .= '<span class="badge bg-danger">Cancelled</span>';
                 }
                 $result .= "</center>";
                 return $result;
             })
             // ->addIndexColumn(['DT_RowIndex'])
-            ->rawColumns(['action','status'])
-            // ->rawColumns(['action','status','test'])
+            ->rawColumns(['status'])
             ->make(true);
     }
 
 
     public function viewProductionData(Request $request){
-        $production_data = FirstStampingProduction::
-        where('status', 2)
+        $production_data = OQCInspection::
+        with(['stamping_production_info'])
+        ->where('status', 2)
         ->get();
 
         // return $production_data;
+
         if(!isset($request->search_data)){
             return [];
         }else{
@@ -160,8 +153,10 @@ class PackingListDetailsController extends Controller
     }
 
     public function getDataFromProduction(Request $request){
-        $get_production_data = FirstStampingProduction::
-        where('po_num', 'like', '%' . $request->search_data . '%')->get();
+        $get_production_data = OQCInspection::
+        with(['stamping_production_info'])
+        ->where('po_no', 'like', '%' . $request->search_data . '%')
+        ->get();
 
         // return $request->search_data;
 
@@ -195,8 +190,9 @@ class PackingListDetailsController extends Controller
             }
         }
 
-        $prod_data = FirstStampingProduction::
-        whereIn('id', $prod_id['prod_id'])
+        $prod_data = OQCInspection::
+        with(['stamping_production_info'])
+        ->whereIn('id', $prod_id['prod_id'])
         ->get();
 
         // return $prod_data;
@@ -218,32 +214,39 @@ class PackingListDetailsController extends Controller
 
         $validator = Validator::make($data, $rules);
         if($validator->passes()){
-            for ($i=0; $i <count($prod_data) ; $i++) { 
-                $prod_id = $prod_data[$i]->id;
-                $material_name = $prod_data[$i]->material_name;
-                $prod_lot_no = $prod_data[$i]->prod_lot_no;
-                $qty = $prod_data[$i]->ship_output;
+            for ($i=0; $i <count($prod_data); $i++) { 
+                
+                
+                for ($u=0; $u <count($prod_data[$i]->stamping_production_info) ; $u++) { 
+                    $prod_id = $prod_data[$i]->stamping_production_info[$u]->id;
+                    $material_name = $prod_data[$i]->stamping_production_info[$u]->material_name;
+                    $prod_lot_no = $prod_data[$i]->stamping_production_info[$u]->prod_lot_no;
+                    $qty = $prod_data[$i]->stamping_production_info[$u]->ship_output;
+                }
+
+                // return $prod_data[$i];
 
             
                         $array = [
-                            'control_no'     => $request->ctrl_num,
-                            'prod_id'     => $prod_id,
-                            'po_no' => $request->search_packing_list_details,
-                            'box_no' => $request->box_no[$i],
-                            'mat_name' => $material_name,
-                            'lot_no' => $prod_lot_no,
-                            'quantity' => $qty,
-                            'pick_up_date' => $date,
-                            'pick_up_time' => $time,
-                            'product_from' => $request->ship_from,
-                            'product_to' => $request->ship_to,
-                            'port_of_loading' => $request->loading_port,
-                            'port_of_destination' => $request->destination_port,
-                            'prepared_by' => $request->prepared_by,
-                            'checked_by' => $request->checked_by,
-                            'cc_personnel' => $imploded_cc,
-                            'status'        => 0,
-                            'created_at'    => date('Y-m-d H:i:s'),
+                            'control_no'            => $request->ctrl_num,
+                            'prod_id'               => $prod_id,
+                            'po_no'                 => $request->search_packing_list_details,
+                            'box_no'                => $request->box_no[$i],
+                            'mat_name'              => $material_name,
+                            'lot_no'                => $prod_lot_no,
+                            'quantity'              => $qty,
+                            'pick_up_date'          => $date,
+                            'pick_up_time'          => $time,
+                            'product_from'          => $request->ship_from,
+                            'product_to'            => $request->ship_to,
+                            'port_of_loading'       => $request->loading_port,
+                            'port_of_destination'   => $request->destination_port,
+                            'prepared_by'           => $request->prepared_by,
+                            'checked_by'            => $request->checked_by,
+                            'cc_personnel'          => $imploded_cc,
+                            'status'                => 0,
+                            'shipment_status'       => 1,
+                            'created_at'            => date('Y-m-d H:i:s'),
                         ];
                         if(isset($request->packing_list_id)){ // edit
                             PackingListDetails::where('id', $request->packing_list_id)

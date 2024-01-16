@@ -32,6 +32,9 @@
                 transition: .5s;
             }
         </style>
+        @php
+            date_default_timezone_set('Asia/Manila');
+        @endphp
 
         <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
             <section class="content-header"> <!-- Content Header (Page header) -->
@@ -103,17 +106,17 @@
                                             <thead>
                                                 <tr>
                                                     <th class="w-25">Action</th>
+                                                    <th>Status</th>
                                                     <th>P.O No.</th>
+                                                    <th>P.O Qty</th>
                                                     <th>Prod. Lot</th>
-                                                    <th>Quantity</th>
+                                                    <th>Prod. Lot Qty.</th>
                                                     <th>Material Name</th>
                                                     <th>FY-WW</th>
                                                     <th>Date Inspected</th>
                                                     <th>From</th>
                                                     <th>To</th>
                                                     <th># of Sub</th>
-                                                    <th>Lot No.</th>
-                                                    <th>Lot Qty.</th>
                                                     <th>Sample Size</th>
                                                     <th>Mode of Defects</th>
                                                     <th>No. of Detective</th>
@@ -153,12 +156,12 @@
                         <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         
-                        <div class="row drawing input-group p-3">
+                        <div class="input-group drawing p-3">
                             <div class="input-group-prepend w-25">
                                 <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
-                                <span class="input-group-text w-100">B Drawing</span>
+                                <span class="input-group-text w-100"><strong>B Drawing</strong></span>
                             </div>
-                            <input type="text" class="form-control txtdrawing" id="txtBDrawing" name="b_drawing" readonly>
+                            <input type="text" class="form-control" id="txtBDrawing" name="b_drawing" readonly>
                             <input type="text" class="form-control" id="txtBDrawingNo" name="b_drawing_no" readonly>
                             <input type="text" class="form-control" id="txtBDrawingRevision" name="b_drawing_revision" readonly>
                         </div>
@@ -173,28 +176,28 @@
                                 <div class="col-sm-6 mt-3">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Assembly Line</strong></span>
+                                            <span class="input-group-text w-100"><strong>Stamping Line</strong></span>
                                         </div>
-                                        <select class="form-select form-control-sm assemblyLineDropdown" id="slctOqcInspectionAssemblyLine" name="oqc_inspection_assembly_line">
+                                        <select class="form-select form-control-sm stampingLineDropdown" id="slctOqcInspectionStampingLine" name="oqc_inspection_stamping_line">
                                         </select>    
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot No.</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotNo" name="oqc_inspection_lot_no">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotNo" name="oqc_inspection_lot_no" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Application Date</strong></span>
                                         </div>
-                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionApplicationDate" name="oqc_inspection_application_date">
+                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionApplicationDate" name="oqc_inspection_application_date" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Application Time</strong></span>
                                         </div>
-                                        <input type="time" class="form-control form-control-sm" id="timeOqcInspectionApplicationTime" name="oqc_inspection_application_time">
+                                        <input type="time" class="form-control form-control-sm" id="timeOqcInspectionApplicationTime" name="oqc_inspection_application_time" value="{{ \Carbon\Carbon::now()->format('H:i:s') }}" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -314,7 +317,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot Qty.</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotQty" name="oqc_inspection_lot_qty">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotQty" name="oqc_inspection_lot_qty" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
                                     </div>
                                 </div>
 
@@ -362,18 +365,18 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Date Inspected</strong></span>
                                         </div>
-                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionDateInspected" name="oqc_inspection_date_inspected">
+                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionDateInspected" name="oqc_inspection_date_inspected" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>Work Week</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionWorkWeek" name="oqc_inspection_work_week">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionWorkWeek" name="oqc_inspection_work_week" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>Fiscal Year</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionFiscalYear" name="oqc_inspection_fiscal_year">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionFiscalYear" name="oqc_inspection_fiscal_year" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -409,16 +412,6 @@
                                     
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Inspector</strong></span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspector" name="oqc_inspection_inspector" readonly>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-sm-6 mt-3">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Coc Requirement</strong></span>
                                         </div>
                                         <select class="form-select form-control-sm" id="slctOqcInspectionCocRequirement" name="oqc_inspection_coc_requirement">
@@ -427,19 +420,25 @@
                                             <option value="2">No</option>
                                         </select>
                                     </div>
+                                </div>
 
+                                <div class="col-sm-6 mt-3">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot Inspected</strong></span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="txtOqcInspectionLotInspected" name="oqc_inspection_lot_inspected">
+                                        <input type="number" class="form-control form-control-sm" id="txtOqcInspectionLotInspected" name="oqc_inspection_lot_inspected" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="1" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
+                                        <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>Lot Accepted</strong></span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        <div class="input-group-prepend w-30">
+                                            <span class="input-group-text w-100"><strong>1st Press Yield</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionYield" name="oqc_inspection_yield" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -454,6 +453,13 @@
                                             <span class="input-group-text w-100"><strong>Remarks</strong></span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtOqcInspectionRemarks" name="oqc_inspection_remarks">
+                                    </div>
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100"><strong>Inspector</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspector" name="oqc_inspection_inspector" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3 d-none  mod-class">
@@ -485,6 +491,7 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="modal-footer justify-content-between viewDrawingFirst d-none">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                             <button type="submit" id="btnOqcInspection" class="btn btn-dark"><i 
@@ -576,7 +583,7 @@
                 GetAQL($('.aqlDropdown'))
                 GetFamily($('.familyDropdown'))
                 GetMOD($('.inspectionModDropdown_0'))
-                GeAssemblyLine($('.assemblyLineDropdown'))
+                GeStampingLine($('.stampingLineDropdown'))
                 GetInspectionType($('.inspectionTypeDropdown'))
                 GetInspectionLevel($('.inspectionLevelDropdown'))
                 GetSeverityInspection($('.severityInspectionDropdown'))
@@ -613,17 +620,17 @@
 
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status" },
                         { "data" : "po_no" },
-                        { "data" : "prod_lot" },
                         { "data" : "po_qty" },
+                        { "data" : "prod_lot" },
+                        { "data" : "prod_lot_qty" },
                         { "data" : "material_name" },
                         { "data" : "fy_ww" },
                         { "data" : "date_inspected" },
                         { "data" : "time_ins_from" },
                         { "data" : "time_ins_to" },
                         { "data" : "submission" },
-                        { "data" : "lot_no" },
-                        { "data" : "lot_qty" },
                         { "data" : "sample_size" },
                         { "data" : "mod" },
                         { "data" : "num_of_defects" },
@@ -687,14 +694,14 @@
                     getPoQty        = $(this).attr('prod-po-qty')
                     getOqcId        = $(this).attr('oqc_inspection-id')
                     getProdId       = $(this).attr('prod-id')
-                    getDeviceName   = $(this).attr('prod-device-name')
+                    getMaterialName = $(this).attr('prod-material-name')
                     
                     GetOqcInspectionById(
                         getPo,
                         getPoQty,
                         getOqcId,
                         getProdId,
-                        getDeviceName
+                        getMaterialName
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)

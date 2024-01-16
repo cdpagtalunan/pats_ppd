@@ -18,6 +18,7 @@ use App\Http\Controllers\CarrierDetailsController;
 use App\Http\Controllers\LoadingPortDetailsController;
 use App\Http\Controllers\DestinationPortDetailsController;
 use App\Http\Controllers\PackingListDetailsController;
+use App\Http\Controllers\ReceivingDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,9 +31,15 @@ use App\Http\Controllers\PackingListDetailsController;
 |
 */
 
+Route::get('/link', function () {
+    return 'link';
+})->name('link');
+
 Route::view('/','index')->name('login');
 
 Route::view('/login','index')->name('login');
+
+Route::view('/ilqcm','ilqcm/admin_layout')->name('ilqcm');
 
 Route::view('/dashboard','dashboard')->name('dashboard');
 // * ADMIN VIEW
@@ -60,11 +67,13 @@ Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');
 /* PACKING LIST */
 Route::view('/packing_list','packing_list')->name('packing_list');
 Route::view('/packing_list_settings','packing_list_settings')->name('packing_list_settings');
+Route::view('/receiving','receiving')->name('receiving');
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
     Route::post('/sign_in', 'sign_in')->name('sign_in');
+    Route::post('/rapidx_sign_in_admin', 'rapidx_sign_in_admin')->name('rapidx_sign_in_admin');
     Route::post('/sign_out', 'sign_out')->name('sign_out');
     Route::post('/change_pass', 'change_pass')->name('change_pass');
     Route::post('/change_user_stat', 'change_user_stat')->name('change_user_stat');
@@ -170,7 +179,7 @@ Route::controller(OQCInspectionController::class)->group(function () {
     Route::get('/view_oqc_inspection', 'viewOqcInspection')->name('view_oqc_inspection');
     Route::post('/update_oqc_inspection', 'updateOqcInspection')->name('update_oqc_inspection');
     Route::get('/get_oqc_inspection_by_id', 'getOqcInspectionById')->name('get_oqc_inspection_by_id');
-    Route::get('/get_oqc_assembly_line', 'getAssemblyLine')->name('get_oqc_assembly_line');
+    Route::get('/get_oqc_stamping_line', 'getStampingLine')->name('get_oqc_stamping_line');
     Route::get('/get_oqc_family', 'getFamily')->name('get_oqc_family');
     Route::get('/get_oqc_inspection_type', 'getInspectionType')->name('get_oqc_inspection_type');
     Route::get('/get_oqc_inspection_level', 'getInspectionLevel')->name('get_oqc_inspection_level');
@@ -223,6 +232,12 @@ Route::controller(PackingListDetailsController::class)->group(function () {
     Route::get('/get_ppc_sr_planner', 'getPpcSrPlanner')->name('get_ppc_sr_planner');
     Route::get('/get_carbon_copy_user', 'carbonCopyUser')->name('get_carbon_copy_user');
 });
+
+Route::controller(ReceivingDetailsController::class)->group(function () {
+    Route::get('/view_packing_list_details', 'viewPackingListDetails')->name('view_packing_list_details');
+});
+
+
 
 
 

@@ -125,16 +125,16 @@
                             </a>
                         </li>
                     </ul>
-
-                    {{-- <ul class="nav nav-treeview">
-                      <li class="nav-item">
-                        <a href="{{ route('oqc_inspection') }}" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>OQC Inspection</p>
-                    </a>
                 </li>
-            </ul> --}}
-            </li>
+                <li class="nav-header mt-3">RECEIVING</li>
+                <li class="nav-item has-treeview">
+                        <li class="nav-item">
+                            <a href="{{ route('receiving') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Receiving</p>
+                            </a>
+                        </li>
+                </li>
             </ul>
         </nav>
     </div><!-- Sidebar -->

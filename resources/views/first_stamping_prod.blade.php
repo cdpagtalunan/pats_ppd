@@ -146,7 +146,7 @@
 
         <!-- MODALS -->
         {{-- * ADD --}}
-        <div class="modal fade" id="modalMachineOp" data-bs-backdrop="static">
+        <div class="modal fade" id="modalProdData" data-bs-backdrop="static">
             <div class="modal-dialog modal-sm-xl" style="min-width: 80% !important;">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -161,17 +161,21 @@
                             <input type="hidden" id="txtProdDataId" name="id">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <div class="card">
+                                    <div class="card h-100">
                                         <div class="card-body">
                                             <input type="hidden" name="ctrl_counter" id="txtCtrlCounter">
-
+                                            
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="status" id="radioIQC" value="0" disabled>
-                                                <label class="form-check-label" for="radioIQC">For IQC</label>
+                                                <label class="form-check-label" for="radioIQC">For IPQC</label>
                                             </div>
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="status" id="radioMassProd" value="1" disabled>
                                                 <label class="form-check-label" for="radioMassProd">For Mass Production</label>
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="status" id="radioResetup" value="2" disabled>
+                                                <label class="form-check-label" for="radioResetup">For Re-Setup</label>
                                             </div>
 
                                             <div class="form-group">
@@ -211,25 +215,25 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shift:</label>
-                                                <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift">
+                                                <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <div class="card">
+                                    <div class="card h-100">
                                         <div class="card-body">
                                             <div class="form-group d-md-inline-flex">
-                                                <div class="form-check">
+                                                <div class="form-check form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="cut_point" id="radioCutPointWithout" value="0" checked>
                                                     <label class="form-check-label" for="radioCutPointWithout">w/o Cut Points</label>
                                                 </div>
-                                                <div class="form-check">
+                                                <div class="form-check form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="cut_point" id="radioCutPointWith" value="1">
                                                     <label class="form-check-label" for="radioCutPointWith">w/ Cut Points</label>
                                                 </div>
                                                 <div>
-                                                    <input type="text" class="form-control" name="no_cut" id="txtNoCut" placeholder="No. of Cut" readonly>
+                                                    <input type="text" class="form-control form-control-sm" name="no_cut" id="txtNoCut" placeholder="No. of Cut" readonly>
                                                 </div>
                                             </div>
                                             <div class="form-group">
@@ -268,11 +272,15 @@
                                                 <label class="form-label">Prod. Samples:</label>
                                                 <input type="number" class="form-control form-control-sm" name="prod_samp" id="txtProdSamp">
                                             </div>
+                                            <div class="form-group">
+                                                <label class="form-label">NG Count:</label>
+                                                <input type="number" class="form-control form-control-sm" name="ng_count" id="txtNGCount">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-sm-4">
-                                    <div class="card">
+                                    <div class="card h-100">
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label class="form-label">Total Machine Output:</label> 
@@ -280,7 +288,7 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shipment Output:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Total Machine Output - Set-up Pins + Adjustment Pins + QC Samples + Prod. Samples)"></i>
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Total Machine Output - Set-up Pins + Adjustment Pins + QC Samples + Prod. Samples + NG Count)"></i>
                                                 <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="ship_output" id="txtShipOutput" readonly>
                                             </div>
                                             <div class="form-group">
@@ -304,14 +312,20 @@
                                             <div class="input-group input-group-sm mb-3 d-none" id="divProdLotView">
                                                 <input type="text" class="form-control" id="txtProdLotView" readonly>
                                             </div>
+
+                                            <label class="form-label">Material Lot No.:</label> 
+                                            <div class="input-group mb-1">
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
+                                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="card">
+                                    {{-- <div class="card ">
                                         <div class="card-body">
                                             <div class="float-end">
                                                 <button class="btn btn-danger btn-sm d-none" id="btnRemoveMatNo">Remove</button>
-                                                <button class="btn btn-info btn-sm" id="btnAddMatNo">Add</button>
+                                                <button class="btn btn-info btn-sm d-none" id="btnAddMatNo">Add</button>
                                             </div>
                                             <br>
                                             <label class="form-label">Material Lot No.:</label> 
@@ -322,11 +336,9 @@
                                             </div>
                                             <input type="text" class="hidden_scanner_input" id="multipleCounter" value="0">
                                             <div id="divMultipleMatLot">
-                                                {{-- <label class="form-label">Material Lot No.:</label>  --}}
-                                                {{-- <input type="number" class="form-control form-control-sm" name="material_no" id="txtTtlMachOutput_0"> --}}
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                             </div>
@@ -444,13 +456,13 @@
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){
                         // console.log($(this).val());
-                        validateUser($(this).val(), 4, function(result){
+                        validateUser($(this).val(), [4], function(result){
 
                             if(result == true){
-                                submitProdData();
+                                // submitProdData($(this).val());
                             }
                             else{ // Error Handler
-
+                                toastr.error('User not authorize!');
                             }
                             
                         });
@@ -472,7 +484,7 @@
 
                 $('#txtTtlMachOutput').on('keyup', function(e){
                     // * computation for Shipment Output and Material Yield
-                    let sum = Number($('#txtSetupPin').val()) + Number($('#txtAdjPin').val()) + Number($('#txtQcSamp').val()) + Number($('#txtProdSamp').val());
+                    let sum = Number($('#txtSetupPin').val()) + Number($('#txtAdjPin').val()) + Number($('#txtQcSamp').val()) + Number($('#txtProdSamp').val()) + Number($('#txtNGCount').val());
                     let ttlMachOutput = $(this).val();
 
                     let shipmentOutput = ttlMachOutput - sum;
@@ -531,6 +543,15 @@
                         checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'])
                         getProdLotNoCtrl();
 
+                        // OPERATOR SHIFT 
+                        $time_now = moment().format('LT');
+                        if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
+                            $('#txtOptShift').val('A');
+                        }
+                        else{
+                            $('#txtOptShift').val('B');
+                        }
+
                         // console.log(prodData);
                         // $('#txtPoNumber').val(prodData['poReceiveData']['OrderNo']);
                         // $('#txtPoQty').val(prodData['poReceiveData']['OrderQty']);
@@ -539,8 +560,9 @@
                         // $('#txtDrawingNo').val(prodData['drawings']['drawing_no']);
                         // $('#txtDrawingRev').val(prodData['drawings']['rev']);
                         // // $('#txtOptName').val($('#globalSessionName').val());
-                        // $('#modalMachineOp').modal('show');
+                        // $('#modalProdData').modal('show');
                         $('#txtProdSamp').prop('readonly', true);
+                        $('#txtNGCount').prop('readonly', true);
                         $('#txtTtlMachOutput').prop('readonly', true);
                         $('#txtProdDate').prop('readonly', true);
                         $('#radioIQC').prop('checked', true);
@@ -661,6 +683,14 @@
                     else{
                         $('#txtNoCut').prop('readonly', false);
                     }
+                });
+
+                $(document).on('click', '.btnViewResetup', function(e){
+                    let id = $(this).data('id');
+                    let btnFunction = $(this).data('function');
+                    console.log('btnFunction', btnFunction);
+                    getProdDataById(id, btnFunction);
+
                 });
 
                 getOperatorList($('.selOpName'));

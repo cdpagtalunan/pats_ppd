@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 use App\Models\DropdownOqcAql;
 use App\Models\DropdownOqcFamily;
-use App\Models\DropdownOqcAssemblyLine;
+use App\Models\DropdownOqcStampingLine;
 use App\Models\DropdownOqcInspectionType;
 use App\Models\DropdownOqcInspectionLevel;
 use App\Models\DropdownOqcSeverityInspection;
@@ -21,8 +21,8 @@ class Category extends Model
         return $this->hasOne(DropdownOqcAql::class, 'id', 'category_id');
     }
 
-    public function assembly_line_info(){
-        return $this->hasOne(DropdownOqcAssemblyLine::class, 'id', 'category_id');
+    public function stamping_line_info(){
+        return $this->hasOne(DropdownOqcStampingLine::class, 'id', 'category_id');
     }
 
     public function family_info(){

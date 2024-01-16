@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use DataTables;
+use Carbon\Carbon;
 use App\Models\StampingIpqc;
 use App\Models\FirstStampingProduction;
 
@@ -117,6 +118,11 @@ class StampingIpqcController extends Controller
                 }
                 return $result;
             })
+            ->addColumn('fs_prod_created_at', function ($first_stamping_data) {
+                $result = "";
+                $result = Carbon::parse($first_stamping_data->created_at);
+                return $result;
+            })
             ->addColumn('ipqc_judgement', function ($first_stamping_data) {
                 $result = "";
                 if(isset($first_stamping_data->stamping_ipqc->judgement)){
@@ -158,6 +164,7 @@ class StampingIpqcController extends Controller
                 }
                 return $result;
             })
+            // $result = Carbon::parse($ink_consumption->created_at)->year;
             ->addColumn('ipqc_inspected_date', function ($first_stamping_data) {
                 $result = "";
                 if(isset($first_stamping_data->stamping_ipqc->updated_at)){
@@ -168,7 +175,7 @@ class StampingIpqcController extends Controller
                 return $result;
             })
 
-            ->rawColumns(['action','ipqc_status','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
+            ->rawColumns(['action','ipqc_status','fs_prod_created_at','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
             ->make(true);
         }
     }

@@ -149,6 +149,7 @@
                                                     <th>Action</th>
                                                     {{-- <th>Production Status</th> --}}
                                                     <th>IPQC Status</th>
+                                                    <th>Created At</th>
                                                     <th>PO Number</th>
                                                     <th>Production Lot#</th>
                                                     <th>Judgement</th>
@@ -158,6 +159,7 @@
                                                     {{-- <th>Inspector Name</th> --}}
                                                     <th>Document No</th>
                                                     <th>Measdata Attachment</th>
+                                                    <th>Inspected At</th>
                                                     {{-- <th>Inspected Date</th> --}}
 
                                                 </tr>
@@ -318,6 +320,17 @@
                                                 {{-- `${let name = response['users'][index].rapidx_user_details.firstname + response['users'][index].rapidx_user_details.lastname}` --}}
                                                 <input type="text" class="form-control form-control-sm" name="inspector_name" id="txtInspectorName" value="@php echo Auth::user()->firstname.' '.Auth::user()->lastname; @endphp" readonly>
                                             </div>
+                                            <div class="form-group">
+                                                <label class="form-check-label"> Keep Sample:</label>
+                                                <div class="form-check form-check-inline ml-1">
+                                                    <input class="form-check-input" type="radio" value="1" name="keep_sample" id="txtKeepSample">
+                                                    <label class="form-check-label"> Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="2" name="keep_sample" id="txtKeepSample">
+                                                    <label class="form-check-label"> No</label>
+                                                </div>
+                                            </div>
                                             {{-- DROPDOWN --}}
                                             <div class="form-group">
                                                 <label class="form-label">Document No.:</label>
@@ -348,7 +361,9 @@
                                             <br>
                                             <div class="form-group text-center">
                                                 {{-- <label class="form-label">ILQCM Link:</label> --}}
+                                                {{-- <a href="{{ route('ilqcm') }}" target="_blank"> --}}
                                                 <a href="http://rapidx/ilqcm/dashboard" target="_blank">
+                                                {{-- <a href="http://rapidx/cash_advance/" target="_blank"> --}}
                                                     <button type="button" class="btn btn-primary" id="btnilqcmlink">
                                                         <i class="fa-solid fa-pen"></i> Update In-Line QC Monitoring
                                                     </button>
@@ -401,12 +416,14 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
+                        { "data" : "fs_prod_created_at" },
                         { "data" : "po_num" },
                         { "data" : "prod_lot_no" },
                         { "data" : "ipqc_judgement" },
                         { "data" : "qc_samp" },
                         { "data" : "ipqc_document_no" },
                         { "data" : "ipqc_measdata_attachment" },
+                        { "data" : "ipqc_inspected_date" },
                     ],
                     "rowCallback" : function(row, data, index){
                         // console.log(data.stamping_ipqc.judgement);
@@ -620,7 +637,8 @@
 
                                 GetDocumentNoFromACDCS('CN171', 'Urgent Direction', $("#txtSelectDocumentNo"), '');
                                 $('#txtInspectorID').val(fs_prod_data[0]['ipqc_inspector_id']);
-                                $('#txtInspectorName').val(fs_prod_data[0]['ipqc_inspector_name'] +' '+'(Auto Generate)');
+                                // $('#txtInspectorName').val(fs_prod_data[0]['ipqc_inspector_name'] +' '+'(Auto Generate)');
+                                $('#txtInspectorName').val(fs_prod_data[0]['ipqc_inspector_name']);
                                 $("#btnReuploadTriggerDiv").addClass("d-none");
                                 $("#btnPartsDrawingAddRow").addClass("d-none");
 
@@ -771,7 +789,28 @@
 
                 $('#formIPQCInspectionData').submit(function(e){
                     e.preventDefault();
+                    $('#modalScanQRSave').modal('show');
                     // console.log('serialized', $('#formIPQCInspectionData').serialize());
+                    // AddIpqcInspection();
+                });
+
+                $('#txtScanUserId').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        // console.log($(this).val());
+                        validateUser($(this).val(), 5, function(result){
+                            if(result == true){
+                                // submitProdData($(this).val());
+                                AddIpqcInspection();
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+                        });
+                        $(this).val('');
+                    }
+                });
+
+                function AddIpqcInspection(){
                     let formData = new FormData($('#formIPQCInspectionData')[0]);
                     console.log('formdata', formData);
                     $.ajax({
@@ -805,7 +844,7 @@
                             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
                         }
                     });
-                });
+                };
 
                 $('#formGeneratePackingList').submit(function (e){
                     e.preventDefault();

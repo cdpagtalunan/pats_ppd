@@ -86,14 +86,15 @@ function resetFormProdValues() {
     $('#divProdLotInput').removeClass('d-none');
     $('#divProdLotView').addClass('d-none');
     $('select[name="opt_name[]"]').val(0).trigger('change');
-
+    $('#txtProdDataId').val('');
     // $('input',)
     $('#txtProdSamp').prop('readonly', false);
     $('#txtTtlMachOutput').prop('readonly', false);
     $('#txtProdDate').prop('readonly', false);
+    $('#txtNGCount').prop('readonly', true);
 
     $('#selOperator').prop('disabled', false);
-    $('#txtOptShift').prop('readonly', false);
+    $('#txtOptShift').prop('readonly', true);
     $('#txtInptCoilWeight').prop('readonly', false);
     $('#txtSetupPin').prop('readonly', false);
     $('#txtAdjPin').prop('readonly', false);
@@ -107,12 +108,11 @@ function resetFormProdValues() {
     $('#radioCutPointWithout').prop('checked', true);
 
 
-
     // $('#radioIQC').attr('checked', false);
     // $('#radioMassProd').attr('checked', false);
 }
 
-$("#modalMachineOp").on('hidden.bs.modal', function () {
+$("#modalProdData").on('hidden.bs.modal', function () {
     console.log('hidden.bs.modal');
     resetFormProdValues();
 });

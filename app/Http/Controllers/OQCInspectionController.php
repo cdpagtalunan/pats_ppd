@@ -20,7 +20,7 @@ use App\Models\OQCInspection;
 use App\Models\DropdownOqcAql;
 use App\Models\AcdcsActiveDocs;
 use App\Models\DropdownOqcFamily;
-use App\Models\DropdownOqcAssemblyLine;
+use App\Models\DropdownOqcStampingLine;
 use App\Models\FirstStampingProduction;
 use App\Models\DropdownOqcInspectionMod;
 use App\Models\DropdownOqcInspectionType;
@@ -68,9 +68,43 @@ class OQCInspectionController extends Controller
                 $oqc_id = '0';
             }
 
-            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-device-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>';
+            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>';
             // $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '"data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Print Lot & Reel Lots"><i class="fas fa-sticky-note"></i></button>';
             // $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '"data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Defectives"><i class="fas fa-ban"></i></i></button>';
+            $result .= '</center>';
+            return $result;
+        })
+
+        ->addColumn('status', function($prod_info){
+            $result = '<center>';
+            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            if(count($test) == 1){
+                switch($test[0]->status)
+                {
+                    case 1: //PENDING - SAVE AS DRAFT
+                    {   
+                        $result .= '<span class="badge badge-pill badge-warning"> Pending</span>';
+                        break;
+                    }
+                    case 2: //LOT ACCEPTED
+                    {   
+                        $result .= '<span class="badge badge-pill badge-success"> Lot <br> Accepted</span>';
+                        break;
+                    }
+                    case 3: //LOT REJECTED
+                        {   
+                            $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
+                            break;
+                        }
+                    default:
+                    {
+                        $result .= 'N/A';
+                        break;
+                    }
+                }
+            }else{
+                $result .= '<span class="badge badge-pill badge-info"> For <br> Inspection</span>';
+            }
             $result .= '</center>';
             return $result;
         })
@@ -83,12 +117,8 @@ class OQCInspectionController extends Controller
         })
 
         ->addColumn('po_qty', function($prod_info){
-            // $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            // if(count($test) == 1){
-                // $result .= $prod_info->oqc_inspection_info->po_qty;
-                // }
-                $result .= $prod_info->po_qty;
+            $result .= $prod_info->po_qty;
             $result .= '</center>';
             return $result;
         })
@@ -100,12 +130,16 @@ class OQCInspectionController extends Controller
             return $result;
         })
 
-        ->addColumn('material_name', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+        ->addColumn('prod_lot_qty', function($prod_info){
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->material_name;
-            }
+            $result .= $prod_info->ship_output;
+            $result .= '</center>';
+            return $result;
+        })
+
+        ->addColumn('material_name', function($prod_info){
+            $result = '<center>';
+            $result .= $prod_info->material_name;
             $result .= '</center>';
             return $result;
         })
@@ -155,26 +189,6 @@ class OQCInspectionController extends Controller
             $result = '<center>';
             if(count($test) == 1){
                 $result .= $test[0]->submission;
-            }
-            $result .= '</center>';
-            return $result;
-        })
-
-        ->addColumn('lot_no', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
-            $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->lot_no;
-            }
-            $result .= '</center>';
-            return $result;
-        })
-
-        ->addColumn('lot_qty', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
-            $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->lot_qty;
             }
             $result .= '</center>';
             return $result;
@@ -272,17 +286,17 @@ class OQCInspectionController extends Controller
 
         ->rawColumns([
             'action',
+            'status',
             'po_no',
-            'prod_lot',
             'po_qty',
+            'prod_lot',
+            'prod_lot_qty',
             'material_name',
             'fy_ww',
             'date_inspected',
             'time_ins_from',
             'time_ins_to',
             'submission',
-            'lot_no',
-            'lot_qty',
             'sample_size',
             'mod',
             'num_of_defects',
@@ -301,7 +315,7 @@ class OQCInspectionController extends Controller
         session_start();
         $data = $request->all();
         $validator = Validator::make($data, [
-            'oqc_inspection_assembly_line'          => 'required',
+            'oqc_inspection_stamping_line'          => 'required',
             'oqc_inspection_lot_no'                 => 'required', 
             'oqc_inspection_application_date'       => 'required',
             'oqc_inspection_application_time'       => 'required',
@@ -360,7 +374,7 @@ class OQCInspectionController extends Controller
                     'inspector'                 => $request->oqc_inspection_inspector,
                     'remarks'                   => $request->oqc_inspection_remarks,
                     'shift'                     => $request->oqc_inspection_shift,
-                    'assembly_line'             => $request->oqc_inspection_assembly_line,
+                    'stamping_line'             => $request->oqc_inspection_stamping_line,
                     'app_date'                  => $request->oqc_inspection_application_date,
                     'app_time'                  => $request->oqc_inspection_application_time,
                     'prod_category'             => $request->oqc_inspection_product_category,
@@ -453,14 +467,14 @@ class OQCInspectionController extends Controller
         ->where('logdel', 0)
         ->get();
 
-        $active_doc = FirstStampingProduction::with(['acdcs_active_doc_info'])->get();
-        // return $active_doc;
-        return response()->json(['getOqcInspectionData' => $get_oqc_inspection_data, 'activeDoc' => $active_doc]);
+        $first_stamping_production = FirstStampingProduction::with(['acdcs_active_doc_info'])->get();
+        // return $first_stamping_production;
+        return response()->json(['getOqcInspectionData' => $get_oqc_inspection_data, 'firstStampingProduction' => $first_stamping_production]);
     }
 
-    public function getAssemblyLine(){
-        $collect_assembly_line = DropdownOqcAssemblyLine::orderBy('assembly_line', 'ASC')->where('logdel', 0)->get();
-        return response()->json(['collectAssemblyLine' => $collect_assembly_line]);
+    public function getStampingLine(){
+        $collect_stamping_line = DropdownOqcStampingLine::orderBy('stamping_line', 'ASC')->where('logdel', 0)->get();
+        return response()->json(['collectStampingLine' => $collect_stamping_line]);
     }
 
     public function getFamily(){

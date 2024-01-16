@@ -25,7 +25,8 @@
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>
 
-      <form action="{{ route('sign_in') }}" method="post" id="formSignIn">
+      {{-- <form action="{{ route('sign_in') }}" method="post" id="formSignIn"> --}}
+      <form method="post" id="formSignIn">
         @csrf
         <div class="input-group mb-3">
           <input type="text" class="form-control" name="username" placeholder="Username" id="txtSignInUsername">
@@ -64,8 +65,112 @@
     $("#formSignIn").submit(function(event){
       event.preventDefault();
       SignIn();
+    //   SignInAdmin();
     });
+
+    // Sign In
+    function SignIn(){
+        toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "3000",
+        "timeOut": "3000",
+        "extendedTimeOut": "3000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        };
+
+        $.ajax({
+            url: "sign_in",
+            method: "post",
+            data: $('#formSignIn').serialize(),
+            dataType: "json",
+            beforeSend: function(){
+                $("#iBtnSignInIcon").addClass('fa fa-spinner fa-pulse');
+                $("#btnSignIn").prop('disabled', 'disabled');
+            },
+            success: function(JsonObject){
+                if(JsonObject['result'] == 1){
+                    // console.log('login success pats_ppd', JsonObject['username']);
+                    SignInAdmin(JsonObject['username']); //CLARK COMMENT
+                    window.location = "dashboard";
+                }
+                else if(JsonObject['result'] == 2){
+                    window.location = "change_pass_view";
+                }
+                else{
+                    toastr.error('Login Failed!');
+
+                    if(JsonObject['error']['username'] === undefined){
+                        $("#txtSignInUsername").removeClass('is-invalid');
+                        $("#txtSignInUsername").attr('title', '');
+                    }
+                    else{
+                        $("#txtSignInUsername").addClass('is-invalid');
+                        $("#txtSignInUsername").attr('title', JsonObject['error']['username']);
+                    }
+
+                    if(JsonObject['error']['password'] === undefined){
+                        $("#txtSignInPass").removeClass('is-invalid');
+                        $("#txtSignInPass").attr('title', '');
+                    }
+                    else{
+                        $("#txtSignInPass").addClass('is-invalid');
+                        $("#txtSignInPass").attr('title', JsonObject['error']['password']);
+                    }
+                }
+
+                $("#iBtnSignInIcon").removeClass('fa fa-spinner fa-pulse');
+                $("#btnSignIn").removeAttr('disabled');
+                $("#iBtnSignInIcon").addClass('fa fa-check');
+            },
+            error: function(data, xhr, status){
+                toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                $("#iBtnSignInIcon").removeClass('fa fa-spinner fa-pulse');
+                $("#btnSignIn").removeAttr('disabled');
+                $("#iBtnSignInIcon").addClass('fa fa-check');
+            }
+        });
+    }
+
+    function SignInAdmin(username){
+        // let _token = "{{ csrf_token() }}";
+        // let data = {
+        //         'username' : username,
+        //         '_token' : _token,
+        //       }
+        let _token = "{{ csrf_token() }}";
+        let data = $.param({ _token, username});
+        $.ajax({
+            url: 'rapidx_sign_in_admin',
+            method: 'post',
+            data: data,
+            dataType: "json",
+            beforeSend: function(){
+                $("#iBtnSignInIcon").addClass('fa fa-spinner fa-pulse');
+                $("#btnSignIn").prop('disabled', 'disabled');
+            },
+            success: function(JsonObject){
+                if(JsonObject['result'] == 1){
+                    console.log('success login rapidx');
+                    // $("#spanErrorUsername").text('');
+                    // $("#spanErrorPassword").text('');
+                    // window.location = "{{ route('dashboard') }}";
+                    // alert(JSON.stringify(JsonObject));
+                }
+            }
+        });
+    }
   });
+
 </script>
 </body>
 </html>

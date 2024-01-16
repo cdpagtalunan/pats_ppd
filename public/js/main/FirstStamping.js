@@ -1,12 +1,15 @@
-const submitProdData = async () => {
+const submitProdData = async (scannedId) => {
+    $('input[name="status"]').prop('disabled', false);
+    
     await $.ajax({
         type: "post",
         url: "save_prod_data",
         data: $('#formProdData').serialize(),
         dataType: "json",
+       
         success: function (response) {
             if(response['result'] == 1){
-                $('#modalMachineOp').modal('hide');
+                $('#modalProdData').modal('hide');
                 $('#modalScanQRSave').modal('hide');
                 dtDatatableProd.draw();
                 toastr.success(`${response['msg']}`);
@@ -93,8 +96,18 @@ const submitProdData = async () => {
                     $('#txtTtlMachOutput').addClass('is-invalid');
                     $('#txtTtlMachOutput').attr('title', response['error']['ttl_mach_output']);
                 }
+                if(response['error']['ng_count'] === undefined){
+                    $('#txtNGCount').removeClass('is-invalid');
+                    $('#txtNGCount').attr('title', '');
+                }
+                else{
+                    $('#txtNGCount').addClass('is-invalid');
+                    $('#txtNGCount').attr('title', response['error']['ng_count']);
+                }
                 
             }
+            $('input[name="status"]').prop('disabled', true);
+
         },
         error: function(data, xhr, status){
             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
@@ -117,7 +130,7 @@ const getProdDataById = async (id, btnFunction) => {
         dataType: "json",
         success: function (response) {
             var counter = 0;
-            $('#modalMachineOp').modal('show');
+            $('#modalProdData').modal('show');
             $('#txtProdDataId').val(response['id'])
             $('#txtPoNumber').val(response['po_num'])
             $('#txtPoQty').val(response['po_qty'])
@@ -142,8 +155,8 @@ const getProdDataById = async (id, btnFunction) => {
             $('#txtMatYield').val(response['mat_yield'])
 
             $('#txtProdLotView').val(response['prod_lot_no']);
+            $('#txtNGCount').val(response['ng_count']);
 
-            let arrayMatLotNo = response['material_lot_no'].split(", ");
             let arrayOperators = response['operator'].split(", ");
 
        
@@ -152,37 +165,27 @@ const getProdDataById = async (id, btnFunction) => {
             if(response['status'] == 0){
                 $('#radioIQC').prop('checked', true);
                 $('#radioMassProd').prop('checked', false);
+                $('#radioResetup').prop('checked', false);
                 $('.matNo').prop('readonly', true);
                 
+            }
+            else if(response['status'] == 3){
+                $('#radioIQC').prop('checked', false);
+                $('#radioMassProd').prop('checked', false);
+                $('#radioResetup').prop('checked', true);
             }
             else{
                 $('#radioIQC').prop('checked', false);
                 $('#radioMassProd').prop('checked', true);
+                $('#radioResetup').prop('checked', false);
+
                 $('.matNo').prop('readonly', true);
 
             }
             $('input[name="cut_point"]').prop('disabled', true);
 
 
-            if(btnFunction == 1){ // FOR MASS PROD INPUTTING
-                $('#selOperator').prop('disabled', true);
-                $('#txtOptShift').prop('readonly', true);
-                $('#txtInptCoilWeight').prop('readonly', true);
-                $('#txtSetupPin').prop('readonly', true);
-                $('#txtAdjPin').prop('readonly', true);
-                $('#txtQcSamp').prop('readonly', true);
-                $('#txtTargetOutput').prop('readonly', true);
-                // $('#radioIQC').prop('checked', false);
-                // $('#radioMassProd').prop('checked', true);
-
-                $('#saveProdData').show();
-            }
-            else{
-                $('#saveProdData').hide();
-
-                $('#formProdData :input').attr('readonly','readonly');
-                $('#selOperator').prop('disabled', true);
-            }
+          
 
             if(response['cut_off_point'] == 0){ // without cutpoints
                 $('#radioCutPointWithout').prop('checked', true);
@@ -194,12 +197,40 @@ const getProdDataById = async (id, btnFunction) => {
                 $('#txtNoCut').val(response['no_of_cuts'])
             }
 
-            for(let x = 0; x < arrayMatLotNo.length; x++){
-                if($('#multipleCounter').val() != counter){
-                    $('#btnAddMatNo').click();
-                }
-                $(`#txtTtlMachOutput_${x}`).val(arrayMatLotNo[x]);
-                counter++
+            $(`#txtTtlMachOutput_0`).val(response['material_lot_no']);
+
+            // let arrayMatLotNo = response['material_lot_no'].split(", ");
+            // for(let x = 0; x < arrayMatLotNo.length; x++){
+            //     if($('#multipleCounter').val() != counter){
+            //         $('#btnAddMatNo').click();
+            //     }
+            //     $(`#txtTtlMachOutput_${x}`).val(arrayMatLotNo[x]);
+            //     counter++
+            // }
+            if(btnFunction == 0){
+                $('#saveProdData').hide();
+
+                $('#formProdData :input').attr('readonly','readonly');
+                $('#selOperator').prop('disabled', true);
+            }
+            else if(btnFunction == 1){ // FOR MASS PROD INPUTTING
+                $('#selOperator').prop('disabled', true);
+                $('#txtOptShift').prop('readonly', true);
+                $('#txtInptCoilWeight').prop('readonly', true);
+                $('#txtSetupPin').prop('readonly', true);
+                $('#txtAdjPin').prop('readonly', true);
+                $('#txtQcSamp').prop('readonly', true);
+                $('#txtTargetOutput').prop('readonly', true);
+                $('#txtNGCount').prop('readonly', true);
+
+                $('#saveProdData').show();
+            }
+            else if(btnFunction == 2){
+                
+                $('#formProdData').find('input').prop('readonly', true);
+                $('#selOperator').prop('disabled', true);
+                $('#txtNGCount').prop('readonly', false);
+
             }
             
         }
@@ -246,7 +277,7 @@ const checkMatrix = async (code, name) => {
                 $('#txtDrawingNo').val(prodData['drawings']['drawing_no']);
                 $('#txtDrawingRev').val(prodData['drawings']['rev']);
                 // $('#txtOptName').val($('#globalSessionName').val());
-                $('#modalMachineOp').modal('show');
+                $('#modalProdData').modal('show');
             }
             
         }

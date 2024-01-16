@@ -26,6 +26,8 @@
 <!-- smartWizard -->
 <script src="{{ asset('public/js/jquery.smartWizard.min.js') }}"></script>
 
+<script src="{{ asset('public/template/moment/moment.min.js') }}"></script>
+
 <!-- Custom JS -->
 <script>
     toastr.options = {
@@ -48,9 +50,8 @@
     };
 </script>
 
-
-<script src="{{ asset('public/js/main/Common.js?n=1') }}" async></script>
-<script src="{{ asset('public/js/main/User.js?n=6') }}"></script>
+<script src="{{ asset('public/js/main/Common.js') }}" async></script>
+<script src="{{ asset('public/js/main/User.js?n=48445646478') }}"></script>
 
 <script src="{{ asset('public/js/main/UserLevel.js?n=1') }}"></script>
 <script src="{{ asset('public/js/main/Device.js?n=3') }}"></script>

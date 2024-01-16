@@ -37,6 +37,7 @@ class CreateFirstStampingProductionsTable extends Migration
             $table->integer('set_up_pins');
             $table->integer('adj_pins');
             $table->integer('qc_samp');
+            $table->integer('ng_count')->default(0)->comment = "this will have value if ng on ipqc";
             $table->integer('prod_samp')->nullable();
             $table->integer('total_mach_output')->nullable();
             $table->integer('ship_output')->nullable();

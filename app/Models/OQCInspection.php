@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\ReelLot;
 use App\Models\PrintLot;
 use App\Models\ModeOfDefect;
-use App\Models\WbsOqcInspection;
+// use App\Models\WbsOqcInspection;
+use App\Models\FirstStampingProduction;
 
 class OQCInspection extends Model
 {
@@ -30,4 +31,9 @@ class OQCInspection extends Model
     public function mod_oqc_inspection_info(){
         return $this->hasMany(ModeOfDefect::class, 'oqc_inspection_id','id');
     }
+
+    public function stamping_production_info(){
+        return $this->hasMany(FirstStampingProduction::class,'id','id');
+    }
+
 }

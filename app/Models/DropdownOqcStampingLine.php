@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DropdownOqcAssemblyLine extends Model
+class DropdownOqcStampingLine extends Model
 {
-    protected $table = "dropdown_oqc_assembly_lines";
+    protected $table = "dropdown_oqc_stamping_lines";
     protected $connection = "mysql";
 }
