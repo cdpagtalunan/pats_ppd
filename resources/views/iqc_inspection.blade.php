@@ -185,8 +185,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Family</span>
                                         </div>
-                                        <select class="form-select form-control select2bs4" id="family" name="family" >
-                                            {{-- <option value="" selected disabled>-Select-</option> --}}
+                                        <select class="form-select form-control" id="family" name="family" >
                                         </select>
                                     </div>
                                 </div>
@@ -219,7 +218,6 @@
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="lot_no" name="lot_no" readonly>
 
-                                        {{-- <button type="button" class="form-control form-control-sm bg-info" id="btnLotNo">Lot Number</button> --}}
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -310,7 +308,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Date Inspected</span>
                                         </div>
-                                        <input type="date" class="form-control form-control-sm" id="date_inspected" name="date_inspected">
+                                        <input type="date" class="form-control form-control-sm" id="date_inspected" name="date_inspected" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -326,7 +324,7 @@
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100" id="basic-addon1">Time Inspected</span>
                                         </div>
-                                        <input type="time" class="form-control form-control-sm" id="time_ins_from" name="time_ins_from">
+                                        <input type="time" class="form-control form-control-sm" id="time_ins_from" name="time_ins_from" readonly>
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100" id="basic-addon1">-</span>
                                         </div>
@@ -424,6 +422,12 @@
                                             <span class="input-group-text w-100" id="basic-addon1">Mode of Defect</span>
                                         </div>
                                         <button type="button" class="form-control form-control-sm bg-warning" id="btnMod">Mode of Defects</button>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">COC File</span>
+                                        </div>
+                                        <input type="file" class="form-control form-control-sm" id="iqc_coc_file" name="iqc_coc_file" accept=".pdf">
                                     </div>
                                 </div>
                             </div>
@@ -538,8 +542,13 @@
                 const form = {
                     iqcInspection : $('#formSaveIqcInspection')
                 };
-                const strDate = {
-                    dateToday : new Date() // By default Date empty constructor give you Date.now
+                const strDatTime = {
+                    dateToday : new Date(), // By default Date empty constructor give you Date.now
+                    currentDate : new Date().toJSON().slice(0, 10),
+                    currentTime : new Date().toLocaleTimeString('en-GB', { hour: "numeric",minute: "numeric"}),
+                    currentHours : new Date().getHours(),
+                    currentMinutes : new Date().getMinutes(),
+
                 }
                 const arrCounter= {
                     ctr : 0
@@ -621,15 +630,28 @@
                         data: {"whs_transaction_id" : whs_transaction_id},
                         dataType: "json",
                         success: function (response) {
-                            let twoDigitYear = strDate.dateToday.getFullYear().toString().substr(-2);
-                            let twoDigitMonth = (strDate.dateToday.getMonth() + 1).toString().padStart(2, "0");
+                            let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
+                            let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
                             let lotNo = response[0]['lot_no'];
                             let lotQty = response[0]['total_lot_qty'];
                             let iqcInspectionId = response[0]['iqc_inspection_id'];
                             let iqcInspectionsMods = response[0].iqc_inspections_mods;
 
-                            console.log('lotNo',lotNo);
+                            console.log('currentMinutes.currentTime',strDatTime.currentTime);
                             $('#modalSaveIqcInspection').modal('show');
+                            if(iqcInspectionId === undefined){
+                                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
+                                form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
+                                form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
+
+                            }else{
+                                form.iqcInspection.find('#app_no').val(response[0]['app_no']);
+                                form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
+                                console.log(response[0]['date_inspected']);
+                                form.iqcInspection.find('#time_ins_from').val(response[0]['time_ins_from']);
+
+                            }
+
                             form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
                             form.iqcInspection.find('#iqc_inspection_id').val(iqcInspectionId);
                             form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
@@ -638,7 +660,6 @@
                             form.iqcInspection.find('#supplier').val(response[0]['supplier']);
                             form.iqcInspection.find('#total_lot_qty').val(lotQty);
                             form.iqcInspection.find('#lot_no').val(lotNo);
-                            form.iqcInspection.find('#app_no').val(response[0]['app_no']);
                             form.iqcInspection.find('#app_no_extension').val(response[0]['app_no_extension']);
 
                             form.iqcInspection.find('#die_no').val(response[0]['die_no']);
@@ -649,8 +670,6 @@
                             form.iqcInspection.find('#accept').val(response[0]['accept']);
                             form.iqcInspection.find('#reject').val(response[0]['reject']);
                             form.iqcInspection.find('#shift').val(response[0]['shift']);
-                            form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
-                            form.iqcInspection.find('#time_ins_from').val(response[0]['time_ins_from']);
                             form.iqcInspection.find('#time_ins_to').val(response[0]['time_ins_to']);
                             form.iqcInspection.find('#inspector').val(response[0]['inspector']).trigger('change');
                             form.iqcInspection.find('#submission').val(response[0]['submission']);
@@ -673,12 +692,10 @@
 
                             console.log(iqcInspectionsMods);
                             $('#tblModeOfDefect tbody').empty();
+                            arrTableMod.lotNo = [];
+                            arrTableMod.modeOfDefects = [];
+                            arrTableMod.lotQty = [];
                             if(iqcInspectionsMods === undefined){
-                                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
-
-                                arrTableMod.lotNo = [];
-                                arrTableMod.modeOfDefects = [];
-                                arrTableMod.lotQty = [];
                                 arrCounter.ctr = 0;
                             }else{
                                 btn.removeModLotNumber.prop('disabled',false);
@@ -698,8 +715,8 @@
                                     arrTableMod.lotNo.push(selectedLotNo);
                                     arrTableMod.modeOfDefects.push(selectedMod);
                                     arrTableMod.lotQty.push(selectedLotQty);
-                                    console.log(arrTableMod.lotNo);
                                 }
+                                console.log('arrTableMod',arrTableMod.lotNo);
                             }
                             /*Mode of Defects Modal*/
                             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
