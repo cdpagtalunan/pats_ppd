@@ -64,3 +64,7 @@
 <script src="{{ asset('public/js/main/LoadingPortDetails.js?n=612312113') }}"></script>
 <script src="{{ asset('public/js/main/DestinationPortDetails.js?n=6') }}"></script>
 <script src="{{ asset('public/js/main/PackingList.js?n=123123123213123') }}"></script>
+
+
+{{-- IQC --}}
+<script src="{{ asset('public/js/main/IqcInspection.js?n=123456') }}"></script>

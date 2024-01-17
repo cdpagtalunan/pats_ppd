@@ -21,7 +21,6 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
-    //
     public function loadWhsTransaction(){
         // return TblWarehouseTransaction::select('*')->limit(10)->get();
         // return TblWarehouse::select('*')->limit(10)->get();
