@@ -382,6 +382,7 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mt-3">
+                                    
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Lot Inspected</span>
@@ -423,17 +424,24 @@
                                         </div>
                                         <button type="button" class="form-control form-control-sm bg-warning" id="btnMod">Mode of Defects</button>
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group input-group-sm mb-3 none" id="fileIqcCocUpload">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">COC File</span>
                                         </div>
                                         <input type="file" class="form-control form-control-sm" id="iqc_coc_file" name="iqc_coc_file" accept=".pdf">
+                                        {{-- &nbsp;&nbsp; <a href="#" id="iqc_coc_file_download" class="link-primary"> <i class="fas fa-file"></i> Click to download attachment</a> --}}
                                     </div>
-                                    <div class="input-group input-group-sm mb-3 d-none" id="fileIqcCocDownload">
+                                    <div class="input-group input-group-sm mb-3 none" id="fileIqcCocDownload">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Attachment</span>
                                         </div>
-                                        &nbsp;&nbsp; <a href="#" target="_blank" id="iqc_coc_file_download" class="link-primary"> <i class="fas fa-file"></i> Click to download attachment</a>
+                                        &nbsp;&nbsp; <a href="#" id="iqc_coc_file_download" class="link-primary"> <i class="fas fa-file"></i> Click to download attachment</a>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="1" id="isUploadCoc" name="isUploadCoc">
+                                        <label class="form-check-label" for="isUploadCoc">
+                                            Click to upload new attachment
+                                        </label>
                                     </div>
                                 </div>
                             </div>
@@ -496,7 +504,6 @@
                                         <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
                                     </div>
                                     <input class="form-control" type="number" name="mod_quantity" id="mod_quantity" value="0" min =0>
-                                    {{-- <select class="form-control select2bs4" name="mod_quantity" id="mod_quantity" style="width: 50%;">
                                     </select> --}}
                                 </div>
                             </div>
@@ -526,7 +533,7 @@
                         </div>
                     </div>
                     <div class="modal-footer justify-content-end">
-                        <button type="button" class="btn btn-sm btn-primary" id="btnSaveComputation" disabled><i class="fas fa-save"></i> Compute</button>
+                        {{-- <button type="button" class="btn btn-sm btn-primary" id="btnSaveComputation"><i class="fas fa-save"></i> Compute</button> --}}
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -643,19 +650,23 @@
                             let iqcInspectionId = response[0]['iqc_inspection_id'];
                             let iqcInspectionsMods = response[0].iqc_inspections_mods;
 
-                            console.log('currentMinutes.currentTime',strDatTime.currentTime);
                             $('#modalSaveIqcInspection').modal('show');
-                            if(iqcInspectionId === undefined){
+                            if( iqcInspectionId === undefined || iqcInspectionId === null ){
                                 form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
                                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-                                
+
                             }else{
                                 form.iqcInspection.find('#app_no').val(response[0]['app_no']);
                                 form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
-                                console.log(response[0]['date_inspected']);
                                 form.iqcInspection.find('#time_ins_from').val(response[0]['time_ins_from']);
                             }
+                            if( response[0]['iqc_coc_file'] === undefined || response[0]['iqc_coc_file'] === null ){
+                                form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
+                            }else{
+                                form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
+                            }
+                            console.log('iqc_coc_file',response[0]['iqc_coc_file']);
 
                             form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
                             form.iqcInspection.find('#iqc_inspection_id').val(iqcInspectionId);
@@ -722,7 +733,6 @@
                                     arrTableMod.modeOfDefects.push(selectedMod);
                                     arrTableMod.lotQty.push(selectedLotQty);
                                 }
-                                console.log('arrTableMod',arrTableMod.lotNo);
                             }
                             /*Mode of Defects Modal*/
                             $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
@@ -734,7 +744,8 @@
                                 $('#mod_quantity').append(optLotQty);
 
                             }
-                            console.log('show_edit',arrTableMod.lotQty);
+                            console.log('arrTableMod.lotNo',arrTableMod.lotNo);
+                            console.log('arrTableMod.lotQty',arrTableMod.lotQty);
                         }
                     });
                 }
@@ -814,10 +825,8 @@
                 const disabledEnabledButton = function(arrCounter){
                     if(arrCounter === 0 ){
                         btn.removeModLotNumber.prop('disabled',true);
-                        btn.saveComputation.prop('disabled',true);
                     }else{
                         btn.removeModLotNumber.prop('disabled',false);
-                        btn.saveComputation.prop('disabled',false);
                     }
                 }
                 const getSum = function (total, num) {
@@ -838,10 +847,14 @@
                     getLarDppm();
                     getModeOfDefect();
 
-                    form.iqcInspection.find('input').removeClass('is-invalid')
-                    form.iqcInspection.find('input').attr('title', '')
-                    form.iqcInspection.find('select').removeClass('is-invalid')
-                    form.iqcInspection.find('select').attr('title', '')
+                    form.iqcInspection.find('input').removeClass('is-invalid');
+                    form.iqcInspection.find('input').attr('title', '');
+                    form.iqcInspection.find('select').removeClass('is-invalid');
+                    form.iqcInspection.find('select').attr('title', '');
+
+                    /*Upload and Download file*/
+                    $('#isUploadCoc').prop('checked',false);
+                    form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
                 });
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -905,28 +918,33 @@
                 form.iqcInspection.find('#iqc_coc_file_download').click(function (e) {
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
-                    $.ajax({
-                        type: "GET",
-                        url: "view_coc_file_attachment",
-                        data: { iqc_inspection_id : iqc_inspection_id},
-                        dataType: "json",
-                        success: function (response) {
-                            console.log(response.iqc_coc_file_name[0].iqc_coc_file);
-                            window.open(`reports/pdf_download/user_manual.php`);
-                        }
-                    });
-                    console.log(iqc_inspection_id);
-                    // window.open("reports/pdf_download/user_manual.php");
-
-                });
+                    window.open('view_coc_file_attachment/'+iqc_inspection_id);
                 
+                });
+
+                form.iqcInspection.find('#isUploadCoc').change(function (e) { 
+                    e.preventDefault();
+                    $('#iqc_coc_file').val('');
+                    if ($(this).is(':checked')) {
+                        form.iqcInspection.find('#fileIqcCocUpload').removeClass('d-none',true);
+                        form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
+                    }else{
+                        form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
+                        form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
+                    }
+                });
+
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
+                    let serialized_data = new FormData(this);
+                        serialized_data.append('lotNo',arrTableMod.lotNo);
+                        serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);
+                        serialized_data.append('lotQty',arrTableMod.lotQty);
                     $.ajax({
                         type: "POST",
                         url: "save_iqc_inspection",
-                        data: new FormData(this),
+                        data: serialized_data,
                         dataType: "json",
                         cache: false,
                         contentType: false,
@@ -971,12 +989,12 @@
                                 errorHandler(errors.accepted,form.iqcInspection.find('#accepted'));
                                 errorHandler(errors.judgement,form.iqcInspection.find('#judgement'));
                             }else{
-                                toastr.error('Error');
+                                toastr.error(`Error: ${data.status}`);
                             }
                         }
                     });
                 });
-            
+
                 const errorHandler = function (errors,formInput){
                     if(errors === undefined){
                         formInput.removeClass('is-invalid')

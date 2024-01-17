@@ -37,13 +37,8 @@ class IqcInspectionController extends Controller
             ORDER BY whs.PartNumber DESC
             LIMIT 0,100
         ');
-        //WHERE whs_transaction.inspection_class = 1
-        //WHERE whs.PartNumber = 103587401 CN171S
-        //ORDER BY whs_transaction.LastUpdate DESC inspection_class 1-Fo
-
 
         return DataTables::of($tbl_whs_trasanction)
-        //<th>App Ctrl No.</th>
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
@@ -100,8 +95,6 @@ class IqcInspectionController extends Controller
             ProductLine,MaterialType
             Supplier
             Lot_number
-
-
         */
     }
 
@@ -201,31 +194,30 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-
     public function saveIqcInspection(IqcInspectionRequest $request){
         date_default_timezone_set('Asia/Manila');
     
-
         try {
-            if(isset($request->iqc_coc_file)){
-                $original_filename = $request->file('iqc_coc_file')->getClientOriginalName();
-                Storage::putFileAs('public/iqc_inspection_coc', $request->iqc_coc_file,  $original_filename);
-            }else{
-                $original_filename = '';
-            }
+            $mod_lot_no = explode(',',$request->lotNo);
+            $mod_defects = explode(',',$request->modeOfDefects);
+            $mod_lot_qty = explode(',',$request->lotQty);
+            $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
 
-            if(isset($request->iqc_inspection_id)){ /* Edit */
+            if(isset($request->iqc_inspection_id)){ //Edit
+                /* All required fields is the $request validated, check the column is IqcInspectionRequest
+                    NOTE: the name of fields must be match in column name
+                */
                 $update_iqc_inspection = IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated());
+                /*  All not required fields should to be inside the update method below
+                    NOTE: the name of fields must be match in column name
+                */
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
-                    'no_of_defects' => $request->no_of_defects,
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
-                    'iqc_coc_file' => $original_filename
                 ]);
-
                 $iqc_inspections_id = $request->iqc_inspection_id;
-
-            }else{ /* Add */
+            }else{ //Add
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
@@ -235,13 +227,23 @@ class IqcInspectionController extends Controller
                 */
                 IqcInspection::where('id', $create_iqc_inspection->id)
                 ->update([
-                    'no_of_defects' => $request->no_of_defects,
+                    'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
-                    'iqc_coc_file' => $original_filename
+            
                 ]);
-
                 $iqc_inspections_id = $create_iqc_inspection->id;
+            }
+            /* Uploading of file if checked & iqc_coc_file is exist*/
+            if(isset($request->iqc_coc_file) ){
+                $original_filename = $request->file('iqc_coc_file')->getClientOriginalName(); //'/etc#hosts/@Álix Ãxel likes - beer?!.pdf';
+                $filtered_filename = '_'.$this->Slug($original_filename, '_', '.');	 // _etc_hosts_alix_axel_likes_beer.pdf
+                Storage::putFileAs('public/iqc_inspection_coc', $request->iqc_coc_file,  $iqc_inspections_id . $filtered_filename);
 
+                IqcInspection::where('id', $iqc_inspections_id)
+                ->update([
+                    'iqc_coc_file' => $filtered_filename,
+                    'iqc_coc_file_name' => $original_filename
+                ]);
             }
 
             /* Get iqc_inspections_id, delete the previos MOD then  save new MOD*/
@@ -249,14 +251,19 @@ class IqcInspectionController extends Controller
                 IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
                 ]);
-                foreach ($request->lotQty as $key => $mod_lot_qty) {
-
+                foreach ( $mod_lot_no as $key => $value) {
                     IqcInspectionsMod::insert([
                         'iqc_inspection_id'    => $iqc_inspections_id,
-                        'lot_no'                => $request->lotNo[$key],
-                        'mode_of_defects'       => $request->modeOfDefects[$key],
-                        'quantity'              => $request->lotQty[$key],
-                        'created_at'            => date('Y-m-d H:i:s'),
+                        'lot_no'                => $mod_lot_no[$key],
+                        'mode_of_defects'       => $mod_defects[$key],
+                        'quantity'              => $mod_lot_qty[$key],
+                        'created_at'            => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }else{
+                if(IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->exists()){
+                    IqcInspectionsMod::where('iqc_inspection_id', $iqc_inspections_id)->update([
+                        'deleted_at' => date('Y-m-d H:i:s')
                     ]);
                 }
             }
@@ -264,8 +271,6 @@ class IqcInspectionController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-
-
     }
 
     public function getModeOfDefect(){
@@ -281,24 +286,23 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function viewCocFileAttachment(Request $request){    
-
-        $iqc_coc_file_name = IqcInspection::where('id',$request->iqc_inspection_id)->get('iqc_coc_file');
-        $memo_file_path = 'storage/app/public/iqc_inspection_coc/'.$iqc_coc_file_name[0]['iqc_coc_file'];
-        $memo_file_name = $iqc_coc_file_name[0]['iqc_coc_file'];
-        if (file_exists($memo_file_path)) {
-            /* Viewing of PDF */
-            header('Content-type: application/pdf');
-            header('Content-Disposition: inline; filename="' . $memo_file_name . '"');
-            header('Content-Transfer-Encoding: binary');
-            header('Accept-Ranges: bytes');
-            //Read the file
-            @readfile($memo_file_path);
-            exit;
-        }else{
-            echo 'File Not Exist';
-            exit;
-        }
+    public function viewCocFileAttachment(Request $request,$iqc_inspection_id){    
+        $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
+        return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
     }
+
+    public function Slug($string, $slug = '-', $extra = null)
+	{
+		return strtolower(trim(preg_replace('~[^0-9a-z' . preg_quote($extra, '~') . ']+~i', $slug, $this->Unaccent($string)), $slug));
+	}
+
+	public function Unaccent($string) // normalizes (romanization) accented chars
+	{
+		if (strpos($string = htmlentities($string, ENT_QUOTES, 'UTF-8'), '&') !== false)
+		{
+			$string = html_entity_decode(preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|tilde|uml);~i', '$1', $string), ENT_QUOTES, 'UTF-8');
+		}
+		return $string;
+	}
 
 }
