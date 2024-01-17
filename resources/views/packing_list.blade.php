@@ -435,20 +435,92 @@
                 success: function (response) {
                     if(response['validation'] == 1){
                             toastr.error('Saving data failed!');
-                            // if(response['error']['loading_port'] === undefined){
-                            //     $("#txtDestinationPort").removeClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', '');
-                            // }
-                            // else{
-                            //     $("#txtDestinationPort").addClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', response['error']['loading_port']);
-                            // }
-                        }else if(response['result'] == 0){
-                            $("#formPackingList")[0].reset();
-                            toastr.success('Succesfully saved!');
-                            $('#modalAddPackingList').modal('hide');
-                            dtPackingListDetails.draw();
-                        }
+                            if(response['error']['ctrl_num'] === undefined){
+                                $("#txtCtrlNumber").removeClass('is-invalid');
+                                $("#txtCtrlNumber").attr('title', '');
+                            }
+                            else{
+                                $("#txtCtrlNumber").addClass('is-invalid');
+                                $("#txtCtrlNumber").attr('title', response['error']['ctrl_num']);
+                            }
+                            if(response['error']['pickup_date_and_time'] === undefined){
+                                $("#textPickUpDateAndTime").removeClass('is-invalid');
+                                $("#textPickUpDateAndTime").attr('title', '');
+                            }
+                            else{
+                                $("#textPickUpDateAndTime").addClass('is-invalid');
+                                $("#textPickUpDateAndTime").attr('title', response['error']['pickup_date_and_time']);
+                            }
+                            if(response['error']['carrier'] === undefined){
+                                $("#selectCarrier").removeClass('is-invalid');
+                                $("#selectCarrier").attr('title', '');
+                            }
+                            else{
+                                $("#selectCarrier").addClass('is-invalid');
+                                $("#selectCarrier").attr('title', response['error']['carrier']);
+                            }
+                            if(response['error']['ship_from'] === undefined){
+                                $("#textShipFrom").removeClass('is-invalid');
+                                $("#textShipFrom").attr('title', '');
+                            }
+                            else{
+                                $("#textShipFrom").addClass('is-invalid');
+                                $("#textShipFrom").attr('title', response['error']['ship_from']);
+                            }
+                            if(response['error']['ship_to'] === undefined){
+                                $("#selectCustomer").removeClass('is-invalid');
+                                $("#selectCustomer").attr('title', '');
+                            }
+                            else{
+                                $("#selectCustomer").addClass('is-invalid');
+                                $("#selectCustomer").attr('title', response['error']['ship_to']);
+                            }
+                            if(response['error']['loading_port'] === undefined){
+                                $("#selectPortOfLoading").removeClass('is-invalid');
+                                $("#selectPortOfLoading").attr('title', '');
+                            }
+                            else{
+                                $("#selectPortOfLoading").addClass('is-invalid');
+                                $("#selectPortOfLoading").attr('title', response['error']['loading_port']);
+                            }
+                            if(response['error']['destination_port'] === undefined){
+                                $("#selectPortOfDestination").removeClass('is-invalid');
+                                $("#selectPortOfDestination").attr('title', '');
+                            }
+                            else{
+                                $("#selectPortOfDestination").addClass('is-invalid');
+                                $("#selectPortOfDestination").attr('title', response['error']['destination_port']);
+                            }
+                            if(response['error']['prepared_by'] === undefined){
+                                $("#selectPreparedBy").removeClass('is-invalid');
+                                $("#selectPreparedBy").attr('title', '');
+                            }
+                            else{
+                                $("#selectPreparedBy").addClass('is-invalid');
+                                $("#selectPreparedBy").attr('title', response['error']['prepared_by']);
+                            }
+                            if(response['error']['checked_by'] === undefined){
+                                $("#selectCheckedBy").removeClass('is-invalid');
+                                $("#selectCheckedBy").attr('title', '');
+                            }
+                            else{
+                                $("#selectCheckedBy").addClass('is-invalid');
+                                $("#selectCheckedBy").attr('title', response['error']['checked_by']);
+                            }
+                            if(response['error']['carbon_copy'] === undefined){
+                                $("#selectCarbonCopy").removeClass('is-invalid');
+                                $("#selectCarbonCopy").attr('title', '');
+                            }
+                            else{
+                                $("#selectCarbonCopy").addClass('is-invalid');
+                                $("#selectCarbonCopy").attr('title', response['error']['carbon_copy']);
+                            }
+                    }else if(response['result'] == 0){
+                        $("#formPackingList")[0].reset();
+                        toastr.success('Succesfully saved!');
+                        $('#modalAddPackingList').modal('hide');
+                        dtPackingListDetails.draw();
+                    }
                         $("#btnSavePackingListDetailsIcon").removeClass('spinner-border spinner-border-sm');
                         $("#btnSavePackingListDetails").removeClass('disabled');
                         $("#btnSavePackingListDetailsIcon").addClass('fa fa-check');
