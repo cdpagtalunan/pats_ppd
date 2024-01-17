@@ -61,14 +61,14 @@ class OQCInspectionController extends Controller
         return DataTables::of($prod_details)
         ->addColumn('action', function($prod_info){
             $result = '<center>';
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
-            if(count($test) == 1){
-                $oqc_id = $test[0]->id;
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            if(count($get_oqc_inspection_per_row) == 1){
+                $oqc_id = $get_oqc_inspection_per_row[0]->id;
             }else{
                 $oqc_id = '0';
             }
 
-            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>';
+            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>';
             // $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '"data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Print Lot & Reel Lots"><i class="fas fa-sticky-note"></i></button>';
             // $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '"data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Defectives"><i class="fas fa-ban"></i></i></button>';
             $result .= '</center>';
@@ -77,9 +77,9 @@ class OQCInspectionController extends Controller
 
         ->addColumn('status', function($prod_info){
             $result = '<center>';
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
-            if(count($test) == 1){
-                switch($test[0]->status)
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            if(count($get_oqc_inspection_per_row) == 1){
+                switch($get_oqc_inspection_per_row[0]->status)
                 {
                     case 1: //PENDING - SAVE AS DRAFT
                     {   
@@ -145,140 +145,140 @@ class OQCInspectionController extends Controller
         })
 
         ->addColumn('fy_ww', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->fy.'-'.$test[0]->ww;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->fy.'-'.$get_oqc_inspection_per_row[0]->ww;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('date_inspected', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->date_inspected;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->date_inspected;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('time_ins_from', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->time_ins_from;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->time_ins_from;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('time_ins_to', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->time_ins_to;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->time_ins_to;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('submission', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->submission;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->submission;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('sample_size', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->sample_size;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->sample_size;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('mod', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->mod;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->mod;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('num_of_defects', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->num_of_defects;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->num_of_defects;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('judgement', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->judgement;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->judgement;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('inspector', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->inspector;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->inspector;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('remarks', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->remarks;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->remarks;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('family', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->family;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->family;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('update_user', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->update_user;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->update_user;
             }
             $result .= '</center>';
             return $result;
         })
 
         ->addColumn('updated_at', function($prod_info){
-            $test = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
-            if(count($test) == 1){
-                $result .= $test[0]->updated_at;
+            if(count($get_oqc_inspection_per_row) == 1){
+                $result .= $get_oqc_inspection_per_row[0]->updated_at;
             }
             $result .= '</center>';
             return $result;
@@ -316,19 +316,17 @@ class OQCInspectionController extends Controller
         $data = $request->all();
         $validator = Validator::make($data, [
             'oqc_inspection_stamping_line'          => 'required',
-            'oqc_inspection_lot_no'                 => 'required', 
             'oqc_inspection_application_date'       => 'required',
             'oqc_inspection_application_time'       => 'required',
             'oqc_inspection_product_category'       => 'required',
             'oqc_inspection_po_no'                  => 'required',
-            // 'oqc_inspection_material_name'           => 'required',
+            // 'oqc_inspection_material_name'          => 'required',
             // 'oqc_inspection_customer'               => 'required',
             'oqc_inspection_po_qty'                 => 'required',
             'oqc_inspection_family'                 => 'required',
             'oqc_inspection_inspection_type'        => 'required',
             'oqc_inspection_inspection_severity'    => 'required',
             'oqc_inspection_inspection_level'       => 'required',
-            'oqc_inspection_lot_qty'                => 'required',
             'oqc_inspection_aql'                    => 'required',
             'oqc_inspection_sample_size'            => 'required',
             // 'oqc_inspection_accept'                 => 'required',
@@ -355,16 +353,24 @@ class OQCInspectionController extends Controller
             // DB::beginTransaction();
             // try {
                 $check_existing_record = OQCInspection::where('id', $request->oqc_inspection_id)->where('logdel', 0)->get();
+
+                if($request->status == 1){
+                    $oqc_status = '1';
+                }else{
+                    if($request->oqc_inspection_judgement == 'Accept'){
+                        $oqc_status = '2';
+                    }else{
+                        $oqc_status = '3';
+                    }
+                }
+
                 $add_update_oqc_inspection =[
                     'fs_productions_id'         => $request->prod_id,
-                    'lot_qty'                   => $request->oqc_inspection_lot_qty,
-                    'lot_no'                    => $request->oqc_inspection_lot_no,
-                    'po_qty'                    => $request->oqc_inspection_po_qty,
+                    'status'                    => $oqc_status,
                     'po_no'                     => $request->oqc_inspection_po_no,
                     'ww'                        => $request->oqc_inspection_work_week,
                     'fy'                        => $request->oqc_inspection_fiscal_year,
                     'date_inspected'            => $request->oqc_inspection_date_inspected,
-                    'material_name'               => $request->oqc_inspection_material_name,
                     'time_ins_from'             => $request->oqc_inspection_time_inspected_from,
                     'time_ins_to'               => $request->oqc_inspection_time_inspected_to,
                     'submission'                => $request->oqc_inspection_submission,
@@ -390,86 +396,72 @@ class OQCInspectionController extends Controller
                     'lot_inspected'             => $request->oqc_inspection_lot_inspected,
                     'lot_accepted'              => $request->oqc_inspection_lot_accepted,
                     'update_user'               => $request->employee_no,
-                    'created_at'                => date('Y-m-d H:i:s'),
                 ];    
-                
+                // return $oqc_status;
                 if($request->oqc_inspection_id == 0){
-                    $getID = OQCInspection::insertGetId(
+                    $getID = $request->oqc_inspection_id;
+                    OQCInspection::insertGetId(
+                        // 'created_at'  => date('Y-m-d H:i:s'),
                         $add_update_oqc_inspection
                     );
                 }else{
                     $getID = $request->oqc_inspection_id;
                     OQCInspection::where('id', $request->oqc_inspection_id)
                     ->update(
+                        // 'updated_at' => date('Y-m-d H:i:s'),
                         $add_update_oqc_inspection
                     );
                 }
-    
-                PrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
-                ReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
-                ModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
 
-                for($print_lot_counter = 0; $print_lot_counter <= $request->print_lot_counter; $print_lot_counter++) { 
-                    $add_print_lot['oqc_inspection_id'] = $getID;
-                    $add_print_lot['counter']  = $print_lot_counter;
-                    $add_print_lot['print_lot_no']  = $request->input("print_lot_no_$print_lot_counter");
-                    $add_print_lot['print_lot_qty'] = $request->input("print_lot_qty_$print_lot_counter");
-                    PrintLot::insert(
-                        $add_print_lot
-                    );
+                if ($request->print_lot_no_0 != null && $request->print_lot_qty_0 != null) {
+                    PrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    for($print_lot_counter = 0; $print_lot_counter <= $request->print_lot_counter; $print_lot_counter++) { 
+                        $add_print_lot['oqc_inspection_id'] = $getID;
+                        $add_print_lot['counter']  = $print_lot_counter;
+                        $add_print_lot['print_lot_no']  = $request->input("print_lot_no_$print_lot_counter");
+                        $add_print_lot['print_lot_qty'] = $request->input("print_lot_qty_$print_lot_counter");
+
+                        PrintLot::insert(
+                            $add_print_lot
+                        );
+                    }
                 }
 
-                for($reel_lot_counter = 0; $reel_lot_counter <= $request->reel_lot_counter; $reel_lot_counter++) { 
-                    $add_reel_lot['oqc_inspection_id'] = $getID;
-                    $add_reel_lot['counter']  = $reel_lot_counter;
-                    $add_reel_lot['reel_lot_no']  = $request->input("reel_lot_no_$reel_lot_counter");
-                    $add_reel_lot['reel_lot_qty'] = $request->input("reel_lot_qty_$reel_lot_counter");
-                    ReelLot::insert(
-                        $add_reel_lot
-                    );
+                if ($request->reel_lot_no_0 != null && $request->reel_lot_qty_0 != null) {
+                    ReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    for($reel_lot_counter = 0; $reel_lot_counter <= $request->reel_lot_counter; $reel_lot_counter++) { 
+                        $add_reel_lot['oqc_inspection_id'] = $getID;
+                        $add_reel_lot['counter']  = $reel_lot_counter;
+                        $add_reel_lot['reel_lot_no']  = $request->input("reel_lot_no_$reel_lot_counter");
+                        $add_reel_lot['reel_lot_qty'] = $request->input("reel_lot_qty_$reel_lot_counter");
+
+                        ReelLot::insert(
+                            $add_reel_lot
+                        );
+                    }
                 }
 
-                for($mod_counter = 0; $mod_counter <= $request->mod_counter; $mod_counter++) { 
-                    $add_mod['oqc_inspection_id'] = $getID;
-                    $add_mod['counter']  = $mod_counter;
-                    $add_mod['mod']  = $request["mod_$mod_counter"];
-                    $add_mod['mod_qty'] = $request->input("mod_qty_$mod_counter");
-                    ModeOfDefect::insert(
-                        $add_mod
-                    );
+                if ($request->mod_0 != null && $request->mod_qty_0 != null) {
+                    ModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    for($mod_counter = 0; $mod_counter <= $request->mod_counter; $mod_counter++) { 
+                        $add_mod['oqc_inspection_id'] = $getID;
+                        $add_mod['counter']  = $mod_counter;
+                        $add_mod['mod']  = $request["mod_$mod_counter"];
+                        $add_mod['mod_qty'] = $request->input("mod_qty_$mod_counter");
+
+                        ModeOfDefect::insert(
+                            $add_mod
+                        );
+                    }
                 }
 
-                // DB::commit();
+            //     DB::commit();
                 return response()->json(['hasError' => 0]);
             // } catch (\Exception $e) {
             //     DB::rollback();
             //     return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
             // }
         }
-    }
-
-    public function scanUserId(Request $request){
-        date_default_timezone_set('Asia/Manila');
-        session_start();
-
-        $user_details = User::where('employee_id', $request->user_id)->first();
-        // return $user_details;
-        return response()->json(['userDetails' => $user_details]);
-    }
-
-    public function getOqcInspectionById(Request $request){
-        $get_oqc_inspection_data = OQCInspection::with([
-            'reel_lot_oqc_inspection_info',
-            'print_lot_oqc_inspection_info',
-            'mod_oqc_inspection_info'
-        ])
-        ->where('id', $request->getOqcId)
-        ->where('logdel', 0)
-        ->get();
-
-        $first_stamping_production = FirstStampingProduction::with(['acdcs_active_doc_info'])->get();
-        // return $first_stamping_production;
-        return response()->json(['getOqcInspectionData' => $get_oqc_inspection_data, 'firstStampingProduction' => $first_stamping_production]);
     }
 
     public function getStampingLine(){
@@ -505,6 +497,37 @@ class OQCInspectionController extends Controller
     public function getMOD(){
         $collect_mod = DropdownOqcInspectionMod::orderBy('mode_of_defect', 'ASC')->where('logdel', 0)->get();
         return response()->json(['collectMod' => $collect_mod]);
+    }
+
+    public function getOqcInspectionById(Request $request){
+        $get_inspector = Auth::user();            
+        // firstname
+        // lastname
+        $get_oqc_inspection_data = OQCInspection::with([
+            'reel_lot_oqc_inspection_info',
+            'print_lot_oqc_inspection_info',
+            'mod_oqc_inspection_info'
+        ])
+        ->where('id', $request->getOqcId)
+        ->where('logdel', 0)
+        ->get();
+
+        $first_stamping_production = FirstStampingProduction::with(['acdcs_active_doc_info'])->get();
+        // return $first_stamping_production;
+        return response()->json([
+            'getOqcInspectionData'      => $get_oqc_inspection_data, 
+            'firstStampingProduction'   => $first_stamping_production,
+            'getInspector'              => $get_inspector
+        ]);
+    }
+
+    public function scanUserId(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        session_start();
+
+        $user_details = User::where('employee_id', $request->user_id)->first();
+        // return $user_details;
+        return response()->json(['userDetails' => $user_details]);
     }
 
 }

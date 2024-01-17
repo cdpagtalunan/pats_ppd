@@ -141,6 +141,7 @@ Route::controller(FirstStampingController::class)->group(function () {
     Route::get('/check_matrix', 'check_matrix')->name('check_matrix');
     Route::get('/get_prod_lot_no_ctrl', 'get_prod_lot_no_ctrl')->name('get_prod_lot_no_ctrl');
     Route::get('/get_operator_list', 'get_operator_list')->name('get_operator_list');
+    Route::get('/change_print_count', 'change_print_count')->name('change_print_count');
 });
 
 // STAMPING -> IPQC CONTROLLER

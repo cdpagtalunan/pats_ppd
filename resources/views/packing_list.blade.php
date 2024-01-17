@@ -327,11 +327,11 @@
                 { "data" : "action", orderable:false, searchable:false },
                 { "data" : "status"},
                 { "data" : "po_no"},
-                { "data" : "stamping_production_info[0].material_name"},
-                { "data" : "stamping_production_info[0].prod_lot_no"},
-                // { "data" : "stamping_production_info[0].material_lot_no"},
-                { "data" : "stamping_production_info[0].part_code"},
-                { "data" : "stamping_production_info[0].ship_output"},
+                { "data" : "stamping_production_info.material_name"},
+                { "data" : "stamping_production_info.prod_lot_no"},
+                // { "data" : "stamping_production_info.material_lot_no"},
+                { "data" : "stamping_production_info.part_code"},
+                { "data" : "stamping_production_info.ship_output"},
             ],
         });
 

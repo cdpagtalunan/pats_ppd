@@ -187,7 +187,7 @@ function getCheckedByUser(cboElement){
 function getCarbonCopyUser(cboElement){
 	// let result = '<option value="0" disabled selected>Select One</option>';
 	$.ajax({
-		url: 'get_ppc_sr_planner',
+		url: 'get_carbon_copy_user',
 		method: 'get',
 		dataType: 'json',
 		beforeSend: function(){

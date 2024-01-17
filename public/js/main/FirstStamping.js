@@ -1,10 +1,13 @@
 const submitProdData = async (scannedId) => {
+    console.log(scannedId);
     $('input[name="status"]').prop('disabled', false);
-    
+
+    let data = $.param({'scanned_id': scannedId }) + "&" + $('#formProdData').serialize();
     await $.ajax({
         type: "post",
         url: "save_prod_data",
-        data: $('#formProdData').serialize(),
+        // data: $('#formProdData').serialize(),
+        data: data,
         dataType: "json",
        
         success: function (response) {
@@ -246,11 +249,13 @@ const printProdData = async (id) => {
         },
         dataType: "json",
         success: function (response) {
-            console.log(response);
+            response['label_hidden'][0]['id'] = id;
             $("#img_barcode_PO").attr('src', response['qrCode']);
             $("#img_barcode_PO_text").html(response['label']);
             img_barcode_PO_text_hidden = response['label_hidden'];
             $('#modalPrintQr').modal('show');
+            console.log(response);
+
 
         }
     });
@@ -311,6 +316,20 @@ const getOperatorList = (cboElement) => {
             }
 
             cboElement.html(result);
+        }
+    });
+}
+
+const changePrintCount = (printedId) => {
+    $.ajax({
+        type: "get",
+        url: "change_print_count",
+        data: {
+            id: printedId
+        },
+        dataType: "dataType",
+        success: function (response) {
+            
         }
     });
 }

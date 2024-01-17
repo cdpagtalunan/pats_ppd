@@ -33,7 +33,7 @@ class OQCInspection extends Model
     }
 
     public function stamping_production_info(){
-        return $this->hasMany(FirstStampingProduction::class,'id','id');
+        return $this->hasOne(FirstStampingProduction::class,'id', 'fs_productions_id');
     }
 
 }

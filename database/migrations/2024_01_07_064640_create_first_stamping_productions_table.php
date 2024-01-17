@@ -42,6 +42,7 @@ class CreateFirstStampingProductionsTable extends Migration
             $table->integer('total_mach_output')->nullable();
             $table->integer('ship_output')->nullable();
             $table->string('mat_yield')->nullable();
+            $table->integer('print_count')->default(0);
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->softDeletes();

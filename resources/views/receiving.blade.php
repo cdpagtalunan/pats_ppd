@@ -86,11 +86,14 @@
                                             <thead>
                                                 <tr>
                                                     <th><center><i class="fa fa-cog"></i></center></th>
-                                                    {{-- <th>Status</th> --}}
-                                                    <th>Pricon Material Name</th>
-                                                    <th>Pricon Lot #</th>
-                                                    <th>SANNO Material Name</th>
+                                                    <th>Status</th>
+                                                    <th>Packing List Ctrl #</th>
+                                                    <th>Material Name</th>
+                                                    <th>Lot #</th>
+                                                    <th>Shipment Qty</th>
                                                     <th>SANNO Lot #</th>
+                                                    <th>SANNO Qty</th>
+                                                    <th>New Lot #</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -103,6 +106,80 @@
                 </div>
             </section>
         </div>
+
+    
+    <!-- MODALS -->
+     {{-- * ADD --}}
+     <div class="modal fade" id="modalEditReceivingDetails" data-bs-backdrop="static">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="fa fa-edit"></i> WHSE Receiving From SANNO Details</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" id="formAddReceivingDetails">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtReceivingDetailsId" name="receiving_details_id">
+                        
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">SANNO Lot #</label>
+                                    <input type="text" class="form-control form-control-sm" name="sannlo_lot_no" id="txtSannoLotNo" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">SANNO Qty</label>
+                                    <input type="text" class="form-control form-control-sm" name="sanno_qty" id="txtSannoQty" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Packing List Ctrl #</label>
+                                    <input type="text" class="form-control form-control-sm" name="packing_ctrl_no" id="txtPackingCtrlNo" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Material Name</label>
+                                    <input type="text" class="form-control form-control-sm" name="pmi_material_name" id="txtPmiMaterialName" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Lot #</label>
+                                    <input type="text" class="form-control form-control-sm" name="pmi_lot_no" id="txtPmiLotNo" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Shipment Qty</label>
+                                    <input type="text" class="form-control form-control-sm" name="pmi_lot_no" id="txtPmiLotNo" readonly>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="btnEditReceivingDetails" class="btn btn-dark"><i id="btnEditReceivingDetailsIcon"
+                                class="fa fa-check"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
     <!-- /.modal -->
 
     @endsection
@@ -121,15 +198,31 @@
             },
             fixedHeader: true,
             "columns":[
-                // { "data"  : 'DT_RowIndex'},
                 { "data" : "action", orderable:false, searchable:false },
-                // { "data" : "status"},
+                { "data" : "status"},
                 { "data" : "control_no"},
-                { "data" : "po_no"},
                 { "data" : "mat_name"},
                 { "data" : "lot_no"},
                 { "data" : "quantity"},
+                { "data" : "sanno_lot_no"},
+                { "data" : "sanno_quantity"},
+                { "data" : "sanno_pmi_lot_no"},
             ],
+        });
+
+        $(document).on('click', '.btnEditReceivingDetails', function(e){
+            // alert('pumasok na dito');
+            $('#modalEditReceivingDetails').modal('show');
+            let receivingDetailsId = $(this).attr('data-id');
+            $('#txtReceivingDetailsId').val(receivingDetailsId);
+            console.log(receivingDetailsId);
+
+            // getReceivingDetailsId(receivingDetailsId);
+        });
+
+        $('#formAddReceivingDetails').submit(function(e){
+            e.preventDefault();
+            alert('pumasok na dito');
         });
 
         </script>

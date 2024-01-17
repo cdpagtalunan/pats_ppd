@@ -24,6 +24,7 @@ class CreateStampingIpqcsTable extends Migration
             $table->string('input')->nullable();
             $table->string('output')->nullable();
             $table->unsignedBigInteger('ipqc_inspector_name')->nullable();
+            $table->tinyInteger('keep_sample')->nullable()->comment = '1 - Yes, 2 - No';
             $table->string('document_no')->nullable();
             $table->string('measdata_attachment')->nullable();
             $table->string('ilqcm_attachment')->nullable();

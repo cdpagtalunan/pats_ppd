@@ -24,12 +24,9 @@
                 position: absolute;
                 opacity: 0;
             }
-            textarea{
-                resize: none;
-            }
 
-            #colDevice, #colMaterialProcess{
-                transition: .5s;
+            .slct{
+                pointer-events: none;
             }
         </style>
         @php
@@ -154,6 +151,7 @@
 
                         <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
+                        <input type="text" class="form-control form-control-sm" id="txtStatus" name="status">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         
                         <div class="input-group drawing p-3">
@@ -293,8 +291,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Type of Inspection</strong></span>
                                         </div>
-                                        <select class="form-select form-control-sm inspectionTypeDropdown" id="slctOqcInspectionInspectionType" name="oqc_inspection_inspection_type">
-                                        </select>
+                                        {{-- <select class="form-select form-control-sm inspectionTypeDropdown" id="slctOqcInspectionInspectionType" name="oqc_inspection_inspection_type">
+                                        </select> --}}
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspectionType" name="oqc_inspection_inspection_type"  value="Single" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -391,11 +390,12 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Shift</strong></span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="slctOqcInspectionShift" name="oqc_inspection_shift">
+                                        <select class="form-select form-control-sm slct" id="slctOqcInspectionShift" name="oqc_inspection_shift">
                                             <option selected disabled>-- Select --</option>
                                             <option value="A">Shift A</option>
                                             <option value="B">Shift B</option>
                                         </select>
+                                        {{-- <input type="text" class="form-control form-control-sm" id="txtOqcInspectionShift" name="oqc_inspection_shift"> --}}
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -416,8 +416,8 @@
                                         </div>
                                         <select class="form-select form-control-sm" id="slctOqcInspectionCocRequirement" name="oqc_inspection_coc_requirement">
                                             <option selected disabled>-- Select --</option>
-                                            <option value="1">Yes</option>
-                                            <option value="2">No</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
                                         </select>
                                     </div>
                                 </div>
@@ -492,10 +492,18 @@
                             </div>
                         </div>
 
-                        <div class="modal-footer justify-content-between viewDrawingFirst d-none">
-                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" id="btnOqcInspection" class="btn btn-dark"><i 
-                                id="iBtnOqcInspectionIcon" class="fa fa-check"></i> Save</button>
+                        <div class="col-12 input-group viewDrawingFirst d-none py-3 border-top">
+                            <div class="col-2">
+                                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            </div>
+                            <div class="col-3"></div><div class="col-3"></div><div class="col-4">
+                                <button id="btnOqcInspectionSaveAsDraft" class="btn btn-info"><i 
+                                    class="fa fa-check"></i> Save as draft
+                                </button>
+                                <button type="submit" id="btnOqcInspection" class="btn btn-dark ml-3"><i 
+                                    id="iBtnOqcInspectionIcon" class="fa fa-check"></i> Save
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -507,8 +515,8 @@
             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body mt-3">
-                        <input type="text" class="scanner w-100 d-none" id="txtScanQrCode" name="scan_qr_code" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}' autocomplete="off">
-                        <input type="text" class="scanner w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
+                        <input type="text" class="scanner1 w-100 d-none" id="txtScanQrCode" name="scan_qr_code" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}' autocomplete="off">
+                        <input type="text" class="scanner1 w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
                         <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
@@ -690,18 +698,30 @@
 
                 $(document).on('click', '.actionOqcInspection', function(e){
                     e.preventDefault()
-                    getPo           = $(this).attr('prod-po')
-                    getPoQty        = $(this).attr('prod-po-qty')
-                    getOqcId        = $(this).attr('oqc_inspection-id')
-                    getProdId       = $(this).attr('prod-id')
-                    getMaterialName = $(this).attr('prod-material-name')
+                    getPo               = $(this).attr('prod-po')
+                    getPoQty            = $(this).attr('prod-po-qty')
+                    getOqcId            = $(this).attr('oqc_inspection-id')
+                    getProdId           = $(this).attr('prod-id')
+                    getProdLotNo        = $(this).attr('prod-lot-no')
+                    getMaterialName     = $(this).attr('prod-material-name')
+                    getProdShipOutput   = $(this).attr('prod-ship-output')
                     
+                    setTimeout(() => {     
+                        if( new Date().toLocaleTimeString() <= '1:29:00 PM'){
+                            $('#slctOqcInspectionShift').val('A');
+                        }else{
+                            $('#slctOqcInspectionShift').val('B');
+                        }
+                    }, 300);
+
                     GetOqcInspectionById(
                         getPo,
                         getPoQty,
                         getOqcId,
                         getProdId,
-                        getMaterialName
+                        getProdLotNo,
+                        getMaterialName,
+                        getProdShipOutput
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
@@ -854,32 +874,24 @@
                     }
                 });
 
+                $('#btnOqcInspectionSaveAsDraft').click(function (errur) { 
+                    errur.preventDefault();
+                    console.log('Save as draft')
+                    $('#txtStatus').val('1')
+                    ScanUserById()
+                });
+
                 $('#formOqcInspection').submit(function (e) { 
                     e.preventDefault()
                     console.log('Save OQC Inspection')
-                    $('#mdlScanQrCode').modal('show')
-                    $('#mdlScanQrCode').on('shown.bs.modal', function () {
-                        $('#txtScanQrCode').addClass('d-none')
-                        $('#txtScanUserId').removeClass('d-none')
-                        $('#txtScanUserId').focus()
-                        const mdlScanUserId = document.querySelector("#mdlScanQrCode");
-                        const inptScanUserId = document.querySelector("#txtScanUserId");
-                        let focus = false
 
-                        mdlScanUserId.addEventListener("mouseover", () => {
-                            if (inptScanUserId === document.activeElement) {
-                                focus = true
-                            } else {
-                                focus = false
-                            }
-                        });
-
-                        mdlScanUserId.addEventListener("click", () => {
-                            if (focus) {
-                                inptScanUserId.focus()
-                            }
-                        });
+                    $('#btnOqcInspection').click(function (irror) { 
+                        irror.preventDefault();
+                        console.log('Save as done')
+                        $('#txtStatus').val('')
+                        $('#mdlScanQrCode').modal('show')
                     });
+                    ScanUserById()
                 });
 
                 $('#txtScanUserId').on('keypress',function(e){

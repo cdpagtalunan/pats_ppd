@@ -164,7 +164,7 @@
                                     <div class="card h-100">
                                         <div class="card-body">
                                             <input type="hidden" name="ctrl_counter" id="txtCtrlCounter">
-                                            
+
                                             <div class="form-check form-check-inline">
                                                 <input class="form-check-input" type="radio" name="status" id="radioIQC" value="0" disabled>
                                                 <label class="form-check-label" for="radioIQC">For IPQC</label>
@@ -240,7 +240,7 @@
                                                 <label class="form-label">Production Date:</label>
                                                 <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
                                             </div>
-                                          
+
                                             <div class="form-group">
                                                 <label class="form-label">Input Coil Weight (kg):</label>
                                                 <input type="number" class="form-control form-control-sm" name="inpt_coil_weight" id="txtInptCoilWeight">
@@ -283,7 +283,7 @@
                                     <div class="card h-100">
                                         <div class="card-body">
                                             <div class="form-group">
-                                                <label class="form-label">Total Machine Output:</label> 
+                                                <label class="form-label">Total Machine Output:</label>
                                                 <input type="number" class="form-control form-control-sm" name="ttl_mach_output" id="txtTtlMachOutput">
                                             </div>
                                             <div class="form-group">
@@ -313,7 +313,7 @@
                                                 <input type="text" class="form-control" id="txtProdLotView" readonly>
                                             </div>
 
-                                            <label class="form-label">Material Lot No.:</label> 
+                                            <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
                                                 <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
@@ -328,7 +328,7 @@
                                                 <button class="btn btn-info btn-sm d-none" id="btnAddMatNo">Add</button>
                                             </div>
                                             <br>
-                                            <label class="form-label">Material Lot No.:</label> 
+                                            <label class="form-label">Material Lot No.:</label>
 
                                             <div class="input-group mb-1">
                                                 <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
@@ -404,11 +404,16 @@
     @endsection
 
     @section('js_content')
-        <script type="text/javascript">
+        <script>
             var prodData = {};
             var img_barcode_PO_text_hidden;
             var multipleMatId;
+            var printId;
+            var scanningFunction;
+
             $(document).ready(function(){
+                getOperatorList($('.selOpName'));
+
                 // $('.select2').select2();
 
                 // //Initialize Select2 Elements
@@ -427,7 +432,7 @@
                     },
                     fixedHeader: true,
                     "columns":[
-                    
+
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "label" },
                         { "data" : "po_num" },
@@ -451,29 +456,35 @@
                 $('#formProdData').submit(function(e){
                     e.preventDefault();
                     $('#modalScanQRSave').modal('show');
+                    $('#modalScanQRSaveText').html('Please Scan Employee ID.')
+                    scanningFunction = "prodData";
+
+                    // $('input[name="scan_id"]').attr('id', 'txtScanUserId');
                 });
 
-                $('#txtScanUserId').on('keyup', function(e){
-                    if(e.keyCode == 13){
-                        // console.log($(this).val());
-                        validateUser($(this).val(), [4], function(result){
+                // $('#txtScanUserId').on('keyup', function(e){
+                //     if(e.keyCode == 13){
+                //         validateUser($(this).val().toUpperCase(), [0,4], function(result){
+                //             if(result == true){
 
-                            if(result == true){
-                                // submitProdData($(this).val());
-                            }
-                            else{ // Error Handler
-                                toastr.error('User not authorize!');
-                            }
+                //                 submitProdData($('#txtScanUserId').val().toUpperCase());
+                //             }
+                //             else{ // Error Handler
+                //                 toastr.error('User not authorize!');
+                //             }
+
+                //         });
+                //         setTimeout(() => {
+                //             $(this).val('');
                             
-                        });
-                        $(this).val('');
-                    }
-                });
+                //         }, 500);
+                //     }
+                // });
                 $('#txtTargetOutput').on('keyup', function(e){
                     // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
                     // let ppcTargtOut = 0;
                     let planLoss = 0;
-                    let ppcTargtOut = $(this).val(); 
+                    let ppcTargtOut = $(this).val();
 
                     // ppcTargtOut = inputCoilWeight/0.005;
                     planLoss = ppcTargtOut*0.1;
@@ -543,7 +554,7 @@
                         checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'])
                         getProdLotNoCtrl();
 
-                        // OPERATOR SHIFT 
+                        // OPERATOR SHIFT
                         $time_now = moment().format('LT');
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
                             $('#txtOptShift').val('A');
@@ -571,7 +582,7 @@
                     else{
                         toastr.error('Please input PO.')
                     }
-                 
+
                 });
 
                 $(document).on('click', '.btnViewProdData', function(e){
@@ -582,14 +593,36 @@
                 });
 
                 $(document).on('click', '.btnPrintProdData', function(e){
-                    let id = $(this).data('id');
-                    printProdData(id);
+                    printId = $(this).data('id');
+                    let printCount = $(this).data('printcount');
+                    // console.log(printCount);
+                    if(printCount > 0){
+                        Swal.fire({
+                            // title: "Are you sure?",
+                            html: "Data already printed. <br> Do you want to reprint this data?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#modalScanQRSave').modal('show');
+                                $('#modalScanQRSaveText').html('Please Scan Supervisor ID.')
+                                scanningFunction = "reprintStamping"
+                            }
+                        });
+                    }
+                    else{
+                        printProdData(printId);
+                    }
                 });
 
                 $('#btnPrintQrCode').on('click', function(){
+
                     popup = window.open();
                     let content = '';
-                    
+
                     content += '<html>';
                     content += '<head>';
                     content += '<title></title>';
@@ -598,27 +631,36 @@
                     content += '</style>';
                     content += '</head>';
                     content += '<body>';
-                    for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                    // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
                         content += '<table style="margin-left: -5px; margin-top: 18px;">';
                             content += '<tr style="width: 290px;">';
                                 content += '<td style="vertical-align: bottom;">';
-                                    content += '<img src="' + img_barcode_PO_text_hidden[i]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
                                 content += '</td>';
-                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[i]['text'] + '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
                             content += '</tr>';
                         content += '</table>';
                         content += '<br>';
-                        if( i < img_barcode_PO_text_hidden.length-1 ){
-                            content += '<div class="pagebreak"> </div>';
-                        }
-                    }
+                        // if( i < img_barcode_PO_text_hidden.length-1 ){
+                        //     content += '<div class="pagebreak"> </div>';
+                        // }
+                    // }
                     content += '</body>';
                     content += '</html>';
                     popup.document.write(content);
-                    
+
                     popup.focus(); //required for IE
                     popup.print();
+
+                    /*
+                        * this event will trigger after closing the tab of printing
+                    */
+                    popup.addEventListener("beforeunload", function (e) {
+                        changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                    });
+
                     popup.close();
+
                 });
 
                 $('#btnAddMatNo').on('click', function(e){
@@ -650,7 +692,7 @@
                         $('#btnRemoveMatNo').addClass('d-none');
                     }
                 });
-                
+
                 $(document).on('click', '.btnQr', function(){
                     multipleMatId = $(this).offsetParent().children().attr('id');
                     console.log($(this).offsetParent().children().attr('id'));
@@ -693,8 +735,44 @@
 
                 });
 
-                getOperatorList($('.selOpName'));
 
+            });
+
+             $(document).on('keyup','#txtScanUserId', function(e){
+                
+                if(e.keyCode == 13){
+                    
+                    if(scanningFunction === "prodData"){
+                        validateUser($(this).val().toUpperCase(), [0,4], function(result){
+                            if(result == true){
+
+                                submitProdData($('#txtScanUserId').val().toUpperCase());
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+
+                        });
+                    }
+                    else{
+                        validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
+                            if(result == true){
+                                $('#modalScanQRSave').modal('hide');
+                                printProdData(printId);
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+
+                        });
+
+                    }
+                  
+                    setTimeout(() => {
+                        $(this).val('');
+                        
+                    }, 500);
+                }
             });
         </script>
     @endsection

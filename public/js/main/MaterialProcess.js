@@ -196,13 +196,13 @@ const GetMatProcByIdToEdit = (id, selectedDeviceName) => {
             $('#selAddMatProcMachine').val(response['matDetails']['machine_code']).trigger('change');
             $('#selAddMatProcProcess').val(response['matDetails']['process']).trigger('change');
 
+            console.log(response['matDetails']['material_details']);
+            let matArrayId = [];
             for(let x = 0; x < response['matDetails']['material_details'].length; x++){
-
-                let material = `<option selected value="${response['matDetails']['material_details'][x]['id']}">${response['matDetails']['material_details'][x]['material_type']}</option>`
-                $('select[name="material_name[]"]').append(material);
-                // let recipientToInfo = '<option selected value="' +emailRecipients[i]['email_recipient_id'] + '">' + emailRecipients[i]['email_recipient_info']['name'] + '</option>';
-                // $('select[name="email_recipient_attention[]"]', formAddCustomerClaim).append(recipientToInfo);  
+                matArrayId.push(response['matDetails']['material_details'][x]['id']);
             }
+            $('select[name="material_name[]"]').val(matArrayId).trigger('change')
+
 
         }
     });

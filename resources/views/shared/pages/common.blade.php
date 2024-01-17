@@ -69,7 +69,7 @@
           {{-- hidden_scanner_input --}}
           {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_qr_code" autocomplete="off"> --}}
           <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_id" autocomplete="off">
-          <div class="text-center text-secondary">Please scan employee ID.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+          <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan employee ID.</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
       </div>
       </div>
       <!-- /.modal-content -->

@@ -178,6 +178,7 @@ $(this).on('select2:open', function(e) {
 });
 
 function validateUser(userId, validPosition, callback){ // this function will accept scanned id and validPosition based on user table (number only)
+    console.log('validPosition', validPosition);
     $.ajax({
         type: "get",
         url: "validate_user",
@@ -199,4 +200,27 @@ function validateUser(userId, validPosition, callback){ // this function will ac
         }
     });
 }
+// validateUser1 = function(userId, validPosition){ // this function will accept scanned id and validPosition based on user table (number only)
+//     console.log('validPosition', validPosition);
+//     $.ajax({
+//         type: "get",
+//         url: "validate_user",
+//         data: {
+//             'id'    : userId,
+//             'pos'   : validPosition
+//         },
+//         dataType: "json",
+//         success: function (response) {
+//             let value1
+//             if(response['result'] == 1){
+//                 value1 = true;
+//             }
+//             else{
+//                 value1 = false;
+//             }
+
+//             return value1;
+//         }
+//     });
+// }
 

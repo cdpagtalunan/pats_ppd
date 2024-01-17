@@ -33,5 +33,9 @@ class FirstStampingProduction extends Model
         return $this->hasMany(AcdcsActiveDocs::class, 'doc_no','drawing_no')->where('doc_type', 'B Drawing');
     }
 
+    public function oqc_details(){
+        return $this->hasMany(OQCInspection::class,'fs_productions_id', 'id')->where('status', 2);
+    }
+
 
 }

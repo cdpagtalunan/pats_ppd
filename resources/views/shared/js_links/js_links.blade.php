@@ -55,13 +55,13 @@
 
 <script src="{{ asset('public/js/main/UserLevel.js?n=1') }}"></script>
 <script src="{{ asset('public/js/main/Device.js?n=3') }}"></script>
-<script src="{{ asset('public/js/main/MaterialProcess.js?n=6') }}"></script>
+<script src="{{ asset('public/js/main/MaterialProcess.js') }}" async></script>
 <script src="{{ asset('public/js/main/FirstStamping.js') }}" async></script>
-<script src="{{ asset('public/js/main/OqcInspection.js?n=3') }}"></script>
+<script src="{{ asset('public/js/main/OqcInspection.js?n=5') }}"></script>
 
 <!-- PACKING LIST JS -->
 <script src="{{ asset('public/js/main/CustomerDetails.js?n=6213123') }}"></script>
 <script src="{{ asset('public/js/main/CarrierDetails.js?n=6123123111') }}"></script>
 <script src="{{ asset('public/js/main/LoadingPortDetails.js?n=612312113') }}"></script>
 <script src="{{ asset('public/js/main/DestinationPortDetails.js?n=6') }}"></script>
-<script src="{{ asset('public/js/main/PackingList.js?n=123123123213123') }}"></script>
+<script src="{{ asset('public/js/main/PackingList.js?n=123123213213123123') }}"></script>

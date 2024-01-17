@@ -423,7 +423,7 @@
                                         </div>
                                         <button type="button" class="form-control form-control-sm bg-warning" id="btnMod">Mode of Defects</button>
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group input-group-sm mb-3 d-none">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">COC File</span>
                                         </div>
@@ -649,7 +649,7 @@
                                 form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
                                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-                                
+
                             }else{
                                 form.iqcInspection.find('#app_no').val(response[0]['app_no']);
                                 form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
@@ -919,7 +919,7 @@
                     // window.open("reports/pdf_download/user_manual.php");
 
                 });
-                
+
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
@@ -976,7 +976,7 @@
                         }
                     });
                 });
-            
+
                 const errorHandler = function (errors,formInput){
                     if(errors === undefined){
                         formInput.removeClass('is-invalid')

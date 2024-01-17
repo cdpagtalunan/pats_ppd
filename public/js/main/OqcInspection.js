@@ -1,3 +1,29 @@
+function ScanUserById() {
+    $('#mdlScanQrCode').modal('show')
+    $('#mdlScanQrCode').on('shown.bs.modal', function () {
+        $('#txtScanQrCode').addClass('d-none')
+        $('#txtScanUserId').removeClass('d-none')
+        $('#txtScanUserId').focus()
+        const mdlScanUserId = document.querySelector("#mdlScanQrCode");
+        const inptScanUserId = document.querySelector("#txtScanUserId");
+        let focus = false
+
+        mdlScanUserId.addEventListener("mouseover", () => {
+            if (inptScanUserId === document.activeElement) {
+                focus = true
+            } else {
+                focus = false
+            }
+        });
+
+        mdlScanUserId.addEventListener("click", () => {
+            if (focus) {
+                inptScanUserId.focus()
+            }
+        });
+    });
+}
+
 function UpdateOqcInspection(){
 	$.ajax({
         url: "update_oqc_inspection",
@@ -104,12 +130,16 @@ function UpdateOqcInspection(){
                 }
 
                 if(response['error']['oqc_inspection_inspection_type'] === undefined){
-                    $("#slctOqcInspectionInspectionType").removeClass('is-invalid')
-                    $("#slctOqcInspectionInspectionType").attr('title', '')
+                    $("#txtOqcInspectionInspectionType").removeClass('is-invalid')
+                    $("#txtOqcInspectionInspectionType").attr('title', '')
+                    // $("#slctOqcInspectionInspectionType").removeClass('is-invalid')
+                    // $("#slctOqcInspectionInspectionType").attr('title', '')
                 }
                 else{
-                    $("#slctOqcInspectionInspectionType").addClass('is-invalid')
-                    $("#slctOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
+                    $("#txtOqcInspectionInspectionType").addClass('is-invalid')
+                    $("#txtOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
+                    // $("#slctOqcInspectionInspectionType").addClass('is-invalid')
+                    // $("#slctOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
                 }
 
                 if(response['error']['oqc_inspection_inspection_severity'] === undefined){
@@ -323,42 +353,47 @@ function GetOqcInspectionById(getPo,
     getPoQty,
     getOqcId,
     getProdId,
-    getMaterialName
+    getProdLotNo,
+    getMaterialName,
+    getProdShipOutput
 ){
 	$.ajax({
         url: "get_oqc_inspection_by_id",
         method: "get",
         data: {
-            'getPo'         : getPo,
-            'getOqcId'      : getOqcId,
-            'getPoQty'      : getPoQty,
-            'getProdId'     : getProdId,
-            'getMaterialName' : getMaterialName,
+            'getPo'             : getPo,
+            'getOqcId'          : getOqcId,
+            'getPoQty'          : getPoQty,
+            'getProdId'         : getProdId,
+            'getProdLotNo'      : getProdLotNo,
+            'getMaterialName'   : getMaterialName,
+            'getProdShipOutput' : getProdShipOutput,
         },
         dataType: "json",
         success: function(response){
+            let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
             
-            console.log('firstStampingProduction',firstStampingProduction)
             $('#txtBDrawing').val(firstStampingProduction[0].material_name)
             $('#txtBDrawingNo').val(firstStampingProduction[0].acdcs_active_doc_info[0].doc_no)
             $('#txtBDrawingRevision').val(firstStampingProduction[0].acdcs_active_doc_info[0].rev_no)
 
-            $('#txtOqcInspectionPoQty').val(firstStampingProduction[0].po_qty)
-            $('#txtOqcInspectionLotNo').val(firstStampingProduction[0].prod_lot_no)
-            $('#txtOqcInspectionLotQty').val(firstStampingProduction[0].ship_output)
-            $('#txtOqcInspectionMaterialName').val(firstStampingProduction[0].material_name)
+            $('#txtOqcInspectionPoNo').val(getPo)
+            $('#txtOqcInspectionPoQty').val(getPoQty)
+            $('#txtOqcInspectionLotNo').val(getProdLotNo)
+            $('#txtOqcInspectionLotQty').val(getProdShipOutput)
+            $('#txtOqcInspectionMaterialName').val(getMaterialName)
 
             if(getOqcInspectionData.length > 0){
                 $('#slctOqcInspectionStampingLine').val(getOqcInspectionData[0].stamping_line)
                 $('#dateOqcInspectionApplicationDate').val(getOqcInspectionData[0].app_date)
                 $('#timeOqcInspectionApplicationTime').val(getOqcInspectionData[0].app_time)
                 $('#slctOqcInspectionProductCategory').val(getOqcInspectionData[0].prod_category)
-                $('#txtOqcInspectionPoNo').val(getOqcInspectionData[0].po_no)
+                // $('#txtOqcInspectionPoNo').val(getOqcInspectionData[0].po_no)
                 $('#txtOqcInspectionCustomer').val(getOqcInspectionData[0].customer)
                 $('#txtOqcInspectionFamily').val(getOqcInspectionData[0].family)
-                $('#slctOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
+                $('#txtOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
                 $('#slctOqcInspectionInspectionSeverity').val(getOqcInspectionData[0].severity_of_inspection)
                 $('#slctOqcInspectionInspectionLevel').val(getOqcInspectionData[0].inspection_lvl)
                 $('#slctOqcInspectionAql').val(getOqcInspectionData[0].aql)
@@ -420,14 +455,11 @@ function GetOqcInspectionById(getPo,
                     $('#txtOqcInspectionDefectiveNum').val(countDefects)
                 }
                 
-                let percentage = (firstStampingProduction[0].ship_output-countDefects)/firstStampingProduction[0].ship_output*100
-                console.log('ship output',firstStampingProduction[0].ship_output)
-                console.log('defects',countDefects)
-                console.log('percentage',percentage.toFixed(2)+'%')
-                
+                let percentage = (firstStampingProduction[0].ship_output-countDefects)/firstStampingProduction[0].ship_output*100                
                 $('#txtOqcInspectionYield').val(percentage.toFixed(2)+'%')
+            }else{
+                $('#txtOqcInspectionInspector').val(getInspector.firstname+' '+getInspector.lastname)
             }
-
         },
     })
 }

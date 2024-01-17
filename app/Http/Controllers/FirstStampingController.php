@@ -4,12 +4,13 @@ namespace App\Http\Controllers;
 
 use QrCode;
 use DataTables;
+use App\Models\User;
 use App\Models\Device;
+
 use App\Models\StampingIpqc;
-
 use Illuminate\Http\Request;
-use App\Models\MaterialProcess;
 
+use App\Models\MaterialProcess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FirstStampingProduction;
@@ -39,7 +40,7 @@ class FirstStampingController extends Controller
                 $result .= "<button class='btn btn-warning btn-sm btnMassProd' data-id='$stamping_data->id' data-function='1'><i class='fa-solid fa-up-right-from-square'></i></button>";
             }
             else if($stamping_data->status == 2){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id'><i class='fa-solid fa-qrcode'></i></button>";
+                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count'><i class='fa-solid fa-qrcode'></i></button>";
             }
             else if ($stamping_data->status == 3){
                 $result .= "<button class='btn btn-danger btn-sm btnViewResetup' data-id='$stamping_data->id' data-function='2'><i class='fa-solid fa-repeat'></i></button>";
@@ -136,14 +137,17 @@ class FirstStampingController extends Controller
         else{
             DB::beginTransaction();
             try{
+                $user_id = User::where('employee_id', $request->scanned_id)
+                ->first('id');
 
-                // return $request->all();
                 if(isset($request->id)){
                     if($request->status == 2){
                         FirstStampingProduction::where('id', $request->id)
                         ->update([
                             'status'            => 0,
-                            'ng_count'          => $request->ng_count
+                            'ng_count'          => $request->ng_count,
+                            'updated_at'        => NOW(),
+                            'updated_by'        => $user_id->id
                         ]);
 
                         StampingIpqc::where('fs_productions_id', $request->id)
@@ -160,7 +164,8 @@ class FirstStampingController extends Controller
                             'total_mach_output' => $request->ttl_mach_output,
                             'ship_output'       => $request->ship_output,
                             'mat_yield'         => $request->mat_yield,
-                            
+                            'updated_at'        => NOW(),
+                            'updated_by'        => $user_id->id
                         ]);
                     }
                     
@@ -195,7 +200,7 @@ class FirstStampingController extends Controller
                         'mat_yield'         => $request->mat_yield,
                         'shift'             => $request->opt_shift,
                         'operator'          => $imploded_operator,
-                        'created_by'        => Auth::user()->id,
+                        'created_by'        => $user_id->id,
                         'created_at'        => NOW()
                     );
     
@@ -289,7 +294,7 @@ class FirstStampingController extends Controller
             </table>
         ";
 
-        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label]);
+        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label, 'prodData' => $prod_data]);
     }
 
     public function check_matrix(Request $request){
@@ -358,5 +363,12 @@ class FirstStampingController extends Controller
         return DB::connection('mysql')
         ->select("SELECT * FROM users WHERE position = 4");
 
+    }
+
+    public function change_print_count(Request $request){
+        FirstStampingProduction::where('id', $request->id)
+        ->update([
+            'print_count' => 1
+        ]);
     }
 }
