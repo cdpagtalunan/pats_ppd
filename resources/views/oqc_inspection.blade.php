@@ -95,14 +95,14 @@
                                 <!-- End Search PO No. -->
 
                                 <div class="card-body"><!-- Start Page Content -->
-                                    <div style="float: right;">
-                                    </div>
+                                    {{-- <div style="float: right;">
+                                    </div> --}}
                                     <div class="table-responsive"><!-- Table responsive -->
                                         <table id="tblOqcInspection" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th class="w-25">Action</th>
+                                                    <th>&emsp; Action &emsp;</th>
                                                     <th>Status</th>
                                                     <th>P.O No.</th>
                                                     <th>P.O Qty</th>
@@ -151,7 +151,7 @@
 
                         <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
-                        <input type="text" class="form-control form-control-sm" id="txtStatus" name="status">
+                        <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         
                         <div class="input-group drawing p-3">
@@ -515,9 +515,9 @@
             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body mt-3">
-                        <input type="text" class="scanner1 w-100 d-none" id="txtScanQrCode" name="scan_qr_code" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}' autocomplete="off">
-                        <input type="text" class="scanner1 w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
-                        <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                        <input type="text" class="scanner w-100 d-none" id="txtScanQrCode" name="scan_qr_code" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}' autocomplete="off">
+                        <input type="text" class="scanner w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
+                        <div class="text-center text-secondary">Please scan the code.<h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
             </div>

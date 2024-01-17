@@ -68,9 +68,8 @@ class OQCInspectionController extends Controller
                 $oqc_id = '0';
             }
 
-            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>';
-            // $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '"data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Print Lot & Reel Lots"><i class="fas fa-sticky-note"></i></button>';
-            // $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection mr-2" oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '"data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Defectives"><i class="fas fa-ban"></i></i></button>';
+            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection " oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>&nbsp;';
+            $result .= '<button class="btn btn-info btn-sm text-center actionOqcInspectionView " oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="View"><i class="nav-icon fa fa-eye"></i></button>';
             $result .= '</center>';
             return $result;
         })
@@ -205,11 +204,16 @@ class OQCInspectionController extends Controller
         })
 
         ->addColumn('mod', function($prod_info){
-            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::with(['mod_oqc_inspection_info'])->where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
             if(count($get_oqc_inspection_per_row) == 1){
-                $result .= $get_oqc_inspection_per_row[0]->mod;
+                if($get_oqc_inspection_per_row[0]->judgement == 'Reject'){
+                    for ($i=0; $i < count($get_oqc_inspection_per_row[0]->mod_oqc_inspection_info); $i++) { 
+                        $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_info[$i]->mod." \n ";
+                    }
+                }
             }
+            // $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_info;
             $result .= '</center>';
             return $result;
         })
@@ -363,7 +367,7 @@ class OQCInspectionController extends Controller
                         $oqc_status = '3';
                     }
                 }
-
+                // return $oqc_status;
                 $add_update_oqc_inspection =[
                     'fs_productions_id'         => $request->prod_id,
                     'status'                    => $oqc_status,
@@ -501,8 +505,6 @@ class OQCInspectionController extends Controller
 
     public function getOqcInspectionById(Request $request){
         $get_inspector = Auth::user();            
-        // firstname
-        // lastname
         $get_oqc_inspection_data = OQCInspection::with([
             'reel_lot_oqc_inspection_info',
             'print_lot_oqc_inspection_info',

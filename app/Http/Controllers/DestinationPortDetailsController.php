@@ -89,6 +89,7 @@ class DestinationPortDetailsController extends Controller
     }
 
     public function editDestinationPortDetailsStatus(Request $request){
+        date_default_timezone_set('Asia/Manila');
         DestinationPortDetails::where('id', $request->destination_port_details_id)
         ->update([
             'status' => 1,
@@ -97,6 +98,7 @@ class DestinationPortDetailsController extends Controller
     }
 
     public function restoreDestinationPortDetailsStatus(Request $request){
+        date_default_timezone_set('Asia/Manila');
         DestinationPortDetails::where('id', $request->destination_port_details_id)
         ->update([
             'status' => 0,

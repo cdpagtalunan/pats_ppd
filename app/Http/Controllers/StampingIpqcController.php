@@ -33,9 +33,9 @@ class StampingIpqcController extends Controller
             // }
             // return $ipqc_data;
             $first_stamping_data = FirstStampingProduction::whereNull('deleted_at')
-                                    ->where('status', 0)
+                                    ->where('status', $request->fs_prod_status)
                                     ->with(['stamping_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); },
-                                            'stamping_ipqc' => function($query) use ($request) { $query->whereIn('status', $request->status); }])
+                                            'stamping_ipqc' => function($query) use ($request) { $query->whereIn('status', $request->ipqc_status); }])
                                     ->where('po_num', $request->po_number)
                                     // ->whereIn('status', $request->status)
                                     // ->when($ipqc_data != [], function ($query){
@@ -267,7 +267,9 @@ class StampingIpqcController extends Controller
                 if($request->stamping_ipqc_id == 0){
 
                     $validator = Validator::make($data, [
-                        'document_no' => 'required',
+                        'doc_no_inspection_standard' => 'required',
+                        'doc_no_b_drawing' => 'required',
+                        'doc_no_ud' => 'required',
                         'uploaded_file' => 'required',
                     ]);
 
@@ -285,23 +287,25 @@ class StampingIpqcController extends Controller
                             }
                             // return $original_filename;
                             Storage::putFileAs('public/stamping_ipqc_inspection_attachments', $request->uploaded_file,  $original_filename);
-                            StampingIpqc::insert(['fs_productions_id'     => $request->first_stamping_prod_id,
-                                                    'po_number'           => $request->po_number,
-                                                    'part_code'           => $request->part_code,
-                                                    'material_name'       => $request->material_name,
-                                                    'prod_lot_no'         => $request->production_lot,
-                                                    'judgement'           => $request->judgement,
-                                                    'input'               => $request->input,
-                                                    'output'              => $request->output,
-                                                    'ipqc_inspector_name' => $request->inspector_id,
-                                                    'keep_sample'         => $request->keep_sample,
-                                                    'document_no'         => $request->document_no,
-                                                    'measdata_attachment' => $original_filename,
-                                                    'status'              => $status,
-                                                    'created_by'          => Auth::user()->id,
-                                                    'last_updated_by'     => Auth::user()->id,
-                                                    'created_at'          => date('Y-m-d H:i:s'),
-                                                    'updated_at'          => date('Y-m-d H:i:s'),
+                            StampingIpqc::insert(['fs_productions_id'         => $request->first_stamping_prod_id,
+                                                    'po_number'               => $request->po_number,
+                                                    'part_code'               => $request->part_code,
+                                                    'material_name'           => $request->material_name,
+                                                    'prod_lot_no'             => $request->production_lot,
+                                                    'judgement'               => $request->judgement,
+                                                    'input'                   => $request->input,
+                                                    'output'                  => $request->output,
+                                                    'ipqc_inspector_name'     => $request->inspector_id,
+                                                    'keep_sample'             => $request->keep_sample,
+                                                    'doc_no_b_drawing'        => $request->doc_no_b_drawing,
+                                                    'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
+                                                    'doc_no_urgent_direction' => $request->doc_no_ud,
+                                                    'measdata_attachment'     => $original_filename,
+                                                    'status'                  => $status,
+                                                    'created_by'              => Auth::user()->id,
+                                                    'last_updated_by'         => Auth::user()->id,
+                                                    'created_at'              => date('Y-m-d H:i:s'),
+                                                    'updated_at'              => date('Y-m-d H:i:s'),
                             ]);
 
                             DB::commit();
@@ -333,7 +337,9 @@ class StampingIpqcController extends Controller
                                 'output'              => $request->output,
                                 'ipqc_inspector_name' => $request->inspector_id,
                                 'keep_sample'         => $request->keep_sample,
-                                'document_no'         => $request->document_no,
+                                'doc_no_b_drawing'        => $request->doc_no_b_drawing,
+                                'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
+                                'doc_no_urgent_direction' => $request->doc_no_ud,
                                 'measdata_attachment' => $original_filename,
                                 'status'              => $status,
                                 'last_updated_by'     => Auth::user()->id,
@@ -382,7 +388,8 @@ class StampingIpqcController extends Controller
     public function get_data_from_acdcs(Request $request){
         $acdcs_data = DB::connection('mysql_rapid_acdcs')
         // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` = '".$request->doc_type."'");
-        ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` IN ('B Drawing', 'Inspection Standard', 'Urgent Direction') AND `originator_code` = 'PPS'");
+        ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` = '".$request->doc_type."' AND `originator_code` = 'PPS'");
+        // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` IN ('B Drawing', 'Inspection Standard', 'Urgent Direction') AND `originator_code` = 'PPS'");
         // doc_no
         // return $acdcs_data;
         return response()->json(['acdcs_data' => $acdcs_data]);

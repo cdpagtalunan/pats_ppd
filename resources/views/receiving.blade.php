@@ -119,7 +119,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="post" id="formAddReceivingDetails">
+                <form id="formAddReceivingDetails">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="txtReceivingDetailsId" name="receiving_details_id">
@@ -128,7 +128,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">SANNO Lot #</label>
-                                    <input type="text" class="form-control form-control-sm" name="sannlo_lot_no" id="txtSannoLotNo" autocomplete="off">
+                                    <input type="text" class="form-control form-control-sm" name="sanno_lot_no" id="txtSannoLotNo" autocomplete="off">
                                 </div>
                             </div>
 
@@ -162,7 +162,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Shipment Qty</label>
-                                    <input type="text" class="form-control form-control-sm" name="pmi_lot_no" id="txtPmiLotNo" readonly>
+                                    <input type="text" class="form-control form-control-sm" name="pmi_qty" id="txtPmiQty" readonly>
                                 </div>
                             </div>
 
@@ -182,6 +182,29 @@
     </div>
     <!-- /.modal -->
 
+     <!-- MODALS -->
+  <div class="modal fade" id="modalScanQRtoSave">
+    <div class="modal-dialog modal-dialog-center">
+      <div class="modal-content modal-sm ">
+        {{-- <div class="modal-header">
+          <h4 class="modal-title"><i class="fa fa-user"></i> Logout</h4>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div> --}}
+        <div class="modal-body">
+          {{-- hidden_scanner_input --}}
+          {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_qr_code" autocomplete="off"> --}}
+          <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_id" autocomplete="off">
+          <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan employee ID.</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+      </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
+
     @endsection
 
     @section('js_content')
@@ -191,7 +214,7 @@
             "processing" : true,
             "serverSide" : true,
             "ajax" : {
-                url: "view_packing_list_details",
+                url: "view_receiving_details",
                 // data: function(param){
                 // param.search_data =  $("#textSearchPackingListDetails").val();
                 // }
@@ -217,12 +240,75 @@
             $('#txtReceivingDetailsId').val(receivingDetailsId);
             console.log(receivingDetailsId);
 
-            // getReceivingDetailsId(receivingDetailsId);
+            getReceivingDetailsId(receivingDetailsId);
         });
+
+        // $('#btnEditReceivingDetails').click(function(e){
+        //     $('#mdlScanQrCode').modal('show');
+        // }); 
 
         $('#formAddReceivingDetails').submit(function(e){
             e.preventDefault();
-            alert('pumasok na dito');
+            $('#modalScanQRtoSave').modal('show');
+        });
+
+        $('#modalScanQRtoSave').on('shown.bs.modal', function () {
+        $('#txtScanUserId').focus();
+    });
+
+        $(document).on('keypress', '#txtScanUserId', function(e){
+            let toScanId =  $('#txtScanUserId').val();
+            let scanId = {
+                'scan_id' : toScanId
+            }
+            if(e.keyCode == 13){
+                e.preventDefault();
+                $.ajax({
+                    type: "post",
+                    url: "update_receiving_details",
+                    data: $('#formAddReceivingDetails').serialize() + '&' + $.param(scanId),
+                    dataType: "json",
+                    success: function (response) {
+                        if(response['validation'] == 1){
+                            toastr.error('Saving data failed!');
+                                if(response['error']['sanno_lot_no'] === undefined){
+                                    $("#txtSannoLotNo").removeClass('is-invalid');
+                                    $("#txtSannoLotNo").attr('title', '');
+                                }
+                                else{
+                                    $("#txtSannoLotNo").addClass('is-invalid');
+                                    $("#txtSannoLotNo").attr('title', response['error']['sanno_lot_no']);
+                                }
+                                if(response['error']['sanno_qty'] === undefined){
+                                    $("#txtSannoQty").removeClass('is-invalid');
+                                    $("#txtSannoQty").attr('title', '');
+                                }
+                                else{
+                                    $("#txtSannoQty").addClass('is-invalid');
+                                    $("#txtSannoQty").attr('title', response['error']['sanno_qty']);
+                                }
+                            
+                        }else if(response['result'] == 0){
+                            toastr.success('Receiving Details Updated!');
+                            $('#modalEditReceivingDetails').modal('hide');
+                            $('#modalScanQRtoSave').modal('hide');
+                            dtReceivingDetails.draw();
+                        }
+                    }
+                });
+            }
+        });
+
+
+
+
+
+
+
+
+        $("#modalEditReceivingDetails").on('hide.bs.modal', function(){
+            $("#formAddReceivingDetails").trigger("reset");
+            dtReceivingDetails.draw();
         });
 
         </script>

@@ -90,6 +90,7 @@ class CarrierDetailsController extends Controller
     }
 
     public function editCarrierDetailsStatus(Request $request){
+        date_default_timezone_set('Asia/Manila');
         CarrierDetails::where('id', $request->carrier_details_id)
         ->update([
             'status' => 1,

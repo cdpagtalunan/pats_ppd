@@ -178,7 +178,7 @@ class PackingListDetailsController extends Controller
     }
 
     public function addPackingListData(Request $request){
-
+        date_default_timezone_set('Asia/Manila');
         $data = $request->all();
 
         $prod_id = [

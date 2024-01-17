@@ -25,10 +25,12 @@ class CreateStampingIpqcsTable extends Migration
             $table->string('output')->nullable();
             $table->unsignedBigInteger('ipqc_inspector_name')->nullable();
             $table->tinyInteger('keep_sample')->nullable()->comment = '1 - Yes, 2 - No';
-            $table->string('document_no')->nullable();
+            $table->string('doc_no_b_drawing')->nullable()->comment = 'b drawing from acdcs';
+            $table->string('doc_no_insp_standard')->nullable()->comment = 'inspection standard from acdcs';
+            $table->string('doc_no_urgent_direction')->nullable()->comment = 'UD from acdcs';
             $table->string('measdata_attachment')->nullable();
             $table->string('ilqcm_attachment')->nullable();
-            $table->tinyInteger('status')->default(0)->comment = '0-Pending, 1-Updated:(J) Accepted, 2-Updated:(J) Rejected,3-Submitted';
+            $table->tinyInteger('status')->default(0)->comment = '0-Pending, 1-Updated:Accepted(J), 2-Updated:Rejected(J), 3-Submitted:Accepted(J), 4-Submitted:Rejected(J), 5-For Re-Inspection';
             $table->tinyInteger('logdel')->default(0)->comment = '0-Active, 1-Deleted';
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();

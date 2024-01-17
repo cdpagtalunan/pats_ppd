@@ -738,7 +738,7 @@
 
             });
 
-             $(document).on('keyup','#txtScanUserId', function(e){
+            $(document).on('keyup','#txtScanUserId', function(e){
                 
                 if(e.keyCode == 13){
                     
@@ -751,7 +751,6 @@
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
                             }
-
                         });
                     }
                     else{

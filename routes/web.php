@@ -236,7 +236,9 @@ Route::controller(PackingListDetailsController::class)->group(function () {
 });
 
 Route::controller(ReceivingDetailsController::class)->group(function () {
-    Route::get('/view_packing_list_details', 'viewPackingListDetails')->name('view_packing_list_details');
+    Route::get('/view_receiving_details', 'viewReceivingListDetails')->name('view_receiving_details');
+    Route::get('/get_receiving_details', 'getReceivingListdetails')->name('get_receiving_details');
+    Route::post('/update_receiving_details', 'updateReceivingDetails')->name('update_receiving_details');
 });
 
 

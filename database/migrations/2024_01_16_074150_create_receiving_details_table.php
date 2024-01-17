@@ -23,6 +23,7 @@ class CreateReceivingDetailsTable extends Migration
             $table->string('sanno_lot_no')->nullable();
             $table->string('sanno_quantity')->nullable();
             $table->string('sanno_pmi_lot_no')->nullable();
+            $table->string('updated_by')->nullable();
 
             $table->tinyInteger('status')->default(0)->comment = '0-For Whse edit, 1-for IQC Inspection';
 
