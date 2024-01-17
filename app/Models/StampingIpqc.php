@@ -16,6 +16,4 @@ class StampingIpqc extends Model
         return $this->hasOne(User::class, 'id', 'ipqc_inspector_name');
     }
 
-    // stamping_ipqc
-
 }

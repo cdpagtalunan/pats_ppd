@@ -86,14 +86,15 @@ function resetFormProdValues() {
     $('#divProdLotInput').removeClass('d-none');
     $('#divProdLotView').addClass('d-none');
     $('select[name="opt_name[]"]').val(0).trigger('change');
-
+    $('#txtProdDataId').val('');
     // $('input',)
     $('#txtProdSamp').prop('readonly', false);
     $('#txtTtlMachOutput').prop('readonly', false);
     $('#txtProdDate').prop('readonly', false);
+    $('#txtNGCount').prop('readonly', true);
 
     $('#selOperator').prop('disabled', false);
-    $('#txtOptShift').prop('readonly', false);
+    $('#txtOptShift').prop('readonly', true);
     $('#txtInptCoilWeight').prop('readonly', false);
     $('#txtSetupPin').prop('readonly', false);
     $('#txtAdjPin').prop('readonly', false);
@@ -107,12 +108,11 @@ function resetFormProdValues() {
     $('#radioCutPointWithout').prop('checked', true);
 
 
-
     // $('#radioIQC').attr('checked', false);
     // $('#radioMassProd').attr('checked', false);
 }
 
-$("#modalMachineOp").on('hidden.bs.modal', function () {
+$("#modalProdData").on('hidden.bs.modal', function () {
     console.log('hidden.bs.modal');
     resetFormProdValues();
 });
@@ -178,6 +178,7 @@ $(this).on('select2:open', function(e) {
 });
 
 function validateUser(userId, validPosition, callback){ // this function will accept scanned id and validPosition based on user table (number only)
+    console.log('validPosition', validPosition);
     $.ajax({
         type: "get",
         url: "validate_user",
@@ -199,4 +200,27 @@ function validateUser(userId, validPosition, callback){ // this function will ac
         }
     });
 }
+// validateUser1 = function(userId, validPosition){ // this function will accept scanned id and validPosition based on user table (number only)
+//     console.log('validPosition', validPosition);
+//     $.ajax({
+//         type: "get",
+//         url: "validate_user",
+//         data: {
+//             'id'    : userId,
+//             'pos'   : validPosition
+//         },
+//         dataType: "json",
+//         success: function (response) {
+//             let value1
+//             if(response['result'] == 1){
+//                 value1 = true;
+//             }
+//             else{
+//                 value1 = false;
+//             }
+
+//             return value1;
+//         }
+//     });
+// }
 

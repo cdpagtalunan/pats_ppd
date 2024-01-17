@@ -85,13 +85,13 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th><center><i class="fa fa-cog"></i></center></th>
+                                                    {{-- <th><center><i class="fa fa-cog"></i></center></th> --}}
                                                     <th>Status</th>
                                                     <th>Ctrl #</th>
                                                     <th>PO</th>
                                                     <th>Material Name</th>
                                                     <th>Lot #</th>
-                                                    <th>Qty</th>
+                                                    <th>Shipment Output</th>
                                                     {{-- <th>Sold to</th>
                                                     <th>Ship to</th>
                                                     <th>Pick-up Time</th>
@@ -159,7 +159,7 @@
                                             <th>PO</th>
                                             <th>Material Name</th>
                                             <th>Production Lot #</th>
-                                            <th>Material Lot #</th>
+                                            {{-- <th>Material Lot #</th> --}}
                                             <th>Product Code</th>
                                             <th>Qty</th>
                                         </tr>
@@ -326,12 +326,12 @@
                 { "data"  : 'DT_RowIndex'},
                 { "data" : "action", orderable:false, searchable:false },
                 { "data" : "status"},
-                { "data" : "po_num"},
-                { "data" : "material_name"},
-                { "data" : "prod_lot_no"},
-                { "data" : "material_lot_no"},
-                { "data" : "part_code"},
-                { "data" : "ship_output"},
+                { "data" : "po_no"},
+                { "data" : "stamping_production_info.material_name"},
+                { "data" : "stamping_production_info.prod_lot_no"},
+                // { "data" : "stamping_production_info.material_lot_no"},
+                { "data" : "stamping_production_info.part_code"},
+                { "data" : "stamping_production_info.ship_output"},
             ],
         });
 
@@ -347,7 +347,7 @@
             fixedHeader: true,
             "columns":[
                 // { "data"  : 'DT_RowIndex'},
-                { "data" : "action", orderable:false, searchable:false },
+                // { "data" : "action", orderable:false, searchable:false },
                 { "data" : "status"},
                 { "data" : "control_no"},
                 { "data" : "po_no"},

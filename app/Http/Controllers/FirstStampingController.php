@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use QrCode;
 use DataTables;
+use App\Models\User;
 use App\Models\Device;
+
+use App\Models\StampingIpqc;
 use Illuminate\Http\Request;
 
 use App\Models\MaterialProcess;
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Facades\Auth;
 use App\Models\FirstStampingProduction;
 use Illuminate\Support\Facades\Validator;
@@ -38,7 +40,10 @@ class FirstStampingController extends Controller
                 $result .= "<button class='btn btn-warning btn-sm btnMassProd' data-id='$stamping_data->id' data-function='1'><i class='fa-solid fa-up-right-from-square'></i></button>";
             }
             else if($stamping_data->status == 2){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id'><i class='fa-solid fa-qrcode'></i></button>";
+                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count'><i class='fa-solid fa-qrcode'></i></button>";
+            }
+            else if ($stamping_data->status == 3){
+                $result .= "<button class='btn btn-danger btn-sm btnViewResetup' data-id='$stamping_data->id' data-function='2'><i class='fa-solid fa-repeat'></i></button>";
 
             }
             $result .= "</center>";
@@ -56,6 +61,9 @@ class FirstStampingController extends Controller
             }
             else if($stamping_data->status == 2){
                 $result = "<span class='badge bg-success'>Done</span>";
+            }
+            else if($stamping_data->status == 3){
+                $result = "<span class='badge bg-danger'>Lot Rejected</span>";
 
             }
 
@@ -79,19 +87,26 @@ class FirstStampingController extends Controller
 
     public function save_prod_data(Request $request){
         date_default_timezone_set('Asia/Manila');
-        // return $request->all();
         $data = $request->all();
      
         if(isset($request->id)){
-            $validation = array(
-                // 'mat_lot_no'       => ['required'],
-                'prod_date'        => ['required'],
-                // 'prod_lot_no'      => ['required'],
-                'prod_samp'        => ['required'],
-                'ttl_mach_output'  => ['required'],
-                'ship_output'      => ['required'],
-                'mat_yield'        => ['required'],
-            );
+            if($request->status == 2){
+                $validation = array(
+                    'ng_count'        => ['required'],
+                );
+            }
+            else{
+                $validation = array(
+                    // 'mat_lot_no'       => ['required'],
+                    'prod_date'        => ['required'],
+                    // 'prod_lot_no'      => ['required'],
+                    'prod_samp'        => ['required'],
+                    'ttl_mach_output'  => ['required'],
+                    'ship_output'      => ['required'],
+                    'mat_yield'        => ['required'],
+                );
+            }
+           
         }
         else{
             $validation = array(
@@ -122,20 +137,38 @@ class FirstStampingController extends Controller
         else{
             DB::beginTransaction();
             try{
+                $user_id = User::where('employee_id', $request->scanned_id)
+                ->first('id');
 
-                // return $request->all();
                 if(isset($request->id)){
-                    FirstStampingProduction::where('id', $request->id)
-                    ->update([
-                        'status'            => 2,
-                        'prod_date'         => $request->prod_date,
-                        'prod_samp'         => $request->prod_samp,
-                        'total_mach_output' => $request->ttl_mach_output,
-                        'ship_output'       => $request->ship_output,
-                        'mat_yield'         => $request->mat_yield,
-                        
-                    ]);
+                    if($request->status == 2){
+                        FirstStampingProduction::where('id', $request->id)
+                        ->update([
+                            'status'            => 0,
+                            'ng_count'          => $request->ng_count,
+                            'updated_at'        => NOW(),
+                            'updated_by'        => $user_id->id
+                        ]);
 
+                        StampingIpqc::where('fs_productions_id', $request->id)
+                        ->update([
+                            'status'            => 5,
+                        ]);
+                    }
+                    else{
+                        FirstStampingProduction::where('id', $request->id)
+                        ->update([
+                            'status'            => 2,
+                            'prod_date'         => $request->prod_date,
+                            'prod_samp'         => $request->prod_samp,
+                            'total_mach_output' => $request->ttl_mach_output,
+                            'ship_output'       => $request->ship_output,
+                            'mat_yield'         => $request->mat_yield,
+                            'updated_at'        => NOW(),
+                            'updated_by'        => $user_id->id
+                        ]);
+                    }
+                    
                     DB::commit();
                 }
                 else{
@@ -167,7 +200,7 @@ class FirstStampingController extends Controller
                         'mat_yield'         => $request->mat_yield,
                         'shift'             => $request->opt_shift,
                         'operator'          => $imploded_operator,
-                        'created_by'        => Auth::user()->id,
+                        'created_by'        => $user_id->id,
                         'created_at'        => NOW()
                     );
     
@@ -210,7 +243,7 @@ class FirstStampingController extends Controller
 
     public function print_qr_code(Request $request){
         $prod_data = FirstStampingProduction::where('id', $request->id)
-        ->first(['po_num AS po', 'part_code AS code', DB::Raw('CONCAT(material_name, "-", "X") AS name') , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
+        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
 
         // $prod_data = DB::connection('mysql')
         // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM first_stamping_productions WHERE id = '".$request->id."'");
@@ -226,7 +259,7 @@ class FirstStampingController extends Controller
             'img' => $QrCode, 
             'text' =>  "<strong>$prod_data->po</strong><br>
             <strong>$prod_data->code</strong><br>
-            <strong>$prod_data->name</strong><br>
+            <strong>$prod_data->name-X</strong><br>
             <strong>$prod_data->production_lot_no</strong><br>
             <strong>$prod_data->output_qty</strong><br>
             <strong>$prod_data->qty</strong><br>"
@@ -244,7 +277,7 @@ class FirstStampingController extends Controller
                 </tr>
                 <tr>
                     <td>Material Name:</td>
-                    <td>$prod_data->name</td>
+                    <td>$prod_data->name-X</td>
                 </tr>
                 <tr>
                     <td>Production Lot #:</td>
@@ -261,7 +294,7 @@ class FirstStampingController extends Controller
             </table>
         ";
 
-        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label]);
+        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label, 'prodData' => $prod_data]);
     }
 
     public function check_matrix(Request $request){
@@ -330,5 +363,12 @@ class FirstStampingController extends Controller
         return DB::connection('mysql')
         ->select("SELECT * FROM users WHERE position = 4");
 
+    }
+
+    public function change_print_count(Request $request){
+        FirstStampingProduction::where('id', $request->id)
+        ->update([
+            'print_count' => 1
+        ]);
     }
 }

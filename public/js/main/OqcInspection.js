@@ -1,3 +1,29 @@
+function ScanUserById() {
+    $('#mdlScanQrCode').modal('show')
+    $('#mdlScanQrCode').on('shown.bs.modal', function () {
+        $('#txtScanQrCode').addClass('d-none')
+        $('#txtScanUserId').removeClass('d-none')
+        $('#txtScanUserId').focus()
+        const mdlScanUserId = document.querySelector("#mdlScanQrCode");
+        const inptScanUserId = document.querySelector("#txtScanUserId");
+        let focus = false
+
+        mdlScanUserId.addEventListener("mouseover", () => {
+            if (inptScanUserId === document.activeElement) {
+                focus = true
+            } else {
+                focus = false
+            }
+        });
+
+        mdlScanUserId.addEventListener("click", () => {
+            if (focus) {
+                inptScanUserId.focus()
+            }
+        });
+    });
+}
+
 function UpdateOqcInspection(){
 	$.ajax({
         url: "update_oqc_inspection",
@@ -13,13 +39,13 @@ function UpdateOqcInspection(){
             if(response['validationHasError'] == 1){
                 toastr.error('Saving failed!')
 
-                if(response['error']['oqc_inspection_assembly_line'] === undefined){
-                    $("#slctOqcInspectionAssemblyLine").removeClass('is-invalid')
-                    $("#slctOqcInspectionAssemblyLine").attr('title', '')
+                if(response['error']['oqc_inspection_stamping_line'] === undefined){
+                    $("#slctOqcInspectionStampingLine").removeClass('is-invalid')
+                    $("#slctOqcInspectionStampingLine").attr('title', '')
                 }
                 else{
-                    $("#slctOqcInspectionAssemblyLine").addClass('is-invalid');
-                    $("#slctOqcInspectionAssemblyLine").attr('title', response['error']['oqc_inspection_assembly_line'])
+                    $("#slctOqcInspectionStampingLine").addClass('is-invalid');
+                    $("#slctOqcInspectionStampingLine").attr('title', response['error']['oqc_inspection_stamping_line'])
                 }
 
                 if(response['error']['oqc_inspection_lot_no'] === undefined){
@@ -104,12 +130,16 @@ function UpdateOqcInspection(){
                 }
 
                 if(response['error']['oqc_inspection_inspection_type'] === undefined){
-                    $("#slctOqcInspectionInspectionType").removeClass('is-invalid')
-                    $("#slctOqcInspectionInspectionType").attr('title', '')
+                    $("#txtOqcInspectionInspectionType").removeClass('is-invalid')
+                    $("#txtOqcInspectionInspectionType").attr('title', '')
+                    // $("#slctOqcInspectionInspectionType").removeClass('is-invalid')
+                    // $("#slctOqcInspectionInspectionType").attr('title', '')
                 }
                 else{
-                    $("#slctOqcInspectionInspectionType").addClass('is-invalid')
-                    $("#slctOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
+                    $("#txtOqcInspectionInspectionType").addClass('is-invalid')
+                    $("#txtOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
+                    // $("#slctOqcInspectionInspectionType").addClass('is-invalid')
+                    // $("#slctOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
                 }
 
                 if(response['error']['oqc_inspection_inspection_severity'] === undefined){
@@ -323,42 +353,49 @@ function GetOqcInspectionById(getPo,
     getPoQty,
     getOqcId,
     getProdId,
-    getDeviceName
+    getProdLotNo,
+    getMaterialName,
+    getProdShipOutput
 ){
 	$.ajax({
         url: "get_oqc_inspection_by_id",
         method: "get",
         data: {
-            'getPo'         : getPo,
-            'getOqcId'      : getOqcId,
-            'getPoQty'      : getPoQty,
-            'getProdId'     : getProdId,
-            'getDeviceName' : getDeviceName,
+            'getPo'             : getPo,
+            'getOqcId'          : getOqcId,
+            'getPoQty'          : getPoQty,
+            'getProdId'         : getProdId,
+            'getProdLotNo'      : getProdLotNo,
+            'getMaterialName'   : getMaterialName,
+            'getProdShipOutput' : getProdShipOutput,
         },
         dataType: "json",
         success: function(response){
+            let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
-            let activeDoc               = response['activeDoc']
+            let firstStampingProduction = response['firstStampingProduction']
+            
+            $('#txtBDrawing').val(firstStampingProduction[0].material_name)
+            $('#txtBDrawingNo').val(firstStampingProduction[0].acdcs_active_doc_info[0].doc_no)
+            $('#txtBDrawingRevision').val(firstStampingProduction[0].acdcs_active_doc_info[0].rev_no)
 
-            $('#txtBDrawing').val(activeDoc[0].material_name)
-            $('#txtBDrawingNo').val(activeDoc[0].acdcs_active_doc_info[0].doc_no)
-            $('#txtBDrawingRevision').val(activeDoc[0].acdcs_active_doc_info[0].rev_no)
+            $('#txtOqcInspectionPoNo').val(getPo)
+            $('#txtOqcInspectionPoQty').val(getPoQty)
+            $('#txtOqcInspectionLotNo').val(getProdLotNo)
+            $('#txtOqcInspectionLotQty').val(getProdShipOutput)
+            $('#txtOqcInspectionMaterialName').val(getMaterialName)
 
             if(getOqcInspectionData.length > 0){
-                $('#slctOqcInspectionAssemblyLine').val(getOqcInspectionData[0].assembly_line)
-                $('#txtOqcInspectionLotNo').val(getOqcInspectionData[0].lot_no)
+                $('#slctOqcInspectionStampingLine').val(getOqcInspectionData[0].stamping_line)
                 $('#dateOqcInspectionApplicationDate').val(getOqcInspectionData[0].app_date)
                 $('#timeOqcInspectionApplicationTime').val(getOqcInspectionData[0].app_time)
                 $('#slctOqcInspectionProductCategory').val(getOqcInspectionData[0].prod_category)
-                $('#txtOqcInspectionPoNo').val(getOqcInspectionData[0].po_no)
-                $('#txtOqcInspectionMaterialName').val(getOqcInspectionData[0].device_name)
+                // $('#txtOqcInspectionPoNo').val(getOqcInspectionData[0].po_no)
                 $('#txtOqcInspectionCustomer').val(getOqcInspectionData[0].customer)
-                $('#txtOqcInspectionPoQty').val(getOqcInspectionData[0].po_qty)
                 $('#txtOqcInspectionFamily').val(getOqcInspectionData[0].family)
-                $('#slctOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
+                $('#txtOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
                 $('#slctOqcInspectionInspectionSeverity').val(getOqcInspectionData[0].severity_of_inspection)
                 $('#slctOqcInspectionInspectionLevel').val(getOqcInspectionData[0].inspection_lvl)
-                $('#txtOqcInspectionLotQty').val(getOqcInspectionData[0].lot_qty)
                 $('#slctOqcInspectionAql').val(getOqcInspectionData[0].aql)
                 $('#txtOqcInspectionSampleSize').val(getOqcInspectionData[0].sample_size)
                 $('#txtOqcInspectionAccept').val(getOqcInspectionData[0].accept)
@@ -380,10 +417,6 @@ function GetOqcInspectionById(getPo,
                 if(getOqcInspectionData[0].lot_accepted == '0'){
                     $('.mod-class').removeClass('d-none')
                 }
-
-                console.log('Print Lot No:',getOqcInspectionData[0].print_lot_oqc_inspection_info)
-                console.log('Reel Lot No:',getOqcInspectionData[0].reel_lot_oqc_inspection_info)
-                console.log('MOD:',getOqcInspectionData[0].mod_oqc_inspection_info)
 
                 for (let getPrintLot = 0; getPrintLot < getOqcInspectionData[0].print_lot_oqc_inspection_info.length; getPrintLot++) {
                     if(getPrintLot>0){
@@ -421,21 +454,21 @@ function GetOqcInspectionById(getPo,
 
                     $('#txtOqcInspectionDefectiveNum').val(countDefects)
                 }
+                
+                let percentage = (firstStampingProduction[0].ship_output-countDefects)/firstStampingProduction[0].ship_output*100                
+                $('#txtOqcInspectionYield').val(percentage.toFixed(2)+'%')
             }else{
-                $('#txtOqcInspectionPoNo').val(getPo)
-                $('#txtOqcInspectionPoQty').val(getPoQty)
-                $('#txtOqcInspectionMaterialName').val(getDeviceName)
+                $('#txtOqcInspectionInspector').val(getInspector.firstname+' '+getInspector.lastname)
             }
-
         },
     })
 }
 
-function GeAssemblyLine(cboElement){
+function GeStampingLine(cboElement){
     let result = '<option value="">N/A</option>'
 
     $.ajax({
-        url: "get_oqc_assembly_line",
+        url: "get_oqc_stamping_line",
         method: "get",
         dataType: "json",
 
@@ -446,10 +479,10 @@ function GeAssemblyLine(cboElement){
         success: function(response){
             result = ''
 
-            if(response['collectAssemblyLine'].length > 0){
+            if(response['collectStampingLine'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>'
-                for(let index = 0; index < response['collectAssemblyLine'].length; index++){
-                    result += '<option value="' + response['collectAssemblyLine'][index].assembly_line+'">'+ response['collectAssemblyLine'][index].assembly_line+'</option>'
+                for(let index = 0; index < response['collectStampingLine'].length; index++){
+                    result += '<option value="' + response['collectStampingLine'][index].stamping_line+'">'+ response['collectStampingLine'][index].stamping_line+'</option>'
                 }
             }
             else{

@@ -94,6 +94,7 @@ class CustomerDetailsController extends Controller
     }
 
     public function editCompanyDetailsStatus(Request $request){
+        date_default_timezone_set('Asia/Manila');
         CustomerDetails::where('id', $request->company_details_id)
         ->update([
             'status' => 1,
@@ -102,6 +103,7 @@ class CustomerDetailsController extends Controller
     }
 
     public function restoreCompanyDetailsStatus(Request $request){
+        date_default_timezone_set('Asia/Manila');
         CustomerDetails::where('id', $request->company_details_id)
         ->update([
             'status' => 0,

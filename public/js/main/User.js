@@ -153,7 +153,7 @@ function GetUserByIdToEdit(userId){
         },
         dataType: "json",
         beforeSend: function(){
-            
+
         },
         success: function(JsonObject){
             let user = JsonObject['user'];
@@ -183,7 +183,7 @@ function GetUserByIdToEdit(userId){
                     // $("#chkEditUserSendEmail").prop('checked', 'checked');
                     // $("#chkEditUserSendEmail").removeAttr('disabled');
                 }
-                
+
                 if(user[0].oqc_stamp == null){
                     $("#chkEditUserWithOQCStamp").removeAttr('checked');
                     $("#txtEditUserOQCStamp").prop('disabled', 'disabled');
@@ -439,77 +439,6 @@ function PrintBatchUser(selectedUsers){
             // $("#iBtnEditUserIcon").removeClass('fa fa-spinner fa-pulse');
             // $("#btnEditUser").removeAttr('disabled');
             // $("#iBtnEditUserIcon").addClass('fa fa-check');
-        }
-    });
-}
-
-// Sign In
-function SignIn(){
-    toastr.options = {
-      "closeButton": false,
-      "debug": false,
-      "newestOnTop": true,
-      "progressBar": true,
-      "positionClass": "toast-top-right",
-      "preventDuplicates": false,
-      "onclick": null,
-      "showDuration": "300",
-      "hideDuration": "3000",
-      "timeOut": "3000",
-      "extendedTimeOut": "3000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut",
-    };
-
-    $.ajax({
-        url: "sign_in",
-        method: "post",
-        data: $('#formSignIn').serialize(),
-        dataType: "json",
-        beforeSend: function(){
-            $("#iBtnSignInIcon").addClass('fa fa-spinner fa-pulse');
-            $("#btnSignIn").prop('disabled', 'disabled');
-        },
-        success: function(JsonObject){
-            if(JsonObject['result'] == 1){
-                window.location = "dashboard";
-            }
-            else if(JsonObject['result'] == 2){
-                window.location = "change_pass_view";
-            }
-            else{
-                toastr.error('Login Failed!');
-
-                if(JsonObject['error']['username'] === undefined){
-                    $("#txtSignInUsername").removeClass('is-invalid');
-                    $("#txtSignInUsername").attr('title', '');
-                }
-                else{
-                    $("#txtSignInUsername").addClass('is-invalid');
-                    $("#txtSignInUsername").attr('title', JsonObject['error']['username']);
-                }
-
-                if(JsonObject['error']['password'] === undefined){
-                    $("#txtSignInPass").removeClass('is-invalid');
-                    $("#txtSignInPass").attr('title', '');
-                }
-                else{
-                    $("#txtSignInPass").addClass('is-invalid');
-                    $("#txtSignInPass").attr('title', JsonObject['error']['password']);
-                }
-            }
-
-            $("#iBtnSignInIcon").removeClass('fa fa-spinner fa-pulse');
-            $("#btnSignIn").removeAttr('disabled');
-            $("#iBtnSignInIcon").addClass('fa fa-check');
-        },
-        error: function(data, xhr, status){
-            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-            $("#iBtnSignInIcon").removeClass('fa fa-spinner fa-pulse');
-            $("#btnSignIn").removeAttr('disabled');
-            $("#iBtnSignInIcon").addClass('fa fa-check');
         }
     });
 }
@@ -863,7 +792,7 @@ function CountUserByStatForDashboard(status){
         },
         dataType: "json",
         beforeSend: function(){
-            
+
         },
         success: function(JsonObject){
             if(JsonObject['user'].length > 0){
@@ -910,7 +839,7 @@ function GenerateUserQRCode(qrcode, action, userId){
       },
       dataType: "json",
       beforeSend: function(){
-          
+
       },
       success: function(JsonObject){
         if(action == 1){

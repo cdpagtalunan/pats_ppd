@@ -15,6 +15,7 @@ class CreatePackingListDetailsTable extends Migration
     {
         Schema::create('packing_list_details', function (Blueprint $table) {
             $table->id();
+            $table->tinyInteger('prod_id');
             $table->string('control_no')->nullable();
             $table->string('po_no')->nullable();
             $table->string('box_no')->nullable();
@@ -32,8 +33,9 @@ class CreatePackingListDetailsTable extends Migration
             $table->string('prepared_by')->nullable();
             $table->string('checked_by')->nullable();
             $table->string('cc_personnel')->nullable();
+            $table->tinyInteger('shipment_status')->default(0)->comment = '0-For Packing List, 1-Completed';
 
-            $table->tinyInteger('status')->default(0)->comment = '0-Active, 1-Deactivated';
+            // $table->tinyInteger('status')->default(0)->comment = '0-Active, 1-Deactivated';
             $table->timestamps();
         });
     }

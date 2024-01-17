@@ -113,14 +113,14 @@
                               <button class="btn btn-sm btn-secondary float-right ml-3 py-0 px-1 " title="Minimize"
                                   id="btnMinimizeColMatProc" style="display: none;"><i
                                       class="fas fa-arrows-alt-h"></i></button>
-                              <h3 class="card-title">Material Process</h3>
+                              <h3 class="card-title">Process</h3>
                           </div>
 
                           <!-- Start Page Content -->
                           <div class="card-body">
                               <div style="float: right;">
                                   <button class="btn btn-dark" id="btnShowAddMatProcModal"><i
-                                          class="fa fa-initial-icon"></i> Add Material Process</button>
+                                          class="fa fa-initial-icon"></i> Add Process</button>
                               </div>
                               <div style="float: left;">
                                   <label>Device: <u id="uSelectedDeviceName">No Selected Device</u></label>
@@ -359,7 +359,7 @@
       <div class="modal-dialog modal-lg">
           <div class="modal-content">
               <div class="modal-header">
-                  <h4 class="modal-title"><i class="fa fa-initial-icon"></i> Material Process</h4>
+                  <h4 class="modal-title"><i class="fa fa-initial-icon"></i> Process</h4>
                   <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                   </button>

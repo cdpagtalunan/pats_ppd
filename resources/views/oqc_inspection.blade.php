@@ -24,14 +24,14 @@
                 position: absolute;
                 opacity: 0;
             }
-            textarea{
-                resize: none;
-            }
 
-            #colDevice, #colMaterialProcess{
-                transition: .5s;
+            .slct{
+                pointer-events: none;
             }
         </style>
+        @php
+            date_default_timezone_set('Asia/Manila');
+        @endphp
 
         <div class="content-wrapper"> <!-- Content Wrapper. Contains page content -->
             <section class="content-header"> <!-- Content Header (Page header) -->
@@ -95,25 +95,25 @@
                                 <!-- End Search PO No. -->
 
                                 <div class="card-body"><!-- Start Page Content -->
-                                    <div style="float: right;">
-                                    </div>
+                                    {{-- <div style="float: right;">
+                                    </div> --}}
                                     <div class="table-responsive"><!-- Table responsive -->
                                         <table id="tblOqcInspection" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th class="w-25">Action</th>
+                                                    <th>&emsp; Action &emsp;</th>
+                                                    <th>Status</th>
                                                     <th>P.O No.</th>
+                                                    <th>P.O Qty</th>
                                                     <th>Prod. Lot</th>
-                                                    <th>Quantity</th>
+                                                    <th>Prod. Lot Qty.</th>
                                                     <th>Material Name</th>
                                                     <th>FY-WW</th>
                                                     <th>Date Inspected</th>
                                                     <th>From</th>
                                                     <th>To</th>
                                                     <th># of Sub</th>
-                                                    <th>Lot No.</th>
-                                                    <th>Lot Qty.</th>
                                                     <th>Sample Size</th>
                                                     <th>Mode of Defects</th>
                                                     <th>No. of Detective</th>
@@ -151,14 +151,15 @@
 
                         <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
+                        <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         
-                        <div class="row drawing input-group p-3">
+                        <div class="input-group drawing p-3">
                             <div class="input-group-prepend w-25">
                                 <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
-                                <span class="input-group-text w-100">B Drawing</span>
+                                <span class="input-group-text w-100"><strong>B Drawing</strong></span>
                             </div>
-                            <input type="text" class="form-control txtdrawing" id="txtBDrawing" name="b_drawing" readonly>
+                            <input type="text" class="form-control" id="txtBDrawing" name="b_drawing" readonly>
                             <input type="text" class="form-control" id="txtBDrawingNo" name="b_drawing_no" readonly>
                             <input type="text" class="form-control" id="txtBDrawingRevision" name="b_drawing_revision" readonly>
                         </div>
@@ -173,28 +174,28 @@
                                 <div class="col-sm-6 mt-3">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Assembly Line</strong></span>
+                                            <span class="input-group-text w-100"><strong>Stamping Line</strong></span>
                                         </div>
-                                        <select class="form-select form-control-sm assemblyLineDropdown" id="slctOqcInspectionAssemblyLine" name="oqc_inspection_assembly_line">
+                                        <select class="form-select form-control-sm stampingLineDropdown" id="slctOqcInspectionStampingLine" name="oqc_inspection_stamping_line">
                                         </select>    
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot No.</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotNo" name="oqc_inspection_lot_no">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotNo" name="oqc_inspection_lot_no" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Application Date</strong></span>
                                         </div>
-                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionApplicationDate" name="oqc_inspection_application_date">
+                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionApplicationDate" name="oqc_inspection_application_date" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Application Time</strong></span>
                                         </div>
-                                        <input type="time" class="form-control form-control-sm" id="timeOqcInspectionApplicationTime" name="oqc_inspection_application_time">
+                                        <input type="time" class="form-control form-control-sm" id="timeOqcInspectionApplicationTime" name="oqc_inspection_application_time" value="{{ \Carbon\Carbon::now()->format('H:i:s') }}" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -290,8 +291,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Type of Inspection</strong></span>
                                         </div>
-                                        <select class="form-select form-control-sm inspectionTypeDropdown" id="slctOqcInspectionInspectionType" name="oqc_inspection_inspection_type">
-                                        </select>
+                                        {{-- <select class="form-select form-control-sm inspectionTypeDropdown" id="slctOqcInspectionInspectionType" name="oqc_inspection_inspection_type">
+                                        </select> --}}
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspectionType" name="oqc_inspection_inspection_type"  value="Single" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -314,7 +316,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot Qty.</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotQty" name="oqc_inspection_lot_qty">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotQty" name="oqc_inspection_lot_qty" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
                                     </div>
                                 </div>
 
@@ -362,18 +364,18 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Date Inspected</strong></span>
                                         </div>
-                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionDateInspected" name="oqc_inspection_date_inspected">
+                                        <input type="date" class="form-control form-control-sm" id="dateOqcInspectionDateInspected" name="oqc_inspection_date_inspected" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>Work Week</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionWorkWeek" name="oqc_inspection_work_week">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionWorkWeek" name="oqc_inspection_work_week" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>Fiscal Year</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionFiscalYear" name="oqc_inspection_fiscal_year">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionFiscalYear" name="oqc_inspection_fiscal_year" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -388,11 +390,12 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Shift</strong></span>
                                         </div>
-                                        <select class="form-select form-control-sm" id="slctOqcInspectionShift" name="oqc_inspection_shift">
+                                        <select class="form-select form-control-sm slct" id="slctOqcInspectionShift" name="oqc_inspection_shift">
                                             <option selected disabled>-- Select --</option>
                                             <option value="A">Shift A</option>
                                             <option value="B">Shift B</option>
                                         </select>
+                                        {{-- <input type="text" class="form-control form-control-sm" id="txtOqcInspectionShift" name="oqc_inspection_shift"> --}}
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -409,37 +412,33 @@
                                     
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Inspector</strong></span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspector" name="oqc_inspection_inspector" readonly>
-                                    </div>
-                                </div>
-
-
-                                <div class="col-sm-6 mt-3">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Coc Requirement</strong></span>
                                         </div>
                                         <select class="form-select form-control-sm" id="slctOqcInspectionCocRequirement" name="oqc_inspection_coc_requirement">
                                             <option selected disabled>-- Select --</option>
-                                            <option value="1">Yes</option>
-                                            <option value="2">No</option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
                                         </select>
                                     </div>
+                                </div>
 
+                                <div class="col-sm-6 mt-3">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot Inspected</strong></span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="txtOqcInspectionLotInspected" name="oqc_inspection_lot_inspected">
+                                        <input type="number" class="form-control form-control-sm" id="txtOqcInspectionLotInspected" name="oqc_inspection_lot_inspected" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="1" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
+                                        <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>Lot Accepted</strong></span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        <div class="input-group-prepend w-30">
+                                            <span class="input-group-text w-100"><strong>1st Press Yield</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionYield" name="oqc_inspection_yield" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -454,6 +453,13 @@
                                             <span class="input-group-text w-100"><strong>Remarks</strong></span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtOqcInspectionRemarks" name="oqc_inspection_remarks">
+                                    </div>
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100"><strong>Inspector</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspector" name="oqc_inspection_inspector" readonly>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3 d-none  mod-class">
@@ -485,10 +491,19 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="modal-footer justify-content-between viewDrawingFirst d-none">
-                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" id="btnOqcInspection" class="btn btn-dark"><i 
-                                id="iBtnOqcInspectionIcon" class="fa fa-check"></i> Save</button>
+
+                        <div class="col-12 input-group viewDrawingFirst d-none py-3 border-top">
+                            <div class="col-2">
+                                <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            </div>
+                            <div class="col-3"></div><div class="col-3"></div><div class="col-4">
+                                <button id="btnOqcInspectionSaveAsDraft" class="btn btn-info"><i 
+                                    class="fa fa-check"></i> Save as draft
+                                </button>
+                                <button type="submit" id="btnOqcInspection" class="btn btn-dark ml-3"><i 
+                                    id="iBtnOqcInspectionIcon" class="fa fa-check"></i> Save
+                                </button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -502,7 +517,7 @@
                     <div class="modal-body mt-3">
                         <input type="text" class="scanner w-100 d-none" id="txtScanQrCode" name="scan_qr_code" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}' autocomplete="off">
                         <input type="text" class="scanner w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
-                        <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                        <div class="text-center text-secondary">Please scan the code.<h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
             </div>
@@ -576,14 +591,14 @@
                 GetAQL($('.aqlDropdown'))
                 GetFamily($('.familyDropdown'))
                 GetMOD($('.inspectionModDropdown_0'))
-                GeAssemblyLine($('.assemblyLineDropdown'))
+                GeStampingLine($('.stampingLineDropdown'))
                 GetInspectionType($('.inspectionTypeDropdown'))
                 GetInspectionLevel($('.inspectionLevelDropdown'))
                 GetSeverityInspection($('.severityInspectionDropdown'))
 
-                $('.select2bs4').select2({
-                    theme: 'bootstrap-5'
-                });
+                // $('.select2bs4').select2({
+                //     theme: 'bootstrap-5'
+                // });
 
                 $('#smartwizard').smartWizard({
                     selected        :   0,
@@ -613,17 +628,17 @@
 
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status" },
                         { "data" : "po_no" },
-                        { "data" : "prod_lot" },
                         { "data" : "po_qty" },
+                        { "data" : "prod_lot" },
+                        { "data" : "prod_lot_qty" },
                         { "data" : "material_name" },
                         { "data" : "fy_ww" },
                         { "data" : "date_inspected" },
                         { "data" : "time_ins_from" },
                         { "data" : "time_ins_to" },
                         { "data" : "submission" },
-                        { "data" : "lot_no" },
-                        { "data" : "lot_qty" },
                         { "data" : "sample_size" },
                         { "data" : "mod" },
                         { "data" : "num_of_defects" },
@@ -683,18 +698,30 @@
 
                 $(document).on('click', '.actionOqcInspection', function(e){
                     e.preventDefault()
-                    getPo           = $(this).attr('prod-po')
-                    getPoQty        = $(this).attr('prod-po-qty')
-                    getOqcId        = $(this).attr('oqc_inspection-id')
-                    getProdId       = $(this).attr('prod-id')
-                    getDeviceName   = $(this).attr('prod-device-name')
+                    getPo               = $(this).attr('prod-po')
+                    getPoQty            = $(this).attr('prod-po-qty')
+                    getOqcId            = $(this).attr('oqc_inspection-id')
+                    getProdId           = $(this).attr('prod-id')
+                    getProdLotNo        = $(this).attr('prod-lot-no')
+                    getMaterialName     = $(this).attr('prod-material-name')
+                    getProdShipOutput   = $(this).attr('prod-ship-output')
                     
+                    setTimeout(() => {     
+                        if( new Date().toLocaleTimeString() <= '1:29:00 PM'){
+                            $('#slctOqcInspectionShift').val('A');
+                        }else{
+                            $('#slctOqcInspectionShift').val('B');
+                        }
+                    }, 300);
+
                     GetOqcInspectionById(
                         getPo,
                         getPoQty,
                         getOqcId,
                         getProdId,
-                        getDeviceName
+                        getProdLotNo,
+                        getMaterialName,
+                        getProdShipOutput
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
@@ -847,32 +874,24 @@
                     }
                 });
 
+                $('#btnOqcInspectionSaveAsDraft').click(function (errur) { 
+                    errur.preventDefault();
+                    console.log('Save as draft')
+                    $('#txtStatus').val('1')
+                    ScanUserById()
+                });
+
                 $('#formOqcInspection').submit(function (e) { 
                     e.preventDefault()
                     console.log('Save OQC Inspection')
-                    $('#mdlScanQrCode').modal('show')
-                    $('#mdlScanQrCode').on('shown.bs.modal', function () {
-                        $('#txtScanQrCode').addClass('d-none')
-                        $('#txtScanUserId').removeClass('d-none')
-                        $('#txtScanUserId').focus()
-                        const mdlScanUserId = document.querySelector("#mdlScanQrCode");
-                        const inptScanUserId = document.querySelector("#txtScanUserId");
-                        let focus = false
 
-                        mdlScanUserId.addEventListener("mouseover", () => {
-                            if (inptScanUserId === document.activeElement) {
-                                focus = true
-                            } else {
-                                focus = false
-                            }
-                        });
-
-                        mdlScanUserId.addEventListener("click", () => {
-                            if (focus) {
-                                inptScanUserId.focus()
-                            }
-                        });
+                    $('#btnOqcInspection').click(function (irror) { 
+                        irror.preventDefault();
+                        console.log('Save as done')
+                        $('#txtStatus').val('')
+                        $('#mdlScanQrCode').modal('show')
                     });
+                    ScanUserById()
                 });
 
                 $('#txtScanUserId').on('keypress',function(e){

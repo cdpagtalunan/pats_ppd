@@ -137,8 +137,8 @@ class MaterialProcessController extends Controller
                     $mat_proc_array['last_updated_by'] = Auth::user()->id;
                     MaterialProcess::where('id', $request->mat_proc_id)
                     ->update($mat_proc_array);
+                    MaterialProcessMaterial::where('mat_proc_id', $request->mat_proc_id)->delete();
                     if(isset($request->material_name)){
-                        MaterialProcessMaterial::where('mat_proc_id', $request->mat_proc_id)->delete();
 
                         for ($i=0; $i < count($request->material_name); $i++) { 
                             $material_info = DB::connection('mysql_rapid_pps')->table('tbl_Warehouse')

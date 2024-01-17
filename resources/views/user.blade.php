@@ -53,7 +53,7 @@
               <!-- Start Page Content -->
               <div class="card-body">
                   <div style="float: right;">
-                    <button class="btn btn-dark" data-keyboard="false" id="btnShowModalPrintBatchUser" disabled><i class="fa fa-print"></i> Print Batch QR Code (<span id="lblNoOfPrintBatchSelUser">0</span>)</button>
+                    {{-- <button class="btn btn-dark" data-keyboard="false" id="btnShowModalPrintBatchUser" disabled><i class="fa fa-print"></i> Print Batch QR Code (<span id="lblNoOfPrintBatchSelUser">0</span>)</button> --}}
 
                     {{-- @if(Auth::user()->user_level_id == 1)
                       <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalImportUser" id="btnShowImport" title="Import User"><i class="fa fa-file-excel"></i> Import</button>
@@ -266,13 +266,14 @@
                       <option value="1">Prod'n Supervisor</option>
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
-                      <option value="4">Operator</option>
+                      <option value="4">Production Operator</option>
                       <option value="5">Inspector</option>
                       <option value="6">Warehouse</option>
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
                       <option value="10">PPC - Clerk</option>
+                      <option value="11">Technician</option>
                     </select>
                 </div>
 
@@ -493,7 +494,7 @@
                       </div>
                     </div>
 
-                    
+
                     <input type="text" class="form-control" name="email" id="txtAddUserEmail">
                 </div>
 
@@ -511,13 +512,14 @@
                       <option value="1">Prod'n Supervisor</option>
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
-                      <option value="4">Operator</option>
+                      <option value="4">Production Operator</option>
                       <option value="5">Inspector</option>
                       <option value="6">Warehouse</option>
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
                       <option value="10">PPC - Clerk</option>
+                      <option value="11">Technician</option>
                     </select>
                 </div>
 
@@ -638,7 +640,7 @@
                       return "Material Handler";
                     }
                     else if (row.position == 4) {
-                      return "Operator";
+                      return "Production Operator";
                     }
                     else if (row.position == 5) {
                       return "Inspector";
@@ -654,6 +656,12 @@
                     }
                     else if (row.position == 9) {
                       return "Engineer";
+                    }
+                    else if (row.position == 10) {
+                      return "PPC - Clerk";
+                    }
+                    else if (row.position == 11) {
+                      return "Technician";
                     }
                   },
                 },
@@ -743,7 +751,7 @@
         });
 
 
-        // Add User 
+        // Add User
         $("#btnAddUser").on('click', function(event){
           event.preventDefault();
           AddUser();

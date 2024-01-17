@@ -7,6 +7,8 @@ use Mail;
 use QrCode;
 use DataTables;
 use App\Models\User;
+use App\Models\RapidxUser;
+use App\Models\RapidXUserAccess;
 use App\Model\OQCStamp;
 use App\Models\HRISDetails;
 use Illuminate\Support\Str;
@@ -17,9 +19,81 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    public function rapidx_sign_in_admin(Request $request)
+    {
+        // $user_data = array(
+        //     'username' => $request->get('username'),
+        //     // 'password' => $request->get('password'),
+        //     'user_stat' => "1"
+        // );
+        $user_data = $request->all();
+            // return $user_data;
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            // 'password' => 'required'
+        ]);
+
+        if ($validator->passes()) {
+            // if ($request->password == 'rapidx_admin') {
+
+                $user_info = RapidxUser::where('username', $request->username)->first();
+                // return $user_info;
+                if ($user_info != null) {
+                    session_start();
+                    $_SESSION["rapidx_user_id"] = $user_info->id;
+                    $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
+                    $_SESSION["rapidx_username"] = $user_info->username;
+                    $_SESSION["rapidx_name"] = $user_info->name;
+                    $_SESSION["rapidx_email"] = $user_info->email;
+                    $_SESSION["rapidx_department_id"] = $user_info->department_id;
+                    $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
+
+                    $user_accesses = RapidXUserAccess::on('rapidx')->where('user_id', $user_info->id)
+                        ->where('user_access_stat', 1)
+                        ->get();
+
+                    $arr_user_accesses = [];
+                    for ($index = 0; $index < count($user_accesses); $index++) {
+                        // $arr_user_accesses['module_id'] = $user_accesses[$index]->module_id;
+                        // $arr_user_accesses['user_level_id'] = $user_accesses[$index]->user_level_id;
+                        array_push($arr_user_accesses, array(
+                            'module_id' => $user_accesses[$index]->module_id,
+                            'user_level_id' => $user_accesses[$index]->user_level_id
+                        ));
+                    }
+
+                    $_SESSION["rapidx_user_accesses"] = $arr_user_accesses;
+
+                    // return $_SESSION;
+                    /**
+                     * Add session for specific systems
+                     * - this is useful for a system with different user roles
+                     * -JD
+                     */
+                    // $userData = ShuttleAllocation::where('rapidx_user_id', $user_info->id)->get();
+                    // if(count($userData) > 0){
+                    //     $_SESSION["shuttle_allocation_user_role_id"] = $userData[0]->user_role_id;
+                    // }
+
+                    return response()->json([
+                        'result' => "1",
+                    ]);
+                } else {
+                    return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+                }
+            // } else {
+            //     return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+            // }
+        } else {
+            return response()->json(['result' => "0", 'error' => $validator->messages()]);
+        }
+    }
+
     // Sign In
     public function sign_in(Request $request){
         // return "qwe";
@@ -28,7 +102,7 @@ class UserController extends Controller
             'password' => $request->get('password'),
             'status' => "1"
         );
-        // return $request->all();
+        // return $user_data['username'];
         $validator = Validator::make($user_data, [
             'username' => 'required',
             // 'password' => 'required|alphaNum|min:8'
@@ -40,7 +114,10 @@ class UserController extends Controller
                     return response()->json(['result' => "2"]);
                 }
                 else{
-                    return response()->json(['result' => "1"]);
+                    // rapidx_sign_in_admin();
+                    // echo $this->rapidx_sign_in_admin();
+
+                    return response()->json(['result' => "1", 'username' => $user_data['username']]);
                 }
             }
             else{
@@ -243,7 +320,7 @@ class UserController extends Controller
                 $result = "";
 
                 $result = "$user->firstname $user->middlename $user->lastname";
-                return $result; 
+                return $result;
             })
             ->rawColumns(['label1', 'action1', 'checkbox', 'fullname'])
             ->make(true);
@@ -289,9 +366,9 @@ class UserController extends Controller
             try{
                 $user_id = User::insertGetId([
                     // 'name' => $request->name,
-                    'firstname' => $request->fname, 
-                    'middlename' => $request->mname, 
-                    'lastname' => $request->lname, 
+                    'firstname' => $request->fname,
+                    'middlename' => $request->mname,
+                    'lastname' => $request->lname,
                     'username' => $request->username,
                     'email' => $request->email,
                     'employee_id' => $request->employee_id,
