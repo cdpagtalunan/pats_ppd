@@ -188,9 +188,6 @@ const getProdDataById = async (id, btnFunction) => {
             }
             $('input[name="cut_point"]').prop('disabled', true);
 
-
-          
-
             if(response['cut_off_point'] == 0){ // without cutpoints
                 $('#radioCutPointWithout').prop('checked', true);
                 // $('#radioCutPointWith').prop('checked', false);
@@ -229,8 +226,15 @@ const getProdDataById = async (id, btnFunction) => {
 
                 $('#saveProdData').show();
             }
-            else if(btnFunction == 2){
-                
+            else if(btnFunction == 2){ // For Resetup
+                setTimeout(() => {
+                    $('#txtSetupPin').prop('readonly', false);
+                    $('#txtAdjPin').prop('readonly', false);
+                    $('#txtQcSamp').prop('readonly', false);
+    
+                }, 200);
+    
+
                 $('#formProdData').find('input').prop('readonly', true);
                 $('#selOperator').prop('disabled', true);
                 $('#txtNGCount').prop('readonly', false);
@@ -338,3 +342,20 @@ const changePrintCount = (printedId) => {
         }
     });
 }
+
+// const getHistoryDetails = async (id) => {
+//     // await $.ajax({
+//     //     type: "get",
+//     //     url: "get_history_details",
+//     //     data: {
+//     //         "id" : id,
+//     //     },
+//     //     dataType: "json",
+//     //     success: function (response) {
+//         // dtDatatableHistory.draw();
+
+
+//             // $('#modalHistory').modal('show');
+//     //     }
+//     // });
+// }

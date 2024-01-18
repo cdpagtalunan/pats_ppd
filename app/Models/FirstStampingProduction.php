@@ -12,7 +12,7 @@ class FirstStampingProduction extends Model
 {
     use HasFactory;
 
-    protected $table = "first_stamping_productions";
+    protected $table = "stamping_productions";
     protected $connection = "mysql";
 
     public function user(){
@@ -31,5 +31,8 @@ class FirstStampingProduction extends Model
         return $this->hasMany(OQCInspection::class,'fs_productions_id', 'id')->where('status', 2);
     }
 
+    public function first_stamping_history(){
+        return $this->hasMany(StampingProductionHistory::class,'stamping_production_id', 'id');
+    }
 
 }

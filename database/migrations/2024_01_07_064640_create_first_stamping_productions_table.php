@@ -13,7 +13,7 @@ class CreateFirstStampingProductionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('first_stamping_productions', function (Blueprint $table) {
+        Schema::create('stamping_productions', function (Blueprint $table) {
             $table->id();
             $table->integer('status')->default(0)->comment = "0-For IQC, 1-For Mass Prod, 2-Done";
             $table->integer('ctrl_counter');
@@ -29,7 +29,6 @@ class CreateFirstStampingProductionsTable extends Migration
             $table->date('prod_date')->nullable();
             $table->integer('cut_off_point')->comment = "0-without, 1-with";
             $table->integer('no_of_cuts')->nullable();
-            $table->date('prod_date');
             $table->string('prod_lot_no');
             $table->integer('input_coil_weight');
             $table->integer('ppc_target_output');
@@ -61,6 +60,6 @@ class CreateFirstStampingProductionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('first_stamping_productions');
+        Schema::dropIfExists('stamping_productions');
     }
 }

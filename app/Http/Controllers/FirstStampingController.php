@@ -14,17 +14,24 @@ use App\Models\MaterialProcess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FirstStampingProduction;
+use App\Models\StampingProductionHistory;
 use Illuminate\Support\Facades\Validator;
 
 class FirstStampingController extends Controller
 {
     public function view_first_stamp_prod(Request $request){
-        // $stamping_data = FirstStampingProduction::whereNull('deleted_at')
-        // ->where('po_num', $request->po)
-        // ->get();
+        $stamping_data = FirstStampingProduction::with([
+            'first_stamping_history'
+        ])
+        ->whereNull('deleted_at')
+        ->where('po_num', $request->po)
+        ->get();
 
-        $stamping_data = DB::connection('mysql')
-        ->select("SELECT * FROM first_stamping_productions WHERE deleted_at IS NULL AND po_num = '$request->po'");
+        // $stamping_data = DB::connection('mysql')
+        // ->select("SELECT a.*, b.set_up_pins as history_stup, b.adj_pins FROM `stamping_productions` AS a
+        // LEFT OUTER JOIN `stamping_production_histories` AS b ON a.id = b.stamping_production_id 
+        // WHERE a.deleted_at IS NULL 
+        // AND a.po_num = '$request->po'");
 
         return DataTables::of($stamping_data)
         ->addColumn('action', function($stamping_data){
@@ -44,7 +51,11 @@ class FirstStampingController extends Controller
             }
             else if ($stamping_data->status == 3){
                 $result .= "<button class='btn btn-danger btn-sm btnViewResetup' data-id='$stamping_data->id' data-function='2'><i class='fa-solid fa-repeat'></i></button>";
+            }
 
+
+            if(count($stamping_data->first_stamping_history) > 0){
+                $result .= "<button class='btn btn-secondary btn-sm btnViewHistory' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
             }
             $result .= "</center>";
             return $result;
@@ -141,21 +152,55 @@ class FirstStampingController extends Controller
                 ->first('id');
 
                 if(isset($request->id)){
-                    if($request->status == 2){
-                        FirstStampingProduction::where('id', $request->id)
-                        ->update([
-                            'status'            => 0,
-                            'ng_count'          => $request->ng_count,
-                            'updated_at'        => NOW(),
-                            'updated_by'        => $user_id->id
-                        ]);
+                    if($request->status == 2){ // FOR RESETUP
+                        $id = $request->id;
+                        FirstStampingProduction::query()
+                        ->where('id', $request->id)
+                        ->each(function ($oldRecord) use ($id, $request, $user_id) {
+                            $newRecord = new StampingProductionHistory();
+                            $newRecord->set_up_pins = $oldRecord->set_up_pins;
+                            $newRecord->adj_pins = $oldRecord->adj_pins;
+                            $newRecord->qc_samp = $oldRecord->qc_samp;
+                            $newRecord->ng_count = $oldRecord->ng_count;
+                            $newRecord->stamping_production_id = $id;
+                            $newRecord->save();
+
+                            $oldRecord->status = 0;
+                            $oldRecord->set_up_pins = $request->setup_pins;
+                            $oldRecord->adj_pins = $request->adj_pins;
+                            $oldRecord->qc_samp = $request->qc_samp;
+                            $oldRecord->ng_count = $request->ng_count;
+                            $oldRecord->updated_at = NOW();
+                            $oldRecord->updated_by = $user_id->id;
+                            $oldRecord->save();
+                        });
+                        // ->update([
+                        //     'status'            => 0,
+                        //     'set_up_pins'       => $request->setup_pins,
+                        //     'adj_pins'          => $request->adj_pins,
+                        //     'qc_samp'           => $request->qc_samp,
+                        //     'ng_count'          => $request->ng_count,
+                        //     'updated_at'        => NOW(),
+                        //     'updated_by'        => $user_id->id
+                        // ]);
+
+                        // FirstStampingProduction::where('id', $request->id)
+                        // ->update([
+                        //     'status'            => 0,
+                        //     'set_up_pins'       => $request->setup_pins,
+                        //     'adj_pins'          => $request->adj_pins,
+                        //     'qc_samp'           => $request->qc_samp,
+                        //     'ng_count'          => $request->ng_count,
+                        //     'updated_at'        => NOW(),
+                        //     'updated_by'        => $user_id->id
+                        // ]);
 
                         StampingIpqc::where('fs_productions_id', $request->id)
                         ->update([
                             'status'            => 5,
                         ]);
                     }
-                    else{
+                    else{ // FOR MASS PRODUCTION
                         FirstStampingProduction::where('id', $request->id)
                         ->update([
                             'status'            => 2,
@@ -219,9 +264,6 @@ class FirstStampingController extends Controller
                 return $e;
             }
         }
-
-
-
     }
 
     public function get_data_req_for_prod_by_po(Request $request){
@@ -246,7 +288,7 @@ class FirstStampingController extends Controller
         ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
 
         // $prod_data = DB::connection('mysql')
-        // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM first_stamping_productions WHERE id = '".$request->id."'");
+        // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM stamping_productions WHERE id = '".$request->id."'");
         
         // return $prod_data[0];
         $qrcode = QrCode::format('png')
@@ -347,7 +389,7 @@ class FirstStampingController extends Controller
         $day   = date('d');
 
         $ctrl_count = DB::connection('mysql')
-        ->select("SELECT MAX(ctrl_counter) as ctrl FROM first_stamping_productions WHERE `created_at` LIKE '%$date%'");
+        ->select("SELECT MAX(ctrl_counter) as ctrl FROM stamping_productions WHERE `created_at` LIKE '%$date%'");
 
         $ctrl_counter = $ctrl_count[0]->ctrl + 1;
         return response()->json([
@@ -370,5 +412,14 @@ class FirstStampingController extends Controller
         ->update([
             'print_count' => 1
         ]);
+    }
+
+    public function get_history_details(Request $request){
+        $history = StampingProductionHistory::where('stamping_production_id', $request->id)
+        ->get();
+
+        return DataTables::of($history)
+        ->make(true);
+
     }
 }

@@ -68,7 +68,7 @@
                                             <div class="input-group mb-3">
                                                 {{-- <button class="btn btn-primary"><i class="fa-solid fa-qrcode"></i></button> --}}
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum">
+                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -384,17 +384,45 @@
         </div>
 
 
-        <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        {{-- <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-sm modal-dialog-top" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-bottom-0 pb-0">
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body pt-0">
-                        {{-- hidden_scanner_input --}}
                         <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
-                        {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan the material lot #.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
+
+        <div class="modal fade" id="modalHistory" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa-solid fa-circle-exclamation"></i> NG History</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table id="tblHistory" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>PO Number</th>
+                                        <th>Set-up Pins</th>
+                                        <th>Adjustment Pins</th>
+                                        <th>QC Samples</th>
+                                        <th>NG Count</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
                     </div>
                 </div>
             </div>
@@ -410,16 +438,9 @@
             var multipleMatId;
             var printId;
             var scanningFunction;
-
+            var historyId = 0;
             $(document).ready(function(){
                 // getOperatorList($('.selOpName'));
-
-                // $('.select2').select2();
-
-                // //Initialize Select2 Elements
-                // $('.select2bs4').select2({
-                //     theme: 'bootstrap-5'
-                // });
 
                 dtDatatableProd = $("#tblProd").DataTable({
                     "processing" : true,
@@ -734,6 +755,49 @@
                     getProdDataById(id, btnFunction);
 
                 });
+                
+
+                $(document).on('click', '.btnViewHistory', function(e){
+                    historyId = $(this).data('id');
+                    let po = $(this).data('po');
+                    dtDatatableHistory = $("#tblHistory").DataTable({
+                        "processing" : true,
+                        "serverSide" : true,
+                        "paging": false, 
+                        "searching": false,
+                        "info": false,
+                        "destroy": true,
+                        "ordering": false,
+                        "ajax" : {
+                            url: "get_history_details",
+                            data: function (param){
+                                param.id = historyId;
+                            }
+                        },
+                        fixedHeader: true,
+                        "columns":[
+
+                            { 
+                                render: function (data, type, row, meta) {
+                                    return meta.row + meta.settings._iDisplayStart + 1;
+                                }
+                            },
+                            { 
+                                render: function (data, type, row, meta) {
+                                    return po;
+                                }
+                            },
+                            // { "data" : "id" },
+                            { "data" : "set_up_pins" },
+                            { "data" : "adj_pins" },
+                            { "data" : "qc_samp" },
+                            { "data" : "ng_count" },
+                        ],
+                    });//end of dataTableDevices
+
+                    $('#modalHistory').modal('show');
+
+                })
 
 
             });
