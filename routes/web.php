@@ -163,7 +163,9 @@ Route::controller(StampingIpqcController::class)->group(function () {
 
 //IQC Inspection
 Route::controller(IqcInspectionController::class)->group(function () {
+    Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
+    Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
     Route::get('/get_whs_transaction_by_id', 'getWhsTransactionById')->name('get_whs_transaction_by_id');
     Route::get('/get_family', 'getFamily')->name('get_family');
     Route::get('/get_inspection_level', 'getInspectionLevel')->name('get_inspection_level');
@@ -171,7 +173,6 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/get_lar_dppm', 'getLarDppm')->name('get_lar_dppm');
     Route::get('/get_mode_of_defect', 'getModeOfDefect')->name('get_mode_of_defect');
     Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
-    Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
 });

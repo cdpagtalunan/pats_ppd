@@ -26,31 +26,15 @@ class IqcInspectionController extends Controller
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
         */
-        if($request->firstStamping == "true"){
-            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+        $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('
                 SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
                 WHERE whs_transaction.inspection_class = 0
                 ORDER BY whs.PartNumber DESC
-            ');
-            /*
-                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs.*
-                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
-                whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
-                whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            */
-        }else{
-            $tbl_whs_trasanction = DB::connection('mysql')
-            ->select('
-                SELECT id as "whs_transaction_id",supplier_name as "Supplier",part_code as "PartNumber",
-                        mat_name as"MaterialType",supplier_lot_no as "Lot_number"
-                FROM receiving_details
-                WHERE status = 1
-                ORDER BY created_at DESC
-            ');
-        }
+        ');
+        
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
@@ -67,7 +51,50 @@ class IqcInspectionController extends Controller
             $result .= '</center>';
             return $result;
         })
+        ->rawColumns(['action','status'])
+        ->make(true);
+        /*
+            InvoiceNo
+            whs_transaction_username,whs_username
+            whs_transaction_lastupdate,whs_lastupdate
+            whs_transaction_lastupdate,whs_lastupdate
+            *Inspection Times*
+            *Application Ctrl. No*
+            *FY#*
+            *WW#*
+            *Sub*
+            PartNumber
+            ProductLine,MaterialType
+            Supplier
+            Lot_number
+        */
+    }
+    public function loadWhsDetails(Request $request){
         
+        $tbl_whs_trasanction = DB::connection('mysql')
+        ->select('
+            SELECT id as "whs_transaction_id",supplier_name as "Supplier",part_code as "PartNumber",
+                    mat_name as"MaterialType",supplier_lot_no as "Lot_number"
+            FROM receiving_details
+            WHERE status = 1
+            ORDER BY created_at DESC
+        ');
+        return DataTables::of($tbl_whs_trasanction)
+        ->addColumn('action', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= '</center>';
+            return $result;
+        })
+        ->addColumn('status', function($row){
+            $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
+            $result = '';
+            $result .= '<center>';
+            $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+            $result .= '</center>';
+            return $result;
+        })
         ->rawColumns(['action','status'])
         ->make(true);
         /*

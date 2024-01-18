@@ -586,10 +586,7 @@
                         "processing" : true,
                         "serverSide" : true,
                         "ajax" : {
-                            url: "load_whs_transaction",
-                            data: function (param){
-                                param.secondStamping = "true" //DT for 2nd Stamping
-                            },
+                            url: "load_whs_details",
                         },
                         fixedHeader: true,
                         "columns":[
