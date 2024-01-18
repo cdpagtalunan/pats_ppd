@@ -19,18 +19,12 @@ class FirstStampingProduction extends Model
         return $this->hasOne(User::class, 'id', 'created_by');
     }
 
-    public function stamping_ipqc()
-    {
+    public function stamping_ipqc(){
     	return $this->hasOne(StampingIpqc::class, 'fs_productions_id', 'id');
     }
 
     public function oqc_inspection_info(){
         return $this->hasOne(OQCInspection::class, 'po_no', 'po_num');
-    }
-
-    public function acdcs_active_doc_info(){
-        // return $this->hasOne(AcdcsActiveDocs::class, 'drawing_no', 'doc_no');
-        return $this->hasMany(AcdcsActiveDocs::class, 'doc_no','drawing_no')->where('doc_type', 'B Drawing');
     }
 
     public function oqc_details(){

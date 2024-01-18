@@ -128,6 +128,7 @@ const getProdDataById = async (id, btnFunction) => {
         beforeSend: function(){
             $('#divProdLotView').removeClass('d-none');
             $('#divProdLotInput').addClass('d-none');
+            getOperatorList($('.selOpName'));
 
         },
         dataType: "json",
@@ -295,6 +296,10 @@ const getProdLotNoCtrl = () => {
         url: "get_prod_lot_no_ctrl",
         data: "",
         dataType: "json",
+        beforeSend: function(){
+            getOperatorList($('.selOpName'));
+
+        },
         success: function (response) {
             $('#txtCtrlCounter').val(response['ctrl']);
             $('#prodLotNoAuto').val(`${prodData['drawings']['rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`)

@@ -19,6 +19,7 @@ use App\Http\Controllers\LoadingPortDetailsController;
 use App\Http\Controllers\DestinationPortDetailsController;
 use App\Http\Controllers\PackingListDetailsController;
 use App\Http\Controllers\ReceivingDetailsController;
+use App\Http\Controllers\PdfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,18 +52,17 @@ Route::view('/process','process')->name('process');
 /* MIGZ IQC INSPECTION VIEW */
 Route::view('/iqc_inspection','iqc_inspection')->name('iqc_inspection');
 
-
 // Route::post('/edit_user_authentication', [UserController::class, 'editUserAuthentication'])->name('edit_user_authentication');
 
 // * STAMPING VIEW
 Route::view('/first_stamping_prod','first_stamping_prod')->name('first_stamping_prod');
+Route::view('/second_stamping_prod','second_stamping_prod')->name('second_stamping_prod');
 
 // * STAMPING VIEW - IPQC Inspectin */
 Route::view('/ipqc_inspection','ipqc_inspection')->name('ipqc_inspection');
 
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');
-
 
 /* PACKING LIST */
 Route::view('/packing_list','packing_list')->name('packing_list');
@@ -154,8 +154,12 @@ Route::controller(StampingIpqcController::class)->group(function () {
     Route::post('/update_status_of_ipqc_inspection', 'update_status_of_ipqc_inspection')->name('update_status_of_ipqc_inspection');
     Route::get('/download_file/{id}', 'download_file')->name('download_file');
 
-    //EXCEL REPORT FOR PACKING LIST
+    //REPORT FOR PACKING LIST
     Route::get('/export/{CtrlNo}', 'excel')->name('export');
+});
+
+Route::controller(PdfController::class)->group(function () {
+    Route::get('/view_pdf/{control_no}', 'print')->name('print');
 });
 
 

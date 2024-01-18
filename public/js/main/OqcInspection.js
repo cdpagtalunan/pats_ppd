@@ -1,3 +1,21 @@
+checkedDrawCount = [0,0,0]
+function redirect_to_drawing(drawing, index) {
+    console.log('Drawing No.:',drawing);
+    if( drawing  == 'N/A'){
+        alert('No Document Required')
+    }
+    else{
+        window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
+        checkedDrawCount[index] = 1
+    }
+    console.log('Check View Document:', checkedDrawCount);
+}
+
+function SetClassRemove(elementId, value){
+    $(`.${elementId}`).removeClass('btn-dark');
+    $(`.${elementId}`).addClass(`${value}`);
+}
+
 function ScanUserById() {
     $('#mdlScanQrCode').modal('show')
     $('#mdlScanQrCode').on('shown.bs.modal', function () {
@@ -375,9 +393,17 @@ function GetOqcInspectionById(getPo,
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
             
-            $('#txtBDrawing').val(firstStampingProduction[0].material_name)
-            $('#txtBDrawingNo').val(firstStampingProduction[0].acdcs_active_doc_info[0].doc_no)
-            $('#txtBDrawingRevision').val(firstStampingProduction[0].acdcs_active_doc_info[0].rev_no)
+            $('#txtBDrawing').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_title)
+            $('#txtBDrawingNo').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_no)
+            $('#txtBDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].rev_no)
+
+            $('#txtUdDrawing').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_title)
+            $('#txtUdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_no)
+            $('#txtUdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].rev_no)
+
+            $('#txtInspStdDrawing').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_title)
+            $('#txtInspStdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_no)
+            $('#txtInspStdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].rev_no)
 
             $('#txtOqcInspectionPoNo').val(getPo)
             $('#txtOqcInspectionPoQty').val(getPoQty)
@@ -386,6 +412,7 @@ function GetOqcInspectionById(getPo,
             $('#txtOqcInspectionMaterialName').val(getMaterialName)
 
             if(getOqcInspectionData.length > 0){
+                console.log('STAMPING LINE: ',getOqcInspectionData[0].stamping_line)
                 $('#slctOqcInspectionStampingLine').val(getOqcInspectionData[0].stamping_line)
                 $('#dateOqcInspectionApplicationDate').val(getOqcInspectionData[0].app_date)
                 $('#timeOqcInspectionApplicationTime').val(getOqcInspectionData[0].app_time)

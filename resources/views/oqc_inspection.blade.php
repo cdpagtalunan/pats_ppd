@@ -28,6 +28,12 @@
             .slct{
                 pointer-events: none;
             }
+
+            .bg-success-custom{
+                background: #159957;  /* fallback for old browsers */
+                background: -webkit-linear-gradient(to right, #829bb4, #4ccc8c);  /* Chrome 10-25, Safari 5.1-6 */
+                background: linear-gradient(to right, #4c9467, #2f8b5d); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            }
         </style>
         @php
             date_default_timezone_set('Asia/Manila');
@@ -151,17 +157,42 @@
 
                         <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
-                        <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
+                        <input type="text" class="form-control form-control-sm" id="txtStatus" name="status">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         
-                        <div class="input-group drawing p-3">
-                            <div class="input-group-prepend w-25">
-                                <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
-                                <span class="input-group-text w-100"><strong>B Drawing</strong></span>
+                        <div class="row p-3 drawing">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend w-25">
+                                    <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <span class="input-group-text w-100 b-drawing remove-class"><strong>B Drawing</strong></span>
+                                </div>
+                                <input type="text" class="form-control b-drawing remove-class" id="txtBDrawing" name="b_drawing" readonly>
+                                <input type="text" class="form-control b-drawing remove-class" id="txtBDrawingNo" name="b_drawing_no" readonly>
+                                <input type="text" class="form-control b-drawing remove-class" id="txtBDrawingRevision" name="b_drawing_revision" readonly>
                             </div>
-                            <input type="text" class="form-control" id="txtBDrawing" name="b_drawing" readonly>
-                            <input type="text" class="form-control" id="txtBDrawingNo" name="b_drawing_no" readonly>
-                            <input type="text" class="form-control" id="txtBDrawingRevision" name="b_drawing_revision" readonly>
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend w-25">
+                                    <button type="button" class="btn btn-dark" id="btnViewUdDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <span class="input-group-text w-100 ud-drawing remove-class"><strong>UD Drawing</strong></span>
+                                </div>
+                                <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawing" name="ud_drawing" readonly>
+                                <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawingNo" name="ud_drawing_no" readonly>
+                                <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawingRevision" name="ud_drawing_revision" readonly>
+                            </div>
+    
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend w-25">
+                                    <button type="button" class="btn btn-dark" id="btnViewInspStdDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <span class="input-group-text w-100 is-drawing remove-class"><strong>Insp. Std Drawing</strong></span>
+                                </div>
+                                <input type="text" class="form-control is-drawing remove-class" id="txtInspStdDrawing" name="insp_std_drawing" readonly>
+                                <input type="text" class="form-control is-drawing remove-class" id="txtInspStdDrawingNo" name="insp_std_drawing_no" readonly>
+                                <input type="text" class="form-control is-drawing remove-class" id="txtInspStdDrawingRevision" name="insp_std_drawing_revision" readonly>
+                            </div>
+                            <div class="d-flex justify-content-end border-top">
+                                <button type="button" class="btn btn-dark w-25 mt-3 mr-3 float-right" id="oqcInspectionNextButton"> Next <i class="fas fa-arrow-circle-right"></i></button>
+                            </div>
                         </div>
 
                         <div class="modal-body viewDrawingFirst d-none p-4">
@@ -493,15 +524,15 @@
                         </div>
 
                         <div class="col-12 input-group viewDrawingFirst d-none py-3 border-top">
-                            <div class="col-2">
+                            <div class="col-6">
                                 <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                             </div>
-                            <div class="col-3"></div><div class="col-3"></div><div class="col-4">
-                                <button id="btnOqcInspectionSaveAsDraft" class="btn btn-info"><i 
-                                    class="fa fa-check"></i> Save as draft
+                            <div class="col-6 gap-2 d-flex justify-content-end">
+                                <button id="btnOqcInspectionSaveAsDraft" class="btn btn-info">
+                                    <i class="fab fa-firstdraft"></i> Save as draft
                                 </button>
-                                <button type="submit" id="btnOqcInspection" class="btn btn-dark ml-3"><i 
-                                    id="iBtnOqcInspectionIcon" class="fa fa-check"></i> Save
+                                <button type="submit" id="btnOqcInspection w-50" class="btn btn-dark">
+                                    <i id="iBtnOqcInspectionIcon" class="fa fa-save"></i> Save
                                 </button>
                             </div>
                         </div>
@@ -596,23 +627,9 @@
                 GetInspectionLevel($('.inspectionLevelDropdown'))
                 GetSeverityInspection($('.severityInspectionDropdown'))
 
-                // $('.select2bs4').select2({
-                //     theme: 'bootstrap-5'
-                // });
-
-                $('#smartwizard').smartWizard({
-                    selected        :   0,
-                    theme           :   'arrows',
-                    transitionEffect:   'fade',
-                    autoAdjustHeight:   true,
-                    showStepURLhash :   false,
-                    keyNavigation   :   false,
-                    // anchorSettings  : {
-                    //     enableAllAnchors: true, 
-                    //     markDoneStep: true,
-                    // },
-                });
-                
+                $('.select2bs4').select2({
+                    theme: 'bootstrap-5'
+                });                
 
                 // ======================= START DATA TABLE =======================
                 dataTableOQCInspection = $("#tblOqcInspection").DataTable({
@@ -727,12 +744,47 @@
                     $('#txtOqcInspectionId').val(getOqcId)
                     $('#modalOqcInspection').modal('show')
                 });
-                
-                $('#btnViewRDrawings').click(function (e) { 
-                    e.preventDefault();
-                    window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+$('#txtBDrawingNo').val())
-                    $('.viewDrawingFirst').removeClass('d-none')
-                    $('.drawing').addClass('d-none')
+
+                // $('#btnViewRDrawings').click(function (e) { 
+                //     e.preventDefault();
+                //     window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+$('#txtBDrawingNo').val())
+                //     $('.viewDrawingFirst').removeClass('d-none')
+                //     $('.drawing').addClass('d-none')
+                // });
+
+                $('#btnViewRDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtBDrawingNo').val(), 0);
+                    SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white');
+                });
+                $('#btnViewUdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtUdDrawingNo').val(), 1);
+                    SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white');
+                });
+                $('#btnViewInspStdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtInspStdDrawingNo').val(), 2);
+                    SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white');
+                });
+
+                $('#oqcInspectionNextButton').on('click', function(){
+                    let checkDrawings = false
+                    let drawingId = ['txtBDrawing','txtUdDrawing','txtInspStdDrawing'];
+
+                    for (var i = 0; i < drawingId.length; i++) {
+                        let drawings = $('#' + drawingId[i]).val();
+                        if ( drawings != 'N/A' && drawings != ''){
+                            if( checkedDrawCount[i] == 0 ){
+                                checkDrawings = true
+                            }
+                        }
+                    }
+
+                    if(checkDrawings){
+                        alert('Please check all drawings first.')
+                    }else{
+                        $('.viewDrawingFirst').removeClass('d-none')
+                        $('.drawing').addClass('d-none')
+                        console.log('All Documents has been viewed!');
+                    }
                 });
 
                 $('#modalOqcInspection').on('hide.bs.modal', function() {
@@ -741,6 +793,8 @@
                     $('#txtScanQrCode').addClass('d-none')
                     $('.viewDrawingFirst').addClass('d-none')
                     $('.drawing').removeClass('d-none')
+                    checkedDrawCount = [0,0,0]
+                    $(`.remove-class`).removeClass('bg-success-custom font-weight-bold text-white');
                     dataTableOQCInspection.draw()
                 });
 
@@ -801,7 +855,6 @@
 
                     $('#txtReelLotCounter').val(reelLotCounter)
                     $('#divReelLotFields').append(html)
-
                 });
                 // ================== SCRIPT FOR REMOVE REEL LOT ======================
                 $("#btnRemoveReelLot").on('click', function(e){
@@ -881,16 +934,17 @@
                     ScanUserById()
                 });
 
+                $('#btnOqcInspection').click(function (irror) { 
+                    irror.preventDefault();
+                    console.log('Save as done')
+                    $('#txtStatus').val('')
+                    $('#mdlScanQrCode').modal('show')
+                    ScanUserById()
+                });
+
                 $('#formOqcInspection').submit(function (e) { 
                     e.preventDefault()
                     console.log('Save OQC Inspection')
-
-                    $('#btnOqcInspection').click(function (irror) { 
-                        irror.preventDefault();
-                        console.log('Save as done')
-                        $('#txtStatus').val('')
-                        $('#mdlScanQrCode').modal('show')
-                    });
                     ScanUserById()
                 });
 

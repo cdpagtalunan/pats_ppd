@@ -89,14 +89,23 @@
                         <li class="nav-header mt-3">PRODUCTION</li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
-                                <i class="fa-solid fa-box-open"></i>
-                                <p> First Stamping </p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"></i>
+                                {{-- <i class="fa-solid fa-box-open"></i> --}}
+                                <i class="fa-solid fa-stamp"></i>
+                                <p> Stamping </p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"></i>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('first_stamping_prod') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Production</p>
+                                        <p>1st Stamping</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('second_stamping_prod') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>2nd Stamping</p>
                                     </a>
                                 </li>
                             </ul>
