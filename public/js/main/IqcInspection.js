@@ -1,5 +1,6 @@
 const tbl = {
-    iqcInspection:'#tblIqcInspection'
+    iqcInspection:'#tblIqcInspection',
+    iqcInspected:'#tblIqcInspected'
 };
 const dt = {
     iqcInspection:'',
@@ -78,8 +79,9 @@ const getWhsTransactionById = function (whs_transaction_id) {
                 form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-
             }else{
+                form.iqcInspection.find('#target_lar').val(response[0]['target_lar']);
+                form.iqcInspection.find('#target_dppm').val(response[0]['target_dppm']);
                 form.iqcInspection.find('#app_no').val(response[0]['app_no']);
                 form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
                 form.iqcInspection.find('#time_ins_from').val(response[0]['time_ins_from']);
@@ -115,8 +117,6 @@ const getWhsTransactionById = function (whs_transaction_id) {
             form.iqcInspection.find('#inspector').val(response[0]['inspector']).trigger('change');
             form.iqcInspection.find('#submission').val(response[0]['submission']);
             form.iqcInspection.find('#category').val(response[0]['category']);
-            form.iqcInspection.find('#target_lar').val(response[0]['target_lar']);
-            form.iqcInspection.find('#target_dppm').val(response[0]['target_dppm']);
             form.iqcInspection.find('#sampling_size').val(response[0]['sampling_size']);
             form.iqcInspection.find('#no_of_defects').val(response[0]['no_of_defects']);
             form.iqcInspection.find('#lot_inspected').val(response[0]['lot_inspected']);
@@ -124,12 +124,11 @@ const getWhsTransactionById = function (whs_transaction_id) {
             form.iqcInspection.find('#judgement').val(response[0]['judgement']);
             form.iqcInspection.find('#remarks').val(response[0]['remarks']);
             form.iqcInspection.find('#iqc_coc_file').val('');
-
+            console.log('target_lar',response[0]);
             setTimeout(() => {
                 form.iqcInspection.find('#family').val(response[0]['family']).trigger("change");
                 form.iqcInspection.find('#inspection_lvl').val(response[0]['inspection_lvl']).trigger("change");
                 form.iqcInspection.find('#aql').val(response[0]['aql']).trigger("change");
-
             }, 300);
 
             console.log(iqcInspectionsMods);
@@ -291,6 +290,7 @@ const saveIqcInspection = function (){
             if (response['result'] === 1){
                 $('#modalSaveIqcInspection').modal('hide');
                 dt.iqcInspection.draw();
+                dt.iqcInspected.draw();
                 Swal.fire({
                     position: "center",
                     icon: "success",

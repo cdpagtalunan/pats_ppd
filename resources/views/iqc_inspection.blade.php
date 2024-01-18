@@ -68,32 +68,75 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <br><br>
-                                    <div class="table-responsive">
-                                        <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                        <table id="tblIqcInspection" class="table table-sm table-bordered table-striped table-hover"
-                                            style="width: 100%;">
-                                            <thead>
-                                                <tr>
-                                                    <th><center><i  class="fa fa-cog"></i></center></th>
-                                                    <th>Status</th>
-                                                    {{-- <th>Date Inspected</th> --}}
-                                                    {{-- <th>Time Inspected</th> --}}
-                                                    {{-- <th>App Ctrl No.</th> --}}
-                                                    <th>Invoice No.</th>
-                                                    {{-- <th>Classification</th> --}}
-                                                    {{-- <th>Family</th> --}}
-                                                    {{-- <th>Category</th> --}}
-                                                    <th>Supplier</th>
-                                                    <th>Part Code</th>
-                                                    <th>Part Name</th>
-                                                    <th>Lot No.</th>
-                                                    {{-- <th>Lot Qty.</th> --}}
-                                                    {{-- <th>Total Lot Size</th> --}}
-                                                    {{-- <th>AQL</th> --}}
-                                                    <th>Date Created</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
+                                    {{-- TABS --}}
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">On-going</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Inspected</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        {{-- Pending Tab --}}
+                                        <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
+                                            <div class="table-responsive">
+                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                <table id="tblIqcInspection" class="table table-sm table-bordered table-striped table-hover"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                            <th>Status</th>
+                                                            {{-- <th>Date Inspected</th> --}}
+                                                            {{-- <th>Time Inspected</th> --}}
+                                                            {{-- <th>App Ctrl No.</th> --}}
+                                                            <th>Invoice No.</th>
+                                                            {{-- <th>Classification</th> --}}
+                                                            {{-- <th>Family</th> --}}
+                                                            {{-- <th>Category</th> --}}
+                                                            <th>Supplier</th>
+                                                            <th>Part Code</th>
+                                                            <th>Part Name</th>
+                                                            <th>Lot No.</th>
+                                                            {{-- <th>Lot Qty.</th> --}}
+                                                            {{-- <th>Total Lot Size</th> --}}
+                                                            {{-- <th>AQL</th> --}}
+                                                            <th>Date Created</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="menu2" role="tabpanel" aria-labelledby="menu2-tab">
+                                            <div class="table-responsive">
+                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
+                                                <table id="tblIqcInspected" class="table table-sm table-bordered table-striped table-hover"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th><center><i  class="fa fa-cog"></i></center></th>
+                                                            <th>Status</th>
+                                                            <th>Date Inspected</th>
+                                                            <th>Time Inspected</th>
+                                                            {{-- <th>App Ctrl No.</th> --}}
+                                                            <th>Invoice No.</th>
+                                                            {{-- <th>Classification</th> --}}
+                                                            {{-- <th>Family</th> --}}
+                                                            {{-- <th>Category</th> --}}
+                                                            <th>Supplier</th>
+                                                            <th>Part Code</th>
+                                                            <th>Part Name</th>
+                                                            <th>Lot No.</th>
+                                                            <th>Lot Qty.</th>
+                                                            {{-- <th>AQL</th> --}}
+                                                            <th>Date Created</th>
+                                                            <th>Date Updated</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -546,9 +589,6 @@
                         "serverSide" : true,
                         "ajax" : {
                             url: "load_whs_transaction",
-                            data: function (param){
-                                param.status = $("#selEmpStat").val();
-                            }
                         },
                         fixedHeader: true,
                         "columns":[
@@ -564,34 +604,40 @@
 
                         ],
                 });
-                // dt.iqcInspected = $(tbl.iqcInspection).DataTable({
-                //         "processing" : true,
-                //         "serverSide" : true,
-                //         "ajax" : {
-                //             url: "load_iqc_inspection",
-                //             data: function (param){
-                //                 param.status = $("#selEmpStat").val();
-                //             }
-                //         },
-                //         fixedHeader: true,
-                //         "columns":[
-                //             { "data" : "action", orderable:false, searchable:false },
-                //             { "data" : "status", orderable:false, searchable:false },
-                //             { "data" : "InvoiceNo" },
-                //             { "data" : "Supplier" },
-                //             { "data" : "PartNumber" },
-                //             { "data" : "MaterialType" },
-                //             { "data" : "Lot_number" },
-                //             { "data" : "whs_transaction_lastupdate" },
-                //         ],
-                // });
-
-                $(tbl.iqcInspection).on('click','#btnEditIqcInspection', function () {
+                console.log(tbl.iqcInspected);
+                dt.iqcInspected = $(tbl.iqcInspected).DataTable({
+                        "processing" : true,
+                        "serverSide" : true,
+                        "ajax" : {
+                            url: "load_iqc_inspection",
+                        },
+                        fixedHeader: true,
+                        "columns":[
+                            { "data" : "action", orderable:false, searchable:false },
+                            { "data" : "status", orderable:false, searchable:false },
+                            { "data" : "date_inspected" },
+                            { "data" : "time_inspected" }, //
+                            { "data" : "supplier" },
+                            // { "data" : "app_ctr_no" }, //
+                            // { "data" : "classification" },//
+                            // { "data" : "family" },//
+                            // { "data" : "category" },//
+                            { "data" : "supplier" },
+                            { "data" : "partcode" },
+                            { "data" : "partname" },
+                            { "data" : "lot_no" },
+                            { "data" : "total_lot_qty" },
+                            // { "data" : "aql" }, //
+                            { "data" : "created_at" },
+                            { "data" : "updated_at" },
+                        ],
+                });
+                const editIqcInspection = function () {
                     let whs_transaction_id = $(this).attr('whs-trasaction-id')
-
                     let arr_data = {
                         'whs_transaction_id': whs_transaction_id
                     }
+                    console.log(whs_transaction_id);
                     getWhsTransactionById(whs_transaction_id);
                     getFamily();
                     getAql();
@@ -608,7 +654,9 @@
                     /*Upload and Download file*/
                     $('#isUploadCoc').prop('checked',false);
                     form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
-                });
+                }
+                $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editIqcInspection);
+                $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
                 $('#btnLotNo').click(function (e) {
                     e.preventDefault();
@@ -713,7 +761,8 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    $('#modalScanQRSave').modal('show');
+                    saveIqcInspection();
+                    // $('#modalScanQRSave').modal('show');
                 });
             });
 
