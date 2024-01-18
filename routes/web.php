@@ -49,16 +49,18 @@ Route::view('/materialprocess','materialprocess')->name('materialprocess');
 Route::view('/process','process')->name('process');
 
 /* MIGZ IQC INSPECTION VIEW */
-Route::view('/iqc_inspection','iqc_inspection')->name('iqc_inspection');
-
+Route::view('/first_stamping_iqc_inspection','first_stamping_iqc_inspection')->name('first_stamping_iqc_inspection');
+Route::view('/second_stamping_iqc_inspection','second_stamping_iqc_inspection')->name('second_stamping_iqc_inspection');
 
 // Route::post('/edit_user_authentication', [UserController::class, 'editUserAuthentication'])->name('edit_user_authentication');
 
 // * STAMPING VIEW
 Route::view('/first_stamping_prod','first_stamping_prod')->name('first_stamping_prod');
 
-// * STAMPING VIEW - IPQC Inspectin */
+/* STAMPING VIEW - IPQC Inspectin */
 Route::view('/ipqc_inspection','ipqc_inspection')->name('ipqc_inspection');
+
+
 
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');

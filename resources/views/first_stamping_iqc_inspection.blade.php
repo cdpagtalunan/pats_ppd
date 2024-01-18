@@ -61,9 +61,9 @@
                         <!-- left column -->
                         <div class="col-12">
                             <!-- general form elements -->
-                            <div class="card card-dark">
+                            <div class="card card-primary">
                                 <div class="card-header">
-                                    <h3 class="card-title">IQC Inspection Table</h3>
+                                    <h3 class="card-title">1st Stamping Table</h3>
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
@@ -91,7 +91,6 @@
                                                             {{-- <th>Date Inspected</th> --}}
                                                             {{-- <th>Time Inspected</th> --}}
                                                             {{-- <th>App Ctrl No.</th> --}}
-                                                            <th>Invoice No.</th>
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
                                                             {{-- <th>Category</th> --}}
@@ -102,7 +101,6 @@
                                                             {{-- <th>Lot Qty.</th> --}}
                                                             {{-- <th>Total Lot Size</th> --}}
                                                             {{-- <th>AQL</th> --}}
-                                                            <th>Date Created</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -120,7 +118,6 @@
                                                             <th>Date Inspected</th>
                                                             <th>Time Inspected</th>
                                                             {{-- <th>App Ctrl No.</th> --}}
-                                                            <th>Invoice No.</th>
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
                                                             {{-- <th>Category</th> --}}
@@ -575,7 +572,6 @@
         <script type="text/javascript">
             $(document).ready(function () {
 
-                
                 /**
                     *TODO: Get data only for Applied Inspection
                     *TODO: Save Data
@@ -585,53 +581,26 @@
                     *TODO: No of Defects based on MOD total qty
                 */
                 dt.iqcInspection = $(tbl.iqcInspection).DataTable({
-                        "processing" : true,
-                        "serverSide" : true,
-                        "ajax" : {
-                            url: "load_whs_transaction",
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_whs_transaction",
+                        data: function (param){
+                            param.firstStamping = "true" //DT for 1st Stamping
                         },
-                        fixedHeader: true,
-                        "columns":[
+                    },
+                    fixedHeader: true,
+                    "columns":[
 
-                            { "data" : "action", orderable:false, searchable:false },
-                            { "data" : "status", orderable:false, searchable:false },
-                            { "data" : "InvoiceNo" },
-                            { "data" : "Supplier" },
-                            { "data" : "PartNumber" },
-                            { "data" : "MaterialType" },
-                            { "data" : "Lot_number" },
-                            { "data" : "whs_transaction_lastupdate" },
-
-                        ],
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status", orderable:false, searchable:false },
+                        { "data" : "Supplier" },
+                        { "data" : "PartNumber" },
+                        { "data" : "MaterialType" },
+                        { "data" : "Lot_number" },
+                    ],
                 });
-                console.log(tbl.iqcInspected);
-                dt.iqcInspected = $(tbl.iqcInspected).DataTable({
-                        "processing" : true,
-                        "serverSide" : true,
-                        "ajax" : {
-                            url: "load_iqc_inspection",
-                        },
-                        fixedHeader: true,
-                        "columns":[
-                            { "data" : "action", orderable:false, searchable:false },
-                            { "data" : "status", orderable:false, searchable:false },
-                            { "data" : "date_inspected" },
-                            { "data" : "time_inspected" }, //
-                            { "data" : "supplier" },
-                            // { "data" : "app_ctr_no" }, //
-                            // { "data" : "classification" },//
-                            // { "data" : "family" },//
-                            // { "data" : "category" },//
-                            { "data" : "supplier" },
-                            { "data" : "partcode" },
-                            { "data" : "partname" },
-                            { "data" : "lot_no" },
-                            { "data" : "total_lot_qty" },
-                            // { "data" : "aql" }, //
-                            { "data" : "created_at" },
-                            { "data" : "updated_at" },
-                        ],
-                });
+                
                 const editIqcInspection = function () {
                     let whs_transaction_id = $(this).attr('whs-trasaction-id')
                     let arr_data = {

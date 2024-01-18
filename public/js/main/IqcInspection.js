@@ -30,6 +30,34 @@ const arrTableMod = {
     lotQty : []
 };
 
+dt.iqcInspected = $(tbl.iqcInspected).DataTable({
+    "processing" : true,
+    "serverSide" : true,
+    "ajax" : {
+        url: "load_iqc_inspection",
+    },
+    fixedHeader: true,
+    "columns":[
+        { "data" : "action", orderable:false, searchable:false },
+        { "data" : "status", orderable:false, searchable:false },
+        { "data" : "date_inspected" },
+        { "data" : "time_inspected" }, //
+        { "data" : "supplier" },
+        // { "data" : "app_ctr_no" }, //
+        // { "data" : "classification" },//
+        // { "data" : "family" },//
+        // { "data" : "category" },//
+        { "data" : "supplier" },
+        { "data" : "partcode" },
+        { "data" : "partname" },
+        { "data" : "lot_no" },
+        { "data" : "total_lot_qty" },
+        // { "data" : "aql" }, //
+        { "data" : "created_at" },
+        { "data" : "updated_at" },
+    ],
+});
+// alert('dasd')
 const getFamily = function () {
     $.ajax({
         url: "get_family",

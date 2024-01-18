@@ -21,24 +21,36 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
-    public function loadWhsTransaction(){
+    public function loadWhsTransaction(Request $request){
 
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
         */
-        $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-        ->select('
-            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
-            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
-            whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            FROM tbl_WarehouseTransaction whs_transaction
-            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-            WHERE whs_transaction.inspection_class = 0
-            ORDER BY whs.PartNumber DESC
-        ');
-
-        // return $merge_table = $atks->toBase()->merge($subcon);
-
+        if($request->firstStamping == "true"){
+            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+            ->select('
+                SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
+                FROM tbl_WarehouseTransaction whs_transaction
+                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                WHERE whs_transaction.inspection_class = 0
+                ORDER BY whs.PartNumber DESC
+            ');
+            /*
+                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs.*
+                SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
+                whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
+                whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
+            */
+        }else{
+            $tbl_whs_trasanction = DB::connection('mysql')
+            ->select('
+                SELECT id as "whs_transaction_id",supplier_name as "Supplier",part_code as "PartNumber",
+                        mat_name as"MaterialType",supplier_lot_no as "Lot_number"
+                FROM receiving_details
+                WHERE status = 1
+                ORDER BY created_at DESC
+            ');
+        }
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
@@ -50,36 +62,12 @@ class IqcInspectionController extends Controller
         ->addColumn('status', function($row){
             $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
             $result = '';
-            $backgound = '';
-            $judgement = '';
             $result .= '<center>';
-
-            if( count($iqc_inspection_by_whs_trasaction_id) != 0 ){
-                foreach ($iqc_inspection_by_whs_trasaction_id as $key => $value){
-                    switch ($value['judgement']) {
-                        case 1:
-                            $judgement = 'Accepted';
-                            $backgound = 'bg-success';
-
-                            break;
-                        case 2:
-                            $judgement = 'Reject';
-                            $backgound = 'bg-danger';
-                            break;
-
-                        default:
-                            $judgement = 'On-going';
-                            $backgound = 'bg-primary';
-                            break;
-                    }
-                }
-                $result .= '<span class="badge rounded-pill '.$backgound.' ">'.$judgement.'</span>';
-            }else{
-                $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
-            }
+            $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
             $result .= '</center>';
             return $result;
         })
+        
         ->rawColumns(['action','status'])
         ->make(true);
         /*
@@ -98,9 +86,8 @@ class IqcInspectionController extends Controller
             Lot_number
         */
     }
+
     public function loadIqcInspection(){
-        // return TblWarehouseTransaction::select('*')->limit(10)->get();
-        // return TblWarehouse::select('*')->limit(10)->get();
         /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
             NOTE: If the data exist to iqc_inspections it means the data is already inspected
         */
