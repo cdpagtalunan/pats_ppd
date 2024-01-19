@@ -51,7 +51,10 @@ Route::view('/materialprocess','materialprocess')->name('materialprocess');
 Route::view('/process','process')->name('process');
 
 /* MIGZ IQC INSPECTION VIEW */
-Route::view('/iqc_inspection','iqc_inspection')->name('iqc_inspection');
+
+Route::view('/first_stamping_iqc_inspection','first_stamping_iqc_inspection')->name('first_stamping_iqc_inspection');
+Route::view('/second_stamping_iqc_inspection','second_stamping_iqc_inspection')->name('second_stamping_iqc_inspection');
+
 
 // Route::post('/edit_user_authentication', [UserController::class, 'editUserAuthentication'])->name('edit_user_authentication');
 
@@ -59,8 +62,10 @@ Route::view('/iqc_inspection','iqc_inspection')->name('iqc_inspection');
 Route::view('/first_stamping_prod','first_stamping_prod')->name('first_stamping_prod');
 Route::view('/second_stamping_prod','second_stamping_prod')->name('second_stamping_prod');
 
-// * STAMPING VIEW - IPQC Inspectin */
+/* STAMPING VIEW - IPQC Inspectin */
 Route::view('/ipqc_inspection','ipqc_inspection')->name('ipqc_inspection');
+
+
 
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');
@@ -176,9 +181,12 @@ Route::controller(PdfController::class)->group(function () {
 
 //IQC Inspection
 Route::controller(IqcInspectionController::class)->group(function () {
+    Route::get('/load_iqc_inspection', 'loadIqcInspection')->name('load_iqc_inspection');
     Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
+    Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
     Route::get('/get_whs_transaction_by_id', 'getWhsTransactionById')->name('get_whs_transaction_by_id');
+    Route::get('/get_whs_details_by_id', 'getWhsDetailsById')->name('get_whs_details_by_id');
     Route::get('/get_family', 'getFamily')->name('get_family');
     Route::get('/get_inspection_level', 'getInspectionLevel')->name('get_inspection_level');
     Route::get('/get_aql', 'getAql')->name('get_aql');
@@ -187,9 +195,6 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
-    //http://192.168.3.246/pmi-subsystem/iqcdbgetitemdetails
-    //http://192.168.3.246/pmi-subsystem/iqcdbgetongoing
-
 
 });
 

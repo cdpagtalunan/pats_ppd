@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use App\Models\IqcInspectionsMod;
+use App\Models\TblWarehouseTransaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class IqcInspection extends Model
 {
     use HasFactory;
+    protected $connection = 'mysql';
+
     protected $table = 'iqc_inspections';
 
     protected $fillable = [

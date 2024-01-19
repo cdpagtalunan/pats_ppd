@@ -6,9 +6,9 @@ use DataTables;
 use App\Models\TblWarehouse;
 use Illuminate\Http\Request;
 use App\Models\IqcInspection;
+use App\Models\IqcInspectionsMod;
 use App\Models\DropdownIqcAql;
 use App\Models\DropdownIqcFamily;
-use App\Models\IqcInspectionsMod;
 use Illuminate\Support\Facades\DB;
 use App\Models\DropdownIqcTargetLar;
 use Maatwebsite\Excel\Facades\Excel;
@@ -21,25 +21,23 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
+
     public function getIqcInspectionByJudgement(Request $request){
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
     }
     public function loadWhsTransaction(){
-        // return TblWarehouseTransaction::select('*')->limit(10)->get();
-        // return TblWarehouse::select('*')->limit(10)->get();
-
+        /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
+            Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
+        */
         $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-        ->select('
-            SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
-            whs_transaction.LastUpdate as "whs_transaction_lastupdate",whs_transaction.inspection_class,
-            whs.*,whs.id as "whs_id",whs.Username as "whs_username",whs.LastUpdate as "whs_lastupdate"
-            FROM tbl_WarehouseTransaction whs_transaction
-            INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-            WHERE whs_transaction.inspection_class = 0
-            ORDER BY whs.PartNumber DESC
-            LIMIT 0,100
+            ->select('
+                SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
+                FROM tbl_WarehouseTransaction whs_transaction
+                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                WHERE whs_transaction.inspection_class = 0
+                ORDER BY whs.PartNumber DESC
         ');
-
+        
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
@@ -48,6 +46,96 @@ class IqcInspectionController extends Controller
             $result .= '</center>';
             return $result;
         })
+        ->addColumn('status', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+            $result .= '</center>';
+            return $result;
+        })
+        ->rawColumns(['action','status'])
+        ->make(true);
+        /*
+            InvoiceNo
+            whs_transaction_username,whs_username
+            whs_transaction_lastupdate,whs_lastupdate
+            whs_transaction_lastupdate,whs_lastupdate
+            *Inspection Times*
+            *Application Ctrl. No*
+            *FY#*
+            *WW#*
+            *Sub*
+            PartNumber
+            ProductLine,MaterialType
+            Supplier
+            Lot_number
+        */
+    }
+    public function loadWhsDetails(Request $request){
+
+        $tbl_whs_trasanction = DB::connection('mysql')
+        ->select('
+            SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
+                    mat_name as"MaterialType",supplier_lot_no as "Lot_number"
+            FROM receiving_details
+            WHERE status = 1
+            ORDER BY created_at DESC
+        ');
+        return DataTables::of($tbl_whs_trasanction)
+        ->addColumn('action', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= '</center>';
+            return $result;
+        })
+        ->addColumn('status', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+            $result .= '</center>';
+            return $result;
+        })
+        ->rawColumns(['action','status'])
+        ->make(true);
+        /*
+            InvoiceNo
+            whs_transaction_username,whs_username
+            whs_transaction_lastupdate,whs_lastupdate
+            whs_transaction_lastupdate,whs_lastupdate
+            *Inspection Times*
+            *Application Ctrl. No*
+            *FY#*
+            *WW#*
+            *Sub*
+            PartNumber
+            ProductLine,MaterialType
+            Supplier
+            Lot_number
+        */
+    }
+
+    public function loadIqcInspection(){
+        /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
+            NOTE: If the data exist to iqc_inspections it means the data is already inspected
+        */
+        $tbl_iqc_inspected = DB::connection('mysql')
+        ->select('
+            SELECT *
+            FROM iqc_inspections
+            WHERE deleted_at IS NULL AND judgement >= 1
+            ORDER BY created_at DESC
+        ');
+
+        return DataTables::of($tbl_iqc_inspected)
+        ->addColumn('action', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= '</center>';
+            return $result;
+        })
+        
         ->addColumn('status', function($row){
             $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
             $result = '';
@@ -81,7 +169,14 @@ class IqcInspectionController extends Controller
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['action','status'])
+        ->addColumn('time_inspected', function($row){
+            $result = '';
+            $result .= '<center>';
+            $result .= $row->time_ins_from.'-'.$row->time_ins_to;
+            $result .= '</center>';
+            return $result;
+        })
+        ->rawColumns(['action','status','time_inspected'])
         ->make(true);
         /*
             InvoiceNo
@@ -123,6 +218,12 @@ class IqcInspectionController extends Controller
                 LIMIT 0,1
             ');
         }
+    }
+
+    public function getWhsDetailsById(Request $request){
+        return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
+            ->where('whs_transaction_id',$request->whs_transaction_id)
+            ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
     }
 
     public function getFamily(){
@@ -233,6 +334,8 @@ class IqcInspectionController extends Controller
 
                 ]);
                 $iqc_inspections_id = $create_iqc_inspection->id;
+
+            
             }
             /* Uploading of file if checked & iqc_coc_file is exist*/
             if(isset($request->iqc_coc_file) ){
@@ -268,6 +371,12 @@ class IqcInspectionController extends Controller
                     ]);
                 }
             }
+            /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
+            TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
+            ->update([
+                'inspection_class' => 3,
+            ]);
+
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
             throw $th;
