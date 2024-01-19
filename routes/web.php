@@ -167,6 +167,7 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
     Route::get('/load_whs_details', 'loadWhsDetails')->name('load_whs_details');
     Route::get('/get_whs_transaction_by_id', 'getWhsTransactionById')->name('get_whs_transaction_by_id');
+    Route::get('/get_whs_details_by_id', 'getWhsDetailsById')->name('get_whs_details_by_id');
     Route::get('/get_family', 'getFamily')->name('get_family');
     Route::get('/get_inspection_level', 'getInspectionLevel')->name('get_inspection_level');
     Route::get('/get_aql', 'getAql')->name('get_aql');

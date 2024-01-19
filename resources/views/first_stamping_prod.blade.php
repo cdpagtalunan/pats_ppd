@@ -426,6 +426,9 @@
                     "serverSide" : true,
                     "ajax" : {
                         url: "view_first_stamp_prod",
+                         data: function (param){
+                            param.po = $("#txtSearchPONum").val();
+                        }
                     },
                     fixedHeader: true,
                     "columns":[

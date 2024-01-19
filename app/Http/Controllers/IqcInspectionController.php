@@ -44,7 +44,6 @@ class IqcInspectionController extends Controller
             return $result;
         })
         ->addColumn('status', function($row){
-            $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
             $result = '';
             $result .= '<center>';
             $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
@@ -70,10 +69,10 @@ class IqcInspectionController extends Controller
         */
     }
     public function loadWhsDetails(Request $request){
-        
+
         $tbl_whs_trasanction = DB::connection('mysql')
         ->select('
-            SELECT id as "whs_transaction_id",supplier_name as "Supplier",part_code as "PartNumber",
+            SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
                     mat_name as"MaterialType",supplier_lot_no as "Lot_number"
             FROM receiving_details
             WHERE status = 1
@@ -83,12 +82,11 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
         ->addColumn('status', function($row){
-            $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
             $result = '';
             $result .= '<center>';
             $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
@@ -123,6 +121,7 @@ class IqcInspectionController extends Controller
             SELECT *
             FROM iqc_inspections
             WHERE deleted_at IS NULL AND judgement >= 1
+            ORDER BY created_at DESC
         ');
 
         return DataTables::of($tbl_iqc_inspected)
@@ -216,6 +215,12 @@ class IqcInspectionController extends Controller
                 LIMIT 0,1
             ');
         }
+    }
+
+    public function getWhsDetailsById(Request $request){
+        return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
+            ->where('whs_transaction_id',$request->whs_transaction_id)
+            ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
 
     }
 

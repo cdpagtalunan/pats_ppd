@@ -82,7 +82,7 @@
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
                                             <div class="table-responsive">
                                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                <table id="tblIqcInspection" class="table table-sm table-bordered table-striped table-hover"
+                                                <table id="tblWhsDetails" class="table table-sm table-bordered table-striped table-hover"
                                                     style="width: 100%;">
                                                     <thead>
                                                         <tr>
@@ -118,7 +118,6 @@
                                                             <th>Date Inspected</th>
                                                             <th>Time Inspected</th>
                                                             {{-- <th>App Ctrl No.</th> --}}
-                                                            <th>Invoice No.</th>
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
                                                             {{-- <th>Category</th> --}}
@@ -158,13 +157,19 @@
                     <form method="post" id="formSaveIqcInspection" autocomplete="off">
                         @csrf
                         <div class="modal-body">
-                            <div class="row d-none">
+                            <div class="row">
                                 <div class="col-sm-6 mt-3">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">WHS ID</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="whs_transaction_id" name="whs_transaction_id">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">WHS Details</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="whs_detail_id" name="whs_detail_id">
                                     </div>
                                 </div>
                                 <div class="col-sm-6 mt-3">
@@ -566,14 +571,10 @@
                 </div>
             </div>
         </div>
-
     @endsection
-
     @section('js_content')
         <script type="text/javascript">
             $(document).ready(function () {
-
-                
                 /**
                     *TODO: Get data only for Applied Inspection
                     *TODO: Save Data
@@ -582,7 +583,8 @@
                     *TODO: Lot Number and QTY
                     *TODO: No of Defects based on MOD total qty
                 */
-                dt.iqcInspection = $(tbl.iqcInspection).DataTable({
+               console.log(dataTable);
+               dataTable.iqcWshDetails = $(tbl.iqcWhsDetails).DataTable({
                         "processing" : true,
                         "serverSide" : true,
                         "ajax" : {
@@ -603,11 +605,8 @@
             
                 const editIqcInspection = function () {
                     let whs_transaction_id = $(this).attr('whs-trasaction-id')
-                    let arr_data = {
-                        'whs_transaction_id': whs_transaction_id
-                    }
-                    console.log(whs_transaction_id);
-                    getWhsTransactionById(whs_transaction_id);
+                
+                    getWhsDetailsById(whs_transaction_id);
                     getFamily();
                     getAql();
                     getInspectionLevel();
@@ -624,7 +623,8 @@
                     $('#isUploadCoc').prop('checked',false);
                     form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
                 }
-                $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editIqcInspection);
+
+                $(tbl.iqcWhsDetails).on('click','#btnEditIqcInspection', editIqcInspection);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
                 $('#btnLotNo').click(function (e) {

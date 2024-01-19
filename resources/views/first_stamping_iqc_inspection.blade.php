@@ -580,7 +580,8 @@
                     *TODO: Lot Number and QTY
                     *TODO: No of Defects based on MOD total qty
                 */
-                dt.iqcInspection = $(tbl.iqcInspection).DataTable({
+               console.log(dataTable);
+               dataTable.iqcInspection = $(tbl.iqcInspection).DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
@@ -591,7 +592,6 @@
                     },
                     fixedHeader: true,
                     "columns":[
-
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status", orderable:false, searchable:false },
                         { "data" : "Supplier" },
@@ -600,6 +600,15 @@
                         { "data" : "Lot_number" },
                     ],
                 });
+                // $.ajax({
+                //     type: "GET",
+                //     url: "load_iqc_inspection",
+                //     data: "data",
+                //     dataType: "JSON",
+                //     success: function (response) {
+                //         console.log(response);
+                //     }
+                // });
                 
                 const editIqcInspection = function () {
                     let whs_transaction_id = $(this).attr('whs-trasaction-id')
