@@ -1,6 +1,6 @@
 checkedDrawCount = [0,0,0]
 function redirect_to_drawing(drawing, index) {
-    console.log('Drawing No.:',drawing);
+    console.log('Drawing No.:',drawing)
     if( drawing  == 'N/A'){
         alert('No Document Required')
     }
@@ -8,12 +8,23 @@ function redirect_to_drawing(drawing, index) {
         window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
         checkedDrawCount[index] = 1
     }
-    console.log('Check View Document:', checkedDrawCount);
+    console.log('Check View Document:', checkedDrawCount)
 }
 
 function SetClassRemove(elementId, value){
-    $(`.${elementId}`).removeClass('btn-dark');
-    $(`.${elementId}`).addClass(`${value}`);
+    $(`.${elementId}`).removeClass('btn-dark')
+    $(`.${elementId}`).addClass(`${value}`)
+}
+
+function defectiveCounts(){
+    // $('.defectiveCount').on('change', function () {
+        $('.defectiveCount').on('keyup', function () {
+            $('.defectiveCount').each(function (indexInArray, valueOfElement) { 
+                console.log('indexInArray',indexInArray)
+                console.log('valueOfElement',valueOfElement)
+            });
+        });
+    // });
 }
 
 function ScanUserById() {
@@ -388,6 +399,16 @@ function GetOqcInspectionById(getPo,
             'getProdShipOutput' : getProdShipOutput,
         },
         dataType: "json",
+        beforeSend: function(){
+            GetAQL($('.aqlDropdown'))
+            GetFamily($('.familyDropdown'))
+            GetMOD($('.inspectionModDropdown_0'))
+            GeStampingLine($('.stampingLineDropdown'))
+            GetInspectionType($('.inspectionTypeDropdown'))
+            GetInspectionLevel($('.inspectionLevelDropdown'))
+            GetSeverityInspection($('.severityInspectionDropdown'))
+        },
+
         success: function(response){
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
@@ -412,12 +433,10 @@ function GetOqcInspectionById(getPo,
             $('#txtOqcInspectionMaterialName').val(getMaterialName)
 
             if(getOqcInspectionData.length > 0){
-                console.log('STAMPING LINE: ',getOqcInspectionData[0].stamping_line)
                 $('#slctOqcInspectionStampingLine').val(getOqcInspectionData[0].stamping_line)
                 $('#dateOqcInspectionApplicationDate').val(getOqcInspectionData[0].app_date)
                 $('#timeOqcInspectionApplicationTime').val(getOqcInspectionData[0].app_time)
                 $('#slctOqcInspectionProductCategory').val(getOqcInspectionData[0].prod_category)
-                // $('#txtOqcInspectionPoNo').val(getOqcInspectionData[0].po_no)
                 $('#txtOqcInspectionCustomer').val(getOqcInspectionData[0].customer)
                 $('#txtOqcInspectionFamily').val(getOqcInspectionData[0].family)
                 $('#txtOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)

@@ -22,6 +22,7 @@ class StampingController extends Controller
     public function view_first_stamp_prod(Request $request){
         $stamping_data = FirstStampingProduction::with([
             'first_stamping_history'
+            // 'oqc_details'
         ])
         ->whereNull('deleted_at')
         ->where('po_num', $request->po)
@@ -51,7 +52,7 @@ class StampingController extends Controller
                 $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-qrcode'></i></button>";
             }
             else if ($stamping_data->status == 3){
-                $result .= "<button class='btn btn-danger btn-sm btnViewResetup' data-id='$stamping_data->id' data-function='2'><i class='fa-solid fa-repeat'></i></button>";
+                $result .= "<button class='btn btn-danger btn-sm btnViewResetup' data-id='$stamping_data->id' data-function='2' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-repeat'></i></button>";
             }
 
 
@@ -115,7 +116,7 @@ class StampingController extends Controller
                     'prod_samp'        => ['required'],
                     'ttl_mach_output'  => ['required'],
                     'ship_output'      => ['required'],
-                    'mat_yield'        => ['required'],
+                    // 'mat_yield'        => ['required'],
                 );
             }
            
@@ -233,7 +234,7 @@ class StampingController extends Controller
                             'prod_samp'         => $request->prod_samp,
                             'total_mach_output' => $request->ttl_mach_output,
                             'ship_output'       => $request->ship_output,
-                            'mat_yield'         => $request->mat_yield,
+                            // 'mat_yield'         => $request->mat_yield,
                             'updated_at'        => NOW(),
                             'updated_by'        => $user_id->id
                         ]);
@@ -267,7 +268,7 @@ class StampingController extends Controller
                         'qc_samp'           => $request->qc_samp,
                         'total_mach_output' => $request->ttl_mach_output,
                         'ship_output'       => $request->ship_output,
-                        'mat_yield'         => $request->mat_yield,
+                        // 'mat_yield'         => $request->mat_yield,
                         'shift'             => $request->opt_shift,
                         'operator'          => $imploded_operator,
                         'created_by'        => $user_id->id,
@@ -317,7 +318,8 @@ class StampingController extends Controller
 
     public function get_prod_data_view(Request $request){
         return FirstStampingProduction::with([
-            'user'
+            'user',
+            'oqc_details'
         ])
         ->where('id', $request->id)
         ->where('stamping_cat', $request->stamp_cat)

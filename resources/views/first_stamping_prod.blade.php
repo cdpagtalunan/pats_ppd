@@ -296,8 +296,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Yield:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) Percent"></i>
-                                                <input type="text" class="form-control form-control-sm" placeholder="Auto Compute" name="mat_yield" id="txtMatYield" readonly>
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="This data is from OQC Inspection"></i>
+                                                <input type="text" class="form-control form-control-sm" placeholder="---" name="mat_yield" id="txtMatYield" readonly>
                                             </div>
                                             {{-- <div class="form-group">
                                                 <label class="form-label">Production Lot #:</label>
@@ -442,7 +442,6 @@
             var printId;
             var scanningFunction;
             var historyId = 0;
-            var stampCat;
             $(document).ready(function(){
                 // getOperatorList($('.selOpName'));
 
@@ -525,16 +524,16 @@
                     let ttlMachOutput = $(this).val();
 
                     let shipmentOutput = ttlMachOutput - sum;
-                    let matYieldComp = shipmentOutput/ttlMachOutput;
-                    let matYield =  matYieldComp * 100;
-                    if(Number.isFinite(matYield)){
+                    // let matYieldComp = shipmentOutput/ttlMachOutput;
+                    // let matYield =  matYieldComp * 100;
+                    // if(Number.isFinite(matYield)){
                         $('#txtShipOutput').val(shipmentOutput);
-                        $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
-                    }
-                    else{
-                        $('#txtShipOutput').val('');
-                        $('#txtMatYield').val('');
-                    }
+                        // $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
+                    // }
+                    // else{
+                    //     $('#txtShipOutput').val('');
+                    //     $('#txtMatYield').val('');
+                    // }
                 });
 
                 $(document).on('keypress', '#txtSearchPONum', function(e){
@@ -623,7 +622,6 @@
                 $(document).on('click', '.btnPrintProdData', function(e){
                     printId = $(this).data('id');
                     let printCount = $(this).data('printcount');
-                    stampCat = $(this).data('stampcat');
                     // console.log(printCount);
                     if(printCount > 0){
                         Swal.fire({
@@ -761,8 +759,8 @@
                 $(document).on('click', '.btnViewResetup', function(e){
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
-                    console.log('btnFunction', btnFunction);
-                    getProdDataById(id, btnFunction);
+                    let stampCategory = $(this).data('stampcat');
+                    getProdDataById(id, btnFunction, stampCategory);
 
                 });
                 

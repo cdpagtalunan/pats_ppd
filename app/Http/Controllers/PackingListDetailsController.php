@@ -112,24 +112,10 @@ class PackingListDetailsController extends Controller
 
 
     public function viewProductionData(Request $request){
-        // $production_data = FirstStampingProduction::
-        // with(['oqc_details' => function($query){
-        //     $query->where('status', 2); // 
-        // }])
-        // // ->where('po_num', 'like', '%' . $request->search_data . '%')
-        // // ->where('status', 2)
-        // ->get();
-
-
         $production_data = OQCInspection::with(['stamping_production_info'])
         ->where('po_no', 'like', '%' . $request->search_data . '%')
         ->where('status', 2)
         ->get();
-
-        // $production_data  = collect($production_data)->whereIn('oqc_details.status', 2);
-        // return $production_data;
-    
-        // return $test;
 
         if(!isset($request->search_data)){
             return [];
@@ -231,6 +217,8 @@ class PackingListDetailsController extends Controller
         if($validator->passes()){
             for ($i=0; $i <count($prod_data); $i++) { 
                     $prod_id = $prod_data[$i]->stamping_production_info->id;
+                    $po_no = $prod_data[$i]->po_no;
+                    $part_code = $prod_data[$i]->stamping_production_info->part_code;
                     $material_name = $prod_data[$i]->stamping_production_info->material_name;
                     $prod_lot_no = $prod_data[$i]->stamping_production_info->prod_lot_no;
                     $qty = $prod_data[$i]->stamping_production_info->ship_output;
@@ -260,7 +248,9 @@ class PackingListDetailsController extends Controller
                             'created_at'            => date('Y-m-d H:i:s'),
                         ];
                         $array_for_receiving = [
+                            'po_no'                 => $po_no,
                             'control_no'            => $request->ctrl_num,
+                            'part_code'             => $part_code,
                             'prod_id'               => $prod_id,
                             'mat_name'              => $material_name,
                             'lot_no'                => $prod_lot_no,

@@ -1062,7 +1062,8 @@
 
                 $('#formGeneratePackingList').submit(function (e){
                     e.preventDefault();
-                    let CtrlNo = $('#txtCtrlNo').val();
+                    let CtrlNo = 'ctrl-test-123';
+                    // let CtrlNo = $('#txtCtrlNo').val();
                     // console.log(test);
                     // window.location.href = "export/"+CtrlNo;
                     window.location.href = "view_pdf/"+CtrlNo;

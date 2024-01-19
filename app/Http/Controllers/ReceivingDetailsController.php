@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use QrCode;
 use DataTables;
 use Illuminate\Http\Request;
 use App\Models\PackingListDetails;
@@ -21,8 +22,9 @@ class ReceivingDetailsController extends Controller
             $result = "";
             $result .= "<center>";
             if($sanno_receiving_data->status == 0){
-                $result .= "<button class='btn btn-info btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
-            }else{
+                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+            }else if($sanno_receiving_data->status == 2){
+                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
 
             }
             $result .= "</center>";
@@ -33,10 +35,18 @@ class ReceivingDetailsController extends Controller
             $result .= "<center>";
     
             if($sanno_receiving_data->status == 0){
-                $result .= '<span class="badge bg-info">For WHSE Receive</span>';
+                $result .= '<span class="badge bg-primary">For WHSE Receive</span>';
             }
-            else{
-                $result .= '<span class="badge bg-success">For IQC Inspection</span>';
+            else if($sanno_receiving_data->status == 1){
+                $result .= '<span class="badge bg-info">For IQC Inspection</span>';
+            }else{
+                $result .= '<span class="badge bg-success">Accepted</span>';
+                $result .= '<br>';
+                if($sanno_receiving_data->printing_status == 0) {
+                    $result .= '<span class="badge bg-primary">For Printing</span>';
+                }else{
+                    $result .= '<span class="badge bg-primary">Reprinting</span>';
+                }
             }
 
             $result .= "</center>";
@@ -65,11 +75,12 @@ class ReceivingDetailsController extends Controller
 
         // return $request->scan_id;
 
-        $pmi_sanno_lot_no = $request->pmi_lot_no .'/'. $request->sanno_lot_no;
+        $pmi_supplier_lot_no = $request->pmi_lot_no .'/'. $request->supplier_lot_no;
 
         $rules = [
-            'sanno_lot_no'                 => 'required',
-            'sanno_qty'      => 'required',
+            'supplier_name'      => 'required',
+            'supplier_lot_no'   => 'required',
+            'supplier_qty'      => 'required',
         ];
 
         $validator = Validator::make($data, $rules);
@@ -77,9 +88,10 @@ class ReceivingDetailsController extends Controller
         // return 'update';
         ReceivingDetails::where('id', $request->receiving_details_id)
             ->update([
-                'sanno_lot_no' => $request->sanno_lot_no,
-                'sanno_quantity' => $request->sanno_qty,
-                'sanno_pmi_lot_no' => $pmi_sanno_lot_no,
+                'supplier_name' => $request->supplier_name,
+                'supplier_lot_no' => $request->supplier_lot_no,
+                'supplier_quantity' => $request->supplier_qty,
+                'supplier_pmi_lot_no' => $pmi_supplier_lot_no,
                 'status' => 1,
                 'updated_by' => $request->scan_id,
             ]);
@@ -87,8 +99,47 @@ class ReceivingDetailsController extends Controller
         }else{
             return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
         }
+    }
+
+    public function printReceivingQrCode(Request $request){
+        $receiving_data = ReceivingDetails::where('id', $request->id)
+        ->first(['po_no AS po_no','supplier_pmi_lot_no AS new_lot_no']);
 
 
+        $qrcode = QrCode::format('png')
+        ->size(200)->errorCorrection('H')
+        ->generate($receiving_data);
+
+        $QrCode = "data:image/png;base64," . base64_encode($qrcode);
+
+        $data[] = array(
+            'img' => $QrCode, 
+            'text' =>  "<strong>$receiving_data->po_no</strong><br>
+            <strong>$receiving_data->new_lot_no</strong><br>"
+        );
+
+        $label = "
+            <table class='table table-sm table-borderless' style='width: 100%;'> 
+                <tr>
+                    <td>PO #:</td>
+                    <td>$receiving_data->po_no</td>
+                </tr>
+
+                <tr>
+                    <td>Lot #:</td>
+                    <td>$receiving_data->new_lot_no</td>
+                </tr>
+            </table>
+        ";
+
+        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label, 'prodData' => $receiving_data]);
+    }
+
+    public function changePrintStatus(Request $request){
+            ReceivingDetails::where('id', $request->id)
+            ->update([
+                'printing_status' => 1
+            ]);
 
     }
     

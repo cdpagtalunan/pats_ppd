@@ -1,70 +1,94 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <title>Invoice Example</title>
-        <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Packing List (PDF)</title>
+        {{-- <link rel="stylesheet" href="{{ asset('public/css/custom.css')) }}" /> --}}
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+            }
+
+            body{
+                font:14px Georgia, serif;
+            }
+
+            .item {
+                position: relative;
+                top: 20px;
+                left: 500px;
+                /* background-color: powderblue; */
+                /* font:30px Georgia, serif; */
+            }
+
+            .item span.label{
+
+            }
+
+            .item span.data{
+                /* width: 1000px; */
+                /* background-color: powderblue; */
+                /* font:30px Georgia, serif; */
+            }
+
+            .pu_time .data {
+                position: relative;
+                top: 100px;
+                left: 600px;
+                /* background-color: powderblue; */
+            }
+
+            .sanno_details{
+                position: relative;
+                top: 120px;
+                left: 50px;
+            }
+
+            .sanno_details .data span{
+                text-align: center;
+            }
+
+
+            /* .data{
+                position: relative;
+                top: 20px;
+                left: 100px;
+                background-color: powderblue;
+            } */
+
+            /* .parent{
+                position: relative;
+            } */
+
+        </style>
     </head>
     <body>
-        <div class="invoice-box">
-            <table cellpadding="0" cellspacing="0">
-                <tr class="top">
-                    <td colspan="2">
-                        <table>
-                            <tr>
-                                <td class="title">
-                                    <img src="{{ asset('images/logo.png') }}" style="width: 100%; max-width: 88px" />
-                                </td>
-                                <td>
-                                    Invoice #: {{ $invoiceData['invoice_id'] }}<br />
-                                    Created: {{ $invoiceData['creation_date'] }}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr class="information">
-                    <td colspan="2">
-                        <table>
-                            <tr>
-                                <td>
-                                    Godaddy, LLC.<br />
-                                    12345 Sunny Road<br />
-                                    Sunnyville, CA 12345
-                                </td>
-                                <td>
-                                    Godaddy LLC.<br />
-                                    John Wick<br />
-                                    john@example.com
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <tr class="heading">
-                    <td>Payment Method</td>
-                    <td># Transaction Id</td>
-                </tr>
-                <tr class="details">
-                    <td>{{ $invoiceData['payment_method'] }}</td>
-                    <td>{{ $invoiceData['transaction_id'] }}</td>
-                </tr>
-                <tr class="heading">
-                    <td>Item</td>
-                    <td>Amount</td>
-                </tr>
-                @foreach($invoiceItems as $invoiceItem)
-                    <tr class="item @if($loop->last) last @endif">
-                        <td>{{ $invoiceItem['item'] }}</td>
-                        <td>${{ $invoiceItem['amount'] }}</td>
-                    </tr>
-                @endforeach
-                <tr class="total">
-                    <td></td>
-                    <td>Total: ${{ $invoiceData['total_amount'] }}</td>
-                </tr>
-            </table>
+        <div class="container">
+            <div class="item">
+                <span class="label">Ctrl #:</span>
+                <span style="text-align:center; width:150px; border-bottom: 1px solid black;">{{ $test[0]->control_no }}</span>
+            </div>
+            <div>
+                <div class="pu_time">
+                    <span class="data">P/U Time:</span>
+                    <span class="data">{{ '12:00 NN' }}</span>
+                </div>
+                <div class="pu_time">
+                    <span class="data">P/U Date:</span>
+                    <span class="data">{{ '12/22/2023' }}</span>
+                </div>
+            </div>
+            <div class="sanno_details">
+                <div class="data">
+                    <span style="margin-right: 100px;">SANNO PHILS. MANUFACTURING CORP.</span>
+                    <span>SANNO PHILS. MANUFACTURING CORP.</span>
+                </div>
+                <div class="data">Special Export Processing Zone, Gateway Business Park,</div>
+                <div class="data">Javalera, Gen. Trias, Cavite, Philippines</div>
+            </div>
         </div>
     </body>
 </html>

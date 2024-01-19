@@ -186,7 +186,11 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
             $('#txtProdSamp').val(response['prod_samp'])
             $('#txtTtlMachOutput').val(response['total_mach_output'])
             $('#txtShipOutput').val(response['ship_output'])
-            $('#txtMatYield').val(response['mat_yield'])
+
+            // * GET VALUE OF YIELD FROM OQC INSPECTION
+            if(response['oqc_details'] != null){
+                $('#txtMatYield').val(response['oqc_details']['yield'])
+            }
 
             $('#txtProdLotView').val(response['prod_lot_no']);
             $('#txtNGCount').val(response['ng_count']);
@@ -255,15 +259,17 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
                 $('#saveProdData').show();
             }
             else if(btnFunction == 2){ // For Resetup
-                setTimeout(() => {
+                $('#formProdData').find('input').prop('readonly', true);
+                $('#formProdDataSecondStamp').find('input').prop('readonly', true);
+
+                // setTimeout(() => {
                     $('#txtSetupPin').prop('readonly', false);
                     $('#txtAdjPin').prop('readonly', false);
                     $('#txtQcSamp').prop('readonly', false);
     
-                }, 200);
+                // }, 200);
     
 
-                $('#formProdData').find('input').prop('readonly', true);
                 $('#selOperator').prop('disabled', true);
                 $('#txtNGCount').prop('readonly', false);
 

@@ -21,6 +21,9 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
+    public function getIqcInspectionByJudgement(Request $request){
+        return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
+    }
     public function loadWhsTransaction(){
         // return TblWarehouseTransaction::select('*')->limit(10)->get();
         // return TblWarehouse::select('*')->limit(10)->get();
@@ -120,7 +123,6 @@ class IqcInspectionController extends Controller
                 LIMIT 0,1
             ');
         }
-
     }
 
     public function getFamily(){
@@ -195,7 +197,7 @@ class IqcInspectionController extends Controller
 
     public function saveIqcInspection(IqcInspectionRequest $request){
         date_default_timezone_set('Asia/Manila');
-    
+
         try {
             $mod_lot_no = explode(',',$request->lotNo);
             $mod_defects = explode(',',$request->modeOfDefects);
@@ -228,7 +230,7 @@ class IqcInspectionController extends Controller
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
-            
+
                 ]);
                 $iqc_inspections_id = $create_iqc_inspection->id;
             }
@@ -285,7 +287,7 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function viewCocFileAttachment(Request $request,$iqc_inspection_id){    
+    public function viewCocFileAttachment(Request $request,$iqc_inspection_id){
         $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
         return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
     }

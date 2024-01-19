@@ -43,8 +43,6 @@ class OQCInspectionController extends Controller
         ->where('status', '2')
         ->get();
 
-        // $prod_details = collect($prod_details)->whereIn('oqc_inspection_info.logdel', 0);
-            // return  $prod_details;
         // $prod_details = StampingIpqc::with(['oqc_inspection_info'])->where('po_number', $request->poNo)->where('status', 1)->get();
         // $prod_details = StampingIpqcTest::with(['oqc_inspection_info'])->where('po_number', $request->poNo)->where('status', 1)->get();
         // $prod_details = DB::select(DB::raw("SELECT * FROM stamping_prods WHERE po_number = $request->poNo AND status = 1"));
@@ -62,14 +60,16 @@ class OQCInspectionController extends Controller
         ->addColumn('action', function($prod_info){
             $result = '<center>';
             $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
-            if(count($get_oqc_inspection_per_row) == 1){
-                $oqc_id = $get_oqc_inspection_per_row[0]->id;
-            }else{
-                $oqc_id = '0';
-            }
 
-            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection " oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>&nbsp;';
-            $result .= '<button class="btn btn-info btn-sm text-center actionOqcInspectionView " oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="View"><i class="nav-icon fa fa-eye"></i></button>';
+            if(count($get_oqc_inspection_per_row) == 1){
+                if($get_oqc_inspection_per_row[0]->status != 2){
+                    $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection " oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>&nbsp;';
+                }else if($get_oqc_inspection_per_row[0]->status != 1){
+                    $result .= '<button class="btn btn-info btn-sm text-center actionOqcInspectionView " oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="View"><i class="nav-icon fa fa-eye"></i></button>';
+                }
+            }else{
+                $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection " oqc_inspection-id="0" prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>&nbsp;';
+            }
             $result .= '</center>';
             return $result;
         })
@@ -91,10 +91,10 @@ class OQCInspectionController extends Controller
                         break;
                     }
                     case 3: //LOT REJECTED
-                        {   
-                            $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
-                            break;
-                        }
+                    {   
+                        $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
+                        break;
+                    }
                     default:
                     {
                         $result .= 'N/A';

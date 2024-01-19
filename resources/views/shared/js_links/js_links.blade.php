@@ -56,8 +56,10 @@
 <script src="{{ asset('public/js/main/UserLevel.js') }}" async></script>
 <script src="{{ asset('public/js/main/Device.js') }}" async></script>
 <script src="{{ asset('public/js/main/MaterialProcess.js') }}" async></script>
-<script src="{{ asset('public/js/main/FirstStamping.js') }}" async></script>
-<script src="{{ asset('public/js/main/OqcInspection.js?n=1') }}" async></script>
+<script src="{{ asset('public/js/main/OqcInspection.js?') }}" async></script>
+
+
+<script src="{{ asset('public/js/main/Stamping.js') }}" async></script>
 
 <!-- PACKING LIST JS -->
 <script src="{{ asset('public/js/main/CustomerDetails.js') }}" async></script>

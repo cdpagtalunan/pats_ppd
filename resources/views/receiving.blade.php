@@ -35,6 +35,11 @@
                 top: 35%;
                 transform: translate(-50%, -50%);
             }
+            /* .pmi_color{
+                background: #c0c0aa;
+                background: -webkit-linear-gradient(to right, #c0c0aa, #1cefff); 
+                background: linear-gradient(to right, #c0c0aa, #1cefff); 
+            } */
 
             #colDevice, #colMaterialProcess{
                 transition: .5s;
@@ -92,15 +97,22 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th><center><i class="fa fa-cog"></i></center></th>
-                                                    <th>Status</th>
+                                                    <th rowspan="2" class="text-center pl-5 pr-5">Action</th>
+                                                    <th rowspan="2" class="text-center pl-5 pr-5">Status</th>
+                                                    <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
+                                                    <th colspan="4" style="text-align: center;">PMI Details</th>
+                                                    <th colspan="3" style="text-align: center;">Supplier Details</th>
+                                                </tr>
+                                                
+                                                <tr>
                                                     <th>Packing List Ctrl #</th>
-                                                    <th>Material Name</th>
+                                                    <th>Material name</th>
                                                     <th>Lot #</th>
                                                     <th>Shipment Qty</th>
-                                                    <th>SANNO Lot #</th>
-                                                    <th>SANNO Qty</th>
-                                                    <th>New Lot #</th>
+
+                                                    <th>Name</th>
+                                                    <th>Lot #</th>
+                                                    <th>Qty</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -132,19 +144,6 @@
                         <input type="hidden" id="txtReceivingDetailsId" name="receiving_details_id">
                         
                         <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">SANNO Lot #</label>
-                                    <input type="text" class="form-control form-control-sm" name="sanno_lot_no" id="txtSannoLotNo" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">SANNO Qty</label>
-                                    <input type="text" class="form-control form-control-sm" name="sanno_qty" id="txtSannoQty" autocomplete="off">
-                                </div>
-                            </div>
 
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -155,10 +154,18 @@
 
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                    <label class="form-label">Shipment Qty</label>
+                                    <input type="text" class="form-control form-control-sm" name="pmi_qty" id="txtPmiQty" readonly>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
                                     <label class="form-label">Material Name</label>
                                     <input type="text" class="form-control form-control-sm" name="pmi_material_name" id="txtPmiMaterialName" readonly>
                                 </div>
                             </div>
+
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Lot #</label>
@@ -168,10 +175,37 @@
 
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="form-label">Shipment Qty</label>
-                                    <input type="text" class="form-control form-control-sm" name="pmi_qty" id="txtPmiQty" readonly>
+                                    <label class="form-label">Supplier Name</label>
+                                    <input type="text" class="form-control form-control-sm" name="supplier_name" id="txtSupplierName" readonly value="SMPC">
                                 </div>
                             </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Supplier Lot #</label>
+                                    <input type="text" class="form-control form-control-sm" name="supplier_lot_no" id="txtSupplierLotNo" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Supplier Qty</label>
+                                    <input type="text" class="form-control form-control-sm" name="supplier_qty" id="txtSupplierQty" autocomplete="off">
+                                </div>
+                            </div>
+
+                            
+
+                            
+
+                         
+
+                            {{-- <div hidden class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">PO #</label>
+                                    <input type="text" class="form-control form-control-sm" name="po_no" id="txtPmiPo" readonly>
+                                </div>
+                            </div> --}}
 
                         </div>
                     </div>
@@ -190,111 +224,275 @@
     <!-- /.modal -->
 
     <!-- MODALS -->
-<div class="modal fade" id="modalScanQRtoSave">
-    <div class="modal-dialog center">
-        <div class="modal-content modal-sm">
-            <div class="modal-body">
-                <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_id" autocomplete="off">
-                <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan employee ID.</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+    <div class="modal fade" id="modalScanQRtoSave">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <div class="modal-body">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_id" autocomplete="off">
+                    <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
             </div>
+        <!-- /.modal-content -->
         </div>
-    <!-- /.modal-content -->
+            <!-- /.modal-dialog -->
     </div>
-        <!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+    <!-- /.modal -->
+
+      <!-- MODALS -->
+      <div class="modal fade" id="modalScanQRtoReprint">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <div class="modal-body">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserIdtoReprint" name="scan_id_to_reprint" autocomplete="off">
+                    <div class="text-center text-secondary"><span id="modalScanQRReprintText"></span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        <!-- /.modal-content -->
+        </div>
+            <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+            {{-- MODAL FOR PRINTING  --}}
+        <div class="modal fade" id="modalPrintQr">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"> Receiving - QR Code</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- PO 1 -->
+                            <div class="col-sm-12">
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <label id="img_barcode_PO_text"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="btnPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
 
     @endsection
 
     @section('js_content')
         <script type="text/javascript">
 
-        dtReceivingDetails = $("#tblReceivingDetails").DataTable({
-            "processing" : true,
-            "serverSide" : true,
-            "ajax" : {
-                url: "view_receiving_details",
-            },
-            fixedHeader: true,
-            "columns":[
-                { "data" : "action", orderable:false, searchable:false },
-                { "data" : "status"},
-                { "data" : "control_no"},
-                { "data" : "mat_name"},
-                { "data" : "lot_no"},
-                { "data" : "quantity"},
-                { "data" : "sanno_lot_no"},
-                { "data" : "sanno_quantity"},
-                { "data" : "sanno_pmi_lot_no"},
-            ],
-        });
+        $(document).ready(function(){
+                dtReceivingDetails = $("#tblReceivingDetails").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_receiving_details",
+                },
+                fixedHeader: true,
+                "columns":[
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status"},
+                    { "data" : "supplier_pmi_lot_no"},
+                    { "data" : "control_no"},
+                    { "data" : "mat_name"},
+                    { "data" : "lot_no"},
+                    { "data" : "quantity"},
+                    { "data" : "supplier_name"},
+                    { "data" : "supplier_lot_no"},
+                    { "data" : "supplier_quantity"},
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": "_all"},
+                    {
+                        "targets": [2,7,8,9],
+                        "data": null,
+                        "defaultContent": "---"
+                    },
+                ],
+            });
 
-        $(document).on('click', '.btnEditReceivingDetails', function(e){
-            // alert('pumasok na dito');
-            $('#modalEditReceivingDetails').modal('show');
-            let receivingDetailsId = $(this).attr('data-id');
-            $('#txtReceivingDetailsId').val(receivingDetailsId);
-            console.log(receivingDetailsId);
+            $(document).on('click', '.btnEditReceivingDetails', function(e){
+                // alert('pumasok na dito');
+                $('#modalEditReceivingDetails').modal('show');
+                let receivingDetailsId = $(this).attr('data-id');
+                $('#txtReceivingDetailsId').val(receivingDetailsId);
+                console.log(receivingDetailsId);
 
-            getReceivingDetailsId(receivingDetailsId);
-        });
+                getReceivingDetailsId(receivingDetailsId);
+            });
 
-        $('#formAddReceivingDetails').submit(function(e){
-            e.preventDefault();
-            $('#modalScanQRtoSave').modal('show');
-        });
-
-        $('#modalScanQRtoSave').on('shown.bs.modal', function () {
-        $('#txtScanUserId').focus();
-    });
-
-        $(document).on('keypress', '#txtScanUserId', function(e){
-            let toScanId =  $('#txtScanUserId').val();
-            let scanId = {
-                'scan_id' : toScanId
-            }
-            if(e.keyCode == 13){
+            $('#formAddReceivingDetails').submit(function(e){
                 e.preventDefault();
-                $.ajax({
-                    type: "post",
-                    url: "update_receiving_details",
-                    data: $('#formAddReceivingDetails').serialize() + '&' + $.param(scanId),
-                    dataType: "json",
-                    success: function (response) {
-                        if(response['validation'] == 1){
-                            toastr.error('Saving data failed!');
-                                if(response['error']['sanno_lot_no'] === undefined){
-                                    $("#txtSannoLotNo").removeClass('is-invalid');
-                                    $("#txtSannoLotNo").attr('title', '');
-                                }
-                                else{
-                                    $("#txtSannoLotNo").addClass('is-invalid');
-                                    $("#txtSannoLotNo").attr('title', response['error']['sanno_lot_no']);
-                                }
-                                if(response['error']['sanno_qty'] === undefined){
-                                    $("#txtSannoQty").removeClass('is-invalid');
-                                    $("#txtSannoQty").attr('title', '');
-                                }
-                                else{
-                                    $("#txtSannoQty").addClass('is-invalid');
-                                    $("#txtSannoQty").attr('title', response['error']['sanno_qty']);
-                                }
-                            
-                        }else if(response['result'] == 0){
-                            toastr.success('Receiving Details Updated!');
-                            $('#modalEditReceivingDetails').modal('hide');
-                            $('#modalScanQRtoSave').modal('hide');
-                            dtReceivingDetails.draw();
+                $('#modalScanQRtoSave').modal('show');
+            });
+
+            $('#modalScanQRtoSave').on('shown.bs.modal', function () {
+                $('#txtScanUserId').focus();
+            });
+
+            $(document).on('keypress', '#txtScanUserId', function(e){
+                let toScanId =  $('#txtScanUserId').val();
+                let scanId = {
+                    'scan_id' : toScanId
+                }
+                if(e.keyCode == 13){
+                    e.preventDefault();
+                    $.ajax({
+                        type: "post",
+                        url: "update_receiving_details",
+                        data: $('#formAddReceivingDetails').serialize() + '&' + $.param(scanId),
+                        dataType: "json",
+                        success: function (response) {
+                            if(response['validation'] == 1){
+                                toastr.error('Saving data failed!');
+                                    if(response['error']['supplier_name'] === undefined){
+                                        $("#txtSupplierName").removeClass('is-invalid');
+                                        $("#txtSupplierName").attr('title', '');
+                                    }
+                                    else{
+                                        $("#txtSupplierName").addClass('is-invalid');
+                                        $("#txtSupplierName").attr('title', response['error']['supplier_name']);
+                                    }
+                                    if(response['error']['supplier_lot_no'] === undefined){
+                                        $("#txtSupplierLotNo").removeClass('is-invalid');
+                                        $("#txtSupplierLotNo").attr('title', '');
+                                    }
+                                    else{
+                                        $("#txtSupplierLotNo").addClass('is-invalid');
+                                        $("#txtSupplierLotNo").attr('title', response['error']['supplier_lot_no']);
+                                    }
+                                    if(response['error']['supplier_qty'] === undefined){
+                                        $("#txtSupplierQty").removeClass('is-invalid');
+                                        $("#txtSupplierQty").attr('title', '');
+                                    }
+                                    else{
+                                        $("#txtSupplierQty").addClass('is-invalid');
+                                        $("#txtSupplierQty").attr('title', response['error']['supplier_qty']);
+                                    }
+                                
+                            }else if(response['result'] == 0){
+                                toastr.success('Receiving Details Updated!');
+                                $('#modalEditReceivingDetails').modal('hide');
+                                $('#modalScanQRtoSave').modal('hide');
+                                dtReceivingDetails.draw();
+                            }
                         }
+                    });
+                }
+            });
+
+            $("#modalEditReceivingDetails").on('hide.bs.modal', function(){
+                $("#formAddReceivingDetails").trigger("reset");
+                dtReceivingDetails.draw();
+            });
+
+            $(document).on('click', '.btnPrintReceivingData', function(e){
+                e.preventDefault();
+                // $('#modalScanQRtoSave').modal('show');
+                printId = $(this).data('id');
+                let printCount = $(this).data('printcount');
+                // console.log(printCount);
+                if(printCount > 0){
+                    Swal.fire({
+                        // title: "Are you sure?",
+                        html: "Data already printed. <br> Do you want to reprint this data?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#modalScanQRtoReprint').modal('show');
+                            $('#modalScanQRReprintText').html('Please Scan Supervisor ID.')
+                            scanningFunction = "reprintStamping"
+                        }
+                    });
+                }
+                else{
+                    printReceivingData(printId);
+                }
+
+            });
+
+            $('#btnPrintQrCode').on('click', function(){
+
+                    popup = window.open();
+                    let content = '';
+
+                    content += '<html>';
+                    content += '<head>';
+                    content += '<title></title>';
+                    content += '<style type="text/css">';
+                    content += '@media print { .pagebreak { page-break-before: always; } }';
+                    content += '</style>';
+                    content += '</head>';
+                    content += '<body>';
+                    // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                        content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                            content += '<tr style="width: 290px;">';
+                                content += '<td style="vertical-align: bottom;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                content += '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                            content += '</tr>';
+                        content += '</table>';
+                        content += '<br>';
+                        // if( i < img_barcode_PO_text_hidden.length-1 ){
+                        //     content += '<div class="pagebreak"> </div>';
+                        // }
+                    // }
+                    content += '</body>';
+                    content += '</html>';
+                    popup.document.write(content);
+
+                    popup.focus(); //required for IE
+                    popup.print();
+
+                    /*
+                        * this event will trigger after closing the tab of printing
+                    */
+                    popup.addEventListener("beforeunload", function (e) {
+                        changePrintStatus(img_barcode_PO_text_hidden[0]['id']);
+                    });
+
+                    popup.close();
+
+            });
+
+            $('#modalScanQRtoReprint').on('shown.bs.modal', function () {
+                $('#txtScanUserIdtoReprint').focus();
+            });
+
+                
+            $(document).on('keyup','#txtScanUserIdtoReprint', function(e){
+                if(e.keyCode == 13){
+                    if(scanningFunction === "reprintStamping"){
+                        validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
+                            console.log(result);
+                            if(result == true){
+                                $('#modalScanQRtoReprint').modal('hide');
+                                printReceivingData(printId);
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+
+                        });
                     }
-                });
-            }
+                    setTimeout(() => {
+                        $(this).val('');
+                        
+                    }, 500);
+                }
+            });
+
         });
 
-        $("#modalEditReceivingDetails").on('hide.bs.modal', function(){
-            $("#formAddReceivingDetails").trigger("reset");
-            dtReceivingDetails.draw();
-        });
 
         </script>
     @endsection

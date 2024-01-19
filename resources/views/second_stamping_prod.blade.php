@@ -300,8 +300,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Yield:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) Percent"></i>
-                                                <input type="text" class="form-control form-control-sm" placeholder="Auto Compute" name="mat_yield" id="txtMatYield" readonly>
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="This data is from OQC Inspection"></i>
+                                                <input type="text" class="form-control form-control-sm" placeholder="---" name="mat_yield" id="txtMatYield" readonly>
                                             </div>
                                             {{-- <div class="form-group">
                                                 <label class="form-label">Production Lot #:</label>
@@ -424,6 +424,36 @@
             </div>
         </div>
 
+        <div class="modal fade" id="modalHistorySecondStamp" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa-solid fa-circle-exclamation"></i> NG History</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                            <table id="tblHistorySecondStamp" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>PO Number</th>
+                                        <th>Set-up Pins</th>
+                                        <th>Adjustment Pins</th>
+                                        <th>QC Samples</th>
+                                        <th>NG Count</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     @endsection
 
@@ -519,16 +549,16 @@
                     let ttlMachOutput = $(this).val();
 
                     let shipmentOutput = ttlMachOutput - sum;
-                    let matYieldComp = shipmentOutput/ttlMachOutput;
-                    let matYield =  matYieldComp * 100;
-                    if(Number.isFinite(matYield)){
+                    // let matYieldComp = shipmentOutput/ttlMachOutput;
+                    // let matYield =  matYieldComp * 100;
+                    // if(Number.isFinite(matYield)){
                         $('#txtShipOutput').val(shipmentOutput);
-                        $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
-                    }
-                    else{
-                        $('#txtShipOutput').val('');
-                        $('#txtMatYield').val('');
-                    }
+                        // $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
+                    // }
+                    // else{
+                    //     $('#txtShipOutput').val('');
+                    //     $('#txtMatYield').val('');
+                    // }
                 });
 
                 // $(document).on('keypress', '#txtSearchPONum', function(e){
@@ -755,9 +785,53 @@
                 $(document).on('click', '.btnViewResetup', function(e){
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
-                    console.log('btnFunction', btnFunction);
-                    getProdDataById(id, btnFunction);
+                    let stampCategory = $(this).data('stampcat');
+
+                    getProdDataById(id, btnFunction, stampCategory);
                 });
+
+
+                $(document).on('click', '.btnViewHistory', function(e){
+                    historyId = $(this).data('id');
+                    let po = $(this).data('po');
+                    dtDatatableHistory = $("#tblHistorySecondStamp").DataTable({
+                        "processing" : true,
+                        "serverSide" : true,
+                        "paging": false, 
+                        "searching": false,
+                        "info": false,
+                        "destroy": true,
+                        "ordering": false,
+                        "ajax" : {
+                            url: "get_history_details",
+                            data: function (param){
+                                param.id = historyId;
+                            }
+                        },
+                        fixedHeader: true,
+                        "columns":[
+                            { 
+                                render: function (data, type, row, meta) {
+                                    return meta.row + meta.settings._iDisplayStart + 1;
+                                }
+                            },
+                            { 
+                                render: function (data, type, row, meta) {
+                                    return po;
+                                }
+                            },
+                            // { "data" : "id" },
+                            { "data" : "set_up_pins" },
+                            { "data" : "adj_pins" },
+                            { "data" : "qc_samp" },
+                            { "data" : "ng_count" },
+                        ],
+                    });//end of dataTableDevices
+
+                    $('#modalHistorySecondStamp').modal('show');
+
+                })
+
 
 
             });
