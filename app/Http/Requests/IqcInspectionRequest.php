@@ -27,7 +27,7 @@ class IqcInspectionRequest extends FormRequest
         // 'no_of_defects'=>'required',
         // 'remarks'=>'required',
         return [
-            'whs_transaction_id'=>'required',
+            // 'whs_transaction_id'=>'required',
             'invoice_no'=>'required',
             'partcode'=>'required',
             'partname'=>'required',

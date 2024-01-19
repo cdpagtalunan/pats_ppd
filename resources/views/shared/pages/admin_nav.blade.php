@@ -61,13 +61,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('iqc_inspection') }}" class="nav-link">
+                                    <a href="{{ route('first_stamping_iqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>IQC 1st Stamping</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('iqc_inspection') }}" class="nav-link">
+                                    <a href="{{ route('second_stamping_iqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>IQC 2nd Stamping</p>
                                     </a>
@@ -141,6 +141,14 @@
                                     </a>
                                 </li>
                             </ul>
+                            {{-- <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('second_stamping_prod') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>2nd Stamping</p>
+                                    </a>
+                                </li>
+                            </ul> --}}
                             
                         </li>
                     @endif
