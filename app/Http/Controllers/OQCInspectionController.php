@@ -43,8 +43,6 @@ class OQCInspectionController extends Controller
         ->where('status', '2')
         ->get();
 
-        // $prod_details = collect($prod_details)->whereIn('oqc_inspection_info.logdel', 0);
-            // return  $prod_details;
         // $prod_details = StampingIpqc::with(['oqc_inspection_info'])->where('po_number', $request->poNo)->where('status', 1)->get();
         // $prod_details = StampingIpqcTest::with(['oqc_inspection_info'])->where('po_number', $request->poNo)->where('status', 1)->get();
         // $prod_details = DB::select(DB::raw("SELECT * FROM stamping_prods WHERE po_number = $request->poNo AND status = 1"));
@@ -62,14 +60,16 @@ class OQCInspectionController extends Controller
         ->addColumn('action', function($prod_info){
             $result = '<center>';
             $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
-            if(count($get_oqc_inspection_per_row) == 1){
-                $oqc_id = $get_oqc_inspection_per_row[0]->id;
-            }else{
-                $oqc_id = '0';
-            }
 
-            $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection " oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>&nbsp;';
-            $result .= '<button class="btn btn-info btn-sm text-center actionOqcInspectionView " oqc_inspection-id="' . $oqc_id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="View"><i class="nav-icon fa fa-eye"></i></button>';
+            if(count($get_oqc_inspection_per_row) == 1){
+                if($get_oqc_inspection_per_row[0]->status != 2){
+                    $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection " oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>&nbsp;';
+                }else if($get_oqc_inspection_per_row[0]->status != 1){
+                    $result .= '<button class="btn btn-info btn-sm text-center actionOqcInspectionView " oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="View"><i class="nav-icon fa fa-eye"></i></button>';
+                }
+            }else{
+                $result .= '<button class="btn btn-dark btn-sm text-center actionOqcInspection " oqc_inspection-id="0" prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" prod-material-name="' . $prod_info->material_name . '" prod-po-qty="' . $prod_info->po_qty . '" prod-lot-no="' . $prod_info->prod_lot_no . '" prod-ship-output="' . $prod_info->ship_output . '" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="Edit"><i class="nav-icon fa fa-edit"></i></button>&nbsp;';
+            }
             $result .= '</center>';
             return $result;
         })
@@ -91,10 +91,10 @@ class OQCInspectionController extends Controller
                         break;
                     }
                     case 3: //LOT REJECTED
-                        {   
-                            $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
-                            break;
-                        }
+                    {   
+                        $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
+                        break;
+                    }
                     default:
                     {
                         $result .= 'N/A';
@@ -211,6 +211,8 @@ class OQCInspectionController extends Controller
                     for ($i=0; $i < count($get_oqc_inspection_per_row[0]->mod_oqc_inspection_info); $i++) { 
                         $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_info[$i]->mod." \n ";
                     }
+                }else{
+                    $result .= 'N/A';
                 }
             }
             // $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_info;
@@ -222,7 +224,11 @@ class OQCInspectionController extends Controller
             $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
             if(count($get_oqc_inspection_per_row) == 1){
-                $result .= $get_oqc_inspection_per_row[0]->num_of_defects;
+                if($get_oqc_inspection_per_row[0]->judgement == 'Reject'){
+                    $result .= $get_oqc_inspection_per_row[0]->num_of_defects;
+                }else{
+                    $result .= 'N/A';
+                }
             }
             $result .= '</center>';
             return $result;
@@ -316,7 +322,6 @@ class OQCInspectionController extends Controller
 
     public function updateOqcInspection(Request $request){
         date_default_timezone_set('Asia/Manila');
-        session_start();
         $data = $request->all();
         $validator = Validator::make($data, [
             'oqc_inspection_stamping_line'          => 'required',
@@ -429,6 +434,8 @@ class OQCInspectionController extends Controller
                             $add_print_lot
                         );
                     }
+                }else{
+                    PrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
                 if ($request->reel_lot_no_0 != null && $request->reel_lot_qty_0 != null) {
@@ -443,6 +450,8 @@ class OQCInspectionController extends Controller
                             $add_reel_lot
                         );
                     }
+                }else{
+                    ReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
                 if ($request->mod_0 != null && $request->mod_qty_0 != null) {
@@ -457,6 +466,8 @@ class OQCInspectionController extends Controller
                             $add_mod
                         );
                     }
+                }else{
+                    ModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
             //     DB::commit();
@@ -504,7 +515,16 @@ class OQCInspectionController extends Controller
     }
 
     public function getOqcInspectionById(Request $request){
-        $get_inspector = Auth::user();            
+        date_default_timezone_set('Asia/Manila');
+        
+        $get_inspector = Auth::user();  
+        $first_stamping_production = FirstStampingProduction::with([
+            'stamping_ipqc', 
+            'stamping_ipqc.bdrawing_active_doc_info', 
+            'stamping_ipqc.ud_drawing_active_doc_info', 
+            'stamping_ipqc.insp_std_drawing_active_doc_info', 
+        ])
+        ->get();
         $get_oqc_inspection_data = OQCInspection::with([
             'reel_lot_oqc_inspection_info',
             'print_lot_oqc_inspection_info',
@@ -514,18 +534,15 @@ class OQCInspectionController extends Controller
         ->where('logdel', 0)
         ->get();
 
-        $first_stamping_production = FirstStampingProduction::with(['acdcs_active_doc_info'])->get();
-        // return $first_stamping_production;
         return response()->json([
-            'getOqcInspectionData'      => $get_oqc_inspection_data, 
-            'firstStampingProduction'   => $first_stamping_production,
-            'getInspector'              => $get_inspector
+            'getInspector'              => $get_inspector,
+            'getOqcInspectionData'      => $get_oqc_inspection_data,
+            'firstStampingProduction'   => $first_stamping_production
         ]);
     }
 
     public function scanUserId(Request $request){
         date_default_timezone_set('Asia/Manila');
-        session_start();
 
         $user_details = User::where('employee_id', $request->user_id)->first();
         // return $user_details;

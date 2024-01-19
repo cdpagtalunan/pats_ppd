@@ -21,8 +21,11 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
-    public function loadWhsTransaction(Request $request){
 
+    public function getIqcInspectionByJudgement(Request $request){
+        return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
+    }
+    public function loadWhsTransaction(){
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
         */
@@ -221,7 +224,6 @@ class IqcInspectionController extends Controller
         return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
             ->where('whs_transaction_id',$request->whs_transaction_id)
             ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
-
     }
 
     public function getFamily(){
@@ -296,7 +298,7 @@ class IqcInspectionController extends Controller
 
     public function saveIqcInspection(IqcInspectionRequest $request){
         date_default_timezone_set('Asia/Manila');
-    
+
         try {
             $mod_lot_no = explode(',',$request->lotNo);
             $mod_defects = explode(',',$request->modeOfDefects);
@@ -329,7 +331,7 @@ class IqcInspectionController extends Controller
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
-            
+
                 ]);
                 $iqc_inspections_id = $create_iqc_inspection->id;
 
@@ -394,7 +396,7 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function viewCocFileAttachment(Request $request,$iqc_inspection_id){    
+    public function viewCocFileAttachment(Request $request,$iqc_inspection_id){
         $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
         return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
     }

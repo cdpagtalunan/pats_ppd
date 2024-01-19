@@ -81,7 +81,7 @@ function resetFormProdValues() {
     $("#formProdData")[0].reset();
     $('#formProdData').find('input').removeClass('is-invalid'); // remove all invalid
     $('#saveProdData').show();
-    $('.appendDiv').remove();
+    // $('.appendDiv').remove();
     $('#btnRemoveMatNo').addClass('d-none');
     $('#divProdLotInput').removeClass('d-none');
     $('#divProdLotView').addClass('d-none');
@@ -115,6 +115,33 @@ function resetFormProdValues() {
 $("#modalProdData").on('hidden.bs.modal', function () {
     console.log('hidden.bs.modal');
     resetFormProdValues();
+});
+
+function resetFormProdSecondValues(){
+    $('#saveProdData').show();
+    $('#formProdDataSecondStamp')[0].reset();
+    $('#divProdLotInput').removeClass('d-none');
+    $('#divProdLotView').addClass('d-none');
+    $('select[name="opt_name[]"]').val(0).trigger('change');
+    $('#txtProdDataId').val('');
+    $('#txtProdSamp').prop('readonly', false);
+    $('#txtTtlMachOutput').prop('readonly', false);
+    $('#txtProdDate').prop('readonly', false);
+    $('#txtNGCount').prop('readonly', true);
+    $('#selOperator').prop('disabled', false);
+    $('#txtOptShift').prop('readonly', true);
+    $('#txtSetupPin').prop('readonly', false);
+    $('#txtAdjPin').prop('readonly', false);
+    $('#txtQcSamp').prop('readonly', false);
+    $('#selOperator').prop('readonly', false);
+    $('#txtTargetOutput').prop('readonly', false);
+    $('#txtInptPins').prop('readonly', false);
+    $('#txtActQty').prop('readonly', false);
+
+}
+$("#modalProdSecondStamp").on('hidden.bs.modal', function () {
+    console.log('hidden.bs.modal');
+    resetFormProdSecondValues();
 });
 
 function fnSelect2EmployeeName(comboId){

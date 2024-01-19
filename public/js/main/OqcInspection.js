@@ -1,3 +1,32 @@
+checkedDrawCount = [0,0,0]
+function redirect_to_drawing(drawing, index) {
+    console.log('Drawing No.:',drawing)
+    if( drawing  == 'N/A'){
+        alert('No Document Required')
+    }
+    else{
+        window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
+        checkedDrawCount[index] = 1
+    }
+    console.log('Check View Document:', checkedDrawCount)
+}
+
+function SetClassRemove(elementId, value){
+    $(`.${elementId}`).removeClass('btn-dark')
+    $(`.${elementId}`).addClass(`${value}`)
+}
+
+function defectiveCounts(){
+    // $('.defectiveCount').on('change', function () {
+        $('.defectiveCount').on('keyup', function () {
+            $('.defectiveCount').each(function (indexInArray, valueOfElement) { 
+                console.log('indexInArray',indexInArray)
+                console.log('valueOfElement',valueOfElement)
+            });
+        });
+    // });
+}
+
 function ScanUserById() {
     $('#mdlScanQrCode').modal('show')
     $('#mdlScanQrCode').on('shown.bs.modal', function () {
@@ -370,14 +399,32 @@ function GetOqcInspectionById(getPo,
             'getProdShipOutput' : getProdShipOutput,
         },
         dataType: "json",
+        beforeSend: function(){
+            GetAQL($('.aqlDropdown'))
+            GetFamily($('.familyDropdown'))
+            GetMOD($('.inspectionModDropdown_0'))
+            GeStampingLine($('.stampingLineDropdown'))
+            GetInspectionType($('.inspectionTypeDropdown'))
+            GetInspectionLevel($('.inspectionLevelDropdown'))
+            GetSeverityInspection($('.severityInspectionDropdown'))
+        },
+
         success: function(response){
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
             
-            $('#txtBDrawing').val(firstStampingProduction[0].material_name)
-            $('#txtBDrawingNo').val(firstStampingProduction[0].acdcs_active_doc_info[0].doc_no)
-            $('#txtBDrawingRevision').val(firstStampingProduction[0].acdcs_active_doc_info[0].rev_no)
+            $('#txtBDrawing').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_title)
+            $('#txtBDrawingNo').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_no)
+            $('#txtBDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].rev_no)
+
+            $('#txtUdDrawing').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_title)
+            $('#txtUdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_no)
+            $('#txtUdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].rev_no)
+
+            $('#txtInspStdDrawing').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_title)
+            $('#txtInspStdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_no)
+            $('#txtInspStdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].rev_no)
 
             $('#txtOqcInspectionPoNo').val(getPo)
             $('#txtOqcInspectionPoQty').val(getPoQty)
@@ -390,7 +437,6 @@ function GetOqcInspectionById(getPo,
                 $('#dateOqcInspectionApplicationDate').val(getOqcInspectionData[0].app_date)
                 $('#timeOqcInspectionApplicationTime').val(getOqcInspectionData[0].app_time)
                 $('#slctOqcInspectionProductCategory').val(getOqcInspectionData[0].prod_category)
-                // $('#txtOqcInspectionPoNo').val(getOqcInspectionData[0].po_no)
                 $('#txtOqcInspectionCustomer').val(getOqcInspectionData[0].customer)
                 $('#txtOqcInspectionFamily').val(getOqcInspectionData[0].family)
                 $('#txtOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
