@@ -41,15 +41,30 @@
                 /* background-color: powderblue; */
             }
 
-            .sanno_details{
+            /* .sanno_details{
                 position: relative;
                 top: 120px;
                 left: 50px;
+            } */
+
+            .sanno_details{
+                /* text-align: center; */
+                position: relative;
+                top: 120px;
+                /* left: 0;
+                right: 0;
+                bottom: 0; */
+
+                width: 95%;
+                height: 5%;
+                margin: auto;
+                border: 1 solid black;
             }
 
-            .sanno_details .data span{
+            .sanno_details .data{
                 text-align: center;
             }
+
 
 
             /* .data{
@@ -83,7 +98,13 @@
             </div>
             <div class="sanno_details">
                 <div class="data">
-                    <span style="margin-right: 100px;">SANNO PHILS. MANUFACTURING CORP.</span>
+                    <span>SANNO PHILS. MANUFACTURING CORP.
+                </div>
+                <div class="data">Special Export Processing Zone, Gateway Business Park,</div>
+                <div class="data">Javalera, Gen. Trias, Cavite, Philippines</div>
+            </div>
+            <div class="sanno_details">
+                <div class="data">
                     <span>SANNO PHILS. MANUFACTURING CORP.</span>
                 </div>
                 <div class="data">Special Export Processing Zone, Gateway Business Park,</div>

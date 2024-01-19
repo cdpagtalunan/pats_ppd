@@ -107,7 +107,7 @@
                                                 <tr>
                                                     <th>Packing List Ctrl #</th>
                                                     <th>Material name</th>
-                                                    <th>Lot #</th>
+                                                    <th>Production Lot #</th>
                                                     <th>Shipment Qty</th>
 
                                                     <th>Name</th>

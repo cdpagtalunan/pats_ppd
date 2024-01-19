@@ -65,6 +65,10 @@ Route::view('/ipqc_inspection','ipqc_inspection')->name('ipqc_inspection');
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');
 
+/* PACKING  */
+Route::view('/packing_details','packing_details')->name('packing_details');
+
+
 /* PACKING LIST */
 Route::view('/packing_list','packing_list')->name('packing_list');
 Route::view('/packing_list_settings','packing_list_settings')->name('packing_list_settings');

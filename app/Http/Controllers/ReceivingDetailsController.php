@@ -23,7 +23,7 @@ class ReceivingDetailsController extends Controller
             $result .= "<center>";
             if($sanno_receiving_data->status == 0){
                 $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
-            }else if($sanno_receiving_data->status == 2){
+            }else if($sanno_receiving_data->status == 1){
                 $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
 
             }
@@ -39,14 +39,14 @@ class ReceivingDetailsController extends Controller
             }
             else if($sanno_receiving_data->status == 1){
                 $result .= '<span class="badge bg-info">For IQC Inspection</span>';
-            }else{
-                $result .= '<span class="badge bg-success">Accepted</span>';
                 $result .= '<br>';
                 if($sanno_receiving_data->printing_status == 0) {
                     $result .= '<span class="badge bg-primary">For Printing</span>';
                 }else{
                     $result .= '<span class="badge bg-primary">Reprinting</span>';
                 }
+            }else{
+                $result .= '<span class="badge bg-success">Accepted</span>';
             }
 
             $result .= "</center>";
