@@ -66,7 +66,7 @@
                                         <div class="col-sm-2">
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
-                                                <button class="btn btn-primary"><i class="fa-solid fa-qrcode"></i></button>
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
                                                 <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
                                             </div>
@@ -113,7 +113,7 @@
                                     </div> <br><br>
                                     <div class="table-responsive">
                                         <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                        <table id="tblProd" class="table table-sm table-bordered table-striped table-hover"
+                                        <table id="tblProdSecondStamp" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
@@ -146,7 +146,7 @@
 
         <!-- MODALS -->
         {{-- * ADD --}}
-        <div class="modal fade" id="" data-bs-backdrop="static">
+        <div class="modal fade" id="modalProdSecondStamp" data-bs-backdrop="static">
             <div class="modal-dialog modal-sm-xl" style="min-width: 80% !important;">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -155,7 +155,9 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="post" id="formProdData" autocomplete="off">
+                    <input type="hidden" name="stamp_cat" id="txtStampCat" value="2">
+
+                    <form method="post" id="formProdDataSecondStamp" autocomplete="off">
                         @csrf
                         <div class="modal-body">
                             <input type="hidden" id="txtProdDataId" name="id">
@@ -166,33 +168,33 @@
                                             <input type="hidden" name="ctrl_counter" id="txtCtrlCounter">
 
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="status" id="" value="0" disabled>
-                                                <label class="form-check-label" for="">For IPQC</label>
+                                                <input class="form-check-input" type="radio" name="status" id="radioIQC" value="0" disabled>
+                                                <label class="form-check-label" for="radioIQC">For IPQC</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="status" id="" value="1" disabled>
-                                                <label class="form-check-label" for="">For Mass Production</label>
+                                                <input class="form-check-input" type="radio" name="status" id="radioMassProd" value="1" disabled>
+                                                <label class="form-check-label" for="radioMassProd">For Mass Production</label>
                                             </div>
                                             <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="radio" name="status" id="" value="2" disabled>
-                                                <label class="form-check-label" for="">For Re-Setup</label>
+                                                <input class="form-check-input" type="radio" name="status" id="radioResetup" value="2" disabled>
+                                                <label class="form-check-label" for="radioResetup">For Re-Setup</label>
                                             </div>
 
                                             <div class="form-group">
                                                 <label class="form-label">PO Number:</label>
-                                                <input type="text" class="form-control form-control-sm" name="po_num" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="po_num" id="txtPoNumber" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">PO Quantity:</label>
-                                                <input type="text" class="form-control form-control-sm" name="po_qty" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="po_qty" id="txtPoQty" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Part Code:</label>
-                                                <input type="text" class="form-control form-control-sm" name="part_code" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="part_code" id="txtPartCode" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Name:</label>
-                                                <input type="text" class="form-control form-control-sm" name="mat_name" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="mat_name" id="txtMatName" readonly>
                                             </div>
                                             {{-- <div class="form-group">
                                                 <label class="form-label">Material Lot No.:</label>
@@ -200,22 +202,26 @@
                                             </div> --}}
                                             <div class="form-group">
                                                 <label class="form-label">Drawing No.:</label>
-                                                <input type="text" class="form-control form-control-sm" name="drawing_no" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="drawing_no" id="txtDrawingNo" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Drawing Revision:</label>
-                                                <input type="text" class="form-control form-control-sm" name="drawing_rev" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="drawing_rev" id="txtDrawingRev" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Operator Name:</label>
                                                 {{-- <input type="hidden" class="form-control form-control-sm" name="opt_id" id="txtOptID" readonly value="@php echo Auth::user()->id; @endphp"> --}}
                                                 {{-- <input type="text" class="form-control form-control-sm select2bs4" name="opt_name[]" id="txtOptName" readonly> --}}
-                                                <select name="opt_name[]" id="selOperator" class="form-control select2bs4 " multiple>
+                                                <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple>
                                                 </select>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shift:</label>
-                                                <input type="text" class="form-control form-control-sm" name="opt_shift" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Production Date:</label>
+                                                <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
                                             </div>
                                         </div>
                                     </div>
@@ -225,56 +231,57 @@
                                         <div class="card-body">
                                             <div class="form-group d-md-inline-flex">
                                                 <div class="form-check form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="cut_point" id="" value="0" checked>
-                                                    <label class="form-check-label" for="">w/o Cut Points</label>
+                                                    <input class="form-check-input" type="radio" name="tray" id="radioTrayWithout" value="0" checked>
+                                                    <label class="form-check-label" for="radioTrayWithout">w/o Tray</label>
                                                 </div>
                                                 <div class="form-check form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="cut_point" id="" value="1">
-                                                    <label class="form-check-label" for="">w/ Cut Points</label>
+                                                    <input class="form-check-input" type="radio" name="tray" id="radioTrayWith" value="1">
+                                                    <label class="form-check-label" for="radioTrayWith">w/ Tray</label>
                                                 </div>
                                                 <div>
-                                                    <input type="text" class="form-control form-control-sm" name="no_cut" id="" placeholder="No. of Cut" readonly>
+                                                    <input type="number" class="form-control form-control-sm" name="no_tray" id="txtNoTray" placeholder="No. of Tray" readonly>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Production Date:</label>
-                                                <input type="date" class="form-control form-control-sm" name="prod_date" id="">
-                                            </div>
+                                           
 
                                             <div class="form-group">
-                                                <label class="form-label">Input Coil Weight (kg):</label>
-                                                <input type="number" class="form-control form-control-sm" name="inpt_coil_weight" id="">
+                                                <label class="form-label">Input Pins:</label>
+                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins">
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">PPC Target Output (Pins):</label>
+                                                <label class="form-label">Actual Quantity:</label>
+                                                <input type="number" class="form-control form-control-sm" name="act_qty" id="txtActQty">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Target Output</label>
                                                 {{-- <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Input Coil Weight / 0.005)"></i> --}}
 
-                                                <input type="number" class="form-control form-control-sm" name="target_output" id="">
+                                                <input type="number" class="form-control form-control-sm" name="target_output" id="txtTargetOutput">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Planned Loss (10%) (Pins):</label>
                                                 <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(PPC Target Output * 0.1)"></i>
-                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="planned_loss" id="" readonly>
+                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="planned_loss" id="txtPlannedLoss" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Set-up Pins:</label>
-                                                <input type="number" class="form-control form-control-sm" name="setup_pins" id="">
+                                                <input type="number" class="form-control form-control-sm" name="setup_pins" id="txtSetupPin">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Adjustment Pins:</label>
-                                                <input type="number" class="form-control form-control-sm" name="adj_pins" id="">
+                                                <input type="number" class="form-control form-control-sm" name="adj_pins" id="txtAdjPin">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">QC Samples:</label>
-                                                <input type="number" class="form-control form-control-sm" name="qc_samp" id="">
+                                                <input type="number" class="form-control form-control-sm" name="qc_samp" id="txtQcSamp">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Prod. Samples:</label>
-                                                <input type="number" class="form-control form-control-sm" name="prod_samp" id="">
+                                                <input type="number" class="form-control form-control-sm" name="prod_samp" id="txtProdSamp">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">NG Count:</label>
-                                                <input type="number" class="form-control form-control-sm" name="ng_count" id="">
+                                                <input type="number" class="form-control form-control-sm" name="ng_count" id="txtNGCount">
                                             </div>
                                         </div>
                                     </div>
@@ -284,17 +291,17 @@
                                         <div class="card-body">
                                             <div class="form-group">
                                                 <label class="form-label">Total Machine Output:</label>
-                                                <input type="number" class="form-control form-control-sm" name="ttl_mach_output" id="">
+                                                <input type="number" class="form-control form-control-sm" name="ttl_mach_output" id="txtTtlMachOutput">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shipment Output:</label>
                                                 <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Total Machine Output - Set-up Pins + Adjustment Pins + QC Samples + Prod. Samples + NG Count)"></i>
-                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="ship_output" id="" readonly>
+                                                <input type="number" class="form-control form-control-sm" placeholder="Auto Compute" name="ship_output" id="txtShipOutput" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Yield:</label>
                                                 <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) Percent"></i>
-                                                <input type="text" class="form-control form-control-sm" placeholder="Auto Compute" name="mat_yield" id="" readonly>
+                                                <input type="text" class="form-control form-control-sm" placeholder="Auto Compute" name="mat_yield" id="txtMatYield" readonly>
                                             </div>
                                             {{-- <div class="form-group">
                                                 <label class="form-label">Production Lot #:</label>
@@ -303,14 +310,14 @@
 
                                             <label class="form-label">Production Lot #:</label>
                                             <div class="input-group input-group-sm mb-3" id="divProdLotInput">
-                                                <input type="text" class="form-control w-25" id="" name="prod_log_no_auto" oninput="this.value = this.value.toUpperCase()" readonly>
+                                                <input type="text" class="form-control w-25" id="prodLotNoAuto" name="prod_log_no_auto" oninput="this.value = this.value.toUpperCase()" readonly>
                                                 {{-- <span class="input-group-text">-</span> --}}
-                                                <input type="text" class="form-control" id="" name="prod_log_no_ext_1" oninput="this.value = this.value.toUpperCase()">
+                                                <input type="text" class="form-control" id="prodLotNoExt1" name="prod_log_no_ext_1" oninput="this.value = this.value.toUpperCase()">
                                                 <span class="input-group-text">-</span>
-                                                <input type="text" class="form-control" id="" name="prod_log_no_ext_2" oninput="this.value = this.value.toUpperCase()">
+                                                <input type="text" class="form-control" id="prodLotNoExt2" name="prod_log_no_ext_2" oninput="this.value = this.value.toUpperCase()">
                                             </div>
                                             <div class="input-group input-group-sm mb-3 d-none" id="divProdLotView">
-                                                <input type="text" class="form-control" id="" readonly>
+                                                <input type="text" class="form-control" id="txtProdLotView" readonly>
                                             </div>
 
                                             <label class="form-label">Material Lot No.:</label>
@@ -400,19 +407,37 @@
             </div>
         </div>
 
+        <div class="modal fade" id="modalScanPO" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        {{-- hidden_scanner_input --}}
+                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" name="" autocomplete="off"> --}}
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" value='{ "po": "450243013200010", "new_lot_no": "C240111-01MZ-1/sanno-ctrl-123" }' autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
+                        <div class="text-center text-secondary">Please scan PO Number.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
 
     @endsection
 
     @section('js_content')
         <script>
-            var prodData = {};
-            var img_barcode_PO_text_hidden;
-            var multipleMatId;
-            var printId;
-            var scanningFunction;
+            var poDetails;
+            var stampCat;
+            // var img_barcode_PO_text_hidden;
+            // var multipleMatId;
+            // var printId;
+            // var scanningFunction;
 
             $(document).ready(function(){
-                getOperatorList($('.selOpName'));
+                // getOperatorList($('.selOpName'));
 
                 // $('.select2').select2();
 
@@ -421,13 +446,14 @@
                 //     theme: 'bootstrap-5'
                 // });
 
-                dtDatatableProd = $("#tblProd").DataTable({
+                dtDatatableProdSecondStamp = $("#tblProdSecondStamp").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
                         url: "view_first_stamp_prod",
                          data: function (param){
                             param.po = $("#txtSearchPONum").val();
+                            param.stamp_cat = 2;
                         }
                     },
                     fixedHeader: true,
@@ -453,7 +479,7 @@
                     ],
                 });//end of dataTableDevices
 
-                $('#formProdData').submit(function(e){
+                $('#formProdDataSecondStamp').submit(function(e){
                     e.preventDefault();
                     $('#modalScanQRSave').modal('show');
                     $('#modalScanQRSaveText').html('Please Scan Employee ID.')
@@ -461,25 +487,19 @@
 
                     // $('input[name="scan_id"]').attr('id', 'txtScanUserId');
                 });
+                $('#modalScanPO').on('shown.bs.modal', function () {
+                    $('#txtScanPO').focus();
+                    $('#txtScanPO').on('keyup', function(e){
+                        if(e.keyCode == 13){
+                            getSecondStampReq($(this).val());
 
-                // $('#txtScanUserId').on('keyup', function(e){
-                //     if(e.keyCode == 13){
-                //         validateUser($(this).val().toUpperCase(), [0,4], function(result){
-                //             if(result == true){
-
-                //                 submitProdData($('#txtScanUserId').val().toUpperCase());
-                //             }
-                //             else{ // Error Handler
-                //                 toastr.error('User not authorize!');
-                //             }
-
-                //         });
-                //         setTimeout(() => {
-                //             $(this).val('');
-                            
-                //         }, 500);
-                //     }
-                // });
+                            // scannedItem = JSON.parse($(this).val());
+                            $('#txtScanPO').val('');
+                            $('#modalScanPO').modal('hide');
+                        }
+                    });
+                });
+              
                 $('#txtTargetOutput').on('keyup', function(e){
                     // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
                     // let ppcTargtOut = 0;
@@ -551,8 +571,9 @@
 
                 $('#btnAddProdData').on('click', function(e){
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
-                        checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'])
-                        getProdLotNoCtrl();
+                        console.log(poDetails);
+                        checkMatrix(poDetails['part_code'], poDetails['material_name'], '2nd Stamping')
+                        // getProdLotNoCtrl();
 
                         // OPERATOR SHIFT
                         $time_now = moment().format('LT');
@@ -588,14 +609,15 @@
                 $(document).on('click', '.btnViewProdData', function(e){
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
+                    let stampCategory = $(this).data('stampcat');
                     // getProdDataToView(id);
-                    getProdDataById(id, btnFunction);
+                    getProdDataById(id, btnFunction, stampCategory);
                 });
 
                 $(document).on('click', '.btnPrintProdData', function(e){
                     printId = $(this).data('id');
                     let printCount = $(this).data('printcount');
-                    // console.log(printCount);
+                    stampCat = $(this).data('stampcat');
                     if(printCount > 0){
                         Swal.fire({
                             // title: "Are you sure?",
@@ -614,7 +636,7 @@
                         });
                     }
                     else{
-                        printProdData(printId);
+                        printProdData(printId, stampCat);
                     }
                 });
 
@@ -704,7 +726,9 @@
 
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        $(`#${multipleMatId}`).val($(this).val());
+                        let scannedItem = JSON.parse($(this).val());
+                        // $(`#${multipleMatId}`).val($(this).val());
+                        $(`#${multipleMatId}`).val(scannedItem['new_lot_no']);
                         $(this).val('');
                         $('#modalScanQr').modal('hide');
                     }
@@ -713,17 +737,18 @@
                 $(document).on('click', '.btnMassProd', function(e){
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
-                    // console.log(btnFunction);
-                    getProdDataById(id, btnFunction);
+                    let stampCategory = $(this).data('stampcat');
+
+                    getProdDataById(id, btnFunction, stampCategory);
                 });
 
-                $('input[name="cut_point"]').on('change', function(){
+                $('input[name="tray"]').on('change', function(){
                     if($(this).val() == 0){
-                        $('#txtNoCut').prop('readonly', true);
+                        $('#txtNoTray').prop('readonly', true);
 
                     }
                     else{
-                        $('#txtNoCut').prop('readonly', false);
+                        $('#txtNoTray').prop('readonly', false);
                     }
                 });
 
@@ -732,7 +757,6 @@
                     let btnFunction = $(this).data('function');
                     console.log('btnFunction', btnFunction);
                     getProdDataById(id, btnFunction);
-
                 });
 
 
@@ -746,7 +770,8 @@
                         validateUser($(this).val().toUpperCase(), [0,4], function(result){
                             if(result == true){
 
-                                submitProdData($('#txtScanUserId').val().toUpperCase());
+                                // console.log($('#formProdDataSecondStamp').serialize())
+                                submitProdData($('#txtScanUserId').val().toUpperCase(), $('#formProdDataSecondStamp'), $('#txtStampCat').val());
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');

@@ -155,6 +155,8 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
+                    <input type="hidden" name="stamp_cat" id="txtStampCat" value="1">
+
                     <form method="post" id="formProdData" autocomplete="off">
                         @csrf
                         <div class="modal-body">
@@ -217,6 +219,10 @@
                                                 <label class="form-label">Shift:</label>
                                                 <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
                                             </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Production Date:</label>
+                                                <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -233,13 +239,10 @@
                                                     <label class="form-check-label" for="radioCutPointWith">w/ Cut Points</label>
                                                 </div>
                                                 <div>
-                                                    <input type="text" class="form-control form-control-sm" name="no_cut" id="txtNoCut" placeholder="No. of Cut" readonly>
+                                                    <input type="number" class="form-control form-control-sm" name="no_cut" id="txtNoCut" placeholder="No. of Cut" readonly>
                                                 </div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Production Date:</label>
-                                                <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
-                                            </div>
+                                            
 
                                             <div class="form-group">
                                                 <label class="form-label">Input Coil Weight (kg):</label>
@@ -439,6 +442,7 @@
             var printId;
             var scanningFunction;
             var historyId = 0;
+            var stampCat;
             $(document).ready(function(){
                 // getOperatorList($('.selOpName'));
 
@@ -449,6 +453,7 @@
                         url: "view_first_stamp_prod",
                          data: function (param){
                             param.po = $("#txtSearchPONum").val();
+                            param.stamp_cat = 1;
                         }
                     },
                     fixedHeader: true,
@@ -572,7 +577,7 @@
 
                 $('#btnAddProdData').on('click', function(e){
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
-                        checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'])
+                        checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'], '1st Stamping')
                         getProdLotNoCtrl();
 
                         // OPERATOR SHIFT
@@ -609,13 +614,16 @@
                 $(document).on('click', '.btnViewProdData', function(e){
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
+                    let stampCategory = $(this).data('stampcat');
+
                     // getProdDataToView(id);
-                    getProdDataById(id, btnFunction);
+                    getProdDataById(id, btnFunction, stampCategory);
                 });
 
                 $(document).on('click', '.btnPrintProdData', function(e){
                     printId = $(this).data('id');
                     let printCount = $(this).data('printcount');
+                    stampCat = $(this).data('stampcat');
                     // console.log(printCount);
                     if(printCount > 0){
                         Swal.fire({
@@ -734,8 +742,10 @@
                 $(document).on('click', '.btnMassProd', function(e){
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
+                    let stampCategory = $(this).data('stampcat');
+                    
                     // console.log(btnFunction);
-                    getProdDataById(id, btnFunction);
+                    getProdDataById(id, btnFunction, stampCategory);
                 });
 
                 $('input[name="cut_point"]').on('change', function(){
@@ -810,7 +820,7 @@
                         validateUser($(this).val().toUpperCase(), [0,4], function(result){
                             if(result == true){
 
-                                submitProdData($('#txtScanUserId').val().toUpperCase());
+                                submitProdData($('#txtScanUserId').val().toUpperCase(), $('#formProdData'), $('#txtStampCat').val());
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');

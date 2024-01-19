@@ -3,23 +3,24 @@
 use Illuminate\Support\Facades\Route;
 
 // Controllers
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\UserLevelController;
 use App\Http\Controllers\StampingIpqcController;
-use App\Http\Controllers\FirstStampingController;
+use App\Http\Controllers\StampingController;
 use App\Http\Controllers\IqcInspectionController;
 use App\Http\Controllers\OQCInspectionController;
-use App\Http\Controllers\MaterialProcessController;
-use App\Http\Controllers\CustomerDetailsController;
 use App\Http\Controllers\CarrierDetailsController;
-use App\Http\Controllers\LoadingPortDetailsController;
-use App\Http\Controllers\DestinationPortDetailsController;
-use App\Http\Controllers\PackingListDetailsController;
+// use App\Http\Controllers\SecondStampingController;
+use App\Http\Controllers\CustomerDetailsController;
+use App\Http\Controllers\MaterialProcessController;
 use App\Http\Controllers\ReceivingDetailsController;
-use App\Http\Controllers\PdfController;
+use App\Http\Controllers\LoadingPortDetailsController;
+use App\Http\Controllers\PackingListDetailsController;
+use App\Http\Controllers\DestinationPortDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,7 +133,7 @@ Route::controller(ProcessController::class)->group(function () {
 });
 
 // FIRST STAMPING CONTROLLER
-Route::controller(FirstStampingController::class)->group(function () {
+Route::controller(StampingController::class)->group(function () {
     Route::post('/save_prod_data', 'save_prod_data')->name('save_prod_data');
     Route::get('/view_first_stamp_prod', 'view_first_stamp_prod')->name('view_first_stamp_prod');
     Route::get('/get_data_req_for_prod_by_po', 'get_data_req_for_prod_by_po')->name('get_data_req_for_prod_by_po');
@@ -142,6 +143,12 @@ Route::controller(FirstStampingController::class)->group(function () {
     Route::get('/get_prod_lot_no_ctrl', 'get_prod_lot_no_ctrl')->name('get_prod_lot_no_ctrl');
     Route::get('/get_operator_list', 'get_operator_list')->name('get_operator_list');
     Route::get('/change_print_count', 'change_print_count')->name('change_print_count');
+    Route::get('/get_history_details', 'get_history_details')->name('get_history_details');
+
+
+    // SECON STAMPING
+    Route::get('/get_2_stamp_reqs', 'get_2_stamp_reqs')->name('get_2_stamp_reqs');
+
 });
 
 // STAMPING -> IPQC CONTROLLER
@@ -165,6 +172,7 @@ Route::controller(PdfController::class)->group(function () {
 
 //IQC Inspection
 Route::controller(IqcInspectionController::class)->group(function () {
+    Route::get('/get_iqc_inspection_by_judgement', 'getIqcInspectionByJudgement')->name('get_iqc_inspection_by_judgement');
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
     Route::get('/get_whs_transaction_by_id', 'getWhsTransactionById')->name('get_whs_transaction_by_id');
     Route::get('/get_family', 'getFamily')->name('get_family');
@@ -177,6 +185,8 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
     //http://192.168.3.246/pmi-subsystem/iqcdbgetitemdetails
     //http://192.168.3.246/pmi-subsystem/iqcdbgetongoing
+
+
 });
 
 
@@ -243,6 +253,8 @@ Route::controller(ReceivingDetailsController::class)->group(function () {
     Route::get('/view_receiving_details', 'viewReceivingListDetails')->name('view_receiving_details');
     Route::get('/get_receiving_details', 'getReceivingListdetails')->name('get_receiving_details');
     Route::post('/update_receiving_details', 'updateReceivingDetails')->name('update_receiving_details');
+    Route::get('/print_receiving_qr_code', 'printReceivingQrCode')->name('print_receiving_qr_code');
+    Route::get('/change_print_status', 'changePrintStatus')->name('change_print_status');
 });
 
 

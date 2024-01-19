@@ -1,8 +1,7 @@
-const submitProdData = async (scannedId) => {
-    console.log(scannedId);
+const submitProdData = async (scannedId, form, stampCat) => {
     $('input[name="status"]').prop('disabled', false);
 
-    let data = $.param({'scanned_id': scannedId }) + "&" + $('#formProdData').serialize();
+    let data = $.param({'scanned_id': scannedId, 'stamp_cat': stampCat }) + "&" + form.serialize();
     await $.ajax({
         type: "post",
         url: "save_prod_data",
@@ -12,100 +11,133 @@ const submitProdData = async (scannedId) => {
        
         success: function (response) {
             if(response['result'] == 1){
-                $('#modalProdData').modal('hide');
                 $('#modalScanQRSave').modal('hide');
-                dtDatatableProd.draw();
+
+                if(stampCat == 1){
+                    dtDatatableProd.draw();
+                    $('#modalProdData').modal('hide');
+                }
+                else{
+                    dtDatatableProdSecondStamp.draw();
+                    $('#modalProdSecondStamp').modal('hide');
+                }
                 toastr.success(`${response['msg']}`);
             }
             else{ // ! ERROR HANDLER
                 toastr.error('Please input required fields.');
                 if(response['error']['mat_lot_no'] === undefined){
-                    $('#txtMatLotNo').removeClass('is-invalid');
-                    $('#txtMatLotNo').attr('title', '');
+                    $('#txtMatLotNo', form).removeClass('is-invalid');
+                    $('#txtMatLotNo', form).attr('title', '');
                 }
                 else{
-                    $('#txtMatLotNo').addClass('is-invalid');
-                    $('#txtMatLotNo').attr('title', response['error']['mat_lot_no']);
+                    $('#txtMatLotNo', form).addClass('is-invalid');
+                    $('#txtMatLotNo', form).attr('title', response['error']['mat_lot_no']);
                 }
                 if(response['error']['opt_shift'] === undefined){
-                    $('#txtOptShift').removeClass('is-invalid');
-                    $('#txtOptShift').attr('title', '');
+                    $('#txtOptShift', form).removeClass('is-invalid');
+                    $('#txtOptShift', form).attr('title', '');
                 }
                 else{
-                    $('#txtOptShift').addClass('is-invalid');
-                    $('#txtOptShift').attr('title', response['error']['opt_shift']);
+                    $('#txtOptShift', form).addClass('is-invalid');
+                    $('#txtOptShift', form).attr('title', response['error']['opt_shift']);
                 }
                 if(response['error']['prod_date'] === undefined){
-                    $('#txtProdDate').removeClass('is-invalid');
-                    $('#txtProdDate').attr('title', '');
+                    $('#txtProdDate', form).removeClass('is-invalid');
+                    $('#txtProdDate', form).attr('title', '');
                 }
                 else{
-                    $('#txtProdDate').addClass('is-invalid');
-                    $('#txtProdDate').attr('title', response['error']['prod_date']);
+                    $('#txtProdDate', form).addClass('is-invalid');
+                    $('#txtProdDate', form).attr('title', response['error']['prod_date']);
                 }
                 if(response['error']['prod_lot_no'] === undefined){
-                    $('#txtProdLotNo').removeClass('is-invalid');
-                    $('#txtProdLotNo').attr('title', '');
+                    $('#txtProdLotNo', form).removeClass('is-invalid');
+                    $('#txtProdLotNo', form).attr('title', '');
                 }
                 else{
-                    $('#txtProdLotNo').addClass('is-invalid');
-                    $('#txtProdLotNo').attr('title', response['error']['prod_lot_no']);
+                    $('#txtProdLotNo', form).addClass('is-invalid');
+                    $('#txtProdLotNo', form).attr('title', response['error']['prod_lot_no']);
                 }
                 if(response['error']['inpt_coil_weight'] === undefined){
-                    $('#txtInptCoilWeight').removeClass('is-invalid');
-                    $('#txtInptCoilWeight').attr('title', '');
+                    $('#txtInptCoilWeight', form).removeClass('is-invalid');
+                    $('#txtInptCoilWeight', form).attr('title', '');
                 }
                 else{
-                    $('#txtInptCoilWeight').addClass('is-invalid');
-                    $('#txtInptCoilWeight').attr('title', response['error']['inpt_coil_weight']);
+                    $('#txtInptCoilWeight', form).addClass('is-invalid');
+                    $('#txtInptCoilWeight', form).attr('title', response['error']['inpt_coil_weight']);
                 }
                 if(response['error']['setup_pins'] === undefined){
-                    $('#txtSetupPin').removeClass('is-invalid');
-                    $('#txtSetupPin').attr('title', '');
+                    $('#txtSetupPin', form).removeClass('is-invalid');
+                    $('#txtSetupPin', form).attr('title', '');
                 }
                 else{
-                    $('#txtSetupPin').addClass('is-invalid');
-                    $('#txtSetupPin').attr('title', response['error']['setup_pins']);
+                    $('#txtSetupPin', form).addClass('is-invalid');
+                    $('#txtSetupPin', form).attr('title', response['error']['setup_pins']);
                 }
                 if(response['error']['adj_pins'] === undefined){
-                    $('#txtAdjPin').removeClass('is-invalid');
-                    $('#txtAdjPin').attr('title', '');
+                    $('#txtAdjPin', form).removeClass('is-invalid');
+                    $('#txtAdjPin', form).attr('title', '');
                 }
                 else{
-                    $('#txtAdjPin').addClass('is-invalid');
-                    $('#txtAdjPin').attr('title', response['error']['adj_pins']);
+                    $('#txtAdjPin', form).addClass('is-invalid');
+                    $('#txtAdjPin', form).attr('title', response['error']['adj_pins']);
                 }
                 if(response['error']['qc_samp'] === undefined){
-                    $('#txtQcSamp').removeClass('is-invalid');
-                    $('#txtQcSamp').attr('title', '');
+                    $('#txtQcSamp', form).removeClass('is-invalid');
+                    $('#txtQcSamp', form).attr('title', '');
                 }
                 else{
-                    $('#txtQcSamp').addClass('is-invalid');
-                    $('#txtQcSamp').attr('title', response['error']['qc_samp']);
+                    $('#txtQcSamp', form).addClass('is-invalid');
+                    $('#txtQcSamp', form).attr('title', response['error']['qc_samp']);
                 }
                 if(response['error']['prod_samp'] === undefined){
-                    $('#txtProdSamp').removeClass('is-invalid');
-                    $('#txtProdSamp').attr('title', '');
+                    $('#txtProdSamp', form).removeClass('is-invalid');
+                    $('#txtProdSamp', form).attr('title', '');
                 }
                 else{
-                    $('#txtProdSamp').addClass('is-invalid');
-                    $('#txtProdSamp').attr('title', response['error']['prod_samp']);
+                    $('#txtProdSamp', form).addClass('is-invalid');
+                    $('#txtProdSamp', form).attr('title', response['error']['prod_samp']);
                 }
                 if(response['error']['ttl_mach_output'] === undefined){
-                    $('#txtTtlMachOutput').removeClass('is-invalid');
-                    $('#txtTtlMachOutput').attr('title', '');
+                    $('#txtTtlMachOutput', form).removeClass('is-invalid');
+                    $('#txtTtlMachOutput', form).attr('title', '');
                 }
                 else{
-                    $('#txtTtlMachOutput').addClass('is-invalid');
-                    $('#txtTtlMachOutput').attr('title', response['error']['ttl_mach_output']);
+                    $('#txtTtlMachOutput', form).addClass('is-invalid');
+                    $('#txtTtlMachOutput', form).attr('title', response['error']['ttl_mach_output']);
                 }
                 if(response['error']['ng_count'] === undefined){
-                    $('#txtNGCount').removeClass('is-invalid');
-                    $('#txtNGCount').attr('title', '');
+                    $('#txtNGCount', form).removeClass('is-invalid');
+                    $('#txtNGCount', form).attr('title', '');
                 }
                 else{
-                    $('#txtNGCount').addClass('is-invalid');
-                    $('#txtNGCount').attr('title', response['error']['ng_count']);
+                    $('#txtNGCount', form).addClass('is-invalid');
+                    $('#txtNGCount', form).attr('title', response['error']['ng_count']);
+                }
+                if(response['error']['target_output'] === undefined){
+                    $('#txtTargetOutput', form).removeClass('is-invalid');
+                    $('#txtTargetOutput', form).attr('title', '');
+                }
+                else{
+                    $('#txtTargetOutput', form).addClass('is-invalid');
+                    $('#txtTargetOutput', form).attr('title', response['error']['target_output']);
+                }
+
+
+                if(response['error']['inpt_pins'] === undefined){
+                    $('#txtInptPins', form).removeClass('is-invalid');
+                    $('#txtInptPins', form).attr('title', '');
+                }
+                else{
+                    $('#txtInptPins', form).addClass('is-invalid');
+                    $('#txtInptPins', form).attr('title', response['error']['inpt_pins']);
+                }
+                if(response['error']['act_qty'] === undefined){
+                    $('#txtActQty', form).removeClass('is-invalid');
+                    $('#txtActQty', form).attr('title', '');
+                }
+                else{
+                    $('#txtActQty', form).addClass('is-invalid');
+                    $('#txtActQty', form).attr('title', response['error']['act_qty']);
                 }
                 
             }
@@ -118,12 +150,13 @@ const submitProdData = async (scannedId) => {
     });
 }
 
-const getProdDataById = async (id, btnFunction) => {
+const getProdDataById = async (id, btnFunction, stampCat) => {
     await $.ajax({
         type: "get",
         url: "get_prod_data_view",
         data: {
-            "id" : id
+            "id" : id,
+            "stamp_cat" : stampCat
         },
         beforeSend: function(){
             $('#divProdLotView').removeClass('d-none');
@@ -134,7 +167,6 @@ const getProdDataById = async (id, btnFunction) => {
         dataType: "json",
         success: function (response) {
             var counter = 0;
-            $('#modalProdData').modal('show');
             $('#txtProdDataId').val(response['id'])
             $('#txtPoNumber').val(response['po_num'])
             $('#txtPoQty').val(response['po_qty'])
@@ -147,8 +179,6 @@ const getProdDataById = async (id, btnFunction) => {
             $('#txtOptShift').val(response['shift'])
             $('#txtProdDate').val(response['prod_date'])
             // $('#txtProdLotNo').val(response['prod_lot_no'])
-            $('#txtInptCoilWeight').val(response['input_coil_weight'])
-            $('#txtTargetOutput').val(response['ppc_target_output'])
             $('#txtPlannedLoss').val(response['planned_loss'])
             $('#txtSetupPin').val(response['set_up_pins'])
             $('#txtAdjPin').val(response['adj_pins'])
@@ -171,6 +201,7 @@ const getProdDataById = async (id, btnFunction) => {
                 $('#radioMassProd').prop('checked', false);
                 $('#radioResetup').prop('checked', false);
                 $('.matNo').prop('readonly', true);
+                
                 
             }
             else if(response['status'] == 3){
@@ -200,18 +231,11 @@ const getProdDataById = async (id, btnFunction) => {
 
             $(`#txtTtlMachOutput_0`).val(response['material_lot_no']);
 
-            // let arrayMatLotNo = response['material_lot_no'].split(", ");
-            // for(let x = 0; x < arrayMatLotNo.length; x++){
-            //     if($('#multipleCounter').val() != counter){
-            //         $('#btnAddMatNo').click();
-            //     }
-            //     $(`#txtTtlMachOutput_${x}`).val(arrayMatLotNo[x]);
-            //     counter++
-            // }
             if(btnFunction == 0){
                 $('#saveProdData').hide();
 
                 $('#formProdData :input').attr('readonly','readonly');
+                $('#formProdDataSecondStamp :input').attr('readonly','readonly');
                 $('#selOperator').prop('disabled', true);
             }
             else if(btnFunction == 1){ // FOR MASS PROD INPUTTING
@@ -223,6 +247,10 @@ const getProdDataById = async (id, btnFunction) => {
                 $('#txtQcSamp').prop('readonly', true);
                 $('#txtTargetOutput').prop('readonly', true);
                 $('#txtNGCount').prop('readonly', true);
+
+                $('#txtInptPins', $('#formProdDataSecondStamp')).prop('readonly', true);
+                $('#txtActQty', $('#formProdDataSecondStamp')).prop('readonly', true);
+                $('input[name="tray"]',  $('#formProdDataSecondStamp')).prop('disabled', true);
 
                 $('#saveProdData').show();
             }
@@ -240,17 +268,34 @@ const getProdDataById = async (id, btnFunction) => {
                 $('#txtNGCount').prop('readonly', false);
 
             }
+
+            if(stampCat == 1){
+                $('#modalProdData').modal('show');
+                $('#txtTargetOutput').val(response['ppc_target_output'])
+                $('#txtInptCoilWeight').val(response['input_coil_weight'])
+
+                
+            }
+            else{
+                $('#modalProdSecondStamp').modal('show');
+                $('#txtTargetOutput').val(response['target_output'])
+                $('#txtInptPins').val(response['input_pins'])
+                $('#txtActQty').val(response['actual_qty'])
+
+            }
+
             
         }
     });
 }
 
-const printProdData = async (id) => {
+const printProdData = async (id, stampCat) => {
     await $.ajax({
         type: "get",
         url: "print_qr_code",
         data: {
-            "id" : id
+            "id" : id,
+            'stamp_cat' : stampCat
         },
         dataType: "json",
         success: function (response) {
@@ -260,26 +305,26 @@ const printProdData = async (id) => {
             img_barcode_PO_text_hidden = response['label_hidden'];
             $('#modalPrintQr').modal('show');
             console.log(response);
-
-
         }
     });
 }
 
-const checkMatrix = async (code, name) => {
+const checkMatrix = async (code, name, process) => {
     await $.ajax({
         type: "get",
         url: "check_matrix",
         data: {
-            "code" : code,
-            "name" : name
+            "code"   : code,
+            "name"   : name,
+            'process': process
         },
         dataType: "json",
+        beforeSend: function(){
+            getOperatorList($('.selOpName'));
+            
+        },
         success: function (response) {
-            if(response['result'] == 2){
-                toastr.error(`${response['msg']}`);
-            }
-            else{
+            if(response['result'] == 1){ // FIRST STAMPING
                 $('#txtPoNumber').val(prodData['poReceiveData']['OrderNo']);
                 $('#txtPoQty').val(prodData['poReceiveData']['OrderQty']);
                 $('#txtPartCode').val(prodData['poReceiveData']['ItemCode']);
@@ -288,6 +333,19 @@ const checkMatrix = async (code, name) => {
                 $('#txtDrawingRev').val(prodData['drawings']['rev']);
                 // $('#txtOptName').val($('#globalSessionName').val());
                 $('#modalProdData').modal('show');
+            }
+            else if(response['result'] == 2){ // SECOND STAMPING
+                $('#txtPoNumber').val(poDetails['po_num']);
+                $('#txtPoQty').val(poDetails['po_qty']);
+                $('#txtPartCode').val(poDetails['part_code']);
+                $('#txtMatName').val(poDetails['material_name']);
+                $('#txtDrawingNo').val(poDetails['drawing_no']);
+                $('#txtDrawingRev').val(poDetails['drawing_rev']);
+                $('#modalProdSecondStamp').modal('show');
+            }
+            else{
+                toastr.error(`${response['msg']}`);
+
             }
             
         }
@@ -343,6 +401,31 @@ const changePrintCount = (printedId) => {
     });
 }
 
+const getSecondStampReq = (params) => {
+    $.ajax({
+        type: "get",
+        url: "get_2_stamp_reqs",
+        data: {
+            "params" : params
+        },
+        dataType: "json",
+        beforeSend: function(){
+            getOperatorList($('.selOpName'));
+        },
+        success: function (response) {
+
+            console.log(response);
+            $('#txtSearchPONum').val(response['poDetails'][0]['po_num'])
+            $('#txtSearchMatName').val(response['poDetails'][0]['material_name'])
+            $('#txtSearchPO').val(response['poDetails'][0]['po_qty'])
+
+            poDetails = response['poDetails'][0];
+            $('#txtCtrlCounter').val(response['ctrl']);
+            $('#prodLotNoAuto').val(`${response['poDetails'][0]['drawing_rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`)
+            dtDatatableProdSecondStamp.draw();
+        }
+    });
+}
 // const getHistoryDetails = async (id) => {
 //     // await $.ajax({
 //     //     type: "get",
