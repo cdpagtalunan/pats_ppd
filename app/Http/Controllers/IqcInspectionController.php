@@ -6,9 +6,10 @@ use DataTables;
 use App\Models\TblWarehouse;
 use Illuminate\Http\Request;
 use App\Models\IqcInspection;
-use App\Models\IqcInspectionsMod;
 use App\Models\DropdownIqcAql;
+use App\Models\ReceivingDetails;
 use App\Models\DropdownIqcFamily;
+use App\Models\IqcInspectionsMod;
 use Illuminate\Support\Facades\DB;
 use App\Models\DropdownIqcTargetLar;
 use Maatwebsite\Excel\Facades\Excel;
@@ -27,7 +28,7 @@ class IqcInspectionController extends Controller
     }
     public function loadWhsTransaction(){
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
-            Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
+            Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
         */
         $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('
@@ -37,7 +38,7 @@ class IqcInspectionController extends Controller
                 WHERE whs_transaction.inspection_class = 0
                 ORDER BY whs.PartNumber DESC
         ');
-        
+
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
@@ -85,7 +86,7 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' receiving-detail-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -116,7 +117,7 @@ class IqcInspectionController extends Controller
     }
 
     public function loadIqcInspection(){
-        /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab 
+        /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
             NOTE: If the data exist to iqc_inspections it means the data is already inspected
         */
         $tbl_iqc_inspected = DB::connection('mysql')
@@ -131,11 +132,11 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
-        
+
         ->addColumn('status', function($row){
             $iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$row->whs_transaction_id)->get();
             $result = '';
@@ -195,16 +196,16 @@ class IqcInspectionController extends Controller
         */
     }
 
-    public function getWhsTransactionById(Request $request){
+    public function getIqcInspectionById(Request $request){
+        // return $tbl_whs_trasanction = IqcInspection::where('id',$request->iqc_inspection_id)
+        // ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
+        return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
+        ->where('id',$request->iqc_inspection_id)
+        ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
+    }
 
-        $is_exist_iqc_inspection_by_whs_trasaction_id = IqcInspection::where('whs_transaction_id',$request->whs_transaction_id)->exists();
-
-        if($is_exist_iqc_inspection_by_whs_trasaction_id == 1){
-            return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
-            ->where('whs_transaction_id',$request->whs_transaction_id)
-            ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
-
-        }else{
+    public function getWhsReceivingById(Request $request){
+        if($request->whs_transaction_id != 0){
             return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('
                 SELECT whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.Username as "whs_transaction_username",
@@ -218,14 +219,14 @@ class IqcInspectionController extends Controller
                 LIMIT 0,1
             ');
         }
+        if($request->receiving_detail_id != 0){
+            return $tbl_whs_trasanction = ReceivingDetails::where('id',$request->receiving_detail_id)->get([
+                'id as receiving_detail_id','supplier_lot_no as lot_no','supplier_quantity as total_lot_qty','part_code as partcode',
+                'mat_name as partname','supplier_name as supplier',
+            ]);
+        }
     }
-
-    public function getWhsDetailsById(Request $request){
-        return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
-            ->where('whs_transaction_id',$request->whs_transaction_id)
-            ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
-    }
-
+  
     public function getFamily(){
         $dropdown_iqc_family =  DropdownIqcFamily::get();
         foreach ($dropdown_iqc_family as $key => $value_dropdown_iqc_family) {
@@ -306,18 +307,15 @@ class IqcInspectionController extends Controller
             $arr_sum_mod_lot_qty = array_sum($mod_lot_qty);
 
             if(isset($request->iqc_inspection_id)){ //Edit
-                /* All required fields is the $request validated, check the column is IqcInspectionRequest
-                    NOTE: the name of fields must be match in column name
-                */
+
                 $update_iqc_inspection = IqcInspection::where('id', $request->iqc_inspection_id)->update($request->validated());
-                /*  All not required fields should to be inside the update method below
-                    NOTE: the name of fields must be match in column name
-                */
+
                 IqcInspection::where('id', $request->iqc_inspection_id)
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
                 ]);
+
                 $iqc_inspections_id = $request->iqc_inspection_id;
             }else{ //Add
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
@@ -327,15 +325,28 @@ class IqcInspectionController extends Controller
                 /*  All not required fields should to be inside the update method below
                     NOTE: the name of fields must be match in column name
                 */
+                // return 'true';
                 IqcInspection::where('id', $create_iqc_inspection->id)
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
-
                 ]);
-                $iqc_inspections_id = $create_iqc_inspection->id;
 
-            
+                /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
+                if($request->whs_transaction_id != 0){
+                    TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
+                    ->update([
+                        'inspection_class' => 3,
+                    ]);
+                }
+                /* Update status ReceivingDetails into 2*/
+                if($request->receiving_detail_id != 0){
+                    ReceivingDetails::where('id', $request->receiving_detail_id)
+                    ->update([
+                        'status' => 2,
+                    ]);
+                }
+                $iqc_inspections_id = $create_iqc_inspection->id;
             }
             /* Uploading of file if checked & iqc_coc_file is exist*/
             if(isset($request->iqc_coc_file) ){
@@ -371,12 +382,6 @@ class IqcInspectionController extends Controller
                     ]);
                 }
             }
-            /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */
-            TblWarehouseTransaction::where('pkid', $request->whs_transaction_id)
-            ->update([
-                'inspection_class' => 3,
-            ]);
-
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
             throw $th;
