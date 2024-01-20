@@ -22,8 +22,11 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
-    public function loadWhsTransaction(Request $request){
 
+    public function getIqcInspectionByJudgement(Request $request){
+        return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
+    }
+    public function loadWhsTransaction(){
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
         */
@@ -223,7 +226,7 @@ class IqcInspectionController extends Controller
             ]);
         }
     }
-
+  
     public function getFamily(){
         $dropdown_iqc_family =  DropdownIqcFamily::get();
         foreach ($dropdown_iqc_family as $key => $value_dropdown_iqc_family) {

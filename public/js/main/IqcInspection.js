@@ -9,6 +9,7 @@
         iqcWshDetails: '',
         iqcInspected: ''
     };
+
     const form = {
         iqcInspection : $('#formSaveIqcInspection')
     };
@@ -632,4 +633,3 @@
             }
         });
     }
-

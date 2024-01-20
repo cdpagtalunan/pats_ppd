@@ -133,6 +133,14 @@
                                     </a>
                                 </li>
                             </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('second_stamping_prod') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>2nd Stamping</p>
+                                    </a>
+                                </li>
+                            </ul>
                             {{-- <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('second_stamping_prod') }}" class="nav-link">
@@ -146,7 +154,29 @@
                     @endif
                     
                     @if (in_array(Auth::user()->position, [0,6,7,9]))
-                        <li class="nav-header mt-3"><strong>PACKING LIST</strong></li>
+                        <li class="nav-header mt-3"><strong>PACKING</strong></li>
+
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="fa-solid fa-box-open"></i>
+                                <p> Packing</p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"> </i>
+                            </a>
+
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('packing_details') }}" class="nav-link">
+                                        {{-- <i class="fas fa-dolly"> </i> --}}
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Packing Details</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->position, [0,6,7,9]))
+                        <li class="nav-header mt-3"><strong>PPC</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="fas fa-shipping-fast"> </i>
@@ -175,6 +205,7 @@
                             </ul>
                         </li>
                     @endif
+
                     
                     @if (in_array(Auth::user()->position, [0,6]))
                         <li class="nav-header mt-3"><strong>WAREHOUSE</strong></li>

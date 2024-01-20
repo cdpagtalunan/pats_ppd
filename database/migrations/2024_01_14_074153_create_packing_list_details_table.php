@@ -28,7 +28,7 @@ class CreatePackingListDetailsTable extends Migration
             $table->string('product_to')->nullable();
             $table->string('port_of_loading')->nullable();
             $table->string('port_of_destination')->nullable();
-            // $table->string('sold_to')->nullable();
+            $table->string('carrier')->nullable();
             // $table->string('ship_to')->nullable();
             $table->string('prepared_by')->nullable();
             $table->string('checked_by')->nullable();

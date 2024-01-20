@@ -142,10 +142,17 @@
                                                         data-bs-target="#modalIpqcInspection" id="btnAddProdData">
                                                         <i class="fa-solid fa-plus"></i> Add IPQC Inspection</button> --}}
                                                     {{-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalExport">Generate Excel Report</button> --}}
-                                                    <button class="btn btn-success" data-bs-toggle="modal"
+                                                    {{-- <div id="btnExportPDF"></div> --}}
+                                                    <button class="btn btn-primary" data-bs-toggle="modal"
+                                                        data-bs-target="#modalExportPackingList" id="btnExportPackingList">
+                                                            <i class="fa-solid fa-file-export"></i> Export Packing List (PDF)
+                                                        </a>
+                                                    </button>
+
+                                                    {{-- <button class="btn btn-success" data-bs-toggle="modal"
                                                         data-bs-target="#modalExportPackingList" id="btnExportPackingList">
                                                             <i class="fa-solid fa-file-export"></i> Export Packing List
-                                                    </button>
+                                                    </button> --}}
                                                 </div>
 
                                                 <div class="table-responsive">
@@ -264,7 +271,7 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPastFyIcon" class="fas fa-file-download" ></i> Download</button>
+                            <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download" ></i> Download</button>
                         </div>
                     </form>
                 </div>
@@ -500,14 +507,15 @@
                         { "data" : "ipqc_inspected_date" },
                     ],
                     // "rowCallback" : function(row, data, index){
-                    //     if(data.stamping_ipqc != null){
-                    //         if (data.stamping_ipqc.status == 3 && data.status == 1){
-                    //             $("td",row).css("background-color","#80ffbf");
-                    //         }else if(data.stamping_ipqc.status == 4 && data.stamping_ipqc.judgement == "Rejected"){
-                    //             $("td",row).css("background-color","#ff6666");
-                    //             $("td",row).css("color","#ffffff");
-                    //         }
-                    //     }
+                        // if(data.stamping_ipqc != null){
+                        //     if (data.stamping_ipqc.status == 3 && data.status == 1){
+                        //         $("td",row).css("background-color","#80ffbf");
+                        //     }else if(data.stamping_ipqc.status == 4 && data.stamping_ipqc.judgement == "Rejected"){
+                        //         $("td",row).css("background-color","#ff6666");
+                        //         $("td",row).css("color","#ffffff");
+                        //     }
+                        // }
+
                     // }
                 });
 
@@ -1054,9 +1062,11 @@
 
                 $('#formGeneratePackingList').submit(function (e){
                     e.preventDefault();
-                    let CtrlNo = $('#txtCtrlNo').val();
+                    let CtrlNo = 'ctrl-test-123';
+                    // let CtrlNo = $('#txtCtrlNo').val();
                     // console.log(test);
-                    window.location.href = "export/"+CtrlNo;
+                    // window.location.href = "export/"+CtrlNo;
+                    window.location.href = "view_pdf/"+CtrlNo;
                     $('#modalExportPackingList').modal('hide');
                 });
             });

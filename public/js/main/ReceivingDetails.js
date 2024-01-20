@@ -20,3 +20,38 @@ function getReceivingDetailsId(receivingDetailsId){
         }
     });
 }
+
+const printReceivingData = async (id) => {
+    await $.ajax({
+        type: "get",
+        url: "print_receiving_qr_code",
+        data: {
+            "id" : id
+        },
+        dataType: "json",
+        success: function (response) {
+            response['label_hidden'][0]['id'] = id;
+            $("#img_barcode_PO").attr('src', response['qrCode']);
+            $("#img_barcode_PO_text").html(response['label']);
+            img_barcode_PO_text_hidden = response['label_hidden'];
+            $('#modalPrintQr').modal('show');
+            console.log(response);
+
+
+        }
+    });
+}
+
+const changePrintStatus = (printedId) => {
+    $.ajax({
+        type: "get",
+        url: "change_print_status",
+        data: {
+            id: printedId
+        },
+        dataType: "dataType",
+        success: function (response) {
+            
+        }
+    });
+}

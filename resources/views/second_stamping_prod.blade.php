@@ -48,7 +48,7 @@
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
                                 <li class="breadcrumb-item">Production</li>
-                                <li class="breadcrumb-item active">First Stamping</li>
+                                <li class="breadcrumb-item active">Second Stamping</li>
                             </ol>
                         </div>
                     </div>
@@ -66,9 +66,9 @@
                                         <div class="col-sm-2">
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
-                                                {{-- <button class="btn btn-primary"><i class="fa-solid fa-qrcode"></i></button> --}}
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010">
+                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -113,7 +113,7 @@
                                     </div> <br><br>
                                     <div class="table-responsive">
                                         <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                        <table id="tblProd" class="table table-sm table-bordered table-striped table-hover"
+                                        <table id="tblProdSecondStamp" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
@@ -146,7 +146,7 @@
 
         <!-- MODALS -->
         {{-- * ADD --}}
-        <div class="modal fade" id="modalProdData" data-bs-backdrop="static">
+        <div class="modal fade" id="modalProdSecondStamp" data-bs-backdrop="static">
             <div class="modal-dialog modal-sm-xl" style="min-width: 80% !important;">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -155,9 +155,9 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <input type="hidden" name="stamp_cat" id="txtStampCat" value="1">
+                    <input type="hidden" name="stamp_cat" id="txtStampCat" value="2">
 
-                    <form method="post" id="formProdData" autocomplete="off">
+                    <form method="post" id="formProdDataSecondStamp" autocomplete="off">
                         @csrf
                         <div class="modal-body">
                             <input type="hidden" id="txtProdDataId" name="id">
@@ -231,25 +231,29 @@
                                         <div class="card-body">
                                             <div class="form-group d-md-inline-flex">
                                                 <div class="form-check form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="cut_point" id="radioCutPointWithout" value="0" checked>
-                                                    <label class="form-check-label" for="radioCutPointWithout">w/o Cut Points</label>
+                                                    <input class="form-check-input" type="radio" name="tray" id="radioTrayWithout" value="0" checked>
+                                                    <label class="form-check-label" for="radioTrayWithout">w/o Tray</label>
                                                 </div>
                                                 <div class="form-check form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" name="cut_point" id="radioCutPointWith" value="1">
-                                                    <label class="form-check-label" for="radioCutPointWith">w/ Cut Points</label>
+                                                    <input class="form-check-input" type="radio" name="tray" id="radioTrayWith" value="1">
+                                                    <label class="form-check-label" for="radioTrayWith">w/ Tray</label>
                                                 </div>
                                                 <div>
-                                                    <input type="number" class="form-control form-control-sm" name="no_cut" id="txtNoCut" placeholder="No. of Cut" readonly>
+                                                    <input type="number" class="form-control form-control-sm" name="no_tray" id="txtNoTray" placeholder="No. of Tray" readonly>
                                                 </div>
                                             </div>
-                                            
+                                           
 
                                             <div class="form-group">
-                                                <label class="form-label">Input Coil Weight (kg):</label>
-                                                <input type="number" class="form-control form-control-sm" name="inpt_coil_weight" id="txtInptCoilWeight">
+                                                <label class="form-label">Input Pins:</label>
+                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins">
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">PPC Target Output (Pins):</label>
+                                                <label class="form-label">Actual Quantity:</label>
+                                                <input type="number" class="form-control form-control-sm" name="act_qty" id="txtActQty">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="form-label">Target Output</label>
                                                 {{-- <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Input Coil Weight / 0.005)"></i> --}}
 
                                                 <input type="number" class="form-control form-control-sm" name="target_output" id="txtTargetOutput">
@@ -387,21 +391,40 @@
         </div>
 
 
-        {{-- <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-sm modal-dialog-top" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-bottom-0 pb-0">
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body pt-0">
+                        {{-- hidden_scanner_input --}}
                         <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan the material lot #.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
-        <div class="modal fade" id="modalHistory" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="modalScanPO" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        {{-- hidden_scanner_input --}}
+                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" name="" autocomplete="off"> --}}
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" value='{ "po": "450243013200010", "new_lot_no": "C240111-01MZ-1/sanno-ctrl-123" }' autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
+                        <div class="text-center text-secondary">Please scan PO Number.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalHistorySecondStamp" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -410,7 +433,7 @@
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive">
-                            <table id="tblHistory" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                            <table id="tblHistorySecondStamp" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -436,23 +459,31 @@
 
     @section('js_content')
         <script>
-            var prodData = {};
-            var img_barcode_PO_text_hidden;
-            var multipleMatId;
-            var printId;
-            var scanningFunction;
-            var historyId = 0;
+            var poDetails;
+            var stampCat;
+            // var img_barcode_PO_text_hidden;
+            // var multipleMatId;
+            // var printId;
+            // var scanningFunction;
+
             $(document).ready(function(){
                 // getOperatorList($('.selOpName'));
 
-                dtDatatableProd = $("#tblProd").DataTable({
+                // $('.select2').select2();
+
+                // //Initialize Select2 Elements
+                // $('.select2bs4').select2({
+                //     theme: 'bootstrap-5'
+                // });
+
+                dtDatatableProdSecondStamp = $("#tblProdSecondStamp").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
                         url: "view_first_stamp_prod",
                          data: function (param){
                             param.po = $("#txtSearchPONum").val();
-                            param.stamp_cat = 1;
+                            param.stamp_cat = 2;
                         }
                     },
                     fixedHeader: true,
@@ -478,7 +509,7 @@
                     ],
                 });//end of dataTableDevices
 
-                $('#formProdData').submit(function(e){
+                $('#formProdDataSecondStamp').submit(function(e){
                     e.preventDefault();
                     $('#modalScanQRSave').modal('show');
                     $('#modalScanQRSaveText').html('Please Scan Employee ID.')
@@ -486,25 +517,19 @@
 
                     // $('input[name="scan_id"]').attr('id', 'txtScanUserId');
                 });
+                $('#modalScanPO').on('shown.bs.modal', function () {
+                    $('#txtScanPO').focus();
+                    $('#txtScanPO').on('keyup', function(e){
+                        if(e.keyCode == 13){
+                            getSecondStampReq($(this).val());
 
-                // $('#txtScanUserId').on('keyup', function(e){
-                //     if(e.keyCode == 13){
-                //         validateUser($(this).val().toUpperCase(), [0,4], function(result){
-                //             if(result == true){
-
-                //                 submitProdData($('#txtScanUserId').val().toUpperCase());
-                //             }
-                //             else{ // Error Handler
-                //                 toastr.error('User not authorize!');
-                //             }
-
-                //         });
-                //         setTimeout(() => {
-                //             $(this).val('');
-                            
-                //         }, 500);
-                //     }
-                // });
+                            // scannedItem = JSON.parse($(this).val());
+                            $('#txtScanPO').val('');
+                            $('#modalScanPO').modal('hide');
+                        }
+                    });
+                });
+              
                 $('#txtTargetOutput').on('keyup', function(e){
                     // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
                     // let ppcTargtOut = 0;
@@ -536,48 +561,49 @@
                     // }
                 });
 
-                $(document).on('keypress', '#txtSearchPONum', function(e){
-                    if(e.keyCode == 13){
-                        $.ajax({
-                            type: "get",
-                            url: "get_search_po",
-                            data: {
-                                "po" : $(this).val()
-                            },
-                            dataType: "json",
-                            beforeSend: function(){
-                                prodData = {};
-                            },
-                            success: function (response) {
-                                console.log(response);
-                                if(response.length > 0){
-                                    prodData['poReceiveData'] = response[0];
-                                    console.log(response);
-                                    $.ajax({
-                                        type: "get",
-                                        url: "get_data_req_for_prod_by_po",
-                                        data: {
-                                            "item_code" : response[0]['ItemCode']
-                                        },
-                                        dataType: "json",
-                                        success: function (result) {
-                                            $('#txtSearchMatName').val(response[0]['ItemName']);
-                                            $('#txtSearchPO').val(response[0]['OrderQty']);
-                                            prodData['drawings'] = result
-                                            console.log(prodData);
-                                            dtDatatableProd.draw();
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
-                });
+                // $(document).on('keypress', '#txtSearchPONum', function(e){
+                //     if(e.keyCode == 13){
+                //         $.ajax({
+                //             type: "get",
+                //             url: "get_search_po",
+                //             data: {
+                //                 "po" : $(this).val()
+                //             },
+                //             dataType: "json",
+                //             beforeSend: function(){
+                //                 prodData = {};
+                //             },
+                //             success: function (response) {
+                //                 console.log(response);
+                //                 if(response.length > 0){
+                //                     prodData['poReceiveData'] = response[0];
+                //                     console.log(response);
+                //                     $.ajax({
+                //                         type: "get",
+                //                         url: "get_data_req_for_prod_by_po",
+                //                         data: {
+                //                             "item_code" : response[0]['ItemCode']
+                //                         },
+                //                         dataType: "json",
+                //                         success: function (result) {
+                //                             $('#txtSearchMatName').val(response[0]['ItemName']);
+                //                             $('#txtSearchPO').val(response[0]['OrderQty']);
+                //                             prodData['drawings'] = result
+                //                             console.log(prodData);
+                //                             dtDatatableProd.draw();
+                //                         }
+                //                     });
+                //                 }
+                //             }
+                //         });
+                //     }
+                // });
 
                 $('#btnAddProdData').on('click', function(e){
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
-                        checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'], '1st Stamping')
-                        getProdLotNoCtrl();
+                        console.log(poDetails);
+                        checkMatrix(poDetails['part_code'], poDetails['material_name'], '2nd Stamping')
+                        // getProdLotNoCtrl();
 
                         // OPERATOR SHIFT
                         $time_now = moment().format('LT');
@@ -614,7 +640,6 @@
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
                     let stampCategory = $(this).data('stampcat');
-
                     // getProdDataToView(id);
                     getProdDataById(id, btnFunction, stampCategory);
                 });
@@ -622,7 +647,7 @@
                 $(document).on('click', '.btnPrintProdData', function(e){
                     printId = $(this).data('id');
                     let printCount = $(this).data('printcount');
-                    // console.log(printCount);
+                    stampCat = $(this).data('stampcat');
                     if(printCount > 0){
                         Swal.fire({
                             // title: "Are you sure?",
@@ -641,7 +666,7 @@
                         });
                     }
                     else{
-                        printProdData(printId);
+                        printProdData(printId, stampCat);
                     }
                 });
 
@@ -731,7 +756,9 @@
 
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        $(`#${multipleMatId}`).val($(this).val());
+                        let scannedItem = JSON.parse($(this).val());
+                        // $(`#${multipleMatId}`).val($(this).val());
+                        $(`#${multipleMatId}`).val(scannedItem['new_lot_no']);
                         $(this).val('');
                         $('#modalScanQr').modal('hide');
                     }
@@ -741,18 +768,17 @@
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
                     let stampCategory = $(this).data('stampcat');
-                    
-                    // console.log(btnFunction);
+
                     getProdDataById(id, btnFunction, stampCategory);
                 });
 
-                $('input[name="cut_point"]').on('change', function(){
+                $('input[name="tray"]').on('change', function(){
                     if($(this).val() == 0){
-                        $('#txtNoCut').prop('readonly', true);
+                        $('#txtNoTray').prop('readonly', true);
 
                     }
                     else{
-                        $('#txtNoCut').prop('readonly', false);
+                        $('#txtNoTray').prop('readonly', false);
                     }
                 });
 
@@ -760,15 +786,15 @@
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
                     let stampCategory = $(this).data('stampcat');
-                    getProdDataById(id, btnFunction, stampCategory);
 
+                    getProdDataById(id, btnFunction, stampCategory);
                 });
-                
+
 
                 $(document).on('click', '.btnViewHistory', function(e){
                     historyId = $(this).data('id');
                     let po = $(this).data('po');
-                    dtDatatableHistory = $("#tblHistory").DataTable({
+                    dtDatatableHistory = $("#tblHistorySecondStamp").DataTable({
                         "processing" : true,
                         "serverSide" : true,
                         "paging": false, 
@@ -784,7 +810,6 @@
                         },
                         fixedHeader: true,
                         "columns":[
-
                             { 
                                 render: function (data, type, row, meta) {
                                     return meta.row + meta.settings._iDisplayStart + 1;
@@ -803,9 +828,10 @@
                         ],
                     });//end of dataTableDevices
 
-                    $('#modalHistory').modal('show');
+                    $('#modalHistorySecondStamp').modal('show');
 
                 })
+
 
 
             });
@@ -818,7 +844,8 @@
                         validateUser($(this).val().toUpperCase(), [0,4], function(result){
                             if(result == true){
 
-                                submitProdData($('#txtScanUserId').val().toUpperCase(), $('#formProdData'), $('#txtStampCat').val());
+                                // console.log($('#formProdDataSecondStamp').serialize())
+                                submitProdData($('#txtScanUserId').val().toUpperCase(), $('#formProdDataSecondStamp'), $('#txtStampCat').val());
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
