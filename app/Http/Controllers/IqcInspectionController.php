@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use DataTables;
+use App\Models\User;
 use App\Models\TblWarehouse;
 use Illuminate\Http\Request;
 use App\Models\IqcInspection;
@@ -12,6 +13,7 @@ use App\Models\DropdownIqcFamily;
 use App\Models\IqcInspectionsMod;
 use Illuminate\Support\Facades\DB;
 use App\Models\DropdownIqcTargetLar;
+use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\DropdownIqcTargetDppm;
 use App\Models\DropdownIqcModeOfDefect;
@@ -129,7 +131,9 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            if($row->inspector == Auth::user()->id){
+                $result .= "<button class='btn btn-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection' inspector='".$row->inspector."'><i class='fa-solid fa-pen-to-square'></i></button>";
+            }
             $result .= '</center>';
             return $result;
         })
@@ -174,7 +178,13 @@ class IqcInspectionController extends Controller
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['action','status','time_inspected'])
+        ->addColumn('qc_inspector', function($row){
+            $qc_inspector = User::where('id',$row->inspector)->get();
+            $result = '';
+            $result .= $qc_inspector[0]->firstname .' '. $qc_inspector[0]->lastname;
+            return $result;
+        })
+        ->rawColumns(['action','status','qc_inspector','time_inspected'])
         ->make(true);
         /*
             InvoiceNo
@@ -311,6 +321,7 @@ class IqcInspectionController extends Controller
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
+                    'inspector' => Auth::user()->id,
                 ]);
 
                 $iqc_inspections_id = $request->iqc_inspection_id;
@@ -327,6 +338,7 @@ class IqcInspectionController extends Controller
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
+                    'inspector' => Auth::user()->id,
                 ]);
 
                 /* Update rapid/db_pps TblWarehouseTransaction, set inspection_class to 3 */

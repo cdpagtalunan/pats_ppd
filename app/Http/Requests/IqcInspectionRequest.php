@@ -50,7 +50,7 @@ class IqcInspectionRequest extends FormRequest
             'date_inspected'=>'required',
             'time_ins_from'=>'required',
             'time_ins_to'=>'required',
-            'inspector'=>'required',
+            // 'inspector'=>'required',
             'submission'=>'required',
             'category'=>'required',
             'target_lar'=>'required',

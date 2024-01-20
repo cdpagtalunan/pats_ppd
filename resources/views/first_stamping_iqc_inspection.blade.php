@@ -127,6 +127,7 @@
                                                             <th>Lot No.</th>
                                                             <th>Lot Qty.</th>
                                                             {{-- <th>AQL</th> --}}
+                                                            <th>Inspector</th>
                                                             <th>Date Created</th>
                                                             <th>Date Updated</th>
                                                         </tr>
@@ -228,7 +229,7 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-                
+
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 

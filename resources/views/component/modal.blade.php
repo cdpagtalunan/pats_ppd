@@ -172,14 +172,14 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Accept</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0">
+                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Reject</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0">
+                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0" readonly>
                             </div>
                         </div>
                     </div>
@@ -223,7 +223,7 @@
                                 </div>
                                 {{-- <input class="form-control" value="{{ Auth::user()->username }}" readonly> --}}
                                 <select class="form-select" name="inspector" id="inspector">
-                                    <option value="{{ Auth::user()->username }}" selected>{{Auth::user()->firstname.' '.Auth::user()->lastname}}</option>
+                                    <option value="{{ Auth::user()->id }}" selected>{{Auth::user()->firstname.' '.Auth::user()->lastname}}</option>
                                 </select>
                             </div>
                             <div class="input-group input-group-sm mb-3">
@@ -275,7 +275,7 @@
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Inspected</span>
                                 </div>
                                     {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
-                                <input type="number" class="form-control form-control-sm" id="lot_inspected" name="lot_inspected" min="0">
+                                <input type="number" class="form-control form-control-sm" id="lot_inspected" name="lot_inspected" min="0" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
