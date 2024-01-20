@@ -28,8 +28,8 @@ body {
 }
 
 .modal-xl-custom{
-    width: 95% !important;
-    min-width: 90% !important;
+    width: 100% !important;
+    min-width: 100% !important;
 }
 
 .bg-success-custom{

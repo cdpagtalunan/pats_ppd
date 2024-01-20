@@ -110,11 +110,10 @@ class PackingListDetailsController extends Controller
             ->make(true);
     }
 
-
     public function viewProductionData(Request $request){
         $production_data = OQCInspection::with(['stamping_production_info'])
         ->where('po_no', 'like', '%' . $request->search_data . '%')
-        ->where('status', 2)
+        ->where('status', 1)
         ->get();
 
         if(!isset($request->search_data)){
@@ -155,7 +154,7 @@ class PackingListDetailsController extends Controller
     public function getDataFromProduction(Request $request){
         $get_production_data = OQCInspection::with(['stamping_production_info'])
         ->where('po_no', 'like', '%' . $request->search_data . '%')
-        ->where('status', 2)
+        ->where('status', 1)
         ->get();
 
         // return $request->search_data;
@@ -239,6 +238,7 @@ class PackingListDetailsController extends Controller
                             'pick_up_time'          => $time,
                             'product_from'          => $request->ship_from,
                             'product_to'            => $request->ship_to,
+                            'carrier'               => $request->carrier,
                             'port_of_loading'       => $request->loading_port,
                             'port_of_destination'   => $request->destination_port,
                             'prepared_by'           => $request->prepared_by,

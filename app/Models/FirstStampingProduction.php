@@ -24,7 +24,7 @@ class FirstStampingProduction extends Model
     }
 
     public function oqc_inspection_info(){
-        return $this->hasOne(OQCInspection::class, 'po_no', 'po_num');
+        return $this->hasOne(OQCInspection::class, 'po_no', 'po_num')->orderBy('id', 'DESC');
     }
 
     public function oqc_details(){

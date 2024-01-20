@@ -21,6 +21,7 @@ use App\Http\Controllers\ReceivingDetailsController;
 use App\Http\Controllers\LoadingPortDetailsController;
 use App\Http\Controllers\PackingListDetailsController;
 use App\Http\Controllers\DestinationPortDetailsController;
+use App\Http\Controllers\PackingDetailsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -265,6 +266,13 @@ Route::controller(ReceivingDetailsController::class)->group(function () {
     Route::get('/print_receiving_qr_code', 'printReceivingQrCode')->name('print_receiving_qr_code');
     Route::get('/change_print_status', 'changePrintStatus')->name('change_print_status');
 });
+
+Route::controller(PackingDetailsController::class)->group(function () {
+    Route::get('/view_packing_details_data', 'viewPackingDetailsData')->name('view_packing_details_data');
+
+});
+
+// 
 
 
 

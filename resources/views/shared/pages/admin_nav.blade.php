@@ -173,8 +173,10 @@
                                 </li>
                             </ul>
                         </li>
+                    @endif
 
-                        
+                    @if (in_array(Auth::user()->position, [0,6,7,9]))
+                        <li class="nav-header mt-3"><strong>PPC</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <i class="fas fa-shipping-fast"> </i>
@@ -203,6 +205,7 @@
                             </ul>
                         </li>
                     @endif
+
                     
                     @if (in_array(Auth::user()->position, [0,6]))
                         <li class="nav-header mt-3"><strong>WAREHOUSE</strong></li>

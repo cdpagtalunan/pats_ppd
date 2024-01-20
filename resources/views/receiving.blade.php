@@ -239,18 +239,18 @@
     <!-- /.modal -->
 
       <!-- MODALS -->
-      <div class="modal fade" id="modalScanQRtoReprint">
-        <div class="modal-dialog center">
-            <div class="modal-content modal-sm">
-                <div class="modal-body">
-                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserIdtoReprint" name="scan_id_to_reprint" autocomplete="off">
-                    <div class="text-center text-secondary"><span id="modalScanQRReprintText"></span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+        <div class="modal fade" id="modalScanQRtoReprint">
+            <div class="modal-dialog center">
+                <div class="modal-content modal-sm">
+                    <div class="modal-body">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserIdtoReprint" name="scan_id_to_reprint" autocomplete="off">
+                        <div class="text-center text-secondary"><span id="modalScanQRReprintText"></span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
                 </div>
+            <!-- /.modal-content -->
             </div>
-        <!-- /.modal-content -->
-        </div>
             <!-- /.modal-dialog -->
-    </div>
+        </div>
     <!-- /.modal -->
 
             {{-- MODAL FOR PRINTING  --}}
