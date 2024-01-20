@@ -11,11 +11,11 @@ class IqcInspection extends Model
 {
     use HasFactory;
     protected $connection = 'mysql';
-
     protected $table = 'iqc_inspections';
 
     protected $fillable = [
         'whs_transaction_id',
+        'receiving_detail_id',
         'invoice_no',
         'partcode',
         'partname',
