@@ -70,5 +70,5 @@
 <script src="{{ asset('public/js/main/ReceivingDetails.js') }}" async></script>
 
 {{-- IQC --}}
-<script src="{{ asset('public/js/main/IqcInspection.js') }}" async></script>
+<script src="{{ asset('public/js/main/IqcInspection.js') }}"></script>
 

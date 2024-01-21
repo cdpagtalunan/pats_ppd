@@ -53,6 +53,25 @@
         ],
     });
 
+    dataTable.iqcWshDetails = $(tbl.iqcWhsDetails).DataTable({
+        "processing" : true,
+        "serverSide" : true,
+        "ajax" : {
+            url: "load_whs_details",
+        },
+        fixedHeader: true,
+        "columns":[
+
+            { "data" : "action", orderable:false, searchable:false },
+            { "data" : "status", orderable:false, searchable:false },
+            { "data" : "Supplier" },
+            { "data" : "PartNumber" },
+            { "data" : "MaterialType" },
+            { "data" : "Lot_number" },
+
+        ],
+    });
+
     dataTable.iqcInspected = $(tbl.iqcInspected).DataTable({
         "processing" : true,
         "serverSide" : true,
@@ -75,29 +94,13 @@
             { "data" : "lot_no" },
             { "data" : "total_lot_qty" },
             // { "data" : "aql" }, //
+            { "data" : "qc_inspector" }, //
             { "data" : "created_at" },
             { "data" : "updated_at" },
         ],
     });
 
-    dataTable.iqcWshDetails = $(tbl.iqcWhsDetails).DataTable({
-        "processing" : true,
-        "serverSide" : true,
-        "ajax" : {
-            url: "load_whs_details",
-        },
-        fixedHeader: true,
-        "columns":[
-
-            { "data" : "action", orderable:false, searchable:false },
-            { "data" : "status", orderable:false, searchable:false },
-            { "data" : "Supplier" },
-            { "data" : "PartNumber" },
-            { "data" : "MaterialType" },
-            { "data" : "Lot_number" },
-
-        ],
-    });
+    
     
     const getFamily = function () {
         $.ajax({
@@ -124,120 +127,6 @@
                     result = '<option value="0" selected disabled> No record found </option>';
                 }
                 form.iqcInspection.find('select[name="family"]').html(result);
-            }
-        });
-    }
-    const getWhsTransactionById = function (whs_transaction_id) {
-        $.ajax({
-            type: "GET",
-            url: "get_whs_transaction_by_id",
-            data: {"whs_transaction_id" : whs_transaction_id},
-            dataType: "json",
-            success: function (response) {
-                let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
-                let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
-                let lotNo = response[0]['lot_no'];
-                let lotQty = response[0]['total_lot_qty'];
-                let iqcInspectionId = response[0]['iqc_inspection_id'];
-                let iqcInspectionsMods = response[0].iqc_inspections_mods;
-                let lotAccepted = response[0]['accepted'];
-                /* Display the Mode of Defects Button */
-                divDisplayNoneClass(lotAccepted);
-
-                $('#modalSaveIqcInspection').modal('show');
-                if( iqcInspectionId === undefined || iqcInspectionId === null ){
-                    form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
-                    form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
-                    form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
-                }else{
-                    form.iqcInspection.find('#target_lar').val(response[0]['target_lar']);
-                    form.iqcInspection.find('#target_dppm').val(response[0]['target_dppm']);
-                    form.iqcInspection.find('#app_no').val(response[0]['app_no']);
-                    form.iqcInspection.find('#date_inspected').val(response[0]['date_inspected']);
-                    form.iqcInspection.find('#time_ins_from').val(response[0]['time_ins_from']);
-                }
-
-                if( response[0]['iqc_coc_file'] === undefined || response[0]['iqc_coc_file'] === null ){
-                    form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
-                }else{
-                    form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
-                }
-
-                form.iqcInspection.find('#whs_transaction_id').val(whs_transaction_id);
-                form.iqcInspection.find('#iqc_inspection_id').val(iqcInspectionId);
-                form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
-                form.iqcInspection.find('#partcode').val(response[0]['partcode']);
-                form.iqcInspection.find('#partname').val(response[0]['partname']);
-                form.iqcInspection.find('#supplier').val(response[0]['supplier']);
-                form.iqcInspection.find('#total_lot_qty').val(lotQty);
-                form.iqcInspection.find('#lot_no').val(lotNo);
-                form.iqcInspection.find('#app_no_extension').val(response[0]['app_no_extension']);
-
-                form.iqcInspection.find('#die_no').val(response[0]['die_no']);
-                form.iqcInspection.find('#classification').val(response[0]['classification']);
-
-                form.iqcInspection.find('#type_of_inspection').val(response[0]['type_of_inspection']);
-                form.iqcInspection.find('#severity_of_inspection').val(response[0]['severity_of_inspection']);
-                form.iqcInspection.find('#accept').val(response[0]['accept']);
-                form.iqcInspection.find('#reject').val(response[0]['reject']);
-                form.iqcInspection.find('#shift').val(response[0]['shift']);
-                form.iqcInspection.find('#time_ins_to').val(response[0]['time_ins_to']);
-                form.iqcInspection.find('#inspector').val(response[0]['inspector']).trigger('change');
-                form.iqcInspection.find('#submission').val(response[0]['submission']);
-                form.iqcInspection.find('#category').val(response[0]['category']);
-                form.iqcInspection.find('#sampling_size').val(response[0]['sampling_size']);
-                form.iqcInspection.find('#no_of_defects').val(response[0]['no_of_defects']);
-                form.iqcInspection.find('#lot_inspected').val(response[0]['lot_inspected']);
-                form.iqcInspection.find('#accepted').val(lotAccepted);
-                form.iqcInspection.find('#judgement').val(response[0]['judgement']);
-                form.iqcInspection.find('#remarks').val(response[0]['remarks']);
-                form.iqcInspection.find('#iqc_coc_file').val('');
-                console.log('target_lar',response[0]);
-                setTimeout(() => {
-                    form.iqcInspection.find('#family').val(response[0]['family']).trigger("change");
-                    form.iqcInspection.find('#inspection_lvl').val(response[0]['inspection_lvl']).trigger("change");
-                    form.iqcInspection.find('#aql').val(response[0]['aql']).trigger("change");
-                }, 300);
-
-                console.log(iqcInspectionsMods);
-                $('#tblModeOfDefect tbody').empty();
-                arrTableMod.lotNo = [];
-                arrTableMod.modeOfDefects = [];
-                arrTableMod.lotQty = [];
-                if(iqcInspectionsMods === undefined){
-                    arrCounter.ctr = 0;
-                }else{
-                    btn.removeModLotNumber.prop('disabled',false);
-                    for (let i = 0; i < iqcInspectionsMods.length; i++) {
-                        let selectedLotNo = iqcInspectionsMods[i].lot_no
-                        let selectedMod = iqcInspectionsMods[i].mode_of_defects
-                        let selectedLotQty = iqcInspectionsMods[i].quantity
-                        arrCounter.ctr = i+1;
-                        var html_body  = '<tr>';
-                            html_body += '<td>'+arrCounter.ctr+'</td>';
-                            html_body += '<td>'+selectedLotNo+'</td>';
-                            html_body += '<td>'+selectedMod+'</td>';
-                            html_body += '<td>'+selectedLotQty+'</td>';
-                            html_body += '</tr>';
-                        $('#tblModeOfDefect tbody').append(html_body);
-
-                        arrTableMod.lotNo.push(selectedLotNo);
-                        arrTableMod.modeOfDefects.push(selectedMod);
-                        arrTableMod.lotQty.push(selectedLotQty);
-                    }
-                }
-                /*Mode of Defects Modal*/
-                $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-                $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
-                for (let i = 0; i < response.length; i++) {
-                    let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
-                    let optLotQty = `<option value="${lotQty}">${lotQty}</option>`;
-                    $('#mod_lot_no').append(optLotNo);
-                    $('#mod_quantity').append(optLotQty);
-
-                }
-                console.log('arrTableMod.lotNo',arrTableMod.lotNo);
-                console.log('arrTableMod.lotQty',arrTableMod.lotQty);
             }
         });
     }
@@ -315,7 +204,8 @@
                 let lotAccepted = response[0]['accepted'];
                 /* Display the Mode of Defects Button */
                 divDisplayNoneClass(lotAccepted);
-
+                /* Visual Inspection */
+                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
                 form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
                 form.iqcInspection.find('#receiving_detail_id').val(whsReceivingDetailId);
                 form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
@@ -326,7 +216,13 @@
                 form.iqcInspection.find('#lot_no').val(lotNo);
                 form.iqcInspection.find('#iqc_coc_file').val('');
 
-                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
+
+                /* Sampling Plan */
+                form.iqcInspection.find('#accept').val(0);
+                form.iqcInspection.find('#reject').val(1);
+
+                /* Visual Inspection Result */
+                form.iqcInspection.find('#lot_inspected').val(1);
                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
 
@@ -346,10 +242,7 @@
                 $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 for (let i = 0; i < response.length; i++) {
                     let optLotNo = `<option value="${lotNo}">${lotNo}</option>`;
-                    let optLotQty = `<option value="${lotQty}">${lotQty}</option>`;
                     $('#mod_lot_no').append(optLotNo);
-                    $('#mod_quantity').append(optLotQty);
-
                 }
                 console.log('whsarrTableMod',arrTableMod);
             }
@@ -600,6 +493,7 @@
                 if(data.status === 422){
                     errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#receiving_detail_id'));
                     errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#receiving_detail_id'));
+                    errorHandler(errors.app_no,form.iqcInspection.find('#app_no'));
                     errorHandler(errors.partcode,form.iqcInspection.find('#partcode'));
                     errorHandler(errors.partname,form.iqcInspection.find('#partname'));
                     errorHandler(errors.supplier,form.iqcInspection.find('#supplier'));
