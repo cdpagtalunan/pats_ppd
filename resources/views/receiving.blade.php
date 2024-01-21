@@ -37,8 +37,8 @@
             }
             /* .pmi_color{
                 background: #c0c0aa;
-                background: -webkit-linear-gradient(to right, #c0c0aa, #1cefff); 
-                background: linear-gradient(to right, #c0c0aa, #1cefff); 
+                background: -webkit-linear-gradient(to right, #c0c0aa, #1cefff);
+                background: linear-gradient(to right, #c0c0aa, #1cefff);
             } */
 
             #colDevice, #colMaterialProcess{
@@ -91,31 +91,72 @@
                                                 class="fas fa-clipboard-list"></i> Add Packing List
                                         </button> --}}
                                     </div> <br><br>
-                                    <div class="table-responsive">
-                                        {{-- <!-- style="max-height: 600px; overflow-y: auto;" --> --}}
-                                        <table id="tblReceivingDetails" class="table table-sm table-bordered table-striped table-hover"
-                                            style="width: 100%;">
-                                            <thead>
-                                                <tr>
-                                                    <th rowspan="2" class="text-center pl-5 pr-5">Action</th>
-                                                    <th rowspan="2" class="text-center pl-5 pr-5">Status</th>
-                                                    <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
-                                                    <th colspan="4" style="text-align: center;">PMI Details</th>
-                                                    <th colspan="3" style="text-align: center;">Supplier Details</th>
-                                                </tr>
-                                                
-                                                <tr>
-                                                    <th>Packing List Ctrl #</th>
-                                                    <th>Material name</th>
-                                                    <th>Production Lot #</th>
-                                                    <th>Shipment Qty</th>
 
-                                                    <th>Name</th>
-                                                    <th>Lot #</th>
-                                                    <th>Qty</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
+                                     <ul class="nav nav-tabs" id="myTab" role="tablist"> {{-- by nessa --}}
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">For Receive</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Accepted</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab"><br>
+                                            <div class="table-responsive">
+                                                {{-- <!-- style="max-height: 600px; overflow-y: auto;" --> --}}
+                                                <table id="tblReceivingDetails" class="table table-sm table-bordered table-striped table-hover"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th rowspan="2" class="text-center pl-5 pr-5">Action</th>
+                                                            <th rowspan="2" class="text-center pl-5 pr-5">Status</th>
+                                                            <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
+                                                            <th colspan="4" style="text-align: center;">PMI Details</th>
+                                                            <th colspan="3" style="text-align: center;">Supplier Details</th>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Packing List Ctrl #</th>
+                                                            <th>Material name</th>
+                                                            <th>Production Lot #</th>
+                                                            <th>Shipment Qty</th>
+
+                                                            <th>Name</th>
+                                                            <th>Lot #</th>
+                                                            <th>Qty</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade show" id="menu2" role="tabpanel" aria-labelledby="menu2-tab"><br>
+                                            <div class="table-responsive">
+                                                {{-- <!-- style="max-height: 600px; overflow-y: auto;" --> --}}
+                                                <table id="tblReceivingDetailsAccepted" class="table table-sm table-bordered table-striped table-hover"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
+                                                            <th colspan="4" style="text-align: center;">PMI Details</th>
+                                                            <th colspan="3" style="text-align: center;">Supplier Details</th>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <th>Packing List Ctrl #</th>
+                                                            <th>Material name</th>
+                                                            <th>Production Lot #</th>
+                                                            <th>Shipment Qty</th>
+
+                                                            <th>Name</th>
+                                                            <th>Lot #</th>
+                                                            <th>Qty</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -126,7 +167,7 @@
             </section>
         </div>
 
-    
+
     <!-- MODALS -->
      {{-- * ADD --}}
      <div class="modal fade" id="modalEditReceivingDetails" data-bs-backdrop="static">
@@ -142,7 +183,7 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="txtReceivingDetailsId" name="receiving_details_id">
-                        
+
                         <div class="row">
 
                             <div class="col-sm-6">
@@ -194,11 +235,11 @@
                                 </div>
                             </div>
 
-                            
 
-                            
 
-                         
+
+
+
 
                             {{-- <div hidden class="col-sm-6">
                                 <div class="form-group">
@@ -315,6 +356,33 @@
                 ],
             });
 
+            dtReceivingDetailsAccepted = $("#tblReceivingDetailsAccepted").DataTable({ // by nessa
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_receiving_details_accepted",
+                },
+                fixedHeader: true,
+                "columns":[
+                    { "data" : "supplier_pmi_lot_no"},
+                    { "data" : "control_no"},
+                    { "data" : "mat_name"},
+                    { "data" : "lot_no"},
+                    { "data" : "quantity"},
+                    { "data" : "supplier_name"},
+                    { "data" : "supplier_lot_no"},
+                    { "data" : "supplier_quantity"},
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": "_all"},
+                    {
+                        "targets": [2,5,6,7],
+                        "data": null,
+                        "defaultContent": "---"
+                    },
+                ],
+            });
+
             $(document).on('click', '.btnEditReceivingDetails', function(e){
                 // alert('pumasok na dito');
                 $('#modalEditReceivingDetails').modal('show');
@@ -373,7 +441,7 @@
                                         $("#txtSupplierQty").addClass('is-invalid');
                                         $("#txtSupplierQty").attr('title', response['error']['supplier_qty']);
                                     }
-                                
+
                             }else if(response['result'] == 0){
                                 toastr.success('Receiving Details Updated!');
                                 $('#modalEditReceivingDetails').modal('hide');
@@ -468,7 +536,7 @@
                 $('#txtScanUserIdtoReprint').focus();
             });
 
-                
+
             $(document).on('keyup','#txtScanUserIdtoReprint', function(e){
                 if(e.keyCode == 13){
                     if(scanningFunction === "reprintStamping"){
@@ -486,7 +554,7 @@
                     }
                     setTimeout(() => {
                         $(this).val('');
-                        
+
                     }, 500);
                 }
             });

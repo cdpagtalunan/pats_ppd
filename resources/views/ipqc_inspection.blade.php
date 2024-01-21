@@ -143,8 +143,7 @@
                                                         <i class="fa-solid fa-plus"></i> Add IPQC Inspection</button> --}}
                                                     {{-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalExport">Generate Excel Report</button> --}}
                                                     {{-- <div id="btnExportPDF"></div> --}}
-                                                    <button class="btn btn-primary" data-bs-toggle="modal"
-                                                        data-bs-target="#modalExportPackingList" id="btnExportPackingList">
+                                                    <button class="btn btn-primary" id="btnExportPackingList">
                                                             <i class="fa-solid fa-file-export"></i> Export Packing List (PDF)
                                                         </a>
                                                     </button>
@@ -258,13 +257,8 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <label>Select Ctrl # for Export</label>
-                                        <select class="form-control selectControlNumber" name="ctrl_no"
-                                            id="txtCtrlNo" style="width: 100%;">
-                                            <option value="" disabled selected>Select Ctrl #</option>
-                                            <option value="1">Ctrl# 1</option>
-                                            <option value="2">Ctrl# 2</option>
-                                        </select>
+                                        <label>Select Control # for Export</label>
+                                        <select class="form-control selectControlNumber" name="ctrl_no" id="txtCtrlNo" style="width: 100%;"></select>
                                     </div>
                                 </div>
                             </div>
@@ -1060,10 +1054,51 @@
                     });
                 };
 
+                $('#btnExportPackingList').click( function(e){
+                    $('#modalExportPackingList').modal('show');
+                    GetPackingListControlNo($(".selectControlNumber"));
+                });
+
+                function GetPackingListControlNo(cboElement){
+                    let result = '<option value="" disabled selected>--Select Control No.--</option>';
+                        $.ajax({
+                            url: 'get_packing_list_data',
+                            method: 'get',
+                            dataType: 'json',
+                            beforeSend: function() {
+                                    result = '<option value="0" disabled selected>--Loading--</option>';
+                                    cboElement.html(result);
+                            },
+                            success: function(response) {
+                                if (response['packing_list_data'].length > 0) {
+
+                                    // if(IpqcDocumentNo != ''){ //when Editting: Document No
+                                    //     result = '<option selected readonly value="' + IpqcDocumentNo + '">' + IpqcDocumentNo + '</option>';
+                                    // }else{ //when Inserting: Document No
+                                        result = '<option value="" disabled selected>--Select Control No.--</option>';
+                                    // }
+                                    // result += '<option value="N/A"> N/A </option>';
+                                    for (let index = 0; index < response['packing_list_data'].length; index++) {
+                                        result += '<option value="' + response['packing_list_data'][index].control_no + '">' + response['packing_list_data'][index].control_no + '</option>';
+                                    }
+                                } else {
+                                    result = '<option value="0" selected disabled> -- No record found -- </option>';
+                                }
+                                cboElement.html(result);
+                                cboElement.select2();
+                            },
+                            error: function(data, xhr, status) {
+                                result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                                cboElement.html(result);
+                                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                            }
+                        });
+                    }
+
                 $('#formGeneratePackingList').submit(function (e){
                     e.preventDefault();
-                    let CtrlNo = 'ctrl-test-123';
-                    // let CtrlNo = $('#txtCtrlNo').val();
+                    // let CtrlNo = 'ctrl-test-123';
+                    let CtrlNo = $('#txtCtrlNo').val();
                     // console.log(test);
                     // window.location.href = "export/"+CtrlNo;
                     window.location.href = "view_pdf/"+CtrlNo;

@@ -7,6 +7,9 @@
         <title>Packing List (PDF)</title>
         {{-- <link rel="stylesheet" href="{{ asset('public/css/custom.css')) }}" /> --}}
         @php
+
+            // $created_at = $packing_list_details[0]->created_at;
+            $created_at = explode(' ', $packing_list_details[0]->created_at);
             $row_data = [
                         ['C/NO.1','PO 123456','CT 3640 CF 1','M231220-01-1','150,001'],
                         ['C/NO.2','PO 123456','CT 3640 CF 2','M231220-01-2','150,002'],
@@ -82,8 +85,8 @@
                 width: 50%;
                 height: 5%; */
                 margin: 21px;
-                background-color: orange;
-                border: 1 solid black;
+                /* background-color: orange;
+                border: 1 solid black; */
             }
 
             .sanno_details .data{
@@ -145,6 +148,18 @@
                 border: 1 solid black;
             }
 
+            .table_content{
+                position: relative;
+                top: 180px;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                width: 97%;
+                height: 600px;
+                /* margin: auto; */
+                border: 1 solid black;
+            }
+
             .content_total{
                 position: relative;
                 top: 180px;
@@ -156,6 +171,106 @@
                 /* margin: auto; */
                 border: 1 solid black;
             }
+
+            .content_grand_total{
+                position: relative;
+                top: 200px;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                width: 97%;
+                height: 2%;
+                /* margin: auto; */
+                border: 1 solid black;
+            }
+
+            .doc_footer{
+                position: relative;
+                top: 200px;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                width: 97%;
+                height: 2%;
+                /* margin: auto; */
+                border: 1 solid black;
+            }
+
+            .doc_footer_data{
+                position: relative;
+                top: 220px;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                width: 97%;
+                height: 2%;
+                /* margin: auto; */
+                border: 1 solid black;
+            }
+
+            .doc_footer_position{
+                position: relative;
+                top: 230px;
+                left: 10px;
+                right: 0;
+                bottom: 0;
+                width: 97%;
+                height: 2%;
+                /* margin: auto; */
+                border: 1 solid black;
+            }
+
+            .test_sanno{
+                position: relative;
+                top: 250px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+
+                width: 100%;
+                height: 5%;
+                margin: auto;
+            }
+
+            .test{
+                display: inline-block !important;
+                height: 50px;
+                width: 190px;
+                /* text-align: center;
+                position: relative;
+                top: 120px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 50%;
+                height: 5%; */
+                margin: 0.5px;
+                /* margin-left: 10px; */
+                /* margin-right: 10px; */
+                /* background-color: orange;
+                border: 1 solid black; */
+            }
+
+            .test .data{
+                text-align: center;
+            }
+
+            .table_content .data{
+                text-align: center;
+            }
+
+            /* .table_content tr{
+                border: 1 solid black;
+            }
+
+            .table_content th{
+                border: 1 solid black;
+            }
+
+            .table_content td{
+                border: 1 solid black;
+            } */
+
 
             /* .content_header1{
                 height: 50px;
@@ -180,17 +295,17 @@
     <body>
         <div class="container">
             <div class="item">
-                <span class="label">Ctrl #:</span>
-                <span>{{ $test[0]->control_no }}</span>
+                <span class="label">CTRL #:</span>
+                <span>{{ $packing_list_details[0]->control_no }}</span>
             </div>
             <div>
                 <div class="pu_time">
                     <span class="data">P/U Time:</span>
-                    <span class="data">{{ '12:00 NN' }}</span>
+                    <span class="data">{{ $packing_list_details[0]->pick_up_time }}</span>
                 </div>
                 <div class="pu_time">
                     <span class="data">P/U Date:</span>
-                    <span class="data">{{ '12/22/2023' }}</span>
+                    <span class="data">{{ $packing_list_details[0]->pick_up_date }}</span>
                 </div>
             </div>
             <div class="sanno">
@@ -208,28 +323,24 @@
             <div class="doc_header">
                 <div class="doc_header1">
                     <div>
-                        <span class="data" style="margin-right:25%">SANNO REP</span>
-                        <span class="data" style="margin-right:40%">12/22/2023</span>
-                        <span class="data">FROM: PRICON</span>
+                        <span class="data" style="margin-right:25%">{{ $packing_list_details[0]->carrier }}</span>
+                        <span class="data" style="margin-right:35%">{{ $created_at[0] }}</span>
+                        <span class="data">FROM: {{ $packing_list_details[0]->product_from }}</span>
                     </div>
                     {{-- <br> --}}
                     <div>
-                        <span class="data" style="margin-right:25%">PRICON LAGUNA</span>
-                        <span class="data" style="margin-right:40%">SANNO</span>
-                        <span class="data">TO: SANNO</span>
+                        <span class="data" style="margin-right:25%">{{ $packing_list_details[0]->port_of_loading }}</span>
+                        <span class="data" style="margin-right:35%">{{ $packing_list_details[0]->port_of_destination }}</span>
+                        <span class="data">TO: {{ $packing_list_details[0]->product_to }}</span>
                     </div>
                 </div>
             </div>
-            <div class="content_header">
-                {{-- <div class="content_header1"> --}}
-                        <span class="data" style="margin-right:10%">BOX #</span>
+            {{-- <div class="content_header">
+                        <span class="data" >BOX #</span>
                         <span class="data" style="margin-right:10%">PO #</span>
                         <span class="data" style="margin-right:12%">Various Contact for Plating Raw Materials</span>
                         <span class="data" style="margin-right:5%">LOT #</span>
                         <span class="data" style="margin-right:5%">QUANTITY #</span>
-                        {{-- <span class="data" style="margin-right:80%"></span> --}}
-                    {{-- <br> --}}
-                {{-- </div> --}}
             </div>
             @for ($i = 0; $i < count($row_data); $i++)
                 <div class="content">
@@ -238,12 +349,96 @@
                     <span class="data" style="margin-right:20%">{{ $row_data[$i][2] }}</span>
                     <span class="data" style="margin-right:10%">{{ $row_data[$i][3] }}</span>
                     <span class="data">{{ $row_data[$i][4].' pcs.' }}</span>
-                    {{-- <span class="data">{{ 'pcs.' }}</span> --}}
                 </div>
-            @endfor
-            <div class="content_total">
-                <span class="data" style="margin-left:72%; margin-right:4%">Total ===></span>
-                <span class="data" style="margin-right:5%">{{ '550,000'.' pcs.' }}</span>
+            @endfor --}}
+
+            <table class="table_content">
+                <tr>
+                    <th colspan="2">BOX #</th>
+                    <th colspan="3">PO #</th>
+                    <th colspan="2">Various Contact for Plating Raw Materials</th>
+                    <th colspan="2">LOT #</th>
+                    <th colspan="2">QUANTITY #</th>
+                </tr>
+                @php
+                    $total_qty = [];
+                    $grand_total_qty = [];
+
+                for($i = 0; $i < count($packing_list_details); $i++){
+                    for ($i = 0; $i < count($packing_list_details); $i++){
+                        echo    '<tr>';
+                        echo        '<td colspan="3" class="data">C/NO.'.$packing_list_details[$i]->box_no.'</td>';
+                        echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->po_no.'</td>';
+                        echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->mat_name.'</td>';
+                        echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->lot_no.'</td>';
+                        echo        '<td class="data" style="text-align:right !important;">'.$packing_list_details[$i]->quantity.'</td>';
+                        echo        '<td class="data">pcs.</td>';
+                        echo    '</tr>';
+
+                        $total_qty[] = $packing_list_details[$i]->quantity;
+                    }
+                        echo '<tr>
+                                <td colspan="8"></td>
+                                <td class="data">Total ===></td>
+                                <td class="data" style="text-align:right !important;">'.array_sum($total_qty).'</td>
+                                <td class="data">pcs.</td>
+                            </tr>';
+                        $grand_total_qty[] = array_sum($total_qty);
+                }
+                // @endfor
+                    echo '<tr>
+                            <td colspan="8"></td>
+                            <td class="data">Grand Total ===></td>
+                            <td class="data" style="text-align:right !important;">'.array_sum($grand_total_qty).'</td>
+                            <td class="data">pcs.</td>
+                        </tr>';
+                @endphp
+            </table>
+
+            {{-- <div class="doc_footer">
+                <span class="data" style="margin-left: 5%; margin-right:12%">Prepared By:</span>
+                <span class="data" style="margin-right:30%">Checked By:</span>
+                <span class="data" style="margin-right:12%">Cc:</span>
+            </div>
+
+            <div class="doc_footer_data">
+                <span class="data" style="margin-left:3%; margin-right:5%">{{ 'Melea M. Alvarez' }}</span>
+                <span class="data" style="margin-right:5%">{{ 'Jo B. Cahilig' }}</span>
+                <span class="data" style="margin-right:5%">{{ 'Clark Chester D. Casuyon' }}</span>
+                <span class="data" style="margin-right:2%">{{ 'Cris M. / JR. /' }}</span>
+            </div>
+
+            <div class="doc_footer_position">
+                <span class="data" style="margin-left: 5%; margin-right:10%">{{ 'PPS-PPC CLERK' }}</span>
+                <span class="data" style="margin-right:8%">{{ 'PPS-PPC Sr Planner' }}</span>
+                <span class="data" style="margin-right:8%">{{ 'Whse Supvr / Manager' }}</span>
+                <span class="data" style="margin-right:5%">{{ 'Traffic / Prod`n / QC'  }}</span>
+            </div> --}}
+
+            <div class="test_sanno">
+                <div class="test" style="margin-left:5px;">
+                    <div class="data">Prepared By:</div>
+                    <div class="data">{{ $packing_list_details[0]->prepared_by }}</div>
+                    {{-- <div class="data">{{ 'Melea M. Alvarez' }}</div> --}}
+                    <div class="data">{{ 'PPS-PPC CLERK' }}</div>
+                </div>
+                <div class="test">
+                    <div class="data">Checked By:</div>
+                    <div class="data">{{ $packing_list_details[0]->checked_by }}</div>
+                    {{-- <div class="data">{{ 'Jo B. Cahilig' }}</div> --}}
+                    <div class="data">{{ 'PPS-PPC Sr. Planner' }}</div>
+                </div>
+                <div class="test">
+                    <div class="data">&nbsp;</div>
+                    <div class="data">&nbsp;</div>
+                    <div class="data">{{ 'Whse Supvr / Manager' }}</div>
+                </div>
+                <div class="test">
+                    <div class="data" style="text-align: left;">Cc:</div>
+                    <div class="data">{{ $packing_list_details[0]->cc_personnel }}</div>
+                    {{-- <div class="data">{{ 'Cris M. / JR. /' }}</div> --}}
+                    <div class="data">{{ 'Traffic / Prod`n / QC' }}</div>
+                </div>
             </div>
         </div>
     </body>

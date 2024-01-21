@@ -177,6 +177,7 @@ Route::controller(StampingIpqcController::class)->group(function () {
 
 Route::controller(PdfController::class)->group(function () {
     Route::get('/view_pdf/{control_no}', 'print')->name('print');
+    Route::get('/get_packing_list_data', 'get_packing_list_data')->name('get_packing_list_data');
 });
 
 
@@ -261,6 +262,7 @@ Route::controller(PackingListDetailsController::class)->group(function () {
 
 Route::controller(ReceivingDetailsController::class)->group(function () {
     Route::get('/view_receiving_details', 'viewReceivingListDetails')->name('view_receiving_details');
+    Route::get('/view_receiving_details_accepted', 'viewReceivingListDetailsAccepted')->name('view_receiving_details_accepted'); // by nessa
     Route::get('/get_receiving_details', 'getReceivingListdetails')->name('get_receiving_details');
     Route::post('/update_receiving_details', 'updateReceivingDetails')->name('update_receiving_details');
     Route::get('/print_receiving_qr_code', 'printReceivingQrCode')->name('print_receiving_qr_code');
@@ -272,7 +274,7 @@ Route::controller(PackingDetailsController::class)->group(function () {
 
 });
 
-// 
+//
 
 
 

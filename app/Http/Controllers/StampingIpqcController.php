@@ -442,4 +442,5 @@ class StampingIpqcController extends Controller
           ),
           'Packing List.xlsx');
     }
+
 }

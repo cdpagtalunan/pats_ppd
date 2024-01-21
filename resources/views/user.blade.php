@@ -262,7 +262,8 @@
                 <div class="form-group">
                   <label>Position</label>
                     <select class="form-control select2bs4" name="position" style="width: 100%;" id="selEditUserPosition">
-                      <option selected value="0">N/A</option>
+                      <option selected value="" disabled>N/A</option>
+                      <option value="0">ISS</option>
                       <option value="1">Prod'n Supervisor</option>
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
@@ -508,7 +509,8 @@
                 <div class="form-group">
                   <label>Position</label>
                     <select class="form-control select2bs4" name="position" style="width: 100%;" id="selAddUserPosition">
-                      <option selected value="0">N/A</option>
+                      <option selected value="" disabled>N/A</option>
+                      <option value="0">ISS</option>
                       <option value="1">Prod'n Supervisor</option>
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
@@ -577,7 +579,7 @@
         $(this).closest('tr').addClass('table-active');
       });
 
-      GetUserLevel($(".selectUserLevel"));
+      // GetUserLevel($(".selectUserLevel"));
 
       dataTableUsers = $("#tblUsers").DataTable({
         "processing" : false,
@@ -774,6 +776,7 @@
           $("#chkAddUserSendEmail").removeAttr('disabled');
           $("#chkAddUserSendEmail").prop('checked', 'checked');
           $("#chkAddUserWithEmail").prop('checked', 'checked');
+          GetUserLevel($(".selectUserLevel"));
         });
 
         $("#chkAddUserWithEmail").click(function(){
@@ -819,6 +822,8 @@
         $(document).on('click', '.aEditUser', function(){
           let userId = $(this).attr('user-id');
           $("#txtEditUserId").val(userId);
+          GetUserLevel($(".selectUserLevel"));
+
           GetUserByIdToEdit(userId);
           $("#txtEditUserName").removeClass('is-invalid');
           $("#txtEditUserName").attr('title', '');

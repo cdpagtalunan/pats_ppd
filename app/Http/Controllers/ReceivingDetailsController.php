@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Validator;
 class ReceivingDetailsController extends Controller
 {
     public function viewReceivingListDetails(Request $request){
-        $sanno_receiving_data = ReceivingDetails::all();
+        $sanno_receiving_data = ReceivingDetails::where('status', 1)
+         ->get();
 
         return DataTables::of($sanno_receiving_data)
         ->addColumn('action', function($sanno_receiving_data){
@@ -33,7 +34,52 @@ class ReceivingDetailsController extends Controller
         ->addColumn('status', function($sanno_receiving_data){
             $result = "";
             $result .= "<center>";
-    
+
+            if($sanno_receiving_data->status == 0){
+                $result .= '<span class="badge bg-primary">For WHSE Receive</span>';
+            }
+            else if($sanno_receiving_data->status == 1){
+                $result .= '<span class="badge bg-info">For IQC Inspection</span>';
+                $result .= '<br>';
+                if($sanno_receiving_data->printing_status == 0) {
+                    $result .= '<span class="badge bg-primary">For Printing</span>';
+                }else{
+                    $result .= '<span class="badge bg-primary">Reprinting</span>';
+                }
+            }else{
+                $result .= '<span class="badge bg-success">Accepted</span>';
+            }
+
+            $result .= "</center>";
+            return $result;
+        })
+        // ->addIndexColumn(['DT_RowIndex'])
+        ->rawColumns(['action','status'])
+        // ->rawColumns(['action','status','test'])
+        ->make(true);
+    }
+
+    public function viewReceivingListDetailsAccepted(Request $request){
+        $sanno_receiving_data = ReceivingDetails::where('status', 2)
+        ->get();
+
+        return DataTables::of($sanno_receiving_data)
+        ->addColumn('action', function($sanno_receiving_data){
+            $result = "";
+            $result .= "<center>";
+            if($sanno_receiving_data->status == 0){
+                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+            }else if($sanno_receiving_data->status == 1){
+                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
+
+            }
+            $result .= "</center>";
+            return $result;
+        })
+        ->addColumn('status', function($sanno_receiving_data){
+            $result = "";
+            $result .= "<center>";
+
             if($sanno_receiving_data->status == 0){
                 $result .= '<span class="badge bg-primary">For WHSE Receive</span>';
             }
@@ -113,13 +159,13 @@ class ReceivingDetailsController extends Controller
         $QrCode = "data:image/png;base64," . base64_encode($qrcode);
 
         $data[] = array(
-            'img' => $QrCode, 
+            'img' => $QrCode,
             'text' =>  "<strong>$receiving_data->po_no</strong><br>
             <strong>$receiving_data->new_lot_no</strong><br>"
         );
 
         $label = "
-            <table class='table table-sm table-borderless' style='width: 100%;'> 
+            <table class='table table-sm table-borderless' style='width: 100%;'>
                 <tr>
                     <td>PO #:</td>
                     <td>$receiving_data->po_no</td>
@@ -142,5 +188,5 @@ class ReceivingDetailsController extends Controller
             ]);
 
     }
-    
+
 }
