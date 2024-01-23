@@ -16,8 +16,9 @@ use App\Models\PackingDetails;
 class PackingDetailsController extends Controller
 {
     public function viewPackingDetailsData(Request $request){
-        $packing_details = PackingDetails::
-        where('po_no', $request->po_no)
+        $packing_details = OQCInspection::with(['stamping_production_info'])
+        ->where('po_no', 'like', '%' . $request->po_no . '%')
+        ->where('lot_accepted', 1)
         ->get();
 
         if(!isset($request->po_no)){
@@ -28,7 +29,7 @@ class PackingDetailsController extends Controller
             ->addColumn('action', function($packing_details){
                 $result = "";
                 $result .= "<center>";
-            
+                    $result .= "<button class='btn btn-primary btn-sm btnEditPackingDetails' data-id='$packing_details->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
                 $result .= "</center>";
                 return $result;
             })
@@ -54,10 +55,50 @@ class PackingDetailsController extends Controller
     }
 
     public function getOqcDetailsForPacking(Request $request){
-        $production_data = OQCInspection::with(['stamping_production_info'])
+        $oqc_data = OQCInspection::with(['stamping_production_info'])
         ->where('po_no', 'like', '%' . $request->po_no . '%')
-        ->where('status', 2)
+        // ->where('id', $request->oqc_details_id)
+        ->where('lot_accepted', 1)
         ->get();
 
+        return response()->json(['oqcData' => $oqc_data]);
+        // return $oqc_data;
+    }
+
+    public function addPackingDetails(Request $request){
+        $data = $request->all();
+
+        $rules = [
+            // 'control_no'                 => 'required',
+            // // 'company_contact_no'      => 'required',
+            // 'company_address'      => 'required',
+            // 'company_contact_person'      => 'required'
+        ];
+
+        $validator = Validator::make($data, $rules);
+        if($validator->passes()){
+                        $array = [
+                            'oqc_id'                => $request->packing_details_id,
+                            'po_no'                 => $request->po_no,
+                            'material_name'         => $request->parts_name,
+                            'po_qty'                => $request->po_quantity,
+                            'delivery_balance'      => $request->delivery_balance,
+                            'drawing_no'            => $request->drawing_no,
+                            'lot_no'                => $request->prod_lot_no,
+                            'no_of_cuts'            => $request->number_of_cuts,
+                            'material_quality'      => $request->material_quality,
+                            'status'                => 0,
+                            'created_at'            => date('Y-m-d H:i:s'),
+                        ];
+                        if(isset($request->packing_list_id)){ // edit
+                            PackingDetails::where('id', $request->packing_list_id)
+                            ->update($array);
+                        }
+        
+            return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+        }
+        else{
+            return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
+        }
     }
 }

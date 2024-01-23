@@ -388,7 +388,8 @@ class StampingIpqcController extends Controller
     public function get_data_from_acdcs(Request $request){
         $acdcs_data = DB::connection('mysql_rapid_acdcs')
         // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` = '".$request->doc_type."'");
-        ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` = '".$request->doc_type."' AND `originator_code` = 'PPS'");
+        // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` = '".$request->doc_type."' AND `originator_code` = 'PPS'");
+        ->select("SELECT * FROM tbl_active_docs WHERE `doc_type` = '".$request->doc_type."' AND `originator_code` = 'PPS'");
         // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` IN ('B Drawing', 'Inspection Standard', 'Urgent Direction') AND `originator_code` = 'PPS'");
         // doc_no
         // return $acdcs_data;

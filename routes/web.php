@@ -64,12 +64,14 @@ Route::view('/first_stamping_prod','first_stamping_prod')->name('first_stamping_
 Route::view('/second_stamping_prod','second_stamping_prod')->name('second_stamping_prod');
 
 /* STAMPING VIEW - IPQC Inspectin */
-Route::view('/ipqc_inspection','ipqc_inspection')->name('ipqc_inspection');
+Route::view('/ipqc_inspection_1st_stamping','ipqc_inspection_1st_stamping')->name('ipqc_inspection_1st_stamping');
+Route::view('/ipqc_inspection_2nd_stamping','ipqc_inspection_2nd_stamping')->name('ipqc_inspection_2nd_stamping');
 
 
 
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/oqc_inspection','oqc_inspection')->name('oqc_inspection');
+Route::view('/second_stamping_oqc_inspection','second_stamping_oqc_inspection')->name('second_stamping_oqc_inspection');
 
 /* PACKING  */
 Route::view('/packing_details','packing_details')->name('packing_details');
@@ -204,6 +206,8 @@ Route::controller(IqcInspectionController::class)->group(function () {
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {
     Route::get('/view_oqc_inspection', 'viewOqcInspection')->name('view_oqc_inspection');
+    Route::get('/view_oqc_inspection_history', 'viewOqcInspectionHistory')->name('view_oqc_inspection_history');
+    Route::get('/view_oqc_inspection_second_stamping', 'viewOqcInspectionSecondStamping')->name('view_oqc_inspection_second_stamping');
     Route::post('/update_oqc_inspection', 'updateOqcInspection')->name('update_oqc_inspection');
     Route::get('/get_oqc_inspection_by_id', 'getOqcInspectionById')->name('get_oqc_inspection_by_id');
     Route::get('/get_oqc_stamping_line', 'getStampingLine')->name('get_oqc_stamping_line');
@@ -212,6 +216,7 @@ Route::controller(OQCInspectionController::class)->group(function () {
     Route::get('/get_oqc_inspection_level', 'getInspectionLevel')->name('get_oqc_inspection_level');
     Route::get('/get_oqc_severity_inspection', 'getSeverityInspection')->name('get_oqc_severity_inspection');
     Route::get('/get_oqc_aql', 'getAQL')->name('get_oqc_aql');
+    Route::get('/get_oqc_inspection_customer', 'getCustomer')->name('get_oqc_inspection_customer');
     Route::get('/get_oqc_inspection_mod', 'getMOD')->name('get_oqc_inspection_mod');
     Route::get('/scan_user_id', 'scanUserId')->name('scan_user_id');
 });
@@ -271,7 +276,8 @@ Route::controller(ReceivingDetailsController::class)->group(function () {
 
 Route::controller(PackingDetailsController::class)->group(function () {
     Route::get('/view_packing_details_data', 'viewPackingDetailsData')->name('view_packing_details_data');
-
+    Route::get('/get_oqc_details', 'getOqcDetailsForPacking')->name('get_oqc_details');
+    Route::get('/add_packing_details', 'addPackingDetails')->name('add_packing_details');
 });
 
 //

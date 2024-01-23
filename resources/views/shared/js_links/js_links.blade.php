@@ -56,7 +56,7 @@
 <script src="{{ asset('public/js/main/UserLevel.js') }}" async></script>
 <script src="{{ asset('public/js/main/Device.js') }}" async></script>
 <script src="{{ asset('public/js/main/MaterialProcess.js') }}" async></script>
-<script src="{{ asset('public/js/main/OqcInspection.js?') }}" async></script>
+<script src="{{ asset('public/js/main/OqcInspection.js?n=0') }}" async></script>
 
 
 <script src="{{ asset('public/js/main/Stamping.js') }}" async></script>
@@ -68,7 +68,8 @@
 <script src="{{ asset('public/js/main/DestinationPortDetails.js') }}" async></script>
 <script src="{{ asset('public/js/main/PackingList.js') }}" async></script>
 <script src="{{ asset('public/js/main/ReceivingDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/PackingDetails.js') }}" async></script>
 
 {{-- IQC --}}
-<script src="{{ asset('public/js/main/IqcInspection.js') }}"></script>
+<script src="{{ asset('public/js/main/IqcInspection.js?1234567') }}"></script>
 

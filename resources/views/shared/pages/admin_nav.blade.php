@@ -82,13 +82,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('ipqc_inspection') }}" class="nav-link">
+                                    <a href="{{ route('ipqc_inspection_1st_stamping') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>IPQC 1st Stamping</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('ipqc_inspection') }}" class="nav-link">
+                                    <a href="{{ route('ipqc_inspection_2nd_stamping') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>IPQC 2nd Stamping</p>
                                     </a>
@@ -109,7 +109,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('oqc_inspection') }}" class="nav-link">
+                                    <a href="{{ route('second_stamping_oqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>OQC 2nd Stamping</p>
                                     </a>
@@ -149,10 +149,10 @@
                                     </a>
                                 </li>
                             </ul> --}}
-                            
+
                         </li>
                     @endif
-                    
+
                     @if (in_array(Auth::user()->position, [0,6,7,9]))
                         <li class="nav-header mt-3"><strong>PACKING</strong></li>
 
@@ -206,7 +206,7 @@
                         </li>
                     @endif
 
-                    
+
                     @if (in_array(Auth::user()->position, [0,6]))
                         <li class="nav-header mt-3"><strong>WAREHOUSE</strong></li>
                         <li class="nav-item has-treeview">

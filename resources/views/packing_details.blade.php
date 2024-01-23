@@ -115,10 +115,10 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        <button class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#modalAddPackingDetails" id="btnShowAddPackingDetails"><i
-                                                class="fas fa-clipboard-list"></i> Add Packing Details
-                                        </button>
+                                        {{-- <button class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#modalEditPackingDetails" id="btnShowEditPackingDetails"><i
+                                                class="fas fa-clipboard-list"></i> Edit Packing Details
+                                        </button> --}}
                                     </div> <br><br>
                                     <div class="table-responsive">
                                         {{-- <!-- style="max-height: 600px; overflow-y: auto;" --> --}}
@@ -164,16 +164,16 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="modalAddPackingDetails" data-bs-backdrop="static">
+    <div class="modal fade" id="modalEditPackingDetails" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title"><i class="fa fa-plus"></i> Add Packing Details</h4>
+                    <h4 class="modal-title"><i class="fa fa-plus"></i> Edit Packing Details</h4>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form method="post" id="formAddPackingDetails" autocomplete="off">
+                <form method="post" id="formEditPackingDetails" autocomplete="off">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="txtPackingDetailsId" name="packing_details_id">
@@ -241,7 +241,7 @@
 
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="btnAddPackingDetails" class="btn btn-primary"><i id="btnAddPackingDetailsIcon"
+                        <button type="submit" id="btnEditPackingDetails" class="btn btn-primary"><i id="btnEditPackingDetailsIcon"
                                 class="fa fa-check"></i> Save</button>
                     </div>
                 </form>
@@ -273,11 +273,10 @@
                             scannedPO = $('#txtScanPO').val();
                             ParseScannedPo = JSON.parse(scannedPO);
                             console.log(ParseScannedPo);
-
+                            // alert('heey');
                             $('#txtSearchPONum').val(ParseScannedPo['po']);
                             $('#txtSearchMatName').val(ParseScannedPo['name']);
                             $('#txtSearchPOQty').val(ParseScannedPo['qty']);
-                            $('#txtPONumber').val(ParseScannedPo['po']);
 
                             $('#modalScanPO').modal('hide');
                             dtPackingDetails.draw()
@@ -292,26 +291,43 @@
                     "ajax" : {
                         url: "view_packing_details_data",
                         data: function (param){
-                            param.lot_no = $("#txtSearchLotNo").val();
+                            param.po_no = $("#txtSearchPONum").val();
                         },
                     },
 
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
+                        { "data" : "stamping_production_info.material_name"},
                         { "data" : "po_no" },
-                        { "data" : "material_name" },
-                        { "data" : "po_qty" },
+                        { "data" : "stamping_production_info.po_qty"},
                         { "data" : "delivery_balance" },
-                        { "data" : "drawing_no" },
-                        { "data" : "lot_no" },
-                        { "data" : "no_of_cuts" },
+                        { "data" : "stamping_production_info.drawing_no"},
+                        { "data" : "stamping_production_info.prod_lot_no"},
+                        { "data" : "stamping_production_info.no_of_cuts"},
                         { "data" : "material_quality" },
                     ],
                     "columnDefs": [
-                        // { className: "align-center", targets: [1, 2] },
+                        {"className": "dt-center", "targets": "_all"},
+                        {
+                            "targets": [5,8,9],
+                            "data": null,
+                            "defaultContent": "---"
+                        },
                     ],
                 });
+
+                $(document).on('click', '.btnEditPackingDetails', function(e){
+                    e.preventDefault();
+                    let oqcDetailsId =  $(this).attr('data-id');
+                    $('#txtPackingDetailsId').val(oqcDetailsId);
+                    console.log(oqcDetailsId);
+                    $('#modalEditPackingDetails').modal('show');
+
+                    getOqcDetailsbyId(oqcDetailsId);
+
+                });
+                // btnEditPackingDetails
 
                 
             });

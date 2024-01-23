@@ -15,6 +15,7 @@ class CreatePackingDetailsTable extends Migration
     {
         Schema::create('packing_details', function (Blueprint $table) {
             $table->id();
+            $table->integer('oqc_id');
             $table->string('po_no')->nullable();
             $table->string('material_name')->nullable();
             $table->string('po_qty')->nullable();

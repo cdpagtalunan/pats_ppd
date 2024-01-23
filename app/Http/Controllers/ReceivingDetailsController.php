@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Validator;
 class ReceivingDetailsController extends Controller
 {
     public function viewReceivingListDetails(Request $request){
-        $sanno_receiving_data = ReceivingDetails::where('status', 1)
-         ->get();
+        $sanno_receiving_data = ReceivingDetails::where('status', 0)
+        ->orWhere('status', 1)
+        ->get();
 
         return DataTables::of($sanno_receiving_data)
         ->addColumn('action', function($sanno_receiving_data){

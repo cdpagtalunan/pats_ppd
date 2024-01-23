@@ -93,7 +93,7 @@
                                                             {{-- <th>App Ctrl No.</th> --}}
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
-                                                            {{-- <th>Category</th> --}}
+                                                            <th>PO</th>
                                                             <th>Supplier</th>
                                                             <th>Part Code</th>
                                                             <th>Part Name</th>
@@ -127,6 +127,7 @@
                                                             <th>Lot No.</th>
                                                             <th>Lot Qty.</th>
                                                             {{-- <th>AQL</th> --}}
+                                                            <th>Inspector</th>
                                                             <th>Date Created</th>
                                                             <th>Date Updated</th>
                                                         </tr>
@@ -225,7 +226,7 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-                
+
                 $(tbl.iqcWhsDetails).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
@@ -298,10 +299,10 @@
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
                     window.open('view_coc_file_attachment/'+iqc_inspection_id);
-                
+
                 });
 
-                form.iqcInspection.find('#isUploadCoc').change(function (e) { 
+                form.iqcInspection.find('#isUploadCoc').change(function (e) {
                     e.preventDefault();
                     $('#iqc_coc_file').val('');
                     if ($(this).is(':checked')) {
@@ -332,8 +333,8 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    saveIqcInspection();
-                    // $('#modalScanQRSave').modal('show');
+                    // saveIqcInspection();
+                    $('#modalScanQRSave').modal('show');
                 });
             });
 

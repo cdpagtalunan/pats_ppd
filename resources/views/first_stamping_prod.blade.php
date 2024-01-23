@@ -68,7 +68,7 @@
                                             <div class="input-group mb-3">
                                                 {{-- <button class="btn btn-primary"><i class="fa-solid fa-qrcode"></i></button> --}}
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010">
+                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -387,7 +387,7 @@
         </div>
 
 
-        {{-- <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-sm modal-dialog-top" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-bottom-0 pb-0">
@@ -399,7 +399,7 @@
                     </div>
                 </div>
             </div>
-        </div> --}}
+        </div>
 
         <div class="modal fade" id="modalHistory" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -440,6 +440,7 @@
             var img_barcode_PO_text_hidden;
             var multipleMatId;
             var printId;
+            var printStampCat;
             var scanningFunction;
             var historyId = 0;
             $(document).ready(function(){
@@ -566,9 +567,22 @@
                                             prodData['drawings'] = result
                                             console.log(prodData);
                                             dtDatatableProd.draw();
+                                        },
+                                        error: function(data, xhr, status){
+                                            // console.log(data.responseJSON.msg);
+                                            toastr.error(data.responseJSON.msg)
+                                            // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                                            
                                         }
                                     });
                                 }
+                                else{
+                                    toastr.error('No PO Found on Rapid PO Receive.')
+                                }
+                            },
+                            error: function(data, xhr, status){
+                                toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                                
                             }
                         });
                     }
@@ -622,6 +636,7 @@
                 $(document).on('click', '.btnPrintProdData', function(e){
                     printId = $(this).data('id');
                     let printCount = $(this).data('printcount');
+                    printStampCat = $(this).data('stampcat');
                     // console.log(printCount);
                     if(printCount > 0){
                         Swal.fire({
@@ -641,7 +656,7 @@
                         });
                     }
                     else{
-                        printProdData(printId);
+                        printProdData(printId, printStampCat);
                     }
                 });
 
@@ -829,7 +844,7 @@
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
                                 $('#modalScanQRSave').modal('hide');
-                                printProdData(printId);
+                                printProdData(printId, printStampCat);
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');

@@ -88,6 +88,7 @@
                                                         <tr>
                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                             <th>Status</th>
+                                                            <th>Invoice</th>
                                                             {{-- <th>Date Inspected</th> --}}
                                                             {{-- <th>Time Inspected</th> --}}
                                                             {{-- <th>App Ctrl No.</th> --}}
@@ -302,10 +303,10 @@
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
                     window.open('view_coc_file_attachment/'+iqc_inspection_id);
-                
+
                 });
 
-                form.iqcInspection.find('#isUploadCoc').change(function (e) { 
+                form.iqcInspection.find('#isUploadCoc').change(function (e) {
                     e.preventDefault();
                     $('#iqc_coc_file').val('');
                     if ($(this).is(':checked')) {
@@ -336,8 +337,8 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    saveIqcInspection();
-                    // $('#modalScanQRSave').modal('show');
+                    // saveIqcInspection();
+                    $('#modalScanQRSave').modal('show');
                 });
             });
 

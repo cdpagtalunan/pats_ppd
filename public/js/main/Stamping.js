@@ -301,7 +301,7 @@ const printProdData = async (id, stampCat) => {
         url: "print_qr_code",
         data: {
             "id" : id,
-            'stamp_cat' : stampCat
+            "stamp_cat" : stampCat
         },
         dataType: "json",
         success: function (response) {
@@ -419,8 +419,7 @@ const getSecondStampReq = (params) => {
             getOperatorList($('.selOpName'));
         },
         success: function (response) {
-
-            console.log(response);
+            
             $('#txtSearchPONum').val(response['poDetails'][0]['po_num'])
             $('#txtSearchMatName').val(response['poDetails'][0]['material_name'])
             $('#txtSearchPO').val(response['poDetails'][0]['po_qty'])
@@ -429,6 +428,13 @@ const getSecondStampReq = (params) => {
             $('#txtCtrlCounter').val(response['ctrl']);
             $('#prodLotNoAuto').val(`${response['poDetails'][0]['drawing_rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`)
             dtDatatableProdSecondStamp.draw();
+            $('#modalScanPO').modal('hide');
+
+        },
+        error: function(data, xhr, status){
+            toastr.error('PO Not Found')
+            $('#modalScanPO').modal('hide');
+
         }
     });
 }

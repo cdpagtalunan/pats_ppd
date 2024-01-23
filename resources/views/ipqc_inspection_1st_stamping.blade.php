@@ -483,8 +483,8 @@
                         url: "view_stamping_ipqc_data",
                         data: function(param){
                         param.po_number =  $("#txtSearchPONum").val();
-                        param.ipqc_status =  [0,1,2,5];
-                        param.fs_prod_status = 0;
+                        param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
+                        param.fs_prod_status = 0; // Stamping productions Status : For IPQC
                         }
                     },
                     fixedHeader: true,
@@ -521,8 +521,8 @@
                         data: function(param){
                         param.po_number =  $("#txtSearchPONum").val();
                         // param.status = [3];
-                        param.fs_prod_status = 1;
-                        param.ipqc_status = [3];
+                        param.fs_prod_status = 1; //Stamping productions Status : For Mass Prod
+                        param.ipqc_status = [3]; //Status 4 = Submitted: Judgement - Accepted
                         }
                     },
                     bAutoWidth: false,
@@ -557,8 +557,8 @@
                         url: "view_stamping_ipqc_data",
                         data: function(param){
                         param.po_number =  $("#txtSearchPONum").val();
-                        param.fs_prod_status = 3;
-                        param.ipqc_status = [4];
+                        param.fs_prod_status = 3; //Stamping productions Status : For Resetup
+                        param.ipqc_status = [4]; //Status 4 = Submitted: Judgement - Rejected
                         }
                     },
                     bAutoWidth: false,

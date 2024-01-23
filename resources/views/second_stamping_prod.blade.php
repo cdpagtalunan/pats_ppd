@@ -155,7 +155,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <input type="hidden" name="stamp_cat" id="txtStampCat" value="2">
+                    <input type="hidden" name="stamp_cat" id="txtStampCat2" value="2">
 
                     <form method="post" id="formProdDataSecondStamp" autocomplete="off">
                         @csrf
@@ -416,7 +416,8 @@
                     <div class="modal-body pt-0">
                         {{-- hidden_scanner_input --}}
                         {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" name="" autocomplete="off"> --}}
-                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" value='{ "po": "450243013200010", "new_lot_no": "C240111-01MZ-1/sanno-ctrl-123" }' autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO"  autocomplete="off"> --}}
+                        <input type="text" class="scanner w-100" id="txtScanPO"  autocomplete="off">
                         {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan PO Number.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
@@ -519,15 +520,16 @@
                 });
                 $('#modalScanPO').on('shown.bs.modal', function () {
                     $('#txtScanPO').focus();
-                    $('#txtScanPO').on('keyup', function(e){
-                        if(e.keyCode == 13){
-                            getSecondStampReq($(this).val());
+                   
+                });
+                $('#txtScanPO').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        getSecondStampReq($(this).val());
 
-                            // scannedItem = JSON.parse($(this).val());
-                            $('#txtScanPO').val('');
-                            $('#modalScanPO').modal('hide');
-                        }
-                    });
+                        // scannedItem = JSON.parse($(this).val());
+                        $('#txtScanPO').val('');
+
+                    }
                 });
               
                 $('#txtTargetOutput').on('keyup', function(e){
@@ -845,7 +847,7 @@
                             if(result == true){
 
                                 // console.log($('#formProdDataSecondStamp').serialize())
-                                submitProdData($('#txtScanUserId').val().toUpperCase(), $('#formProdDataSecondStamp'), $('#txtStampCat').val());
+                                submitProdData($('#txtScanUserId').val().toUpperCase(), $('#formProdDataSecondStamp'), $('#txtStampCat2').val());
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');

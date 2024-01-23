@@ -314,6 +314,10 @@ class StampingController extends Controller
         if(count($get_drawing) > 0){
             return $get_drawing[0];
         }
+        else{
+            // return "No Data on Stamping DMCMS";
+            return response()->json(['msg' => 'No Data on Stamping DMCMS'], 400);
+        }
     }
 
     public function get_prod_data_view(Request $request){
@@ -332,7 +336,7 @@ class StampingController extends Controller
 
         // $prod_data = DB::connection('mysql')
         // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM stamping_productions WHERE id = '".$request->id."'");
-        
+        // return $request->stamp_cat;
         // return $prod_data[0];
         $qrcode = QrCode::format('png')
         ->size(200)->errorCorrection('H')
@@ -492,10 +496,35 @@ class StampingController extends Controller
     public function get_2_stamp_reqs(Request $request){
         $data = json_decode($request->params);
 
+        // return $data;
+        // $po_details = DB::connection('mysql')
+        // ->select("
+        //     SELECT po_num,po_qty, part_code, material_name, drawing_no, drawing_rev FROM `stamping_productions` WHERE `stamping_cat` = 1 AND `po_num` = '$data->po_no' AND `status` = 2 LIMIT 0, 1
+        // ");
+
         $po_details = DB::connection('mysql')
         ->select("
-            SELECT po_num,po_qty, part_code, material_name, drawing_no, drawing_rev FROM `stamping_productions` WHERE `stamping_cat` = 1 AND `po_num` = $data->po LIMIT 0, 1
+            SELECT 
+            a.po_num,
+            a.po_qty, 
+            a.part_code, 
+            a.material_name, 
+            a.drawing_no, 
+            a.drawing_rev
+            FROM `stamping_productions` as a
+            INNER JOIN `receiving_details` as b ON a.id = b.prod_id
+            WHERE b.status = 2
+            AND a.stamping_cat = 1
+            AND b.po_no = '$data->po_no' 
+            AND a.status = 2 
+            LIMIT 0, 1
         ");
+
+        // return $po_details;
+
+        if(count($po_details) == 0){
+            return response()->json(['msg' => 'No Data Found'], 400);
+        }
 
         $date  = date('Y-m-d');
         $year  = date('y');
@@ -514,7 +543,6 @@ class StampingController extends Controller
             'day'       => $day,
             'ctrl'      => str_pad($ctrl_counter, 2, '0', STR_PAD_LEFT),
             'poDetails' => $po_details
-
         ]);
 
     }

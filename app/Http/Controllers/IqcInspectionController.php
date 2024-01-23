@@ -28,6 +28,7 @@ class IqcInspectionController extends Controller
     public function getIqcInspectionByJudgement(Request $request){
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
     }
+
     public function loadWhsTransaction(){
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
@@ -37,7 +38,7 @@ class IqcInspectionController extends Controller
                 SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE whs_transaction.inspection_class = 0
+                WHERE whs_transaction.inspection_class = 1
                 ORDER BY whs.PartNumber DESC
         ');
 
@@ -74,12 +75,13 @@ class IqcInspectionController extends Controller
             Lot_number
         */
     }
+
     public function loadWhsDetails(Request $request){
 
         $tbl_whs_trasanction = DB::connection('mysql')
         ->select('
             SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
-                    mat_name as"MaterialType",supplier_lot_no as "Lot_number"
+                    mat_name as"MaterialType",supplier_pmi_lot_no as "Lot_number",po_no
             FROM receiving_details
             WHERE status = 1
             ORDER BY created_at DESC
@@ -231,12 +233,12 @@ class IqcInspectionController extends Controller
         }
         if($request->receiving_detail_id != 0){
             return $tbl_whs_trasanction = ReceivingDetails::where('id',$request->receiving_detail_id)->get([
-                'id as receiving_detail_id','supplier_lot_no as lot_no','supplier_quantity as total_lot_qty','part_code as partcode',
+                'id as receiving_detail_id','supplier_pmi_lot_no as lot_no','supplier_quantity as total_lot_qty','part_code as partcode',
                 'mat_name as partname','supplier_name as supplier',
             ]);
         }
     }
-  
+
     public function getFamily(){
         $dropdown_iqc_family =  DropdownIqcFamily::get();
         foreach ($dropdown_iqc_family as $key => $value_dropdown_iqc_family) {

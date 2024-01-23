@@ -113,7 +113,7 @@ class PackingListDetailsController extends Controller
     public function viewProductionData(Request $request){
         $production_data = OQCInspection::with(['stamping_production_info'])
         ->where('po_no', 'like', '%' . $request->search_data . '%')
-        ->where('status', 1)
+        ->where('lot_accepted', 1)
         ->get();
 
         if(!isset($request->search_data)){
@@ -124,7 +124,7 @@ class PackingListDetailsController extends Controller
             ->addColumn('action', function($production_data){
                 $result = "";
                 $result .= "<center>";
-                if($production_data->status == 2 ){
+                if($production_data->lot_accepted == 1 ){
                     $result .= "<input class='test d-none packing_$production_data->id' data-packing-id='$production_data->id' type'text' style='width: 30px; text-align: center;' id='boxNoId' name='box_no[]' disabled>";
                 }
                 $result .= "</center>";

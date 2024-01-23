@@ -53,7 +53,7 @@
               <!-- Start Page Content -->
               <div class="card-body">
                   <div style="float: right;">
-                    {{-- <button class="btn btn-dark" data-keyboard="false" id="btnShowModalPrintBatchUser" disabled><i class="fa fa-print"></i> Print Batch QR Code (<span id="lblNoOfPrintBatchSelUser">0</span>)</button> --}}
+                    <button class="btn btn-dark" data-keyboard="false" id="btnShowModalPrintBatchUser" disabled><i class="fa fa-print"></i> Print Batch QR Code (<span id="lblNoOfPrintBatchSelUser">0</span>)</button>
 
                     {{-- @if(Auth::user()->user_level_id == 1)
                       <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalImportUser" id="btnShowImport" title="Import User"><i class="fa fa-file-excel"></i> Import</button>

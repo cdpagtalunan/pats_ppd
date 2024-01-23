@@ -46,6 +46,7 @@
         "columns":[
             { "data" : "action", orderable:false, searchable:false },
             { "data" : "status", orderable:false, searchable:false },
+            { "data" : "InvoiceNo" },
             { "data" : "Supplier" },
             { "data" : "PartNumber" },
             { "data" : "MaterialType" },
@@ -64,6 +65,7 @@
 
             { "data" : "action", orderable:false, searchable:false },
             { "data" : "status", orderable:false, searchable:false },
+            { "data" : "po_no" },
             { "data" : "Supplier" },
             { "data" : "PartNumber" },
             { "data" : "MaterialType" },
@@ -100,8 +102,8 @@
         ],
     });
 
-    
-    
+
+
     const getFamily = function () {
         $.ajax({
             url: "get_family",
@@ -155,7 +157,7 @@
         // alert('dasdsad')
         let receivingDetailId = ($(this).attr('receiving-detail-id') != undefined) ?  $(this).attr('receiving-detail-id') : 0;
         let whsTransactionId = ($(this).attr('whs-trasaction-id') != undefined) ?  $(this).attr('whs-trasaction-id') : 0;
-        
+
         getWhsDetailsById(receivingDetailId,whsTransactionId);
         getFamily();
         getAql();
@@ -231,7 +233,7 @@
                 }else{
                     form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                 }
-                
+
                 $('#tblModeOfDefect tbody').empty();
                 arrTableMod.lotNo = [];
                 arrTableMod.modeOfDefects = [];
@@ -264,7 +266,7 @@
                 let supplier = response[0]['supplier'];
                 let lotNo = response[0]['lot_no'];
                 let lotQty = response[0]['total_lot_qty'];
-                
+
                 let whsTransactionId = ( response[0]['whs_transaction_id'] != undefined || response[0]['whs_transaction_id'] != null) ? response[0]['whs_transaction_id'] : 0;
                 let whsReceivingDetailId = ( response[0]['receiving_detail_id'] != undefined || response[0]['receiving_detail_id'] != null ) ? response[0]['receiving_detail_id'] : 0;
                 let iqcInspectionId = response[0]['iqc_inspection_id'];

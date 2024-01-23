@@ -133,7 +133,7 @@
                 width: 97%;
                 height: 2%;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .content{
@@ -145,7 +145,7 @@
                 width: 97%;
                 height: 2%;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .table_content{
@@ -157,7 +157,7 @@
                 width: 97%;
                 height: 600px;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .content_total{
@@ -169,7 +169,7 @@
                 width: 97%;
                 height: 2%;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .content_grand_total{
@@ -181,7 +181,7 @@
                 width: 97%;
                 height: 2%;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .doc_footer{
@@ -193,7 +193,7 @@
                 width: 97%;
                 height: 2%;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .doc_footer_data{
@@ -205,7 +205,7 @@
                 width: 97%;
                 height: 2%;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .doc_footer_position{
@@ -217,7 +217,7 @@
                 width: 97%;
                 height: 2%;
                 /* margin: auto; */
-                border: 1 solid black;
+                /* border: 1 solid black; */
             }
 
             .test_sanno{
