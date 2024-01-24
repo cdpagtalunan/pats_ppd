@@ -84,7 +84,7 @@
             { "data" : "date_inspected" },
             { "data" : "time_inspected" }, //
             { "data" : "supplier" },
-            // { "data" : "app_ctr_no" }, //
+            { "data" : "app_ctrl_no" }, //
             // { "data" : "classification" },//
             // { "data" : "family" },//
             // { "data" : "category" },//
@@ -99,8 +99,6 @@
         ],
     });
 
-    
-    
     const getFamily = function () {
         $.ajax({
             url: "get_family",
@@ -191,7 +189,9 @@
                 $('#modalSaveIqcInspection').modal('show');
                 let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
                 let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
-
+                let twoDigitDay = strDatTime.dateToday.getDay()
+                // alert(twoDigitDay)
+                console.log(twoDigitDay);
                 let partCode = response[0]['partcode'];
                 let partName = response[0]['partname'];
                 let supplier = response[0]['supplier'];
@@ -203,6 +203,7 @@
                 let lotAccepted = response[0]['accepted'];
                 /* Display the Mode of Defects Button */
                 divDisplayNoneClass(lotAccepted);
+
                 /* Visual Inspection */
                 form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
                 form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
@@ -214,7 +215,6 @@
                 form.iqcInspection.find('#total_lot_qty').val(lotQty);
                 form.iqcInspection.find('#lot_no').val(lotNo);
                 form.iqcInspection.find('#iqc_coc_file').val('');
-
 
                 /* Sampling Plan */
                 form.iqcInspection.find('#accept').val(0);

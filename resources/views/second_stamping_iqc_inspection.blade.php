@@ -117,7 +117,7 @@
                                                             <th>Status</th>
                                                             <th>Date Inspected</th>
                                                             <th>Time Inspected</th>
-                                                            {{-- <th>App Ctrl No.</th> --}}
+                                                            <th>App Ctrl No.</th>
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
                                                             {{-- <th>Category</th> --}}
@@ -127,6 +127,7 @@
                                                             <th>Lot No.</th>
                                                             <th>Lot Qty.</th>
                                                             {{-- <th>AQL</th> --}}
+                                                            <th>Inspector</th>
                                                             <th>Date Created</th>
                                                             <th>Date Updated</th>
                                                         </tr>
@@ -336,7 +337,6 @@
                     // $('#modalScanQRSave').modal('show');
                 });
             });
-
         </script>
     @endsection
 @endauth

@@ -34,10 +34,9 @@ class IqcInspectionController extends Controller
                 SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE whs_transaction.inspection_class = 0
+                WHERE whs_transaction.inspection_class = 1
                 ORDER BY whs.PartNumber DESC
         ');
-
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
@@ -71,6 +70,7 @@ class IqcInspectionController extends Controller
             Lot_number
         */
     }
+
     public function loadWhsDetails(Request $request){
 
         $tbl_whs_trasanction = DB::connection('mysql')
@@ -171,6 +171,11 @@ class IqcInspectionController extends Controller
             $result .= '</center>';
             return $result;
         })
+        ->addColumn('app_ctrl_no', function($row){
+            $result = '';
+            $result .= $row->app_no . $row->app_no_extension;
+            return $result;
+        })
         ->addColumn('time_inspected', function($row){
             $result = '';
             $result .= '<center>';
@@ -184,7 +189,7 @@ class IqcInspectionController extends Controller
             $result .= $qc_inspector[0]->firstname .' '. $qc_inspector[0]->lastname;
             return $result;
         })
-        ->rawColumns(['action','status','qc_inspector','time_inspected'])
+        ->rawColumns(['action','status','app_ctrl_no','qc_inspector','time_inspected',])
         ->make(true);
         /*
             InvoiceNo

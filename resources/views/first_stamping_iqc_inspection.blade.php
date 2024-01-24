@@ -69,6 +69,11 @@
                                 <div class="card-body">
                                     <br><br>
                                     {{-- TABS --}}
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
+                                        </div>
+                                    </div>
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">On-going</a>
@@ -117,7 +122,7 @@
                                                             <th>Status</th>
                                                             <th>Date Inspected</th>
                                                             <th>Time Inspected</th>
-                                                            {{-- <th>App Ctrl No.</th> --}}
+                                                            <th>App Ctrl No.</th>
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
                                                             {{-- <th>Category</th> --}}
@@ -316,6 +321,7 @@
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }
                 });
+                
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){
                         // console.log($(this).val());
@@ -333,6 +339,7 @@
                         $(this).val('');
                     }
                 });
+                
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
