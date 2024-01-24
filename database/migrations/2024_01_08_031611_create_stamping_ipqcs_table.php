@@ -16,7 +16,7 @@ class CreateStampingIpqcsTable extends Migration
         Schema::create('stamping_ipqcs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('fs_productions_id')->comment = 'id from first_stamping_productions table';
-            $table->tinyInteger('stamping_cat')->default(0)->comment = '1 - 1st Stamping, 2 - 2nd Stamping';
+            $table->tinyInteger('stamping_cat')->comment = '1 - 1st Stamping, 2 - 2nd Stamping';
             $table->string('po_number')->nullable();
             $table->string('part_code')->nullable();
             $table->string('material_name')->nullable();

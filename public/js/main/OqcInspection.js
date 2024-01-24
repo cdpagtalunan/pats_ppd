@@ -16,19 +16,28 @@ function SetClassRemove(elementId, value){
     $(`.${elementId}`).addClass(`${value}`)
 }
 
-let count = 0
-function defectiveCounts(){
-    $('.defectiveCount').on('keyup', function () {
-        $('.defectiveCount').each(function (indexInArray, valueOfElement) { 
-            console.log('indexInArray',indexInArray)
-            console.log('valueOfElement',valueOfElement)
-        });
+let value = [];
+function defectiveCounts(valuePassed){
+    console.log('defectiveCounts', valuePassed);
+    $('.defectiveCount').each(function () {
+        $(this).on('keyup', function(e){
+            let innerValue = this.value;
+            console.log('each', this);
+            console.log('innerValue', innerValue);
+            value.push(innerValue);
+        })
+        // defectiveCounts()
     });
+    // console.log(`value ${JSON.stringify(value)}`);
+    console.log(`value ${value}`);
+    // $('#txtOqcInspectionDefectiveNum').val(value);
 }
 
 function ScanUserById() {
     $('#mdlScanQrCode').modal('show')
     $('#mdlScanQrCode').on('shown.bs.modal', function () {
+        $('.scanningForFirstStamping').text('Please scan employee ID')
+        $('.scanningForSecondStamping').text('Please scan employee ID')
         $('#txtScanQrCode').addClass('d-none')
         $('#txtScanUserId').removeClass('d-none')
         $('#txtScanUserId').focus()
@@ -414,34 +423,36 @@ function GetOqcInspectionById(getPo,
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
-            console.log('qweqwe', firstStampingProduction[0].stamping_ipqc)
+            // console.log('qweqwe', firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0])
             
             if(firstStampingProduction[0].stamping_ipqc != null){
-                $('#txtBDrawing').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_title)
-                $('#txtBDrawingNo').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_no)
-                $('#txtBDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].rev_no)
-            }
+                if(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0] != null){
+                    $('#txtBDrawing').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_title)
+                    $('#txtBDrawingNo').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_no)
+                    $('#txtBDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].rev_no)
+                }
 
-            if(firstStampingProduction[0].stamping_ipqc != null){
-                $('#txtUdDrawing').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_title)
-                $('#txtUdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_no)
-                $('#txtUdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].rev_no)
-            }
+                if(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0] != null){
+                    $('#txtUdDrawing').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_title)
+                    $('#txtUdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_no)
+                    $('#txtUdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].rev_no)
+                }
 
-            if(firstStampingProduction[0].stamping_ipqc != null){
-                $('#txtInspStdDrawing').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_title)
-                $('#txtInspStdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_no)
-                $('#txtInspStdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].rev_no)
+                if(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0] != null){
+                    $('#txtInspStdDrawing').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_title)
+                    $('#txtInspStdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_no)
+                    $('#txtInspStdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].rev_no)
+                }
             }
 
             $('#txtOqcInspectionPoNo').val(getPo)
             $('#txtOqcInspectionPoQty').val(getPoQty)
             console.log('getOqcInspectionData',getOqcInspectionData)
-            // if(){
-            //     $('#txtOqcInspectionLotNo').val(getProdLotNo)
-            // }else{
+            if($('#txtStatus').val() == '1'){
                 $('#txtOqcInspectionLotNo').val(getProdLotNo)
-            // }
+            }else{
+                $('#txtOqcInspectionLotNo').val(firstStampingProduction[0].material_lot_no+'/'+getProdLotNo)
+            }
             $('#txtOqcInspectionLotQty').val(getProdShipOutput)
             $('#txtOqcInspectionMaterialName').val(getMaterialName)
 
@@ -503,7 +514,9 @@ function GetOqcInspectionById(getPo,
                     if(mod>0){
                         $('#btnAddMod').trigger('click')
                     }else{
-                        $('#btnRemoveMod').trigger('click')
+                        for (let mod = 0; mod < getOqcInspectionData[0].mod_oqc_inspection_info.length; mod++) {
+                            $('#btnRemoveMod').trigger('click')
+                        }
                     }
                     
                     setTimeout(() => {     

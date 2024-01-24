@@ -219,10 +219,7 @@
                                                 <label class="form-label">Shift:</label>
                                                 <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Production Date:</label>
-                                                <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
-                                            </div>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -290,6 +287,10 @@
                                     <div class="card h-100">
                                         <div class="card-body">
                                             <div class="form-group">
+                                                <label class="form-label">Production Date:</label>
+                                                <input type="date" class="form-control form-control-sm" name="prod_date" id="txtProdDate">
+                                            </div>
+                                            <div class="form-group">
                                                 <label class="form-label">Total Machine Output:</label>
                                                 <input type="number" class="form-control form-control-sm" name="ttl_mach_output" id="txtTtlMachOutput">
                                             </div>
@@ -322,7 +323,7 @@
 
                                             <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtTtlMachOutput_0" readonly required>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
                                         </div>
@@ -416,8 +417,8 @@
                     <div class="modal-body pt-0">
                         {{-- hidden_scanner_input --}}
                         {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" name="" autocomplete="off"> --}}
-                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO"  autocomplete="off"> --}}
-                        <input type="text" class="scanner w-100" id="txtScanPO"  autocomplete="off">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO"  autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100" id="txtScanPO"  autocomplete="off"> --}}
                         {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan PO Number.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>

@@ -306,9 +306,11 @@
                     e.preventDefault();
                     $('#iqc_coc_file').val('');
                     if ($(this).is(':checked')) {
+                        form.iqcInspection.find('#iqc_coc_file').prop('required',true);
                         form.iqcInspection.find('#fileIqcCocUpload').removeClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                     }else{
+                        form.iqcInspection.find('#iqc_coc_file').prop('required',false);
                         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }

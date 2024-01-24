@@ -57,7 +57,7 @@ class StampingController extends Controller
 
 
             if(count($stamping_data->first_stamping_history) > 0){
-                $result .= "<button class='btn btn-secondary btn-sm btnViewHistory' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
+                $result .= "<button class='btn btn-secondary btn-sm btnViewHistory ml-1' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
             }
             $result .= "</center>";
             return $result;
@@ -139,6 +139,7 @@ class StampingController extends Controller
                     'setup_pins'       => ['required'],
                     'adj_pins'         => ['required'],
                     'qc_samp'          => ['required'],
+                    'material_no'          => ['required'],
                 );
             }
             else{
@@ -158,6 +159,7 @@ class StampingController extends Controller
                     'setup_pins'    => ['required'],
                     'adj_pins'      => ['required'],
                     'qc_samp'       => ['required'],
+                    'material_no'       => ['required'],
                    
                 );
             }
@@ -245,7 +247,7 @@ class StampingController extends Controller
                 else{
                     // return $request->all();
 
-                    $imploded_mat_no = implode($request->material_no, ', ');
+                    // $imploded_mat_no = implode($request->material_no, ', ');
                     $imploded_operator = implode($request->opt_name, ', ');
                     $prod_array = array(
                         'stamping_cat'      => $request->stamp_cat,
@@ -254,7 +256,7 @@ class StampingController extends Controller
                         'po_qty'            => $request->po_qty,
                         'part_code'         => $request->part_code,
                         'material_name'     => $request->mat_name,
-                        'material_lot_no'   => $imploded_mat_no,
+                        'material_lot_no'   => $request->material_no,
                         'drawing_no'        => $request->drawing_no,
                         'drawing_rev'       => $request->drawing_rev,
                         // 'cut_off_point'     => $request->cut_point,
