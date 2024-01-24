@@ -5,10 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PackingDetails extends Model
+class FirstMolding extends Model
 {
     use HasFactory;
-    protected $table = "packing_details";
-    protected $connection = "mysql";
-
 }

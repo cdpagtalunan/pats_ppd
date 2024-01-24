@@ -1,17 +1,4 @@
 @php $layout = 'layouts.admin_layout'; @endphp
-{{-- @auth
-  @php
-    if(Auth::user()->user_level_id == 1){
-      $layout = 'layouts.super_user_layout';
-    }
-    else if(Auth::user()->user_level_id == 2){
-      $layout = 'layouts.admin_layout';
-    }
-    else if(Auth::user()->user_level_id == 3){
-      $layout = 'layouts.user_layout';
-    }
-  @endphp
-@endauth --}}
 
 @auth
     @extends($layout)
@@ -49,13 +36,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Packing Details</h1>
+                            <h1>Packing Details to Molding</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item active">Packing Details</li>
+                                <li class="breadcrumb-item active">Packing Details to Molding</li>
                             </ol>
                         </div>
                     </div>
@@ -75,7 +62,6 @@
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
-                                                {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
                                                 <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
                                             </div>
                                         </div>
@@ -91,12 +77,6 @@
                                                 <input type="text" class="form-control" placeholder="PO Quantity" id="txtSearchPOQty" readonly>
                                             </div>
                                         </div>
-                                        {{-- <div hidden class="col-sm-2">
-                                            <label class="form-label">Production Lot #</label>
-                                            <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Production Lot #" id="txtSearchLotNo" readonly>
-                                            </div>
-                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -115,67 +95,25 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        {{-- <button class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#modalEditPackingDetails" id="btnShowEditPackingDetails"><i
-                                                class="fas fa-clipboard-list"></i> Edit Packing Details
-                                        </button> --}}
                                     </div> <br><br>
-
-                                    <ul class="nav nav-tabs" id="myTab" role="tablist"> 
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="Prelim-tab" data-bs-toggle="tab" href="#prelimTab" role="tab" aria-controls="prelimTab" aria-selected="true">Preliminary Packing</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#finalPacking" role="tab" aria-controls="finalPacking" aria-selected="false">Final Packing</a>
-                                        </li>
-                                    </ul>
-
-                                    <div class="tab-content" id="myTabContent">
-                                        <div class="tab-pane fade show active" id="prelimTab" role="tabpanel" aria-labelledby="prelimTab-tab"><br>
-                                            
-                                            <div class="table-responsive">
-                                                <table id="tblPreliminaryPackingDetails" class="table table-sm table-bordered table-striped table-hover"
+                                    <div class="table-responsive">
+                                        <table id="tblPackingDetails" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Action</th>
-                                                        <th>Status</th>
-                                                        <th>PO #</th>
-                                                        <th>Parts Code</th>
-                                                        <th>Parts Name</th>
-                                                        <th>Production Lot #</th>
-                                                        <th>Shipment Qty</th>
-                                                        <th>Validated By</th>
-                                                        <th>Validated Date</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                            </div>
-                                        </div>
-
-                                        
-                                        <div class="tab-pane fade show" id="finalPacking" role="tabpanel" aria-labelledby="finalPacking-tab"><br>
-                                            <div class="table-responsive">
-                                                <table id="tblFinalPackingDetails" class="table table-sm table-bordered table-striped table-hover"
-                                                style="width: 100%;">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Action</th>
-                                                            <th>Status</th>
-                                                            <th>Parts Name</th>
-                                                            <th>PO #</th>
-                                                            <th>Quantity</th>
-                                                            <th>Delivery Balance</th>
-                                                            <th>Drawing #</th>
-                                                            <th>Lot #</th>
-                                                            <th>No. of Cuts</th>
-                                                            <th>Material Quality</th>
-                                                        </tr>
-                                                    </thead>
-                                                </table>
-                                            </div>
-                                        </div>
-
+                                            <thead>
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>Status</th>
+                                                    <th>Part Name</th>
+                                                    <th>Part Code</th>
+                                                    <th>Lot #</th>
+                                                    <th>Lot Qty</th>
+                                                    <th>Endorsed By</th>
+                                                    <th>Date</th>
+                                                    <th>Received By</th>
+                                                    <th>Date</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
                                     </div>
                                 </div>
 
@@ -214,7 +152,7 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="txtPackingDetailsId" name="packing_details_id">
-                        
+
                         <div class="row">
 
                             <div class="col-sm-6">
@@ -289,27 +227,6 @@
     </div>
     <!-- /.modal -->
 
-     <!-- MODALS -->
-    <div class="modal fade" id="modalScanEmpId">
-        <div class="modal-dialog center">
-            <div class="modal-content modal-sm">
-                <form id="formOqcDetails">
-                    @csrf
-                    <div class="modal-body">
-                        <input type="hidden" id="txtOqcDetailsId" name="oqc_details_id">
-                        <input type="hidden" id="txtScanPONumber" name="po_no">
-                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanEmpId" name="scan_id" autocomplete="off">
-                        <div class="text-center text-secondary"><span id="modalScanEmpIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
-                    </div>
-                </form>
-                
-            </div>
-        <!-- /.modal-content -->
-        </div>
-            <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
     @endsection
 
     @section('js_content')
@@ -318,7 +235,7 @@
                 $('.select2').select2({
                     theme: 'bootstrap-5'
                 });
-            
+
             let scannedPO;
             let ParseScannedPo;
 
@@ -337,50 +254,17 @@
                             $('#txtSearchPOQty').val(ParseScannedPo['qty']);
 
                             $('#modalScanPO').modal('hide');
-                            dtPackingDetails.draw();
-                            dtPrelimPackingDetails.draw();
+                            dtPackingDetails.draw()
                         }
                     });
                 });
 
-                dtPrelimPackingDetails = $("#tblPreliminaryPackingDetails").DataTable({
+                dtPackingDetails = $("#tblPackingDetails").DataTable({
                     "processing"    : false,
                     "serverSide"    : true,
                     "destroy"       : true,
                     "ajax" : {
-                        url: "view_preliminary_packing_details",
-                        data: function (param){
-                            param.po_no = $("#txtSearchPONum").val();
-                        },
-                    },
-
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status" },
-                        { "data" : "po_no"},
-                        { "data" : "stamping_production_info.part_code" },
-                        { "data" : "stamping_production_info.material_name"},
-                        { "data" : "stamping_production_info.prod_lot_no" },
-                        { "data" : "stamping_production_info.ship_output"},
-                        { "data" : "prelim_packing_info.validated_by"},
-                        { "data" : "prelim_packing_info.validated_date"},
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": "_all"},
-                        {
-                            "targets": [7,8],
-                            "data": null,
-                            "defaultContent": "---"
-                        },
-                    ],
-                });
-
-                dtPackingDetails = $("#tblFinalPackingDetails").DataTable({
-                    "processing"    : false,
-                    "serverSide"    : true,
-                    "destroy"       : true,
-                    "ajax" : {
-                        url: "view_packing_details_data",
+                        url: "view_packing_details_molding_data",
                         data: function (param){
                             param.po_no = $("#txtSearchPONum").val();
                         },
@@ -390,7 +274,7 @@
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
                         { "data" : "stamping_production_info.material_name"},
-                        { "data" : "po_no"},
+                        { "data" : "po_no" },
                         { "data" : "stamping_production_info.po_qty"},
                         { "data" : "packing_info.delivery_balance" },
                         { "data" : "stamping_production_info.drawing_no"},
@@ -407,68 +291,18 @@
                         },
                     ],
                 });
-                
 
                 $(document).on('click', '.btnEditPackingDetails', function(e){
                     e.preventDefault();
                     let oqcDetailsId =  $(this).attr('data-id');
-                    
-                    // $('#txtPackingDetailsId').val(oqcDetailsId);
+                    $('#txtPackingDetailsId').val(oqcDetailsId);
                     console.log(oqcDetailsId);
-                   
                     $('#modalEditPackingDetails').modal('show');
 
                     getOqcDetailsbyId(oqcDetailsId);
 
                 });
 
-                $(document).on('click', '.btnValidatePrelimPackingDetails', function(e){
-                    e.preventDefault();
-                    let oqcDetailsId =  $(this).attr('data-id');
-                    let poNumber =  $(this).attr('po-no');
-                    $('#txtOqcDetailsId').val(oqcDetailsId);
-                    $('#txtScanPONumber').val(poNumber);
-                    // console.log(poNumber);
-                    // console.log(oqcDetailsId);
-                    $('#modalScanEmpId').modal('show');
-
-                });
-
-                $('#modalScanEmpId').on('shown.bs.modal', function () {
-                    $('#txtScanEmpId').focus();
-                    $('#txtScanEmpId').on('keyup', function(e){
-                        if(e.keyCode == 13){
-                            // console.log('keyCode called');
-                            scanEmpId = $('#txtScanEmpId').val();
-                            // console.log(scanEmpId); 
-                            // console.log(txtOqcDetailsId); 
-                            // $('#formOqcDetails').trigger('submit');
-                        }
-                    });
-                });
-
-
-            $('#formOqcDetails').submit(function(e){
-                e.preventDefault();
-                let data1 = $('#formOqcDetails').serialize();
-                $.ajax({
-                    type: "post",
-                    url: "updated_validated_by",
-                    data: data1,
-                    dataType: "json",
-                    success: function (response) {
-                        if(response['validation'] == 1){
-                            toastr.error('Saving data failed!');
-
-                        }else if(response['result'] == 0){
-                            toastr.success('Validation Succesful!');
-                            $("#formOqcDetails")[0].reset();
-                            $('#modalScanEmpId').modal('hide');
-                            dtPrelimPackingDetails.draw();
-                        }
-                    }
-                });
-            });
 
             $('#formEditPackingDetails').submit(function(e){
                 e.preventDefault();
@@ -504,9 +338,9 @@
                 });
             });
 
-                
+
             });
-        
+
         </script>
     @endsection
 @endauth

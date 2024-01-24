@@ -32,7 +32,7 @@ class DeviceController extends Controller
             ->addColumn('action', function($device){
                 $result = '<center><div class="btn-group">
                           <button type="button" class="btn btn-primary dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Action">
-                            <i class="fa fa-cog"></i> 
+                            <i class="fa fa-cog"></i>
                           </button>
                           <div class="dropdown-menu dropdown-menu-right">';
                 if($device->status == 1){
@@ -53,7 +53,7 @@ class DeviceController extends Controller
 
                 $result .= '<input type="hidden" value="' . $device->id . '" class="form-control td_device_id">';
                 $result .= '<input type="hidden" value="' . $device->name . '" class="form-control td_device_name">';
-                            
+
                 $result .= '</div>
                         </div></center>';
 
@@ -100,7 +100,7 @@ class DeviceController extends Controller
             );
         }
         $validator = Validator::make($data, $validation);
-        
+
         if ($validator->fails()) {
             return response()->json(['result' => '0', 'error' => $validator->messages()]);
         }
@@ -112,7 +112,7 @@ class DeviceController extends Controller
                     'code'                      => $request->code,
                     'name'                      => $request->name,
                     'process'                   => $request->process,
-                    
+
                 );
                 if(isset($request->id)){
                     $device_array['last_updated_by'] = Auth::user()->id;
@@ -128,7 +128,7 @@ class DeviceController extends Controller
                     Device::insert($device_array);
                 }
                 DB::commit();
-                
+
                 return response()->json(['result' => 1, 'msg' => 'Successfully Added']);
             }
             catch(Exemption $e){

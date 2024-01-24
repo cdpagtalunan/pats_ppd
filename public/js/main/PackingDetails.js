@@ -8,13 +8,15 @@ function getOqcDetailsbyId(oqcDetailsId){
         dataType: "json",
         success: function (response) {
 
-			if(response['oqcData'].length > 0){
-                    $('#txtPONumber').val(response['oqcData'][0]['stamping_production_info']['po_num'])
-                    $('#txtPOQuantity').val(response['oqcData'][0]['stamping_production_info']['po_qty'])
-                    $('#txtPartsName').val(response['oqcData'][0]['stamping_production_info']['material_name'])
-                    $('#txtProdLotNumber').val(response['oqcData'][0]['stamping_production_info']['prod_lot_no'])
-                    $('#txtDrawingNumber').val(response['oqcData'][0]['stamping_production_info']['drawing_no'])
-			}
+			if(response['oqcData'] != null){
+                    $('#txtPONumber').val(response['oqcData']['stamping_production_info']['po_num'])
+                    $('#txtPOQuantity').val(response['oqcData']['stamping_production_info']['po_qty'])
+                    $('#txtPartsName').val(response['oqcData']['stamping_production_info']['material_name'])
+                    $('#txtProdLotNumber').val(response['oqcData']['stamping_production_info']['prod_lot_no'])
+                    $('#txtDrawingNumber').val(response['oqcData']['stamping_production_info']['drawing_no'])
+			}else{
+                toastr.warning('warning messages');
+            }
 			
         }
     });

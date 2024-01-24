@@ -139,6 +139,14 @@ const submitProdData = async (scannedId, form, stampCat) => {
                     $('#txtActQty', form).addClass('is-invalid');
                     $('#txtActQty', form).attr('title', response['error']['act_qty']);
                 }
+                if(response['error']['material_no'] === undefined){
+                    $('#txtTtlMachOutput_0', form).removeClass('is-invalid');
+                    $('#txtTtlMachOutput_0', form).attr('title', '');
+                }
+                else{
+                    $('#txtTtlMachOutput_0', form).addClass('is-invalid');
+                    $('#txtTtlMachOutput_0', form).attr('title', response['error']['material_no']);
+                }
                 
             }
             $('input[name="status"]').prop('disabled', true);

@@ -75,6 +75,7 @@ Route::view('/second_stamping_oqc_inspection','second_stamping_oqc_inspection')-
 
 /* PACKING  */
 Route::view('/packing_details','packing_details')->name('packing_details');
+Route::view('/packing_details_molding','packing_details_molding')->name('packing_details_molding');
 
 
 /* PACKING LIST */
@@ -276,11 +277,17 @@ Route::controller(ReceivingDetailsController::class)->group(function () {
 
 Route::controller(PackingDetailsController::class)->group(function () {
     Route::get('/view_packing_details_data', 'viewPackingDetailsData')->name('view_packing_details_data');
+    Route::get('/view_preliminary_packing_details', 'viewPrelimDetailsData')->name('view_preliminary_packing_details');
     Route::get('/get_oqc_details', 'getOqcDetailsForPacking')->name('get_oqc_details');
-    Route::get('/add_packing_details', 'addPackingDetails')->name('add_packing_details');
+    Route::post('/add_packing_details', 'addPackingDetails')->name('add_packing_details');
+    Route::post('/updated_validated_by', 'updatePrelimDetails')->name('updated_validated_by');
 });
 
-//
+Route::controller(PackingDetailsMoldingController::class)->group(function () {
+    Route::get('/view_packing_details_molding_data', 'viewPackingDetailsMoldingData')->name('view_packing_details_molding_data');
+    
+});
+
 
 
 

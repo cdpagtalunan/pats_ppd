@@ -41,13 +41,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>In-Process Quality Control</h1>
+                            <h1>In-Process Quality Control (Second Stamping)</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item">First Stamping</li>
+                                <li class="breadcrumb-item">Second Stamping</li>
                                 <li class="breadcrumb-item active">In-Process Quality Control</li>
                             </ol>
                         </div>
@@ -67,10 +67,10 @@
                                         <div class="col-sm-2">
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
-                                                <button hidden class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button>
+                                                <button class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <button type="button" class="btn btn-dark" id="btnScanPo" data-toggle="modal" data-target="#mdlScanQrCode"><i class="fa fa-qrcode w-100"></i></button> --}}
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Press Enter Key to Search PO Number"></i>
-                                                <input type="text" class="form-control" placeholder="Search PO Number" aria-label="Username" name="po_number" id="txtSearchPONum">
+                                                {{-- <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Press Enter Key to Search PO Number"></i> --}}
+                                                <input readonly type="text" class="form-control" placeholder="Search PO Number" aria-label="Username" name="po_number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -156,7 +156,7 @@
 
                                                 <div class="table-responsive">
                                                     <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                    <table id="tblIpqcInspectionPending" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    <table id="tbl2ndStampingIpqcInspectionPending" class="table table-sm table-bordered table-striped table-hover text-center"
                                                         style="width: 100%;">
                                                         <thead>
                                                             <tr>
@@ -181,7 +181,7 @@
                                             {{-- <div class="card-body"> --}}
                                                 <div class="table-responsive">
                                                     <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                    <table id="tblIpqcInspectionCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    <table id="tbl2ndStampingIpqcInspectionCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
                                                         style="width: 100%;">
                                                         <thead>
                                                             <tr>
@@ -206,7 +206,7 @@
                                             {{-- <div class="card-body"> --}}
                                                 <div class="table-responsive">
                                                     <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                    <table id="tblIpqcInspectionResetup" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    <table id="tbl2ndStampingIpqcInspectionResetup" class="table table-sm table-bordered table-striped table-hover text-center"
                                                         style="width: 100%;">
                                                         <thead>
                                                             <tr>
@@ -321,6 +321,7 @@
                         <div class="modal-body">
                             <input type="hidden" id="txtStampingIpqcId" name="stamping_ipqc_id">
                             <input type="hidden" id="txtFirstStampingProdId" name="first_stamping_prod_id">
+                            <input type="hidden" id="txtStampingCategory" name="stamping_category">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="card">
@@ -343,39 +344,18 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Input:</label>
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="QC Sample Qty"></i>
+                                                <i class="fa-solid fa-circle-info fa-lg mt-2 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="QC Sample Qty"></i>
                                                 <input type="text" class="form-control form-control-sm" name="input" id="txtInput" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Output:</label>
                                                 <input type="text" class="form-control form-control-sm" name="output" id="txtOutput"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">NG:</label>
                                                 <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Input - Output = NG Qty"></i>
                                                 <input type="text" class="form-control form-control-sm" name="ng_qty" id="txtNGQty" readonly>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="card">
-                                        <div class="card-body"><div class="form-group">
-                                            <div class="form-group">
-                                                <label class="form-label">Judgement:</label>
-                                                {{-- <input type="text" class="form-control form-control-sm" name="judgement" id="txtJudgement"> --}}
-                                                <select class="form-control" type="text" name="judgement" id="txtJudgement">
-                                                    <option value="" disabled selected>Select Judgement</option>
-                                                    <option value="Accepted" style="color:#008000">Accepted</option>
-                                                    <option value="Rejected" style="color:#ff0000">Rejected</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="form-label">Inspector Name:</label>
-                                                <input type="hidden" class="form-control form-control-sm" name="inspector_id" id="txtInspectorID" readonly value="@php echo Auth::user()->id; @endphp" readonly>
-                                                {{-- `${let name = response['users'][index].rapidx_user_details.firstname + response['users'][index].rapidx_user_details.lastname}` --}}
-                                                <input type="text" class="form-control form-control-sm" name="inspector_name" id="txtInspectorName" value="@php echo Auth::user()->firstname.' '.Auth::user()->lastname; @endphp" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-check-label"> Keep Sample:</label>
@@ -388,12 +368,33 @@
                                                     <label class="form-check-label" for="txtKeepSample2"> No</label>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="card">
+                                        <div class="card-body"><div class="form-group">
+                                            <div class="form-group">
+                                                <label class="form-label">Judgement:</label>
+                                                {{-- <input type="text" class="form-control form-control-sm" name="judgement" id="txtJudgement"> --}}
+                                                <select class="form-control form-control-sm" type="text" name="judgement" id="txtJudgement" required>
+                                                    <option value="" disabled selected>Select Judgement</option>
+                                                    <option value="Accepted" style="color:#008000">Accepted</option>
+                                                    <option value="Rejected" style="color:#ff0000">Rejected</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group mt-1">
+                                                <label class="form-label">Inspector Name:</label>
+                                                <input type="hidden" class="form-control form-control-sm" name="inspector_id" id="txtInspectorID" readonly value="@php echo Auth::user()->id; @endphp" readonly>
+                                                {{-- `${let name = response['users'][index].rapidx_user_details.firstname + response['users'][index].rapidx_user_details.lastname}` --}}
+                                                <input type="text" class="form-control form-control-sm" name="inspector_name" id="txtInspectorName" value="@php echo Auth::user()->firstname.' '.Auth::user()->lastname; @endphp" readonly>
+                                            </div>
                                             {{-- DROPDOWN --}}
                                             <div class="form-group">
                                                 <label class="form-label">Doc No.(B Drawing):</label>
                                                 {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
                                                 <div class="input-group input-group-sm">
-                                                    <select class="form-control text-center" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing" style="width: 100%;">
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing" style="width: 100%;">
                                                         {{-- <option disabled selected>-- Document No. --</option> --}}
                                                     </select>
                                                 </div>
@@ -402,7 +403,7 @@
                                                 <label class="form-label">Doc No.(Inspection Standard):</label>
                                                 {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
                                                 <div class="input-group input-group-sm">
-                                                    <select class="form-control text-center" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard" style="width: 100%;">
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard" style="width: 100%;">
                                                         {{-- <option disabled selected>-- Document No. --</option> --}}
                                                     </select>
                                                 </div>
@@ -411,7 +412,7 @@
                                                 <label class="form-label">Doc No.(UD):</label>
                                                 {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
                                                 <div class="input-group input-group-sm">
-                                                    <select class="form-control text-center" id="txtSelectDocNoUD" name="doc_no_ud" style="width: 100%;">
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud" style="width: 100%;">
                                                         {{-- <option disabled selected>-- Document No. --</option> --}}
                                                     </select>
                                                 </div>
@@ -425,8 +426,8 @@
                                                 <div id="AttachmentDiv">
                                                     <label class="form-control-label">MeasData Attachment:</label>
                                                 </div>
-                                                    <input type="file" class="" id="txtAddFile" name="uploaded_file" accept=".xlsx, .xls, .csv" style="width:100%;" required>
-                                                    <input type="text" class="form-control d-none" name="re_uploaded_file" id="txtEditUploadedFile" readonly>
+                                                    <input type="file" class="form-control form-control-sm" id="txtAddFile" name="uploaded_file" accept=".xlsx, .xls, .csv" style="width:100%;" required>
+                                                    <input type="text" class="form-control form-control-sm d-none" name="re_uploaded_file" id="txtEditUploadedFile" readonly>
                                                 <div class="form-group form-check d-none m-0" id="btnReuploadTriggerDiv">
                                                     <input type="checkbox" class="form-check-input d-none" id="btnReuploadTrigger">
                                                     <label class="d-none" id="btnReuploadTriggerLabel"> Re-upload Attachment</label>
@@ -476,7 +477,7 @@
                 //     theme: 'bootstrap4'
                 // });
 
-                dtIpqcInspectionPending = $("#tblIpqcInspectionPending").DataTable({
+                let dt2ndStampingIpqcInspectionPending = $("#tbl2ndStampingIpqcInspectionPending").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
@@ -484,7 +485,8 @@
                         data: function(param){
                         param.po_number =  $("#txtSearchPONum").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
-                        param.fs_prod_status = 0; // Stamping productions Status : For IPQC
+                        param.fs_prod_status = [0]; // Stamping productions Status : For IPQC
+                        param.fs_prod_stamping_cat = 2; // Stamping productions Stamping Category: 1
                         }
                     },
                     fixedHeader: true,
@@ -513,7 +515,7 @@
                     // }
                 });
 
-                let dtIpqcInspectionCompleted = $("#tblIpqcInspectionCompleted").DataTable({
+                let dt2ndStampingIpqcInspectionCompleted = $("#tbl2ndStampingIpqcInspectionCompleted").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
@@ -521,8 +523,9 @@
                         data: function(param){
                         param.po_number =  $("#txtSearchPONum").val();
                         // param.status = [3];
-                        param.fs_prod_status = 1; //Stamping productions Status : For Mass Prod
                         param.ipqc_status = [3]; //Status 4 = Submitted: Judgement - Accepted
+                        param.fs_prod_status = [1, 2]; //Stamping productions Status : For Mass Prod, Done
+                        param.fs_prod_stamping_cat = 2; // Stamping productions Stamping Category: 1
                         }
                     },
                     bAutoWidth: false,
@@ -549,7 +552,7 @@
                     // }
                 });
 
-                let dtIpqcInspectionResetup = $("#tblIpqcInspectionResetup").DataTable({
+                let dt2ndStampingIpqcInspectionResetup = $("#tbl2ndStampingIpqcInspectionResetup").DataTable({
                     // GetDataTableData()
                     "processing" : true,
                     "serverSide" : true,
@@ -557,8 +560,9 @@
                         url: "view_stamping_ipqc_data",
                         data: function(param){
                         param.po_number =  $("#txtSearchPONum").val();
-                        param.fs_prod_status = 3; //Stamping productions Status : For Resetup
                         param.ipqc_status = [4]; //Status 4 = Submitted: Judgement - Rejected
+                        param.fs_prod_status = [3]; //Stamping productions Status : For Resetup
+                        param.fs_prod_stamping_cat = 2; // Stamping productions Stamping Category: 1
                         }
                     },
                     bAutoWidth: false,
@@ -610,18 +614,19 @@
                     });
                 });
 
-                $('#txtSearchPONum').on('keypress', function(e){
+                // $('#txtSearchPONum').on('keypress', function(e){
+                $('#txtScanQrCode').on('keypress', function(e){
                     if(e.keyCode == 13){
-                        let search_po_number_val = $('#txtSearchPONum').val();
+                        // let search_po_number_val = $('#txtScanQrCode').val();
                         // console.log('log1', $('#txtScanQrCode').val());
-                        // let ScanQrCodeVal = jQuery.parseJSON($('#txtScanQrCode').val());
+                        let ScanQrCodeVal = jQuery.parseJSON($('#txtScanQrCode').val());
                         // console.log('log2', ScanQrCodeVal);
                         $.ajax({
                             type: "get",
                             url: "get_data_from_fs_production",
                             data: {
-                                // "po_number" : ScanQrCodeVal.po
-                                "po_number" : search_po_number_val
+                                "po_number" : ScanQrCodeVal.po
+                                // "po_number" : search_po_number_val
                             },
                             dataType: "json",
                             beforeSend: function(){
@@ -638,9 +643,18 @@
                                         $('#txtSearchMatName').val(fs_prod_data[0]['material_name']);
                                         $('#txtScanQrCode').val('');
                                         $('#mdlScanQrCode').modal('hide');
-                                        dtIpqcInspectionPending.draw();
-                                        dtIpqcInspectionCompleted.draw();
-                                        dtIpqcInspectionResetup.draw();
+
+                                        let mat_name = fs_prod_data[0]['material_name'];
+                                        mat_name = mat_name.replace(/ /g,'');
+                                        // console.log(mat_name);
+
+                                        GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                        GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                        GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+
+                                        dt2ndStampingIpqcInspectionPending.draw();
+                                        dt2ndStampingIpqcInspectionCompleted.draw();
+                                        dt2ndStampingIpqcInspectionResetup.draw();
                                 }
                             }
                         });
@@ -710,17 +724,29 @@
 
                             if(ipqc_data['keep_sample'] == 1){
                                 $('#txtKeepSample1').prop('checked', true);
+                                // $('input[name="keep_sample"]').prop('required', false);
                             }else if(ipqc_data['keep_sample'] == 2){
                                 $('#txtKeepSample2').prop('checked', true);
+                                // $('input[name="keep_sample"]').prop('required', false);
                             }else{
                                 $('input[name="keep_sample"]').prop('checked', false);
+                                // $('input[name="keep_sample"]').prop('required', true);
                             }
 
                             let ng_value = $('#txtInput').val() - $('#txtOutput').val();
                             $('#txtNGQty').val(ng_value);
-                            GetBDrawingFromACDCS('CN171', 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
-                            GetInspStandardFromACDCS('CN171', 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
-                            GetUDFromACDCS('CN171', 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
+
+                            let mat_name = fs_prod_data[0]['material_name'];
+                                mat_name = mat_name.replace(/ /g,'');
+                            // console.log(mat_name);
+
+                            // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
+                            // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
+                            // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
+
+                            $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
+                            $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
+                            $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
 
                             // $("#btnReuploadTriggerDiv").removeClass('d-none');
                             // $("#btnReuploadTrigger").removeClass('d-none');
@@ -789,6 +815,7 @@
 
                             $('#txtStampingIpqcId').val(stamping_ipqc_id);
                             $('#txtFirstStampingProdId').val(first_stamping_prod_id);
+                            $('#txtStampingCategory').val(fs_prod_data[0]['stamping_cat']);
                             $('#txtPoNumber').val(fs_prod_data[0]['po_num']);
                             $('#txtPartCode').val(fs_prod_data[0]['part_code']);
                             $('#txtMaterialName').val(fs_prod_data[0]['material_name']);
@@ -807,10 +834,13 @@
 
                             if(fs_prod_data[0]['stamping_ipqc_data'] == 0){ //when fs_prod_id && stamping_ipqc_id is not existing in StampingIpqc Table //For Insert to StampingIpqc Table
 
+                                // let mat_name = fs_prod_data[0]['material_name'];
+                                // mat_name = mat_name.replace(/ /g,'');
+                                // console.log(mat_name);
 
-                                GetBDrawingFromACDCS('CN171', 'B Drawing', $("#txtSelectDocNoBDrawing"), '');
-                                GetInspStandardFromACDCS('CN171', 'Inspection Standard', $("#txtSelectDocNoInspStandard"), '');
-                                GetUDFromACDCS('CN171', 'Urgent Direction', $("#txtSelectDocNoUD"), '');
+                                // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
+                                // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
+                                // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
                                 $('#txtInspectorID').val(fs_prod_data[0]['ipqc_inspector_id']);
                                 // $('#txtInspectorName').val(fs_prod_data[0]['ipqc_inspector_name'] +' '+'(Auto Generate)');
@@ -822,6 +852,20 @@
                                 $("#txtAddFile").attr('required', true);
                                 $("#txtEditUploadedFile").addClass('d-none');
                                 $("#download_file").addClass('d-none');
+
+                                $("#txtSelectDocNoBDrawing").prop('required', true);
+                                $("#txtSelectDocNoInspStandard").prop('required', true);
+                                $("#txtSelectDocNoUD").prop('required', true);
+                                $('input[name="keep_sample"]').prop('required', true);
+
+                                if($('#txtKeepSample1').prop('checked')){
+                                    $('input[name="keep_sample"]').prop('required', false);
+                                }else if($('#txtKeepSample1').prop('checked')){
+                                    $('input[name="keep_sample"]').prop('required', false);
+                                }else{
+                                    $('input[name="keep_sample"]').prop('required', true);
+                                }
+
                             }else{//For Update to StampingIpqc Table
                                 let ipqc_data = response['fs_production_data'][0]['stamping_ipqc'];
 
@@ -844,9 +888,19 @@
                                 let ng_value = $('#txtInput').val() - $('#txtOutput').val();
                                 $('#txtNGQty').val(ng_value);
                                 // GetDocumentNoFromACDCS('CN171', 'Urgent Direction', $("#txtSelectDocumentNo"), ipqc_data['document_no']);
-                                GetBDrawingFromACDCS('CN171', 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
-                                GetInspStandardFromACDCS('CN171', 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
-                                GetUDFromACDCS('CN171', 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
+
+                                // CLARKKKKK
+                                // let mat_name = fs_prod_data[0]['material_name'];
+                                // mat_name = mat_name.replace(/ /g,'');
+                                // // console.log(mat_name);
+
+                                // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
+                                // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
+                                // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
+
+                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
+                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
+                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
 
                                 $('input[name="keep_sample"]').attr('disabled', false);
                                 $("#btnReuploadTriggerDiv").removeClass('d-none');
@@ -860,6 +914,10 @@
                                 $("#txtSelectDocumentNo").removeAttr('required');
                                 $("#txtEditUploadedFile").removeAttr('required');
                                 $('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
+
+                                $("#txtSelectDocNoBDrawing").prop('required', false);
+                                $("#txtSelectDocNoInspStandard").prop('required', false);
+                                $("#txtSelectDocNoUD").prop('required', false);
 
                                 let download ='<a href="download_file/'+ipqc_data['id']+'">';
                                     download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
@@ -882,19 +940,19 @@
                     });
                 });
 
-                function GetBDrawingFromACDCS(model, doc_type, cboElement, IpqcDocumentNo){
-                    GetDocumentNoFromACDCS(model, doc_type, cboElement, IpqcDocumentNo);
+                function GetBDrawingFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
                 };
 
-                function GetInspStandardFromACDCS(model, doc_type, cboElement, IpqcDocumentNo){
-                    GetDocumentNoFromACDCS(model, doc_type, cboElement, IpqcDocumentNo);
+                function GetInspStandardFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
                 };
 
-                function GetUDFromACDCS(model, doc_type, cboElement, IpqcDocumentNo){
-                    GetDocumentNoFromACDCS(model, doc_type, cboElement, IpqcDocumentNo);
+                function GetUDFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
                 };
 
-                function GetDocumentNoFromACDCS(model, doc_type, cboElement, IpqcDocumentNo){
+                function GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
 
                         let result = '<option value="" disabled selected>--Select Document No.--</option>';
                     // }
@@ -902,7 +960,7 @@
                             url: 'get_data_from_acdcs',
                             method: 'get',
                             data: {
-                                'model': model,
+                                'doc_title': doc_title,
                                 'doc_type': doc_type
                             },
                             dataType: 'json',
@@ -914,18 +972,20 @@
                                 // console.log('test response', response['acdcs_data']);
                                 if (response['acdcs_data'].length > 0) {
 
-                                    if(IpqcDocumentNo != ''){ //when Editting: Document No
+                                    // if(IpqcDocumentNo != ''){ //when Editting: Document No
                                         // result = '<option value="" disabled selected>--Select Document No.--</option>';
-                                        result = '<option selected readonly value="' + IpqcDocumentNo + '">' + IpqcDocumentNo + '</option>';
+                                        // result = '<option selected disabled value="' + IpqcDocumentNo + '">' + IpqcDocumentNo + '</option>';
                                         // cboElement.html(result);
-                                    }else{ //when Inserting: Document No
+                                    // }else{ //when Inserting: Document No
                                         result = '<option value="" disabled selected>--Select Document No.--</option>';
-                                    }
+                                    // }
                                     // if(response['acdcs_data']['users'][0].model == 1){
 
-
                                     // }
-                                    result += '<option value="N/A"> N/A </option>';
+                                    if(response['acdcs_data'][0].doc_type != 'B Drawing'){
+                                        result += '<option value="N/A"> N/A </option>';
+                                    }
+
                                     // result = '<option value="" selected>-- N/A --</option>';
                                     for (let index = 0; index < response['acdcs_data'].length; index++) {
                                         result += '<option value="' + response['acdcs_data'][index].doc_no + '">' + response['acdcs_data'][index].doc_no + '</option>';
@@ -935,7 +995,7 @@
                                     result = '<option value="0" selected disabled> -- No record found -- </option>';
                                 }
                                 cboElement.html(result);
-                                cboElement.select2();
+                                // cboElement.select2();
                                 // $("#txtSelectDocumentNo").select2();
                             },
                             error: function(data, xhr, status) {
@@ -979,9 +1039,9 @@
                         success: function (response) {
                             let result = response['result'];
                             if (result == 'Successful') {
-                                dtIpqcInspectionPending.draw();
-                                dtIpqcInspectionCompleted.draw();
-                                dtIpqcInspectionResetup.draw();
+                                dt2ndStampingIpqcInspectionPending.draw();
+                                dt2ndStampingIpqcInspectionCompleted.draw();
+                                dt2ndStampingIpqcInspectionResetup.draw();
                                 toastr.success('Successful!');
                                 $("#modalConfirmSubmitIPQCInspection").modal('hide');
                             }else{
@@ -1034,9 +1094,9 @@
                                 toastr.success('Successful!');
                                 $('#modalIpqcInspection').modal('hide');
                                 $('#modalScanQRSave').modal('hide');
-                                dtIpqcInspectionPending.draw();
-                                dtIpqcInspectionCompleted.draw();
-                                dtIpqcInspectionResetup.draw();
+                                dt2ndStampingIpqcInspectionPending.draw();
+                                dt2ndStampingIpqcInspectionCompleted.draw();
+                                dt2ndStampingIpqcInspectionResetup.draw();
                                 // $("#modalConfirmSubmitIPQCInspection").modal('hide');
                             }
                             else if(result == 'Duplicate'){

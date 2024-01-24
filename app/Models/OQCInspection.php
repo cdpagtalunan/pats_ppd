@@ -10,7 +10,8 @@ use App\Models\PrintLot;
 use App\Models\ModeOfDefect;
 // use App\Models\WbsOqcInspection;
 use App\Models\FirstStampingProduction;
-
+use App\Models\PackingDetails;
+use App\Models\PreliminaryPacking;
 class OQCInspection extends Model
 {
     protected $table = "oqc_inspections";
@@ -34,6 +35,14 @@ class OQCInspection extends Model
 
     public function stamping_production_info(){
         return $this->hasOne(FirstStampingProduction::class,'id', 'fs_productions_id');
+    }
+
+    public function packing_info(){
+        return $this->hasOne(PackingDetails::class,'oqc_id', 'id');
+    }
+
+    public function prelim_packing_info(){
+        return $this->hasOne(PreliminaryPacking::class,'oqc_id', 'id');
     }
 
 }

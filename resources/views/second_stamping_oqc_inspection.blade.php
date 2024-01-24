@@ -530,7 +530,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>No. of Defectives</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionDefectiveNum" name="oqc_inspection_defective_num">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionDefectiveNum" name="oqc_inspection_defective_num" readonly>
                                     </div>
                                 </div>
                             </div><!-- /.End Row Visual Inspection -->
@@ -545,7 +545,7 @@
                                             <button class="btn btn-danger btn-sm d-none" id="btnRemoveMod" title="Remove  Mode of Defect"><i class="fas fa-times"></i></button>
                                         </div>
                                         <div class="col-4">
-                                            <select class="form-select form-control-sm inspectionModDropdown_0 mb-1" id="txtMod_0" name="mod_0"  placeholder="Mode of Defect">
+                                            <select class="form-select form-control-sm defectiveCount inspectionModDropdown_0 mb-1" id="txtMod_0" name="mod_0"  placeholder="Mode of Defect">
                                             </select>    
                                         </div>
                                         <div class="col-5 mr-1">
@@ -582,7 +582,8 @@
                         {{-- <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off" value='{"po_no":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}'> --}}
                         <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
                         <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
-                        <div class="text-center text-secondary">Please scan the code.<h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                        <div class="text-center text-secondary scanningForSecondStamping"></div>
+                        <div class="text-center text-secondary"><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
             </div>
@@ -646,6 +647,9 @@
                     $('#mdlScanQrCode').on('shown.bs.modal', function () {
                         $('#txtScanUserId').addClass('d-none')
                         $('#txtScanQrCode').removeClass('d-none')
+                        $('.scanningForFirstStamping').text('Please scan QR Code Sticker')
+                        $('.scanningForSecondStamping').text('Please scan QR Code Sticker')
+
                         $('#txtScanQrCode').focus()
                         const mdlScanQrCodeOqcInspection = document.querySelector("#mdlScanQrCode");
                         const inptQrCodeOqcInspection = document.querySelector("#txtScanQrCode");
@@ -684,7 +688,7 @@
                         const scanQrCode = $('#txtScanQrCode').val()
                         if(scanQrCode != ''){
                             let po = JSON.parse(scanQrCode)
-                            getPoNo =  po.po
+                            getPoNo =  po.po_no
                             if(getPoNo != undefined){
                                 $('#txtPoNumber').val(po.po)
                                 $('#txtMaterialName').val(po.name)
@@ -715,11 +719,21 @@
                     
                     $('#txtStatus').val(getInfoForSecondStamping)
                     setTimeout(() => {     
-                        if( new Date().toLocaleTimeString() <= '7:29:00 PM'){
+                        // if( new Date().toLocaleTimeString() <= '7:29:00 PM'){
+                        //     // $('#slctOqcInspectionShift').val('A');
+                        //     $('#slctOqcInspectionShift').val('B');
+                        // }else{
+                        //     $('#slctOqcInspectionShift').val('A');
+                        //     // $('#slctOqcInspectionShift').val('B');
+                        // }
+                        $time_now = moment().format('LT');
+                        if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
                             $('#slctOqcInspectionShift').val('A');
-                        }else{
+                        }
+                        else{
                             $('#slctOqcInspectionShift').val('B');
                         }
+
                     }, 300);
 
                     GetOqcInspectionById(
@@ -739,14 +753,16 @@
 
                 $(document).on('click', '.actionOqcInspectionSecondStampingView', function(e){
                     e.preventDefault()
-                    getPo               = $(this).attr('prod_second_stamping-po')
-                    getPoQty            = $(this).attr('prod_second_stamping-po_qty')
-                    getOqcId            = $(this).attr('oqc_inspection_second_stamping-id')
-                    getProdId           = $(this).attr('prod_second_stamping-id')
-                    getProdLotNo        = $(this).attr('prod_second_stamping-lot_no')
-                    getMaterialName     = $(this).attr('prod_second_stamping-material_name')
-                    getProdShipOutput   = $(this).attr('prod_second_stamping-ship_output')
-                    
+                    getPo                       = $(this).attr('prod_second_stamping-po')
+                    getPoQty                    = $(this).attr('prod_second_stamping-po_qty')
+                    getOqcId                    = $(this).attr('oqc_inspection_second_stamping-id')
+                    getProdId                   = $(this).attr('prod_second_stamping-id')
+                    getProdLotNo                = $(this).attr('prod_second_stamping-lot_no')
+                    getMaterialName             = $(this).attr('prod_second_stamping-material_name')
+                    getProdShipOutput           = $(this).attr('prod_second_stamping-ship_output')
+                    getInfoForSecondStamping    = $(this).attr('second-stamping')
+                    $('#txtStatus').val(getInfoForSecondStamping)
+
                     GetOqcInspectionById(
                         getPo,
                         getPoQty,
@@ -977,7 +993,7 @@
                     $('#divModFields').append(html)
 
                     GetMOD($('.inspectionModDropdown_'+modCounter+''))
-                    defectiveCounts()
+                    // defectiveCounts()
                 });
                 // ================== SCRIPT FOR REMOVE MOD ======================
                 $("#btnRemoveMod").on('click', function(e){
@@ -1000,6 +1016,7 @@
                         $('.mod-class').addClass('d-none')
                         if($('#txtOqcInspectionLotAccepted').val() != ''){
                             $('#txtOqcInspectionJudgement').val('Accept')
+                            $('.defectiveCount').empty();
                         }else{
                             $('#txtOqcInspectionJudgement').val('')
                         }

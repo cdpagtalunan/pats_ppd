@@ -69,10 +69,15 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        <button class="btn btn-primary" data-bs-toggle="modal"
+                                        {{-- <button class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#modalExportPackingList" id="btnExportPackingList">
                                                 <i class="fa-solid fa-plus"></i> Export Packing List
+                                        </button> --}}
+                                        <button class="btn btn-primary" id="btnExportPackingList">
+                                            <i class="fa-solid fa-file-export"></i> Export Packing List (PDF)
+                                            {{-- </a> --}}
                                         </button>
+
 
                                         <button class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#modalAddPackingList" id="btnShowAddPackingList"><i
@@ -106,6 +111,36 @@
         </div>
 
     <!-- MODALS -->
+
+    <div class="modal fade" id="modalExportPackingList">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h4 class="modal-title">Generate Packing List</h4>
+                    <button type="button" style="color: #fff;" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formGeneratePackingList">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Select Control # for Export</label>
+                                    <select class="form-control selectControlNumber" name="ctrl_no" id="txtCtrlNo" style="width: 100%;"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download" ></i> Download</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
      {{-- * ADD --}}
      <div class="modal fade" id="modalAddPackingList" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
@@ -162,7 +197,7 @@
                                     <input type="text" class="form-control form-control-sm" name="ctrl_num" id="txtCtrlNumber" autocomplete="off">
                                 </div>
                             </div>
-                            
+
                         </div>
 
                         <div class="row">
@@ -238,7 +273,7 @@
                                     <select class="form-control select2 selectCcName" id="selectCarbonCopy" name="carbon_copy[]" multiple>
                                         <!-- Auto Generated -->
                                     </select>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -293,7 +328,49 @@
 
         // });+
         $(document).ready(function(){
-            
+
+            $('#btnExportPackingList').click( function(e){
+                $('#modalExportPackingList').modal('show');
+                GetPackingListControlNo($(".selectControlNumber"));
+            });
+
+            function GetPackingListControlNo(cboElement){
+                    let result = '<option value="" disabled selected>--Select Control No.--</option>';
+                        $.ajax({
+                            url: 'get_packing_list_data',
+                            method: 'get',
+                            dataType: 'json',
+                            beforeSend: function() {
+                                    result = '<option value="0" disabled selected>--Loading--</option>';
+                                    cboElement.html(result);
+                            },
+                            success: function(response) {
+                                if (response['packing_list_data'].length > 0) {
+                                        result = '<option value="" disabled selected>--Select Control No.--</option>';
+                                    for (let index = 0; index < response['packing_list_data'].length; index++) {
+                                        result += '<option value="' + response['packing_list_data'][index].control_no + '">' + response['packing_list_data'][index].control_no + '</option>';
+                                    }
+                                } else {
+                                    result = '<option value="0" selected disabled> -- No record found -- </option>';
+                                }
+                                cboElement.html(result);
+                                cboElement.select2();
+                            },
+                            error: function(data, xhr, status) {
+                                result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                                cboElement.html(result);
+                                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                            }
+                        });
+                    }
+
+            $('#formGeneratePackingList').submit(function (e){
+                e.preventDefault();
+                let CtrlNo = $('#txtCtrlNo').val();
+                window.location.href = "view_pdf/"+CtrlNo;
+                $('#modalExportPackingList').modal('hide');
+            });
+
             getCustomer($('#selectCustomer'));
             getCarrier($('#selectCarrier'));
             getPortOfLoading($('#selectPortOfLoading'));
@@ -301,7 +378,7 @@
             getPreparedByUser($('#selectPreparedBy'));
             getCheckedByUser($('#selectCheckedBy'));
             getCarbonCopyUser($('.selectCcName'));
-            
+
             dtProductionDetails = $("#tblProductionListDetails").DataTable({
                 "processing" : true,
                 "serverSide" : true,
@@ -317,11 +394,11 @@
                     { "data" : "action", orderable:false, searchable:false },
                     { "data" : "status"},
                     { "data" : "po_no"},
-                    { "data" : "stamping_production_info.material_name"},
-                    { "data" : "stamping_production_info.prod_lot_no"},
+                    { "data" : "oqc_info.stamping_production_info.material_name"},
+                    { "data" : "oqc_info.stamping_production_info.prod_lot_no"},
                     // { "data" : "stamping_production_info.material_lot_no"},
-                    { "data" : "stamping_production_info.part_code"},
-                    { "data" : "stamping_production_info.ship_output"},
+                    { "data" : "oqc_info.stamping_production_info.part_code"},
+                    { "data" : "oqc_info.stamping_production_info.ship_output"},
                 ],
             });
 
@@ -390,6 +467,8 @@
                     packing_list_data_array.push(data['id']);
                     console.log('packing_list_data_array ', packing_list_data_array);
                     // $(this).toggleClass('selected');
+
+                    console.log(data['id']);
 
                     if($(this).toggleClass('selected')){
                         if($(this).hasClass('selected')){
@@ -516,7 +595,7 @@
                     });
                 });
         });
-        
+
         </script>
     @endsection
 @endauth

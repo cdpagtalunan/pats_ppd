@@ -17,6 +17,7 @@ use App\Models\FirstStampingProduction;
 use App\Models\OQCInspection;
 use App\Models\ReceivingDetails;
 use App\Models\User;
+use App\Models\PreliminaryPacking;
 
 class PackingListDetailsController extends Controller
 {
@@ -84,8 +85,6 @@ class PackingListDetailsController extends Controller
         return response()->json(['userDetails' => $user_details]);
     }
 
-    
-
     public function viewPackingListData(Request $request){
         $packing_list_data = PackingListDetails::
         where('shipment_status', 1)
@@ -111,26 +110,33 @@ class PackingListDetailsController extends Controller
     }
 
     public function viewProductionData(Request $request){
-        $production_data = OQCInspection::with(['stamping_production_info'])
+        // $production_data = OQCInspection::with(['stamping_production_info'])
+        // ->where('po_no', 'like', '%' . $request->search_data . '%')
+        // ->where('lot_accepted', 1)
+        // ->get();
+
+        $prelim_packing_data = PreliminaryPacking::with(['oqc_info.stamping_production_info'])
         ->where('po_no', 'like', '%' . $request->search_data . '%')
-        ->where('lot_accepted', 1)
+        ->where('status', 1)
         ->get();
+
+        // return $prelim_packing_data;
 
         if(!isset($request->search_data)){
             return [];
         }else{
             
-            return DataTables::of($production_data)
-            ->addColumn('action', function($production_data){
+            return DataTables::of($prelim_packing_data)
+            ->addColumn('action', function($prelim_packing_data){
                 $result = "";
                 $result .= "<center>";
-                if($production_data->lot_accepted == 1 ){
-                    $result .= "<input class='test d-none packing_$production_data->id' data-packing-id='$production_data->id' type'text' style='width: 30px; text-align: center;' id='boxNoId' name='box_no[]' disabled>";
+                if($prelim_packing_data->status == 1 ){
+                    $result .= "<input class='test d-none packing_$prelim_packing_data->id' data-packing-id='$prelim_packing_data->id' type'text' style='width: 30px; text-align: center;' id='boxNoId' name='box_no[]' disabled>";
                 }
                 $result .= "</center>";
                 return $result;
             })
-            ->addColumn('status', function($production_data){
+            ->addColumn('status', function($prelim_packing_data){
                 $result = "";
                 $result .= "<center>";
         
@@ -154,7 +160,7 @@ class PackingListDetailsController extends Controller
     public function getDataFromProduction(Request $request){
         $get_production_data = OQCInspection::with(['stamping_production_info'])
         ->where('po_no', 'like', '%' . $request->search_data . '%')
-        ->where('status', 1)
+        ->where('lot_accepted', 1)
         ->get();
 
         // return $request->search_data;

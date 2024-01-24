@@ -63,13 +63,13 @@
                                 <li class="nav-item">
                                     <a href="{{ route('first_stamping_iqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>IQC 1st Stamping</p>
+                                        <p>IQC</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('second_stamping_iqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>IQC 2nd Stamping</p>
+                                        <p>IQC (2nd Stamping)</p>
                                     </a>
                                 </li>
                             </ul>
@@ -168,14 +168,21 @@
                                     <a href="{{ route('packing_details') }}" class="nav-link">
                                         {{-- <i class="fas fa-dolly"> </i> --}}
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>Packing Details</p>
+                                        <p>Packing Details to</p>
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SANNO</p>
+                                    </a>
+                                    <a href="{{ route('packing_details_molding') }}" class="nav-link">
+                                        {{-- <i class="fas fa-dolly"> </i> --}}
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Packing Details to</p>
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MOLDING</p>
                                     </a>
                                 </li>
                             </ul>
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,6,7,9]))
+                    @if (in_array(Auth::user()->position, [0,8,9,10]))
                         <li class="nav-header mt-3"><strong>PPC</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -216,6 +223,51 @@
                                         <p>Receiving from SANNO</p>
                                     </a>
                                 </li>
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->position, [0]))
+                        <li class="nav-header mt-3 font-weight-bold">MOLDING</li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p><i class="fa-solid fa-shapes"> </i> Molding </p>
+                                    <i class="fas fa-angle-down"> </i>
+                                </div>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    {{-- <a href="{{ route('route') }}" class="nav-link"> --}}
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>CN171S-08#IN-VE</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>CN171S-09#IN-R-VE</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>CN171S-10#IN-L-VE</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>CN171S-07</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>CN171P-02</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     @endif
                 @endauth
