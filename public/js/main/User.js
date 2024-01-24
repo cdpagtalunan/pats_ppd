@@ -403,7 +403,7 @@ function PrintBatchUser(selectedUsers){
                                     content += '<td>';
                                       content += '<label style="text-align: left; font-weight: bold; font-family: Arial; font-size: 18px;">' + JsonObject['users'][index - 1].employee_id + '</label>';
                                       content += '<br>';
-                                      content += '<label style="text-align: left; font-family: Arial Narrow; font-size: 18px;">' + JsonObject['users'][index - 1].name + '</label>';
+                                      content += '<label style="text-align: left; font-family: Arial Narrow; font-size: 18px;">' + JsonObject['users'][index - 1].firstname +' '+ JsonObject['users'][index - 1].lastname + '</label>';
                                     content += '</td>';
                                   content += '</tr>';
                                 content += '</table>';

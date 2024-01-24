@@ -20,7 +20,7 @@
                 vertical-align: middle;
             }
 
-            .scanner{
+            .scanQrBarCode{
                 position: absolute;
                 opacity: 0;
             }
@@ -38,13 +38,13 @@
                 <div class="container-fluid"><!-- Container-fluid -->
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>OQC Inspection</h1>
+                            <h1>1st Stamping OQC Inspection</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item active">OQC Inspection</li>
+                                <li class="breadcrumb-item active">1st Stamping</li>
                             </ol>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                         <div class="col-12"><!-- Col -->
                             <div class="card card-dark"><!-- General form elements -->
                                 <div class="card-header">
-                                    <h3 class="card-title">OQC Table</h3>
+                                    <h3 class="card-title">1st Stamping Table</h3>
                                 </div>
 
                                 <!-- Start Search PO No. -->
@@ -95,8 +95,6 @@
                                 <!-- End Search PO No. -->
 
                                 <div class="card-body"><!-- Start Page Content -->
-                                    {{-- <div style="float: right;">
-                                    </div> --}}
                                     <div class="table-responsive"><!-- Table responsive -->
                                         <table id="tblOqcInspection" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
@@ -135,12 +133,51 @@
             </section><!-- /.Content -->
         </div><!-- /.Content-wrapper -->
 
+        <!-- Start History Modal -->
+        <div class="modal fade" id="mdlOqcInspectionHistory" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-xl-custom">
+                <div class="modal-content">
+                    <div class="modal-body ">
+                        <div class="table-responsive"><!-- Table responsive -->
+                            <table id="tblOqcInspectionHistory" class="table table-sm table-bordered table-striped table-hover"
+                                style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>&emsp; Action &emsp;</th>
+                                        <th>P.O No.</th>
+                                        <th>P.O Qty</th>
+                                        <th>Prod. Lot</th>
+                                        <th>Prod. Lot Qty.</th>
+                                        <th>Material Name</th>
+                                        <th>FY-WW</th>
+                                        <th>Date Inspected</th>
+                                        <th>From</th>
+                                        <th>To</th>
+                                        <th># of Sub</th>
+                                        <th>Sample Size</th>
+                                        <th>Mode of Defects</th>
+                                        <th>No. of Detective</th>
+                                        <th>Judgement</th>
+                                        <th>Inspector</th>
+                                        <th>Remarks</th>
+                                        <th>Family</th>
+                                        <th>Updated By</th>
+                                        <th>Update Date</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div><!-- /.Table responsive -->
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.End History Modal -->        
+                
         <!-- Start OQC Inspection Modal -->
         <div class="modal fade" id="modalOqcInspection" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog modal-xl">
+            <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-edit"></i> OQC Inspection</h4>
+                        <h4 class="modal-title"><i class="fa fa-edit"></i> First Stamping OQC Inspection</h4>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -154,14 +191,39 @@
                         <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         
-                        <div class="input-group drawing p-3">
-                            <div class="input-group-prepend w-25">
-                                <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
-                                <span class="input-group-text w-100"><strong>B Drawing</strong></span>
+                        <div class="row p-3 drawing">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend w-25">
+                                    <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <span class="input-group-text w-100 b-drawing remove-class"><strong>B Drawing</strong></span>
+                                </div>
+                                <input type="text" class="form-control b-drawing remove-class" id="txtBDrawing" name="b_drawing" readonly>
+                                <input type="text" class="form-control b-drawing remove-class" id="txtBDrawingNo" name="b_drawing_no" readonly>
+                                <input type="text" class="form-control b-drawing remove-class" id="txtBDrawingRevision" name="b_drawing_revision" readonly>
                             </div>
-                            <input type="text" class="form-control" id="txtBDrawing" name="b_drawing" readonly>
-                            <input type="text" class="form-control" id="txtBDrawingNo" name="b_drawing_no" readonly>
-                            <input type="text" class="form-control" id="txtBDrawingRevision" name="b_drawing_revision" readonly>
+
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend w-25">
+                                    <button type="button" class="btn btn-dark" id="btnViewUdDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <span class="input-group-text w-100 ud-drawing remove-class"><strong>UD Drawing</strong></span>
+                                </div>
+                                <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawing" name="ud_drawing" readonly>
+                                <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawingNo" name="ud_drawing_no" readonly>
+                                <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawingRevision" name="ud_drawing_revision" readonly>
+                            </div>
+    
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend w-25">
+                                    <button type="button" class="btn btn-dark" id="btnViewInspStdDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <span class="input-group-text w-100 is-drawing remove-class"><strong>Insp. Std Drawing</strong></span>
+                                </div>
+                                <input type="text" class="form-control is-drawing remove-class" id="txtInspStdDrawing" name="insp_std_drawing" readonly>
+                                <input type="text" class="form-control is-drawing remove-class" id="txtInspStdDrawingNo" name="insp_std_drawing_no" readonly>
+                                <input type="text" class="form-control is-drawing remove-class" id="txtInspStdDrawingRevision" name="insp_std_drawing_revision" readonly>
+                            </div>
+                            <div class="d-flex justify-content-end border-top">
+                                <button type="button" class="btn btn-dark w-25 mt-3 mr-3 float-right" id="oqcInspectionNextButton"> Next <i class="fas fa-arrow-circle-right"></i></button>
+                            </div>
                         </div>
 
                         <div class="modal-body viewDrawingFirst d-none p-4">
@@ -243,7 +305,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Customer</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionCustomer" name="oqc_inspection_customer">
+                                        {{-- <input type="text" class="form-control form-control-sm" id="txtOqcInspectionCustomer" name="oqc_inspection_customer"> --}}
+                                        <select class="form-select form-control-sm customerDropdown" id="slctOqcInspectionCustomer" name="oqc_inspection_customer">
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -291,9 +355,9 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Type of Inspection</strong></span>
                                         </div>
-                                        {{-- <select class="form-select form-control-sm inspectionTypeDropdown" id="slctOqcInspectionInspectionType" name="oqc_inspection_inspection_type">
-                                        </select> --}}
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspectionType" name="oqc_inspection_inspection_type"  value="Single" readonly>
+                                        <select class="form-select form-control-sm inspectionTypeDropdown" id="slctOqcInspectionInspectionType" name="oqc_inspection_inspection_type">
+                                        </select>
+                                        {{-- <input type="text" class="form-control form-control-sm" id="txtOqcInspectionInspectionType" name="oqc_inspection_inspection_type"  value="Single" readonly> --}}
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -340,14 +404,14 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Accept</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionAccept" name="oqc_inspection_accept" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionAccept" name="oqc_inspection_accept" readonly value="0">
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Reject</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionReject" name="oqc_inspection_reject" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionReject" name="oqc_inspection_reject" readonly value="1">
                                     </div>
                                 </div>
                             </div><!-- /.End Row Sampling Plan -->
@@ -416,8 +480,8 @@
                                         </div>
                                         <select class="form-select form-control-sm" id="slctOqcInspectionCocRequirement" name="oqc_inspection_coc_requirement">
                                             <option selected disabled>-- Select --</option>
-                                            <option value="Yes">Yes</option>
-                                            <option value="No">No</option>
+                                            <option value="1">Yes</option>
+                                            <option value="2">No</option>
                                         </select>
                                     </div>
                                 </div>
@@ -431,14 +495,14 @@
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-30">
+                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot Accepted</strong></span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                        <div class="input-group-prepend w-30">
+                                        {{-- <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>1st Press Yield</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionYield" name="oqc_inspection_yield" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionYield" name="oqc_inspection_yield" readonly> --}}
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -481,27 +545,27 @@
                                             <button class="btn btn-danger btn-sm d-none" id="btnRemoveMod" title="Remove  Mode of Defect"><i class="fas fa-times"></i></button>
                                         </div>
                                         <div class="col-4">
-                                            <select class="form-select form-control-sm inspectionModDropdown_0 mb-1" id="txtMod_0" name="mod_0"  placeholder="Mode of Defect">
+                                            <select class="form-select form-control-sm defectiveCount inspectionModDropdown_0 mb-1" id="txtMod_0" name="mod_0"  placeholder="Mode of Defect">
                                             </select>    
                                         </div>
                                         <div class="col-5 mr-1">
-                                            <input type="number" class="form-control form-control-sm" id="txtModQty_0" name="mod_qty_0"  placeholder="Mode of Defect Qty">
+                                            <input type="number" class="form-control defectiveCount form-control-sm" id="txtModQty_0" name="mod_qty_0"  placeholder="Mode of Defect Qty">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="col-12 input-group viewDrawingFirst d-none py-3 border-top">
-                            <div class="col-2">
+                        <div class="col-12 input-group viewDrawingFirst viewing d-none py-3 border-top">
+                            <div class="col-6">
                                 <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                             </div>
-                            <div class="col-3"></div><div class="col-3"></div><div class="col-4">
-                                <button id="btnOqcInspectionSaveAsDraft" class="btn btn-info"><i 
-                                    class="fa fa-check"></i> Save as draft
-                                </button>
-                                <button type="submit" id="btnOqcInspection" class="btn btn-dark ml-3"><i 
-                                    id="iBtnOqcInspectionIcon" class="fa fa-check"></i> Save
+                            <div class="col-6 gap-2 d-flex justify-content-end">
+                                {{-- <button id="btnOqcInspectionSaveAsDraft" class="btn btn-info">
+                                    <i class="fab fa-firstdraft"></i> Save as draft
+                                </button> --}}
+                                <button type="submit" id="btnOqcInspection w-50" class="btn btn-dark">
+                                    <i id="iBtnOqcInspectionIcon" class="fa fa-save"></i> Save
                                 </button>
                             </div>
                         </div>
@@ -515,70 +579,15 @@
             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body mt-3">
-                        <input type="text" class="scanner w-100 d-none" id="txtScanQrCode" name="scan_qr_code" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}' autocomplete="off">
-                        <input type="text" class="scanner w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
-                        <div class="text-center text-secondary">Please scan the code.<h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                        {{-- <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}'> --}}
+                        <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
+                        <div class="text-center text-secondary scanningForFirstStamping"></div>
+                        <div class="text-center text-secondary"><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
             </div>
-        </div><!-- /.End Scan Modal -->
-        
-        <!-- Start Print Lot & Reel Lot Modal -->
-        <!-- <div class="modal fade" id="modalOqcInspectionPrintLotReelLotNo" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-edit"></i> Print Lot No. & Reel Lot No.</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="mb-2">
-                                <div class="card">
-                                    <input type="hidden" id="txtPrintLotCounter" name="print_lot_counter" value="0">
-                                    <span class="input-group-text w-100"><strong>Print Lot No.</strong></span>
-                                    <div class="row mb-1 mt-1" id="divPrintLotFields">
-                                        <div class="col-3">
-                                            <button class="btn btn-info btn-sm ml-4" id="btnAddPrintLot" title="Add Print Lot"><i class="fa fa-plus"></i></button>
-                                            <button class="btn btn-danger btn-sm d-none" id="btnRemovePrintLot" title="Remove Print Lot"><i class="fas fa-times"></i></button>
-                                        </div>
-                                        <div class="col-4">
-                                            <input type="text" class="form-control form-control-sm mb-1" id="txtPrintLotNo_0" name="print_lot_no_0" placeholder="Print Lot No.">
-                                        </div>
-                                        <div class="col-4 mr-2">
-                                            <input type="number" class="form-control form-control-sm" id="txtPrintLotQty_0" name="print_lot_qty_0"  placeholder="Print Lot Qty">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="mb-2">
-                                <div class="card">
-                                    <input type="hidden" id="txtReelLotCounter" name="reel_lot_counter" value="0">
-                                    <span class="input-group-text w-100"><strong>Reel Lot No.</strong></span>
-                                    <div class="row mb-1 mt-1" id="divReelLotFields">
-                                        <div class="col-3">
-                                            <button class="btn btn-info btn-sm ml-4" id="btnAddReelLot" title="Add Reel Lot"><i class="fa fa-plus"></i></button>
-                                            <button class="btn btn-danger btn-sm d-none" id="btnRemoveReelLot" title="Remove Reel Lot"><i class="fas fa-times"></i></button>
-                                        </div>
-                                        <div class="col-4">
-                                            <input type="text" class="form-control form-control-sm mb-1" id="txtReelLotNo_0" name="reel_lot_no_0" placeholder="Reel Lot No.">
-                                        </div>
-                                        <div class="col-4 mr-2">
-                                            <input type="number" class="form-control form-control-sm" id="txtReelLotQty_0" name="reel_lot_qty_0"  placeholder="Reel Lot Qty">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <button class="btn btn-dark btn-sm float-right w-25" id="btnSavePrintLotReelLot" data-bs-dismiss="modal"></i>Save</button>
-                    </div>
-                </div>
-            </div>
-        </div> --> <!-- /.End Print Lot & Reel Lot Modal -->
+        </div><!-- /.End Scan Modal -->        
     @endsection
 
     @section('js_content')
@@ -586,33 +595,10 @@
             let getPoNo
             let checkedDrawCount
             let dataTableOQCInspection
-
             $(document).ready(function() {
-                GetAQL($('.aqlDropdown'))
-                GetFamily($('.familyDropdown'))
-                GetMOD($('.inspectionModDropdown_0'))
-                GeStampingLine($('.stampingLineDropdown'))
-                GetInspectionType($('.inspectionTypeDropdown'))
-                GetInspectionLevel($('.inspectionLevelDropdown'))
-                GetSeverityInspection($('.severityInspectionDropdown'))
-
-                // $('.select2bs4').select2({
-                //     theme: 'bootstrap-5'
-                // });
-
-                $('#smartwizard').smartWizard({
-                    selected        :   0,
-                    theme           :   'arrows',
-                    transitionEffect:   'fade',
-                    autoAdjustHeight:   true,
-                    showStepURLhash :   false,
-                    keyNavigation   :   false,
-                    // anchorSettings  : {
-                    //     enableAllAnchors: true, 
-                    //     markDoneStep: true,
-                    // },
-                });
-                
+                $('.select2bs4').select2({
+                    theme: 'bootstrap-5'
+                });                
 
                 // ======================= START DATA TABLE =======================
                 dataTableOQCInspection = $("#tblOqcInspection").DataTable({
@@ -659,6 +645,8 @@
                     console.log('Show scan qr code field')
                     $('#mdlScanQrCode').modal('show')
                     $('#mdlScanQrCode').on('shown.bs.modal', function () {
+                        $('.scanningForFirstStamping').text('Please scan QR Code Sticker')
+                        $('.scanningForSecondStamping').text('Please scan employee ID')
                         $('#txtScanUserId').addClass('d-none')
                         $('#txtScanQrCode').removeClass('d-none')
                         $('#txtScanQrCode').focus()
@@ -685,33 +673,67 @@
                 $('#txtScanQrCode').on('keypress',function(e){
                     if( e.keyCode == 13 ){
                         const scanQrCode = $('#txtScanQrCode').val()
-                        let po = JSON.parse(scanQrCode)
-                        getPoNo =  po.po
-                        
-                        $('#txtPoNumber').val(po.po)
-                        $('#txtMaterialName').val(po.name)
-                        $('#txtPoQuantity').val(po.qty)
-                        $('#mdlScanQrCode').modal('hide')
+                        if(scanQrCode != ''){
+                            let po = JSON.parse(scanQrCode)
+                            getPoNo =  po.po
+                            if(getPoNo != undefined){
+                                $('#txtPoNumber').val(po.po)
+                                $('#txtMaterialName').val(po.name)
+                                $('#txtPoQuantity').val(po.qty)
+                                $('#mdlScanQrCode').modal('hide')
+                            }else{
+                                alert('The Scan QR Code was not found!')
+                            }
+                        }else{
+                            alert('Please try again!')
+                        }
                         dataTableOQCInspection.draw()
+                        $('#txtScanQrCode').val('')
                     }
                 });
 
-                $(document).on('click', '.actionOqcInspection', function(e){
+                $('#mdlScanQrCode').on('hidden.bs.modal', function() {
+                    console.log('HIDE SCAN CODE')
+                    $('#txtScanUserId').val('')
+                    $('#txtScanQrCode').val('')
+                    dataTableOQCInspection.draw()
+                });
+
+                $(document).on('click', '.actionOqcInspectionFirstStamping', function(e){
                     e.preventDefault()
-                    getPo               = $(this).attr('prod-po')
-                    getPoQty            = $(this).attr('prod-po-qty')
-                    getOqcId            = $(this).attr('oqc_inspection-id')
-                    getProdId           = $(this).attr('prod-id')
-                    getProdLotNo        = $(this).attr('prod-lot-no')
-                    getMaterialName     = $(this).attr('prod-material-name')
-                    getProdShipOutput   = $(this).attr('prod-ship-output')
+                    getPo                       = $(this).attr('prod-po')
+                    getPoQty                    = $(this).attr('prod-po-qty')
+                    getOqcId                    = $(this).attr('oqc_inspection-id')
+                    getProdId                   = $(this).attr('prod-id')
+                    getProdLotNo                = $(this).attr('prod-lot-no')
+                    getMaterialName             = $(this).attr('prod-material-name')
+                    getProdShipOutput           = $(this).attr('prod-ship-output')
+                    getInfoForFirstStamping     = $(this).attr('first-stamping')
                     
+                    $('#txtStatus').val(getInfoForFirstStamping)
+                    // let dit = new Date();
+                    // let set = dit.setHours(19,29,00);
+                    // let setset = dit.setHours(7,29,00);
+                    // console.log('set: ',set)
+                    // console.log('setset: ',setset)
                     setTimeout(() => {     
-                        if( new Date().toLocaleTimeString() <= '1:29:00 PM'){
+                        $time_now = moment().format('LT');
+                        if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
                             $('#slctOqcInspectionShift').val('A');
-                        }else{
+                        }
+                        else{
                             $('#slctOqcInspectionShift').val('B');
                         }
+                        // if( new Date().toLocaleTimeString() < dit.toLocaleTimeString()){
+                        // if( set.toLocaleTimeString() <= setset.toLocaleTimeString()){
+                        //     console.log('IF');
+                        //     $('#slctOqcInspectionShift').val('A');
+                        //     // $('#slctOqcInspectionShift').val('B');
+                        // }else{
+                        //     console.log('ELSE')
+                        //     // $('#slctOqcInspectionShift').val('A');
+                        //     $('#slctOqcInspectionShift').val('B');
+                        // }
                     }, 300);
 
                     GetOqcInspectionById(
@@ -726,13 +748,124 @@
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
                     $('#modalOqcInspection').modal('show')
+                    $('.viewDrawingFirst').removeClass('slct')
                 });
-                
-                $('#btnViewRDrawings').click(function (e) { 
-                    e.preventDefault();
-                    window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+$('#txtBDrawingNo').val())
+
+                $(document).on('click', '.actionOqcInspectionView', function(e){
+                    e.preventDefault()
+                    getPo               = $(this).attr('prod-po')
+                    getPoQty            = $(this).attr('prod-po-qty')
+                    getOqcId            = $(this).attr('oqc_inspection-id')
+                    getProdId           = $(this).attr('prod-id')
+                    getProdLotNo        = $(this).attr('prod-lot-no')
+                    getMaterialName     = $(this).attr('prod-material-name')
+                    getProdShipOutput   = $(this).attr('prod-ship-output')
+                    getInfoForFirstStamping     = $(this).attr('first-stamping')
+                    $('#txtStatus').val(getInfoForFirstStamping)
+
+                    GetOqcInspectionById(
+                        getPo,
+                        getPoQty,
+                        getOqcId,
+                        getProdId,
+                        getProdLotNo,
+                        getMaterialName,
+                        getProdShipOutput
+                    )
+                    $('#txtProdId').val(getProdId)
+                    $('#txtOqcInspectionId').val(getOqcId)
+                    $('#modalOqcInspection').modal('show')
+
                     $('.viewDrawingFirst').removeClass('d-none')
+                    $('.viewDrawingFirst').addClass('slct')
+                    $('.viewing').addClass('d-none')
                     $('.drawing').addClass('d-none')
+                });
+
+                $(document).on('click', '.actionOqcInspectionHistory', function(e){
+                    e.preventDefault()
+                    getPo               = $(this).attr('prod-po')
+                    getPoQty            = $(this).attr('prod-po-qty')
+                    getOqcId            = $(this).attr('oqc_inspection-id')
+                    getProdId           = $(this).attr('prod-id')
+                    getProdLotNo        = $(this).attr('prod-lot-no')
+                    getMaterialName     = $(this).attr('prod-material-name')
+                    getProdShipOutput   = $(this).attr('prod-ship-output')    
+
+                    getPoNo = getPo;
+                    $('#mdlOqcInspectionHistory').modal('show')
+
+                    $("#tblOqcInspectionHistory").DataTable({
+                    "processing"    : false,
+                    "serverSide"    : true,
+                    "ajax" : {
+                        url: "view_oqc_inspection_history",
+                        data: function (pamparam){
+                            pamparam.poNoById = getProdId
+                        },
+                    },
+
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "stamping_production_info.po_num" },
+                        { "data" : "stamping_production_info.po_qty" },
+                        { "data" : "stamping_production_info.prod_lot_no" },
+                        { "data" : "stamping_production_info.ship_output" },
+                        { "data" : "stamping_production_info.material_name" },
+                        { "data" : "fy_ww" },
+                        { "data" : "date_inspected" },
+                        { "data" : "time_ins_from" },
+                        { "data" : "time_ins_to" },
+                        { "data" : "submission" },
+                        { "data" : "sample_size" },
+                        { "data" : "mod" },
+                        { "data" : "num_of_defects" },
+                        { "data" : "judgement" },
+                        { "data" : "inspector" },
+                        { "data" : "remarks" },
+                        { "data" : "family" },
+                        { "data" : "update_user" },
+                        { "data" : "updated_at" }
+                    ],
+                    "columnDefs": [
+                        // { className: "align-center", targets: [1, 2] },
+                    ],
+                });
+                });
+
+                $('#btnViewRDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtBDrawingNo').val(), 0)
+                    SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
+                });
+                $('#btnViewUdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtUdDrawingNo').val(), 1)
+                    SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white')
+                });
+                $('#btnViewInspStdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtInspStdDrawingNo').val(), 2)
+                    SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white')
+                });
+
+                $('#oqcInspectionNextButton').on('click', function(){
+                    let checkDrawings = false
+                    let drawingId = ['txtBDrawing','txtUdDrawing','txtInspStdDrawing']
+
+                    for (var i = 0; i < drawingId.length; i++) {
+                        let drawings = $('#' + drawingId[i]).val()
+                        if ( drawings != 'N/A' && drawings != ''){
+                            if( checkedDrawCount[i] == 0 ){
+                                checkDrawings = true
+                            }
+                        }
+                    }
+
+                    if(checkDrawings){
+                        alert('Please check all drawings first.')
+                    }else{
+                        $('.viewDrawingFirst').removeClass('d-none')
+                        $('.drawing').addClass('d-none')
+                        console.log('All Documents has been viewed!')
+                    }
                 });
 
                 $('#modalOqcInspection').on('hide.bs.modal', function() {
@@ -741,6 +874,10 @@
                     $('#txtScanQrCode').addClass('d-none')
                     $('.viewDrawingFirst').addClass('d-none')
                     $('.drawing').removeClass('d-none')
+                    $('.acceCheckBox').css({display:false, required:true})
+
+                    checkedDrawCount = [0,0,0]
+                    $(`.remove-class`).removeClass('bg-success-custom font-weight-bold text-white')
                     dataTableOQCInspection.draw()
                 });
 
@@ -801,7 +938,6 @@
 
                     $('#txtReelLotCounter').val(reelLotCounter)
                     $('#divReelLotFields').append(html)
-
                 });
                 // ================== SCRIPT FOR REMOVE REEL LOT ======================
                 $("#btnRemoveReelLot").on('click', function(e){
@@ -819,8 +955,10 @@
                     }
                 });
 
+                
                 // ===================== SCRIPT FOR ADD MOD ===================
                 let modCounter = 0;
+                // defectiveCounts(modCounter);
                 $('#btnAddMod').on('click', function(e){
                     e.preventDefault()
                     modCounter++
@@ -834,14 +972,15 @@
                         html += '       <select class="form-select form-control-sm inspectionModDropdown_'+modCounter+' mb-1" id="txtMod_'+modCounter+'" name="mod_'+modCounter+'"  placeholder="Mode of Defect"></select>'    
                         html += '   </div>'
                         html += '   <div class="col-5 mb-1 mr-1 divAddMod_'+modCounter+'">'
-                        html += '       <input type="number" class="form-control form-control-sm" id="txtModQty_'+modCounter+'" name="mod_qty_'+modCounter+'" placeholder="Defect of Defect Qty">'
+                        html += '       <input type="number" class="form-control defectiveCount form-control-sm" id="txtModQty_'+modCounter+'" name="mod_qty_'+modCounter+'" placeholder="Defect of Defect Qty">'
                         html += '   </div>'
-
                         
                     $('#txtModCounter').val(modCounter)
                     $('#divModFields').append(html)
 
                     GetMOD($('.inspectionModDropdown_'+modCounter+''))
+                    // defectiveCounts(modCounter);
+                    // defectiveCounts()
                 });
                 // ================== SCRIPT FOR REMOVE MOD ======================
                 $("#btnRemoveMod").on('click', function(e){
@@ -860,11 +999,11 @@
                 });
 
                 $('#txtOqcInspectionLotAccepted').on('keyup', function () {
-                // $('#txtOqcInspectionLotAccepted').on('change', function () {
                     if($('#txtOqcInspectionLotAccepted').val() == '1' || $('#txtOqcInspectionLotAccepted').val() == ''){
                         $('.mod-class').addClass('d-none')
                         if($('#txtOqcInspectionLotAccepted').val() != ''){
                             $('#txtOqcInspectionJudgement').val('Accept')
+                            $('.defectiveCount').empty();
                         }else{
                             $('#txtOqcInspectionJudgement').val('')
                         }
@@ -874,23 +1013,9 @@
                     }
                 });
 
-                $('#btnOqcInspectionSaveAsDraft').click(function (errur) { 
-                    errur.preventDefault();
-                    console.log('Save as draft')
-                    $('#txtStatus').val('1')
-                    ScanUserById()
-                });
-
                 $('#formOqcInspection').submit(function (e) { 
                     e.preventDefault()
                     console.log('Save OQC Inspection')
-
-                    $('#btnOqcInspection').click(function (irror) { 
-                        irror.preventDefault();
-                        console.log('Save as done')
-                        $('#txtStatus').val('')
-                        $('#mdlScanQrCode').modal('show')
-                    });
                     ScanUserById()
                 });
 

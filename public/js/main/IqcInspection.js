@@ -9,6 +9,7 @@
         iqcWshDetails: '',
         iqcInspected: ''
     };
+
     const form = {
         iqcInspection : $('#formSaveIqcInspection')
     };
@@ -45,6 +46,7 @@
         "columns":[
             { "data" : "action", orderable:false, searchable:false },
             { "data" : "status", orderable:false, searchable:false },
+            { "data" : "InvoiceNo" },
             { "data" : "Supplier" },
             { "data" : "PartNumber" },
             { "data" : "MaterialType" },
@@ -63,6 +65,7 @@
 
             { "data" : "action", orderable:false, searchable:false },
             { "data" : "status", orderable:false, searchable:false },
+            { "data" : "po_no" },
             { "data" : "Supplier" },
             { "data" : "PartNumber" },
             { "data" : "MaterialType" },
@@ -98,6 +101,8 @@
             { "data" : "updated_at" },
         ],
     });
+
+
 
     const getFamily = function () {
         $.ajax({
@@ -152,7 +157,7 @@
         // alert('dasdsad')
         let receivingDetailId = ($(this).attr('receiving-detail-id') != undefined) ?  $(this).attr('receiving-detail-id') : 0;
         let whsTransactionId = ($(this).attr('whs-trasaction-id') != undefined) ?  $(this).attr('whs-trasaction-id') : 0;
-        
+
         getWhsDetailsById(receivingDetailId,whsTransactionId);
         getFamily();
         getAql();
@@ -189,23 +194,21 @@
                 $('#modalSaveIqcInspection').modal('show');
                 let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
                 let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
-                let twoDigitDay = strDatTime.dateToday.getDay()
-                // alert(twoDigitDay)
-                console.log(twoDigitDay);
+                let twoDigitDay = String(strDatTime.dateToday.getDate()).padStart(2, '0');
+
                 let partCode = response[0]['partcode'];
                 let partName = response[0]['partname'];
                 let supplier = response[0]['supplier'];
                 let lotNo = response[0]['lot_no'];
                 let lotQty = response[0]['total_lot_qty'];
 
+                let iqcCocFile = response[0]['iqc_coc_file'];
+
                 let whsTransactionId = ( response[0]['whs_transaction_id'] != undefined || response[0]['whs_transaction_id'] != null) ? response[0]['whs_transaction_id'] : 0;
                 let whsReceivingDetailId = ( response[0]['receiving_detail_id'] != undefined || response[0]['receiving_detail_id'] != null ) ? response[0]['receiving_detail_id'] : 0;
                 let lotAccepted = response[0]['accepted'];
-                /* Display the Mode of Defects Button */
-                divDisplayNoneClass(lotAccepted);
-
                 /* Visual Inspection */
-                form.iqcInspection.find('#app_no').val(`PPS-${twoDigitYear}${twoDigitMonth}-`);
+                form.iqcInspection.find('#app_no').val(`PPD-${twoDigitYear}-${twoDigitMonth}${twoDigitDay}-`);
                 form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
                 form.iqcInspection.find('#receiving_detail_id').val(whsReceivingDetailId);
                 form.iqcInspection.find('#invoice_no').val(response[0]['invoice_no']);
@@ -215,22 +218,27 @@
                 form.iqcInspection.find('#total_lot_qty').val(lotQty);
                 form.iqcInspection.find('#lot_no').val(lotNo);
                 form.iqcInspection.find('#iqc_coc_file').val('');
-
                 /* Sampling Plan */
                 form.iqcInspection.find('#accept').val(0);
                 form.iqcInspection.find('#reject').val(1);
-
                 /* Visual Inspection Result */
                 form.iqcInspection.find('#lot_inspected').val(1);
                 form.iqcInspection.find('#date_inspected').val(strDatTime.currentDate);
                 form.iqcInspection.find('#time_ins_from').val(strDatTime.currentTime);
+                form.iqcInspection.find('#isUploadCoc').prop('required',true);
 
-                if( response[0]['iqc_coc_file'] === undefined || response[0]['iqc_coc_file'] === null ){
+
+                if( iqcCocFile === undefined || iqcCocFile === null ){
                     form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
+                    form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
                 }else{
                     form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
+                    form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
                 }
-                
+                /* Display the Mode of Defects Button */
+                divDisplayNoneClass(lotAccepted);
+
+
                 $('#tblModeOfDefect tbody').empty();
                 arrTableMod.lotNo = [];
                 arrTableMod.modeOfDefects = [];
@@ -263,15 +271,14 @@
                 let supplier = response[0]['supplier'];
                 let lotNo = response[0]['lot_no'];
                 let lotQty = response[0]['total_lot_qty'];
-                
+
                 let whsTransactionId = ( response[0]['whs_transaction_id'] != undefined || response[0]['whs_transaction_id'] != null) ? response[0]['whs_transaction_id'] : 0;
                 let whsReceivingDetailId = ( response[0]['receiving_detail_id'] != undefined || response[0]['receiving_detail_id'] != null ) ? response[0]['receiving_detail_id'] : 0;
                 let iqcInspectionId = response[0]['iqc_inspection_id'];
                 let iqcInspectionsMods = response[0].iqc_inspections_mods;
                 let lotAccepted = response[0]['accepted'];
+                let iqcCocFile = response[0]['iqc_coc_file'];
 
-                /* Display the Mode of Defects Button */
-                divDisplayNoneClass(lotAccepted);
 
                 form.iqcInspection.find('#whs_transaction_id').val(whsTransactionId);
                 form.iqcInspection.find('#receiving_detail_id').val(whsReceivingDetailId);
@@ -306,6 +313,7 @@
                 form.iqcInspection.find('#judgement').val(response[0]['judgement']);
                 form.iqcInspection.find('#remarks').val(response[0]['remarks']);
                 form.iqcInspection.find('#iqc_coc_file').val('');
+                form.iqcInspection.find('#isUploadCoc').prop('required',false);
 
                 setTimeout(() => {
                     form.iqcInspection.find('#family').val(response[0]['family']).trigger("change");
@@ -313,11 +321,15 @@
                     form.iqcInspection.find('#aql').val(response[0]['aql']).trigger("change");
                 }, 300);
 
-                if( response[0]['iqc_coc_file'] === undefined || response[0]['iqc_coc_file'] === null ){
+                if( iqcCocFile === undefined || iqcCocFile === null ){
                     form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
+                    form.iqcInspection.find('#iqc_coc_file_download').addClass('disabled',true);
                 }else{
                     form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
+                    form.iqcInspection.find('#iqc_coc_file_download').removeClass('disabled',true);
                 }
+                /* Display the Mode of Defects Button */
+                divDisplayNoneClass(lotAccepted);
 
                 $('#tblModeOfDefect tbody').empty();
                 arrTableMod.lotNo = [];
@@ -443,8 +455,10 @@
     const divDisplayNoneClass =  function (value){
         if(value == 0){ //nmodify
             form.iqcInspection.find('.divMod').removeClass('d-none',true);
+            form.iqcInspection.find('#judgement').val(2);
         }else{
             form.iqcInspection.find('.divMod').addClass('d-none',true);
+            form.iqcInspection.find('#judgement').val(1);
         }
     }
     const errorHandler = function (errors,formInput){
@@ -526,4 +540,3 @@
             }
         });
     }
-

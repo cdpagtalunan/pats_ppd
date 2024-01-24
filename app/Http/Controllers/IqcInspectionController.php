@@ -24,8 +24,13 @@ use App\Http\Requests\IqcInspectionRequest;
 
 class IqcInspectionController extends Controller
 {
-    public function loadWhsTransaction(Request $request){
+    public function getIqcInspectionByJudgement(Request $request)
+    {
+        return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
+    }
 
+    public function loadWhsTransaction()
+    {
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
         */
@@ -71,12 +76,14 @@ class IqcInspectionController extends Controller
         */
     }
 
-    public function loadWhsDetails(Request $request){
+
+    public function loadWhsDetails(Request $request)
+    {
 
         $tbl_whs_trasanction = DB::connection('mysql')
         ->select('
             SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
-                    mat_name as"MaterialType",supplier_lot_no as "Lot_number"
+                    mat_name as"MaterialType",supplier_pmi_lot_no as "Lot_number",po_no
             FROM receiving_details
             WHERE status = 1
             ORDER BY created_at DESC
@@ -115,7 +122,8 @@ class IqcInspectionController extends Controller
         */
     }
 
-    public function loadIqcInspection(){
+    public function loadIqcInspection()
+    {
         /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
             NOTE: If the data exist to iqc_inspections it means the data is already inspected
         */
@@ -131,7 +139,7 @@ class IqcInspectionController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            if($row->inspector == Auth::user()->id){
+            if($row->inspector == Auth::user()->id || Auth::user()->username =='mclegaspi'){
                 $result .= "<button class='btn btn-info btn-sm mr-1' iqc-inspection-id='".$row->id."'id='btnEditIqcInspection' inspector='".$row->inspector."'><i class='fa-solid fa-pen-to-square'></i></button>";
             }
             $result .= '</center>';
@@ -191,24 +199,11 @@ class IqcInspectionController extends Controller
         })
         ->rawColumns(['action','status','app_ctrl_no','qc_inspector','time_inspected',])
         ->make(true);
-        /*
-            InvoiceNo
-            whs_transaction_username,whs_username
-            whs_transaction_lastupdate,whs_lastupdate
-            whs_transaction_lastupdate,whs_lastupdate
-            *Inspection Times*
-            *Application Ctrl. No*
-            *FY#*
-            *WW#*
-            *Sub*
-            PartNumber
-            ProductLine,MaterialType
-            Supplier
-            Lot_number
-        */
+
     }
 
-    public function getIqcInspectionById(Request $request){
+    public function getIqcInspectionById(Request $request)
+    {
         // return $tbl_whs_trasanction = IqcInspection::where('id',$request->iqc_inspection_id)
         // ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
         return $tbl_whs_trasanction = IqcInspection::with('IqcInspectionsMods')
@@ -216,7 +211,8 @@ class IqcInspectionController extends Controller
         ->get(['iqc_inspections.id as iqc_inspection_id','iqc_inspections.*']);
     }
 
-    public function getWhsReceivingById(Request $request){
+    public function getWhsReceivingById(Request $request)
+    {
         if($request->whs_transaction_id != 0){
             return $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('
@@ -233,13 +229,14 @@ class IqcInspectionController extends Controller
         }
         if($request->receiving_detail_id != 0){
             return $tbl_whs_trasanction = ReceivingDetails::where('id',$request->receiving_detail_id)->get([
-                'id as receiving_detail_id','supplier_lot_no as lot_no','supplier_quantity as total_lot_qty','part_code as partcode',
+                'id as receiving_detail_id','supplier_pmi_lot_no as lot_no','supplier_quantity as total_lot_qty','part_code as partcode',
                 'mat_name as partname','supplier_name as supplier',
             ]);
         }
     }
 
-    public function getFamily(){
+    public function getFamily()
+    {
         $dropdown_iqc_family =  DropdownIqcFamily::get();
         foreach ($dropdown_iqc_family as $key => $value_dropdown_iqc_family) {
             $arr_dropdown_iqc_family_id[] =$value_dropdown_iqc_family['id'];
@@ -251,7 +248,8 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function getInspectionLevel(){
+    public function getInspectionLevel()
+    {
         $dropdown_inspection_level =  DropdownIqcInspectionLevel::get();
         foreach ($dropdown_inspection_level as $key => $value_dropdown_inspection_level) {
             $arr_dropdown_inspection_level_id[] =$value_dropdown_inspection_level['id'];
@@ -263,7 +261,8 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function getAql(){
+    public function getAql()
+    {
         $dropdown_aql =  DropdownIqcAql::get();
         foreach ($dropdown_aql as $key => $value_dropdown_aql) {
             $arr_dropdown_aql_id[] =$value_dropdown_aql['id'];
@@ -275,7 +274,8 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function getLotNumberByWhsTransactionId(){
+    public function getLotNumberByWhsTransactionId()
+    {
         $dropdown_aql =  DropdownIqcAql::get();
         foreach ($dropdown_aql as $key => $value_dropdown_aql) {
             $arr_dropdown_aql_id[] =$value_dropdown_aql['id'];
@@ -287,7 +287,8 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function getLarDppm(){
+    public function getLarDppm()
+    {
         $dropdown_iqc_target_lar =  DropdownIqcTargetLar::where('status','1')->get();
         $dropdown_iqc_target_dppm =  DropdownIqcTargetDppm::where('status','1')->get();
 
@@ -309,7 +310,8 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function saveIqcInspection(IqcInspectionRequest $request){
+    public function saveIqcInspection(IqcInspectionRequest $request)
+    {
         date_default_timezone_set('Asia/Manila');
 
         try {
@@ -415,7 +417,8 @@ class IqcInspectionController extends Controller
         ]);
     }
 
-    public function viewCocFileAttachment(Request $request,$iqc_inspection_id){
+    public function viewCocFileAttachment(Request $request,$iqc_inspection_id)
+    {
         $iqc_coc_file_name = IqcInspection::where('id',$iqc_inspection_id)->get('iqc_coc_file');
         return Storage::response( 'public/iqc_inspection_coc/' . $iqc_inspection_id . $iqc_coc_file_name[0][ 'iqc_coc_file' ] );
     }

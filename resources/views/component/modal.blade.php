@@ -113,10 +113,10 @@
                                 <!--NOTE: Get all classification in Rapid/Warehouse Transaction, this field must be the same-->
                                 <select class="form-select form-control-sm" id="classification" name="classification">
                                     <option value="" selected disabled>-Select-</option>
-                                    <option value="1">PPS-Molding Plastic Resin</option>
-                                    <option value="2">PPS-Molding Metal Parts</option>
+                                    <option value="1">PPD-Molding Plastic Resin</option>
+                                    <option value="2">PPD-Molding Metal Parts</option>
                                     <option value="3">For grinding</option>
-                                    <option value="4">PPS-Stamping</option>
+                                    <option value="4">PPD-Stamping</option>
                                     <option value="5">YEC - Stock</option>
                                 </select>
                             </div>
@@ -172,14 +172,14 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Accept</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0">
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Reject</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0">
                             </div>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
                             </div>
                         </div>
                         <div class="col-sm-6 mt-3">
-                            
+
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Inspected</span>
@@ -281,7 +281,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Accepted</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="0">
+                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="0" max="1">
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -322,7 +322,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Attachment</span>
                                 </div>
-                                &nbsp;&nbsp; <a href="#" id="iqc_coc_file_download" class="link-primary"> <i class="fas fa-file"></i> Click to download attachment</a>
+                                &nbsp;&nbsp; <a href="#" id="iqc_coc_file_download" class="btn btn-primary disabled"> <i class="fas fa-file"></i> Click to download attachment</a>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" value="1" id="isUploadCoc" name="isUploadCoc">
@@ -351,20 +351,6 @@
                             class="fa fa-check"></i> Save</button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
-
-
-<div class="modal fade" id="modalSaveIqcInspection" tabindex="-1" role="dialog" aria-hidden="true"  data-bs-backdrop="static">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"><i class="fa fa-edit"></i> IQC Inspection</h4>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-        </div>
         </div>
     </div>
 </div>

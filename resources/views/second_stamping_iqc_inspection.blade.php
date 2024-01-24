@@ -93,7 +93,7 @@
                                                             {{-- <th>App Ctrl No.</th> --}}
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
-                                                            {{-- <th>Category</th> --}}
+                                                            <th>PO</th>
                                                             <th>Supplier</th>
                                                             <th>Part Code</th>
                                                             <th>Part Name</th>
@@ -226,7 +226,7 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-                
+
                 $(tbl.iqcWhsDetails).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
@@ -299,16 +299,18 @@
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
                     window.open('view_coc_file_attachment/'+iqc_inspection_id);
-                
+
                 });
 
-                form.iqcInspection.find('#isUploadCoc').change(function (e) { 
+                form.iqcInspection.find('#isUploadCoc').change(function (e) {
                     e.preventDefault();
                     $('#iqc_coc_file').val('');
                     if ($(this).is(':checked')) {
+                        form.iqcInspection.find('#iqc_coc_file').prop('required',true);
                         form.iqcInspection.find('#fileIqcCocUpload').removeClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                     }else{
+                        form.iqcInspection.find('#iqc_coc_file').prop('required',false);
                         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }
@@ -333,8 +335,8 @@
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    saveIqcInspection();
-                    // $('#modalScanQRSave').modal('show');
+                    // saveIqcInspection();
+                    $('#modalScanQRSave').modal('show');
                 });
             });
         </script>

@@ -1,6 +1,43 @@
+checkedDrawCount = [0,0,0]
+function redirect_to_drawing(drawing, index) {
+    console.log('Drawing No.:',drawing)
+    if( drawing  == 'N/A'){
+        alert('No Document Required')
+    }
+    else{
+        window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
+        checkedDrawCount[index] = 1
+    }
+    console.log('Check View Document:', checkedDrawCount)
+}
+
+function SetClassRemove(elementId, value){
+    $(`.${elementId}`).removeClass('btn-dark')
+    $(`.${elementId}`).addClass(`${value}`)
+}
+
+let value = [];
+function defectiveCounts(valuePassed){
+    console.log('defectiveCounts', valuePassed);
+    $('.defectiveCount').each(function () {
+        $(this).on('keyup', function(e){
+            let innerValue = this.value;
+            console.log('each', this);
+            console.log('innerValue', innerValue);
+            value.push(innerValue);
+        })
+        // defectiveCounts()
+    });
+    // console.log(`value ${JSON.stringify(value)}`);
+    console.log(`value ${value}`);
+    // $('#txtOqcInspectionDefectiveNum').val(value);
+}
+
 function ScanUserById() {
     $('#mdlScanQrCode').modal('show')
     $('#mdlScanQrCode').on('shown.bs.modal', function () {
+        $('.scanningForFirstStamping').text('Please scan employee ID')
+        $('.scanningForSecondStamping').text('Please scan employee ID')
         $('#txtScanQrCode').addClass('d-none')
         $('#txtScanUserId').removeClass('d-none')
         $('#txtScanUserId').focus()
@@ -103,12 +140,12 @@ function UpdateOqcInspection(){
                 }
 
                 if(response['error']['oqc_inspection_customer'] === undefined){
-                    $("#txtOqcInspectionCustomer").removeClass('is-invalid')
-                    $("#txtOqcInspectionCustomer").attr('title', '')
+                    $("#slctOqcInspectionCustomer").removeClass('is-invalid')
+                    $("#slctOqcInspectionCustomer").attr('title', '')
                 }
                 else{
-                    $("#txtOqcInspectionCustomer").addClass('is-invalid')
-                    $("#txtOqcInspectionCustomer").attr('title', response['error']['oqc_inspection_customer'])
+                    $("#slctOqcInspectionCustomer").addClass('is-invalid')
+                    $("#slctOqcInspectionCustomer").attr('title', response['error']['oqc_inspection_customer'])
                 }
 
                 if(response['error']['oqc_inspection_po_qty'] === undefined){
@@ -333,6 +370,7 @@ function UpdateOqcInspection(){
             }else if(response['hasError'] == 0){
                 $("#formOqcInspection")[0].reset()
                 $('#modalOqcInspection').modal('hide')
+                $('#modalOqcInspectionSecondStamping').modal('hide')
                 toastr.success('Succesfully saved!')
                 dataTableOQCInspection.draw()
             }
@@ -370,18 +408,51 @@ function GetOqcInspectionById(getPo,
             'getProdShipOutput' : getProdShipOutput,
         },
         dataType: "json",
+        beforeSend: function(){
+            GetAQL($('.aqlDropdown'))
+            GetFamily($('.familyDropdown'))
+            GetCustomer($('.customerDropdown'))
+            GetMOD($('.inspectionModDropdown_0'))
+            GeStampingLine($('.stampingLineDropdown'))
+            GetInspectionType($('.inspectionTypeDropdown'))
+            GetInspectionLevel($('.inspectionLevelDropdown'))
+            GetSeverityInspection($('.severityInspectionDropdown'))
+        },
+
         success: function(response){
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
+            // console.log('qweqwe', firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0])
             
-            $('#txtBDrawing').val(firstStampingProduction[0].material_name)
-            $('#txtBDrawingNo').val(firstStampingProduction[0].acdcs_active_doc_info[0].doc_no)
-            $('#txtBDrawingRevision').val(firstStampingProduction[0].acdcs_active_doc_info[0].rev_no)
+            if(firstStampingProduction[0].stamping_ipqc != null){
+                if(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0] != null){
+                    $('#txtBDrawing').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_title)
+                    $('#txtBDrawingNo').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_no)
+                    $('#txtBDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].rev_no)
+                }
+
+                if(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0] != null){
+                    $('#txtUdDrawing').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_title)
+                    $('#txtUdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_no)
+                    $('#txtUdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].rev_no)
+                }
+
+                if(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0] != null){
+                    $('#txtInspStdDrawing').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_title)
+                    $('#txtInspStdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_no)
+                    $('#txtInspStdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].rev_no)
+                }
+            }
 
             $('#txtOqcInspectionPoNo').val(getPo)
             $('#txtOqcInspectionPoQty').val(getPoQty)
-            $('#txtOqcInspectionLotNo').val(getProdLotNo)
+            console.log('getOqcInspectionData',getOqcInspectionData)
+            if($('#txtStatus').val() == '1'){
+                $('#txtOqcInspectionLotNo').val(getProdLotNo)
+            }else{
+                $('#txtOqcInspectionLotNo').val(firstStampingProduction[0].material_lot_no+'/'+getProdLotNo)
+            }
             $('#txtOqcInspectionLotQty').val(getProdShipOutput)
             $('#txtOqcInspectionMaterialName').val(getMaterialName)
 
@@ -390,8 +461,7 @@ function GetOqcInspectionById(getPo,
                 $('#dateOqcInspectionApplicationDate').val(getOqcInspectionData[0].app_date)
                 $('#timeOqcInspectionApplicationTime').val(getOqcInspectionData[0].app_time)
                 $('#slctOqcInspectionProductCategory').val(getOqcInspectionData[0].prod_category)
-                // $('#txtOqcInspectionPoNo').val(getOqcInspectionData[0].po_no)
-                $('#txtOqcInspectionCustomer').val(getOqcInspectionData[0].customer)
+                $('#slctOqcInspectionCustomer').val(getOqcInspectionData[0].customer)
                 $('#txtOqcInspectionFamily').val(getOqcInspectionData[0].family)
                 $('#txtOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
                 $('#slctOqcInspectionInspectionSeverity').val(getOqcInspectionData[0].severity_of_inspection)
@@ -444,7 +514,9 @@ function GetOqcInspectionById(getPo,
                     if(mod>0){
                         $('#btnAddMod').trigger('click')
                     }else{
-                        $('#btnRemoveMod').trigger('click')
+                        for (let mod = 0; mod < getOqcInspectionData[0].mod_oqc_inspection_info.length; mod++) {
+                            $('#btnRemoveMod').trigger('click')
+                        }
                     }
                     
                     setTimeout(() => {     
@@ -482,7 +554,7 @@ function GeStampingLine(cboElement){
             if(response['collectStampingLine'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>'
                 for(let index = 0; index < response['collectStampingLine'].length; index++){
-                    result += '<option value="' + response['collectStampingLine'][index].stamping_line+'">'+ response['collectStampingLine'][index].stamping_line+'</option>'
+                    result += '<option value="' + response['collectStampingLine'][index].id+'">'+ response['collectStampingLine'][index].stamping_line+'</option>'
                 }
             }
             else{
@@ -511,7 +583,7 @@ function GetFamily(cboElement){
             if(response['collectFamily'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>';
                 for(let index = 0; index < response['collectFamily'].length; index++){
-                    result += '<option value="' + response['collectFamily'][index].family+'">'+ response['collectFamily'][index].family+'</option>'
+                    result += '<option value="' + response['collectFamily'][index].id+'">'+ response['collectFamily'][index].family+'</option>'
                 }
             }
             else{
@@ -540,7 +612,7 @@ function GetInspectionType(cboElement){
             if(response['collectInspectionType'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>';
                 for(let index = 0; index < response['collectInspectionType'].length; index++){
-                    result += '<option value="' + response['collectInspectionType'][index].inspection_type+'">'+ response['collectInspectionType'][index].inspection_type+'</option>'
+                    result += '<option value="' + response['collectInspectionType'][index].id+'">'+ response['collectInspectionType'][index].inspection_type+'</option>'
                 }
             }
             else{
@@ -569,7 +641,7 @@ function GetInspectionLevel(cboElement){
             if(response['collectInspectionLevel'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>';
                 for(let index = 0; index < response['collectInspectionLevel'].length; index++){
-                    result += '<option value="' + response['collectInspectionLevel'][index].inspection_level+'">'+ response['collectInspectionLevel'][index].inspection_level+'</option>'
+                    result += '<option value="' + response['collectInspectionLevel'][index].id+'">'+ response['collectInspectionLevel'][index].inspection_level+'</option>'
                 }
             }
             else{
@@ -598,7 +670,7 @@ function GetSeverityInspection(cboElement){
             if(response['collectSeverityInspection'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>';
                 for(let index = 0; index < response['collectSeverityInspection'].length; index++){
-                    result += '<option value="' + response['collectSeverityInspection'][index].severity_inspection+'">'+ response['collectSeverityInspection'][index].severity_inspection+'</option>'
+                    result += '<option value="' + response['collectSeverityInspection'][index].id+'">'+ response['collectSeverityInspection'][index].severity_inspection+'</option>'
                 }
             }
             else{
@@ -627,7 +699,7 @@ function GetAQL(cboElement){
             if(response['collectAql'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>'
                 for(let index = 0; index < response['collectAql'].length; index++){
-                    result += '<option value="' + response['collectAql'][index].aql+'">'+ response['collectAql'][index].aql+'</option>'
+                    result += '<option value="' + response['collectAql'][index].id+'">'+ response['collectAql'][index].aql+'</option>'
                 }
             }
             else{
@@ -656,7 +728,36 @@ function GetMOD(cboElement){
             if(response['collectMod'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>';
                 for(let index = 0; index < response['collectMod'].length; index++){
-                    result += '<option value="' + response['collectMod'][index].mode_of_defect+'">'+ response['collectMod'][index].mode_of_defect+'</option>'
+                    result += '<option value="' + response['collectMod'][index].id+'">'+ response['collectMod'][index].mode_of_defect+'</option>'
+                }
+            }
+            else{
+                result = '<option value="0" selected disabled> No record found </option>'
+            }
+            cboElement.html(result)
+        }
+    })
+}
+
+function GetCustomer(cboElement){
+    let result = '<option value="">N/A</option>'
+
+    $.ajax({
+        url: "get_oqc_inspection_customer",
+        method: "get",
+        dataType: "json",
+
+        beforeSend: function(){
+            result = '<option value="" selected disabled> -- Loading -- </option>'
+            cboElement.html(result);
+        },
+        success: function(response){
+            result = '';
+
+            if(response['collectCustomer'].length > 0){
+                result = '<option selected disabled> --- Select --- </option>';
+                for(let index = 0; index < response['collectCustomer'].length; index++){
+                    result += '<option value="' + response['collectCustomer'][index].id+'">'+ response['collectCustomer'][index].customer+'</option>'
                 }
             }
             else{

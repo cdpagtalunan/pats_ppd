@@ -69,10 +69,15 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        <button class="btn btn-primary" data-bs-toggle="modal"
+                                        {{-- <button class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#modalExportPackingList" id="btnExportPackingList">
                                                 <i class="fa-solid fa-plus"></i> Export Packing List
+                                        </button> --}}
+                                        <button class="btn btn-primary" id="btnExportPackingList">
+                                            <i class="fa-solid fa-file-export"></i> Export Packing List (PDF)
+                                            {{-- </a> --}}
                                         </button>
+
 
                                         <button class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#modalAddPackingList" id="btnShowAddPackingList"><i
@@ -85,25 +90,13 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    {{-- <th><center><i class="fa fa-cog"></i></center></th> --}}
                                                     <th>Status</th>
                                                     <th>Ctrl #</th>
+                                                    <th>Box #</th>
                                                     <th>PO</th>
                                                     <th>Material Name</th>
                                                     <th>Lot #</th>
                                                     <th>Shipment Output</th>
-                                                    {{-- <th>Sold to</th>
-                                                    <th>Ship to</th>
-                                                    <th>Pick-up Time</th>
-                                                    <th>Pick-up Date</th> --}}
-                                                    {{-- <th><center>Status</center></th>
-                                                    <th><center>Ctrl #</center></th>
-                                                    <th><center>Lot #</center></th>
-                                                    <th><center>Qty</center></th>
-                                                    <th><center>Sold to</center></th>
-                                                    <th><center>Ship to</center></th>
-                                                    <th><center>P/U Time</center></th>
-                                                    <th><center>P/U Date</center></th> --}}
                                                 </tr>
                                             </thead>
                                         </table>
@@ -118,6 +111,36 @@
         </div>
 
     <!-- MODALS -->
+
+    <div class="modal fade" id="modalExportPackingList">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h4 class="modal-title">Generate Packing List</h4>
+                    <button type="button" style="color: #fff;" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formGeneratePackingList">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                    <label>Select Control # for Export</label>
+                                    <select class="form-control selectControlNumber" name="ctrl_no" id="txtCtrlNo" style="width: 100%;"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download" ></i> Download</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
      {{-- * ADD --}}
      <div class="modal fade" id="modalAddPackingList" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
@@ -159,7 +182,6 @@
                                             <th>PO</th>
                                             <th>Material Name</th>
                                             <th>Production Lot #</th>
-                                            {{-- <th>Material Lot #</th> --}}
                                             <th>Product Code</th>
                                             <th>Qty</th>
                                         </tr>
@@ -175,6 +197,7 @@
                                     <input type="text" class="form-control form-control-sm" name="ctrl_num" id="txtCtrlNumber" autocomplete="off">
                                 </div>
                             </div>
+
                         </div>
 
                         <div class="row">
@@ -195,7 +218,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">From :</label>
-                                    <input type="text" class="form-control form-control-sm" name="ship_from" id="textShipFrom" autocomplete="off">
+                                    <input type="text" class="form-control form-control-sm" name="ship_from" id="textShipFrom" readonly value="PRICON">
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -250,7 +273,7 @@
                                     <select class="form-control select2 selectCcName" id="selectCarbonCopy" name="carbon_copy[]" multiple>
                                         <!-- Auto Generated -->
                                     </select>
-                                    
+
                                 </div>
                             </div>
                         </div>
@@ -304,170 +327,274 @@
         //                         // datesDisabled: disabledDays,
 
         // });+
-
-        // <th>PO</th>
-        //                                     <th>Series Name</th>
-        //                                     <th>Production Lot #</th>
-        //                                     <th>Product Code</th>
-        //                                     <th>Qty</th>
-
-
-        dtProductionDetails = $("#tblProductionListDetails").DataTable({
-            "processing" : true,
-            "serverSide" : true,
-            "ajax" : {
-                url: "view_production_data",
-                data: function(param){
-                param.search_data =  $("#textSearchPackingListDetails").val();
-                }
-            },
-            fixedHeader: true,
-            "columns":[
-                { "data"  : 'DT_RowIndex'},
-                { "data" : "action", orderable:false, searchable:false },
-                { "data" : "status"},
-                { "data" : "po_no"},
-                { "data" : "stamping_production_info.material_name"},
-                { "data" : "stamping_production_info.prod_lot_no"},
-                // { "data" : "stamping_production_info.material_lot_no"},
-                { "data" : "stamping_production_info.part_code"},
-                { "data" : "stamping_production_info.ship_output"},
-            ],
-        });
-
-        dtPackingListDetails = $("#tblPackingListDetails").DataTable({
-            "processing" : true,
-            "serverSide" : true,
-            "ajax" : {
-                url: "view_packing_list_data",
-                data: function(param){
-                param.search_data =  $("#textSearchPackingListDetails").val();
-                }
-            },
-            fixedHeader: true,
-            "columns":[
-                // { "data"  : 'DT_RowIndex'},
-                // { "data" : "action", orderable:false, searchable:false },
-                { "data" : "status"},
-                { "data" : "control_no"},
-                { "data" : "po_no"},
-                { "data" : "mat_name"},
-                { "data" : "lot_no"},
-                { "data" : "quantity"},
-            ],
-        });
-
-
-        $(document).on('click', '.searchBtn',function(e){
-            e.preventDefault();
-                // dtProductionDetails.columns(0).visible(false);
-                let search_data = $('#textSearchPackingListDetails').val();
-                $.ajax({
-                type: "get",
-                url: "get_data_from_production",
-                data: {
-                    "search_data" : search_data
-                },
-                dataType: "json",
-                beforeSend: function(){
-                },
-                success: function (response) {
-                    let productionData = response['productionData'];
-                    // console.log(productionData);
-                    if(productionData > 0){
-                        $('#textSearchPackingListDetails').val(productionData[0]['po_num']);
-                        dtProductionDetails.draw();
-                    }else{
-                        dtProductionDetails.draw();
-                    }
-                }
-            });
-
-        });
-
-        let packing_list_data_array = [];
-
-        $("#modalAddPackingList").on('hide.bs.modal', function(){
-            packing_list_data_array = [];
-            $('#textSearchPackingListDetails').val('');
-            $("#formPackingList").trigger("reset");
-            dtProductionDetails.draw();
-        });
-
-
         $(document).ready(function(){
-            $('#tblProductionListDetails tbody').on( 'dblclick', 'tr', function (){
-                let data = dtProductionDetails.row(this).data();
-                let array_data = Object.entries(data);
 
-                packing_list_data_array.push(data['id']);
-                console.log('packing_list_data_array ', packing_list_data_array);
-                // $(this).toggleClass('selected');
-
-                if($(this).toggleClass('selected')){
-                    if($(this).hasClass('selected')){
-                        // alert('hooy');
-                        $(`.packing_${data['id']}`).removeClass('d-none');
-                        $(`.packing_${data['id']}`).removeAttr('disabled');
-                    }else{
-                        // alert('hooray');
-                        $(`.packing_${data['id']}`).addClass('d-none');
-                        $(`.packing_${data['id']}`).attr('disabled');
-                    }
-                }
-                console.log(packing_list_data_array);
-            })
-        });
-
-
-        $('#formPackingList').submit(function (e) {
-            e.preventDefault();
-            const filtered_packing_list_data_array = Array.from(new Set(packing_list_data_array));
-            let data = {
-                'packing_list_data_array' : filtered_packing_list_data_array
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "add_packing_list_details",
-                data: $(this).serialize() + '&' + $.param(data),
-                dataType: "json",
-                success: function (response) {
-                    if(response['validation'] == 1){
-                            toastr.error('Saving data failed!');
-                            // if(response['error']['loading_port'] === undefined){
-                            //     $("#txtDestinationPort").removeClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', '');
-                            // }
-                            // else{
-                            //     $("#txtDestinationPort").addClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', response['error']['loading_port']);
-                            // }
-                        }else if(response['result'] == 0){
-                            $("#formPackingList")[0].reset();
-                            toastr.success('Succesfully saved!');
-                            $('#modalAddPackingList').modal('hide');
-                            dtPackingListDetails.draw();
-                        }
-                        $("#btnSavePackingListDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                        $("#btnSavePackingListDetails").removeClass('disabled');
-                        $("#btnSavePackingListDetailsIcon").addClass('fa fa-check');
-                    },
-                    error: function(data, xhr, status){
-                    toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                }
+            $('#btnExportPackingList').click( function(e){
+                $('#modalExportPackingList').modal('show');
+                GetPackingListControlNo($(".selectControlNumber"));
             });
+
+            function GetPackingListControlNo(cboElement){
+                    let result = '<option value="" disabled selected>--Select Control No.--</option>';
+                        $.ajax({
+                            url: 'get_packing_list_data',
+                            method: 'get',
+                            dataType: 'json',
+                            beforeSend: function() {
+                                    result = '<option value="0" disabled selected>--Loading--</option>';
+                                    cboElement.html(result);
+                            },
+                            success: function(response) {
+                                if (response['packing_list_data'].length > 0) {
+                                        result = '<option value="" disabled selected>--Select Control No.--</option>';
+                                    for (let index = 0; index < response['packing_list_data'].length; index++) {
+                                        result += '<option value="' + response['packing_list_data'][index].control_no + '">' + response['packing_list_data'][index].control_no + '</option>';
+                                    }
+                                } else {
+                                    result = '<option value="0" selected disabled> -- No record found -- </option>';
+                                }
+                                cboElement.html(result);
+                                cboElement.select2();
+                            },
+                            error: function(data, xhr, status) {
+                                result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                                cboElement.html(result);
+                                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                            }
+                        });
+                    }
+
+            $('#formGeneratePackingList').submit(function (e){
+                e.preventDefault();
+                let CtrlNo = $('#txtCtrlNo').val();
+                window.location.href = "view_pdf/"+CtrlNo;
+                $('#modalExportPackingList').modal('hide');
+            });
+
+            getCustomer($('#selectCustomer'));
+            getCarrier($('#selectCarrier'));
+            getPortOfLoading($('#selectPortOfLoading'));
+            getPortOfDestination($('#selectPortOfDestination'));
+            getPreparedByUser($('#selectPreparedBy'));
+            getCheckedByUser($('#selectCheckedBy'));
+            getCarbonCopyUser($('.selectCcName'));
+
+            dtProductionDetails = $("#tblProductionListDetails").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_production_data",
+                    data: function(param){
+                    param.search_data =  $("#textSearchPackingListDetails").val();
+                    }
+                },
+                fixedHeader: true,
+                "columns":[
+                    { "data"  : 'DT_RowIndex'},
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status"},
+                    { "data" : "po_no"},
+                    { "data" : "oqc_info.stamping_production_info.material_name"},
+                    { "data" : "oqc_info.stamping_production_info.prod_lot_no"},
+                    // { "data" : "stamping_production_info.material_lot_no"},
+                    { "data" : "oqc_info.stamping_production_info.part_code"},
+                    { "data" : "oqc_info.stamping_production_info.ship_output"},
+                ],
+            });
+
+            dtPackingListDetails = $("#tblPackingListDetails").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_packing_list_data",
+                    data: function(param){
+                    param.search_data =  $("#textSearchPackingListDetails").val();
+                    }
+                },
+                fixedHeader: true,
+                "columns":[
+                    // { "data"  : 'DT_RowIndex'},
+                    // { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status"},
+                    { "data" : "control_no"},
+                    { "data" : "box_no"},
+                    { "data" : "po_no"},
+                    { "data" : "mat_name"},
+                    { "data" : "lot_no"},
+                    { "data" : "quantity"},
+                ],
+            });
+
+
+            $(document).on('click', '.searchBtn',function(e){
+                e.preventDefault();
+                    // dtProductionDetails.columns(0).visible(false);
+                    let search_data = $('#textSearchPackingListDetails').val();
+                    $.ajax({
+                        type: "get",
+                        url: "get_data_from_production",
+                        data: {
+                            "search_data" : search_data
+                        },
+                        dataType: "json",
+                        beforeSend: function(){
+                        },
+                        success: function (response) {
+                            let productionData = response['productionData'];
+                            // console.log(productionData);
+                            if(productionData > 0){
+                                $('#textSearchPackingListDetails').val(productionData[0]['po_num']);
+                                dtProductionDetails.draw();
+                            }else{
+                                dtProductionDetails.draw();
+                            }
+                        }
+                    });
+            });
+
+            let packing_list_data_array = [];
+
+            $("#modalAddPackingList").on('hide.bs.modal', function(){
+                packing_list_data_array = [];
+                $('#textSearchPackingListDetails').val('');
+                $("#formPackingList").trigger("reset");
+                dtProductionDetails.draw();
+            });
+                $('#tblProductionListDetails tbody').on( 'dblclick', 'tr', function (){
+                    let data = dtProductionDetails.row(this).data();
+                    let array_data = Object.entries(data);
+
+                    packing_list_data_array.push(data['id']);
+                    console.log('packing_list_data_array ', packing_list_data_array);
+                    // $(this).toggleClass('selected');
+
+                    console.log(data['id']);
+
+                    if($(this).toggleClass('selected')){
+                        if($(this).hasClass('selected')){
+                            // alert('hooy');
+                            $(`.packing_${data['id']}`).removeClass('d-none');
+                            $(`.packing_${data['id']}`).removeAttr('disabled');
+                        }else{
+                            // alert('hooray');
+                            $(`.packing_${data['id']}`).addClass('d-none');
+                            $(`.packing_${data['id']}`).attr('disabled');
+                        }
+                    }
+                    console.log(packing_list_data_array);
+                })
+
+                $('#formPackingList').submit(function (e){
+                    e.preventDefault();
+                    const filtered_packing_list_data_array = Array.from(new Set(packing_list_data_array));
+                    let data = {
+                        'packing_list_data_array' : filtered_packing_list_data_array
+                        }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "add_packing_list_details",
+                        data: $(this).serialize() + '&' + $.param(data),
+                        dataType: "json",
+                        success: function (response) {
+                            if(response['validation'] == 1){
+                                    toastr.error('Saving data failed!');
+                                    if(response['error']['ctrl_num'] === undefined){
+                                        $("#txtCtrlNumber").removeClass('is-invalid');
+                                        $("#txtCtrlNumber").attr('title', '');
+                                    }
+                                    else{
+                                        $("#txtCtrlNumber").addClass('is-invalid');
+                                        $("#txtCtrlNumber").attr('title', response['error']['ctrl_num']);
+                                    }
+                                    if(response['error']['pickup_date_and_time'] === undefined){
+                                        $("#textPickUpDateAndTime").removeClass('is-invalid');
+                                        $("#textPickUpDateAndTime").attr('title', '');
+                                    }
+                                    else{
+                                        $("#textPickUpDateAndTime").addClass('is-invalid');
+                                        $("#textPickUpDateAndTime").attr('title', response['error']['pickup_date_and_time']);
+                                    }
+                                    if(response['error']['carrier'] === undefined){
+                                        $("#selectCarrier").removeClass('is-invalid');
+                                        $("#selectCarrier").attr('title', '');
+                                    }
+                                    else{
+                                        $("#selectCarrier").addClass('is-invalid');
+                                        $("#selectCarrier").attr('title', response['error']['carrier']);
+                                    }
+                                    if(response['error']['ship_from'] === undefined){
+                                        $("#textShipFrom").removeClass('is-invalid');
+                                        $("#textShipFrom").attr('title', '');
+                                    }
+                                    else{
+                                        $("#textShipFrom").addClass('is-invalid');
+                                        $("#textShipFrom").attr('title', response['error']['ship_from']);
+                                    }
+                                    if(response['error']['ship_to'] === undefined){
+                                        $("#selectCustomer").removeClass('is-invalid');
+                                        $("#selectCustomer").attr('title', '');
+                                    }
+                                    else{
+                                        $("#selectCustomer").addClass('is-invalid');
+                                        $("#selectCustomer").attr('title', response['error']['ship_to']);
+                                    }
+                                    if(response['error']['loading_port'] === undefined){
+                                        $("#selectPortOfLoading").removeClass('is-invalid');
+                                        $("#selectPortOfLoading").attr('title', '');
+                                    }
+                                    else{
+                                        $("#selectPortOfLoading").addClass('is-invalid');
+                                        $("#selectPortOfLoading").attr('title', response['error']['loading_port']);
+                                    }
+                                    if(response['error']['destination_port'] === undefined){
+                                        $("#selectPortOfDestination").removeClass('is-invalid');
+                                        $("#selectPortOfDestination").attr('title', '');
+                                    }
+                                    else{
+                                        $("#selectPortOfDestination").addClass('is-invalid');
+                                        $("#selectPortOfDestination").attr('title', response['error']['destination_port']);
+                                    }
+                                    if(response['error']['prepared_by'] === undefined){
+                                        $("#selectPreparedBy").removeClass('is-invalid');
+                                        $("#selectPreparedBy").attr('title', '');
+                                    }
+                                    else{
+                                        $("#selectPreparedBy").addClass('is-invalid');
+                                        $("#selectPreparedBy").attr('title', response['error']['prepared_by']);
+                                    }
+                                    if(response['error']['checked_by'] === undefined){
+                                        $("#selectCheckedBy").removeClass('is-invalid');
+                                        $("#selectCheckedBy").attr('title', '');
+                                    }
+                                    else{
+                                        $("#selectCheckedBy").addClass('is-invalid');
+                                        $("#selectCheckedBy").attr('title', response['error']['checked_by']);
+                                    }
+                                    if(response['error']['carbon_copy'] === undefined){
+                                        $("#selectCarbonCopy").removeClass('is-invalid');
+                                        $("#selectCarbonCopy").attr('title', '');
+                                    }
+                                    else{
+                                        $("#selectCarbonCopy").addClass('is-invalid');
+                                        $("#selectCarbonCopy").attr('title', response['error']['carbon_copy']);
+                                    }
+                            }else if(response['result'] == 0){
+                                $("#formPackingList")[0].reset();
+                                toastr.success('Succesfully saved!');
+                                $('#modalAddPackingList').modal('hide');
+                                dtPackingListDetails.draw();
+                            }
+                                $("#btnSavePackingListDetailsIcon").removeClass('spinner-border spinner-border-sm');
+                                $("#btnSavePackingListDetails").removeClass('disabled');
+                                $("#btnSavePackingListDetailsIcon").addClass('fa fa-check');
+                            },
+                            error: function(data, xhr, status){
+                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+                    });
+                });
         });
-
-
-
-        getCustomer($('#selectCustomer'));
-        getCarrier($('#selectCarrier'));
-        getPortOfLoading($('#selectPortOfLoading'));
-        getPortOfDestination($('#selectPortOfDestination'));
-        getPreparedByUser($('#selectPreparedBy'));
-        getCheckedByUser($('#selectCheckedBy'));
-        getCarbonCopyUser($('.selectCcName'));
 
         </script>
     @endsection

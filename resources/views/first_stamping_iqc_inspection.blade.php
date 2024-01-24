@@ -93,6 +93,7 @@
                                                         <tr>
                                                             <th><center><i  class="fa fa-cog"></i></center></th>
                                                             <th>Status</th>
+                                                            <th>Invoice</th>
                                                             {{-- <th>Date Inspected</th> --}}
                                                             {{-- <th>Time Inspected</th> --}}
                                                             {{-- <th>App Ctrl No.</th> --}}
@@ -307,21 +308,22 @@
                     e.preventDefault();
                     let iqc_inspection_id = form.iqcInspection.find('#iqc_inspection_id').val();
                     window.open('view_coc_file_attachment/'+iqc_inspection_id);
-                
+
                 });
 
-                form.iqcInspection.find('#isUploadCoc').change(function (e) { 
+                form.iqcInspection.find('#isUploadCoc').change(function (e) {
                     e.preventDefault();
                     $('#iqc_coc_file').val('');
                     if ($(this).is(':checked')) {
+                        form.iqcInspection.find('#iqc_coc_file').prop('required',true);
                         form.iqcInspection.find('#fileIqcCocUpload').removeClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').addClass('d-none',true);
                     }else{
+                        form.iqcInspection.find('#iqc_coc_file').prop('required',false);
                         form.iqcInspection.find('#fileIqcCocUpload').addClass('d-none',true);
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }
                 });
-                
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){
                         // console.log($(this).val());
@@ -339,12 +341,12 @@
                         $(this).val('');
                     }
                 });
-                
+
                 /*Submit*/
                 $(form.iqcInspection).submit(function (e) {
                     e.preventDefault();
-                    saveIqcInspection();
-                    // $('#modalScanQRSave').modal('show');
+                    // saveIqcInspection();
+                    $('#modalScanQRSave').modal('show');
                 });
             });
 

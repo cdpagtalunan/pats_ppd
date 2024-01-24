@@ -519,472 +519,465 @@
                             
         // });
 
-        // CUSTOMER DETAILS START
-                dtCustomerDetails = $("#tblCustomerDetails").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_company_details",
-                    },
-                    fixedHeader: true,
-                    "columns":[
+        $(document).ready(function(){
+                // CUSTOMER DETAILS START
+            dtCustomerDetails = $("#tblCustomerDetails").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_company_details",
+                },
+                fixedHeader: true,
+                "columns":[
 
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status" },
-                        { "data" : "company" },
-                        { "data" : "company_address" },
-                        { "data" : "company_contact_no" },
-                        { "data" : "contact_person" },
-                    ],
-                });
-
-                
-                $('#formAddCustomerDetails').submit(function(e){
-                    e.preventDefault();
-                    $.ajax({
-                        type: "post",
-                        url: "add_customer_details",
-                        data: $(this).serialize(),
-                        dataType: "json",
-                        success: function(response){
-                            if(response['validation'] == 1){
-                                toastr.error('Saving data failed!');
-                                if(response['error']['company_name'] === undefined){
-                                    $("#txtCompanyName").removeClass('is-invalid');
-                                    $("#txtCompanyName").attr('title', '');
-                                }
-                                else{
-                                    $("#txtCompanyName").addClass('is-invalid');
-                                    $("#txtCompanyName").attr('title', response['error']['company_name']);
-                                }
-                                if(response['error']['company_contact_no'] === undefined){
-                                    $("#txtCompanyContactNo").removeClass('is-invalid');
-                                    $("#txtCompanyContactNo").attr('title', '');
-                                }
-                                else{
-                                    $("#txtCompanyContactNo").addClass('is-invalid');
-                                    $("#txtCompanyContactNo").attr('title', response['error']['company_contact_no']);
-                                }
-                                if(response['error']['company_address'] === undefined){
-                                    $("#txtCompanyAddress").removeClass('is-invalid');
-                                    $("#txtCompanyAddress").attr('title', '');
-                                }
-                                else{
-                                    $("#txtCompanyAddress").addClass('is-invalid');
-                                    $("#txtCompanyAddress").attr('title', response['error']['company_address']);
-                                }
-                                if(response['error']['company_contact_person'] === undefined){
-                                    $("#txtCompanyContactPerson").removeClass('is-invalid');
-                                    $("#txtCompanyContactPerson").attr('title', '');
-                                }
-                                else{
-                                    $("#txtCompanyContactPerson").addClass('is-invalid');
-                                    $("#txtCompanyContactPerson").attr('title', response['error']['company_contact_person']);
-                                }
-                            }else if(response['result'] == 0){
-                                $("#formAddCustomerDetails")[0].reset();
-                                toastr.success('Succesfully saved!');
-                                $('#modalAddCustomerDetails').modal('hide');
-                                dtCustomerDetails.draw();
-                            }
-
-                            $("#btnAddCompanyDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                            $("#btnAddCompanyDetails").removeClass('disabled');
-                            $("#btnAddCompanyDetailsIcon").addClass('fa fa-check');
-                        },
-                        error: function(data, xhr, status){
-                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                        }
-                    });
-                });
-
-                $(document).on('click', '.btnEditCustomerDetails', function(){
-                    $('#modalAddCustomerDetails').modal('show');
-                    let customerDetailsId = $(this).attr('data-id');
-                    $('#txtCustomerDetailsId').val(customerDetailsId);
-                    console.log(customerDetailsId);
-
-                    getCustomerDetailsId(customerDetailsId);
-                });
-
-                $(document).on('click', '.btnEditCustomerDetailsStatus',function(){
-                    $('#modalEditCompanyDetailsStatus').modal('show');
-                    let customerDetailsId = $(this).attr('data-id')
-                    $('#textEditCompanyDetailsStatusId').val(customerDetailsId);
-                });
-
-                $('#buttonEditCompanyDetailsStatus').on('click', function(){
-                let companyDetailsId = $('#textEditCompanyDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "edit_company_details_status",
-                        data: {
-                            'company_details_id' : companyDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Company Deactivated!');
-                            $('#modalEditCompanyDetailsStatus').modal('hide');
-                            dtCustomerDetails.draw();
-                        }
-                    });
-                });
-
-                $(document).on('click', '.btnRestoreCustomerDetailsStatus', function(){
-                    $('#modalRestoreCompanyDetailsStatus').modal('show');
-                    let customerDetailsId = $(this).attr('data-id')
-                    $('#textRestoreCompanyDetailsStatusId').val(customerDetailsId);
-                });
-
-                $('#buttonRestoreCompanyDetailsStatus').on('click', function(){
-                let companyDetailsId = $('#textRestoreCompanyDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "restore_company_status",
-                        data: {
-                            'company_details_id' : companyDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Company Reactivated!');
-                            $('#modalRestoreCompanyDetailsStatus').modal('hide');
-                            dtCustomerDetails.draw();
-                        }
-                    });
-                });
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status" },
+                    { "data" : "company" },
+                    { "data" : "company_address" },
+                    { "data" : "company_contact_no" },
+                    { "data" : "contact_person" },
+                ],
+            });
 
             
-
-        //CUSTOMER DETAILS END 
-        
-        // CARRIER DETAILS START
-                dtCarrierDetails = $("#tblCarrierDetails").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_carrier_details",
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status"},
-                        { "data" : "carrier_name"},
-                    ],
-                });
-
-                $('#formAddCarrierDetails').submit(function(e){
-                    e.preventDefault();
-                    $.ajax({
-                        type: "post",
-                        url: "add_carrier_details",
-                        data: $(this).serialize(),
-                        dataType: "json",
-                        success: function(response){
-                            if(response['validation'] == 1){
-                                toastr.error('Saving data failed!');
-                                if(response['error']['carrier_name'] === undefined){
-                                    $("#txtCarrierName").removeClass('is-invalid');
-                                    $("#txtCarrierName").attr('title', '');
-                                }
-                                else{
-                                    $("#txtCarrierName").addClass('is-invalid');
-                                    $("#txtCarrierName").attr('title', response['error']['carrier_name']);
-                                }
-                            }else if(response['result'] == 0){
-                                $("#formAddCarrierDetails")[0].reset();
-                                toastr.success('Succesfully saved!');
-                                $('#modalAddCarierDetails').modal('hide');
-                                dtCarrierDetails.draw();
+            $('#formAddCustomerDetails').submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "post",
+                    url: "add_customer_details",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function(response){
+                        if(response['validation'] == 1){
+                            toastr.error('Saving data failed!');
+                            if(response['error']['company_name'] === undefined){
+                                $("#txtCompanyName").removeClass('is-invalid');
+                                $("#txtCompanyName").attr('title', '');
                             }
-
-                            $("#btnAddCarrierDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                            $("#btnAddCarrierDetails").removeClass('disabled');
-                            $("#btnAddCarrierDetailsIcon").addClass('fa fa-check');
-                        },
-                        error: function(data, xhr, status){
-                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                            else{
+                                $("#txtCompanyName").addClass('is-invalid');
+                                $("#txtCompanyName").attr('title', response['error']['company_name']);
+                            }
+                            if(response['error']['company_contact_no'] === undefined){
+                                $("#txtCompanyContactNo").removeClass('is-invalid');
+                                $("#txtCompanyContactNo").attr('title', '');
+                            }
+                            else{
+                                $("#txtCompanyContactNo").addClass('is-invalid');
+                                $("#txtCompanyContactNo").attr('title', response['error']['company_contact_no']);
+                            }
+                            if(response['error']['company_address'] === undefined){
+                                $("#txtCompanyAddress").removeClass('is-invalid');
+                                $("#txtCompanyAddress").attr('title', '');
+                            }
+                            else{
+                                $("#txtCompanyAddress").addClass('is-invalid');
+                                $("#txtCompanyAddress").attr('title', response['error']['company_address']);
+                            }
+                            if(response['error']['company_contact_person'] === undefined){
+                                $("#txtCompanyContactPerson").removeClass('is-invalid');
+                                $("#txtCompanyContactPerson").attr('title', '');
+                            }
+                            else{
+                                $("#txtCompanyContactPerson").addClass('is-invalid');
+                                $("#txtCompanyContactPerson").attr('title', response['error']['company_contact_person']);
+                            }
+                        }else if(response['result'] == 0){
+                            $("#formAddCustomerDetails")[0].reset();
+                            toastr.success('Succesfully saved!');
+                            $('#modalAddCustomerDetails').modal('hide');
+                            dtCustomerDetails.draw();
                         }
-                    });
+
+                        $("#btnAddCompanyDetailsIcon").removeClass('spinner-border spinner-border-sm');
+                        $("#btnAddCompanyDetails").removeClass('disabled');
+                        $("#btnAddCompanyDetailsIcon").addClass('fa fa-check');
+                    },
+                    error: function(data, xhr, status){
+                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                    }
                 });
+            });
 
-                $(document).on('click', '.btnEditCarrierDetails', function(){
-                    $('#modalAddCarierDetails').modal('show');
-                    let carrierDetailsId = $(this).attr('data-id');
-                    $('#txtCarrierDetailsId').val(carrierDetailsId);
-                    console.log(carrierDetailsId);
+            $(document).on('click', '.btnEditCustomerDetails', function(){
+                $('#modalAddCustomerDetails').modal('show');
+                let customerDetailsId = $(this).attr('data-id');
+                $('#txtCustomerDetailsId').val(customerDetailsId);
+                console.log(customerDetailsId);
 
-                    getCarrierDetailsId(carrierDetailsId);
+                getCustomerDetailsId(customerDetailsId);
+            });
+
+            $(document).on('click', '.btnEditCustomerDetailsStatus',function(){
+                $('#modalEditCompanyDetailsStatus').modal('show');
+                let customerDetailsId = $(this).attr('data-id')
+                $('#textEditCompanyDetailsStatusId').val(customerDetailsId);
+            });
+
+            $('#buttonEditCompanyDetailsStatus').on('click', function(){
+                let companyDetailsId = $('#textEditCompanyDetailsStatusId').val();
+                $.ajax({
+                    type: "get",
+                    url: "edit_company_details_status",
+                    data: {
+                        'company_details_id' : companyDetailsId
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Company Deactivated!');
+                        $('#modalEditCompanyDetailsStatus').modal('hide');
+                        dtCustomerDetails.draw();
+                    }
                 });
+            });
 
-                $(document).on('click', '.btnEditCarrierDetailsStatus', function(){
-                    $('#modalEditCarrierDetailsStatus').modal('show');
-                    let carrierDetailsId = $(this).attr('data-id');
-                    $('#textEditCarrierDetailsStatusId').val(carrierDetailsId);
+            $(document).on('click', '.btnRestoreCustomerDetailsStatus', function(){
+                $('#modalRestoreCompanyDetailsStatus').modal('show');
+                let customerDetailsId = $(this).attr('data-id')
+                $('#textRestoreCompanyDetailsStatusId').val(customerDetailsId);
+            });
+
+            $('#buttonRestoreCompanyDetailsStatus').on('click', function(){
+                let companyDetailsId = $('#textRestoreCompanyDetailsStatusId').val();
+                $.ajax({
+                    type: "get",
+                    url: "restore_company_status",
+                    data: {
+                        'company_details_id' : companyDetailsId
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Company Reactivated!');
+                        $('#modalRestoreCompanyDetailsStatus').modal('hide');
+                        dtCustomerDetails.draw();
+                    }
                 });
+            });
+                //CUSTOMER DETAILS END 
 
-                $('#buttonEditCarrierDetailsStatus').on('click', function(){
+                // CARRIER DETAILS START
+            dtCarrierDetails = $("#tblCarrierDetails").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_carrier_details",
+                },
+                fixedHeader: true,
+                "columns":[
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status"},
+                    { "data" : "carrier_name"},
+                ],
+            });
+
+            $('#formAddCarrierDetails').submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "post",
+                    url: "add_carrier_details",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function(response){
+                        if(response['validation'] == 1){
+                            toastr.error('Saving data failed!');
+                            if(response['error']['carrier_name'] === undefined){
+                                $("#txtCarrierName").removeClass('is-invalid');
+                                $("#txtCarrierName").attr('title', '');
+                            }
+                            else{
+                                $("#txtCarrierName").addClass('is-invalid');
+                                $("#txtCarrierName").attr('title', response['error']['carrier_name']);
+                            }
+                        }else if(response['result'] == 0){
+                            $("#formAddCarrierDetails")[0].reset();
+                            toastr.success('Succesfully saved!');
+                            $('#modalAddCarierDetails').modal('hide');
+                            dtCarrierDetails.draw();
+                        }
+
+                        $("#btnAddCarrierDetailsIcon").removeClass('spinner-border spinner-border-sm');
+                        $("#btnAddCarrierDetails").removeClass('disabled');
+                        $("#btnAddCarrierDetailsIcon").addClass('fa fa-check');
+                    },
+                    error: function(data, xhr, status){
+                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                    }
+                });
+            });
+
+            $(document).on('click', '.btnEditCarrierDetails', function(){
+                $('#modalAddCarierDetails').modal('show');
+                let carrierDetailsId = $(this).attr('data-id');
+                $('#txtCarrierDetailsId').val(carrierDetailsId);
+                console.log(carrierDetailsId);
+
+                getCarrierDetailsId(carrierDetailsId);
+            });
+
+            $(document).on('click', '.btnEditCarrierDetailsStatus', function(){
+                $('#modalEditCarrierDetailsStatus').modal('show');
+                let carrierDetailsId = $(this).attr('data-id');
+                $('#textEditCarrierDetailsStatusId').val(carrierDetailsId);
+            });
+
+            $('#buttonEditCarrierDetailsStatus').on('click', function(){
                 let carrierDetailsId = $('#textEditCarrierDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "edit_carrier_details_status",
-                        data: {
-                            'carrier_details_id' : carrierDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Carrier Deactivated!');
-                            $('#modalEditCarrierDetailsStatus').modal('hide');
-                            dtCarrierDetails.draw();
-                        }
-                    });
+                $.ajax({
+                    type: "get",
+                    url: "edit_carrier_details_status",
+                    data: {
+                        'carrier_details_id' : carrierDetailsId
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Carrier Deactivated!');
+                        $('#modalEditCarrierDetailsStatus').modal('hide');
+                        dtCarrierDetails.draw();
+                    }
                 });
+            });
 
-                $(document).on('click', '.btnRestoreCarrierDetailsStatus', function(){
-                    $('#modalRestoreCarrierDetailsStatus').modal('show');
-                    let customerDetailsId = $(this).attr('data-id')
-                    $('#textRestoreCarrierDetailsStatusId').val(customerDetailsId);
-                });
+            $(document).on('click', '.btnRestoreCarrierDetailsStatus', function(){
+                $('#modalRestoreCarrierDetailsStatus').modal('show');
+                let customerDetailsId = $(this).attr('data-id')
+                $('#textRestoreCarrierDetailsStatusId').val(customerDetailsId);
+            });
 
-                $('#buttonRestoreCarrierDetailsStatus').on('click', function(){
+            $('#buttonRestoreCarrierDetailsStatus').on('click', function(){
                 let carrierDetailsId = $('#textRestoreCarrierDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "restore_carrier_status",
-                        data: {
-                            'carrier_details_id' : carrierDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Carrier Reactivated!');
-                            $('#modalRestoreCarrierDetailsStatus').modal('hide');
-                            dtCarrierDetails.draw();
-                        }
-                    });
-                });
-
-        // CARRIER DETAILS END 
-
-        // LOADING PORT DETAILS START
-
-                dtLoadingPortDetails = $("#tblLoadingPort").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_loading_port_details",
+                $.ajax({
+                    type: "get",
+                    url: "restore_carrier_status",
+                    data: {
+                        'carrier_details_id' : carrierDetailsId
                     },
-                    fixedHeader: true,
-                    "columns":[
-
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status"},
-                        { "data" : "loading_port"},
-                    ],
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Carrier Reactivated!');
+                        $('#modalRestoreCarrierDetailsStatus').modal('hide');
+                        dtCarrierDetails.draw();
+                    }
                 });
+            });
 
-                $('#formaddLoadingPortDetails').submit(function(e){
-                    e.preventDefault();
-                    $.ajax({
-                        type: "post",
-                        url: "add_loading_port_details",
-                        data: $(this).serialize(),
-                        dataType: "json",
-                        success: function (response) {
-                            if(response['validation'] == 1){
-                                toastr.error('Saving data failed!');
-                                if(response['error']['loading_port'] === undefined){
-                                    $("#txtLoadingPort").removeClass('is-invalid');
-                                    $("#txtLoadingPort").attr('title', '');
-                                }
-                                else{
-                                    $("#txtLoadingPort").addClass('is-invalid');
-                                    $("#txtLoadingPort").attr('title', response['error']['loading_port']);
-                                }
-                            }else if(response['result'] == 0){
-                                $("#formaddLoadingPortDetails")[0].reset();
-                                toastr.success('Succesfully saved!');
-                                $('#modaladdLoadingPortDetails').modal('hide');
-                                dtLoadingPortDetails.draw();
+            // CARRIER DETAILS END 
+
+            // LOADING PORT DETAILS START
+
+            dtLoadingPortDetails = $("#tblLoadingPort").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_loading_port_details",
+                },
+                fixedHeader: true,
+                "columns":[
+
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status"},
+                    { "data" : "loading_port"},
+                ],
+            });
+
+            $('#formaddLoadingPortDetails').submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "post",
+                    url: "add_loading_port_details",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        if(response['validation'] == 1){
+                            toastr.error('Saving data failed!');
+                            if(response['error']['loading_port'] === undefined){
+                                $("#txtLoadingPort").removeClass('is-invalid');
+                                $("#txtLoadingPort").attr('title', '');
                             }
-                            $("#btnAddLoadingPortDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                            $("#btnAddLoadingPortDetails").removeClass('disabled');
-                            $("#btnAddLoadingPortDetailsIcon").addClass('fa fa-check');
-                        },
-                        error: function(data, xhr, status){
-                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                            else{
+                                $("#txtLoadingPort").addClass('is-invalid');
+                                $("#txtLoadingPort").attr('title', response['error']['loading_port']);
+                            }
+                        }else if(response['result'] == 0){
+                            $("#formaddLoadingPortDetails")[0].reset();
+                            toastr.success('Succesfully saved!');
+                            $('#modaladdLoadingPortDetails').modal('hide');
+                            dtLoadingPortDetails.draw();
                         }
-                        
-                    });
+                        $("#btnAddLoadingPortDetailsIcon").removeClass('spinner-border spinner-border-sm');
+                        $("#btnAddLoadingPortDetails").removeClass('disabled');
+                        $("#btnAddLoadingPortDetailsIcon").addClass('fa fa-check');
+                    },
+                    error: function(data, xhr, status){
+                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                    }
+                    
                 });
+            });
 
-                $(document).on('click', '.btnEditLoadingPortDetails', function(){
-                    $('#modaladdLoadingPortDetails').modal('show');
-                    let loadingPortDetailsId = $(this).attr('data-id');
-                    $('#txtLoadingPortDetailsId').val(loadingPortDetailsId);
-                    console.log(loadingPortDetailsId);
+            $(document).on('click', '.btnEditLoadingPortDetails', function(){
+                $('#modaladdLoadingPortDetails').modal('show');
+                let loadingPortDetailsId = $(this).attr('data-id');
+                $('#txtLoadingPortDetailsId').val(loadingPortDetailsId);
+                console.log(loadingPortDetailsId);
 
-                    getLoadingPortDetailsId(loadingPortDetailsId);
-                });
+                getLoadingPortDetailsId(loadingPortDetailsId);
+            });
 
-                $(document).on('click', '.btnEditLoadingPortDetailsStatus', function(){
-                    $('#modalEditLoadingPortDetailsStatus').modal('show');
-                    let loadingPortDetailsId = $(this).attr('data-id');
-                    $('#textEditLoadingPortDetailsStatusId').val(loadingPortDetailsId);
-                });
+            $(document).on('click', '.btnEditLoadingPortDetailsStatus', function(){
+                $('#modalEditLoadingPortDetailsStatus').modal('show');
+                let loadingPortDetailsId = $(this).attr('data-id');
+                $('#textEditLoadingPortDetailsStatusId').val(loadingPortDetailsId);
+            });
 
-                $('#buttonEditLoadingPortDetailsStatus').on('click', function(){
+            $('#buttonEditLoadingPortDetailsStatus').on('click', function(){
                 let loadingPortDetailsId = $('#textEditLoadingPortDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "edit_loading_port_details_status",
-                        data: {
-                            'loading_port_details_id' : loadingPortDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Loading Port Deactivated!');
-                            $('#modalEditLoadingPortDetailsStatus').modal('hide');
-                            dtLoadingPortDetails.draw();
-                        }
-                    });
-                });
-
-                $(document).on('click', '.btnRestoreLoadingPortDetailsStatus', function(){
-                    $('#modalRestoreLoadingPortDetailsStatus').modal('show');
-                    let customerDetailsId = $(this).attr('data-id')
-                    $('#textRestoreLoadingPortDetailsStatusId').val(customerDetailsId);
-                });
-
-                $('#buttonRestoreLoadingPortDetailsStatus').on('click', function(){
-                let loadingPortDetailsId = $('#textRestoreLoadingPortDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "restore_loading_port_status",
-                        data: {
-                            'loading_port_details_id' : loadingPortDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Loading Port Reactivated!');
-                            $('#modalRestoreLoadingPortDetailsStatus').modal('hide');
-                            dtLoadingPortDetails.draw();
-                        }
-                    });
-                });
-
-        // LOADING PORT DETAILS END
-
-        // DESTINATION PORT DETAILS START
-
-                dtDestinationPortDetails = $("#tblDestinationPort").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_destination_port_details",
+                $.ajax({
+                    type: "get",
+                    url: "edit_loading_port_details_status",
+                    data: {
+                        'loading_port_details_id' : loadingPortDetailsId
                     },
-                    fixedHeader: true,
-                    "columns":[
-
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status"},
-                        { "data" : "destination_port"},
-                    ],
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Loading Port Deactivated!');
+                        $('#modalEditLoadingPortDetailsStatus').modal('hide');
+                        dtLoadingPortDetails.draw();
+                    }
                 });
+            });
 
-                $('#formaddDestinationPortDetails').submit(function(e){
-                    e.preventDefault();
-                    $.ajax({
-                        type: "post",
-                        url: "add_destination_port_details",
-                        data: $(this).serialize(),
-                        dataType: "json",
-                        success: function (response) {
-                            if(response['validation'] == 1){
-                                toastr.error('Saving data failed!');
-                                if(response['error']['loading_port'] === undefined){
-                                    $("#txtDestinationPort").removeClass('is-invalid');
-                                    $("#txtDestinationPort").attr('title', '');
-                                }
-                                else{
-                                    $("#txtDestinationPort").addClass('is-invalid');
-                                    $("#txtDestinationPort").attr('title', response['error']['loading_port']);
-                                }
-                            }else if(response['result'] == 0){
-                                $("#formaddDestinationPortDetails")[0].reset();
-                                toastr.success('Succesfully saved!');
-                                $('#modalAddDestinationPortDetails').modal('hide');
-                                dtDestinationPortDetails.draw();
+            $(document).on('click', '.btnRestoreLoadingPortDetailsStatus', function(){
+                $('#modalRestoreLoadingPortDetailsStatus').modal('show');
+                let customerDetailsId = $(this).attr('data-id')
+                $('#textRestoreLoadingPortDetailsStatusId').val(customerDetailsId);
+            });
+
+            $('#buttonRestoreLoadingPortDetailsStatus').on('click', function(){
+                let loadingPortDetailsId = $('#textRestoreLoadingPortDetailsStatusId').val();
+                $.ajax({
+                    type: "get",
+                    url: "restore_loading_port_status",
+                    data: {
+                        'loading_port_details_id' : loadingPortDetailsId
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Loading Port Reactivated!');
+                        $('#modalRestoreLoadingPortDetailsStatus').modal('hide');
+                        dtLoadingPortDetails.draw();
+                    }
+                });
+            });
+
+            // LOADING PORT DETAILS END
+
+            // DESTINATION PORT DETAILS START
+
+            dtDestinationPortDetails = $("#tblDestinationPort").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "view_destination_port_details",
+                },
+                fixedHeader: true,
+                "columns":[
+
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status"},
+                    { "data" : "destination_port"},
+                ],
+            });
+
+            $('#formaddDestinationPortDetails').submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "post",
+                    url: "add_destination_port_details",
+                    data: $(this).serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        if(response['validation'] == 1){
+                            toastr.error('Saving data failed!');
+                            if(response['error']['loading_port'] === undefined){
+                                $("#txtDestinationPort").removeClass('is-invalid');
+                                $("#txtDestinationPort").attr('title', '');
                             }
-                            $("#btnAddDestinationPortDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                            $("#btnAddDestinationPortDetails").removeClass('disabled');
-                            $("#btnAddDestinationPortDetailsIcon").addClass('fa fa-check');
-                        },
-                        error: function(data, xhr, status){
-                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                            else{
+                                $("#txtDestinationPort").addClass('is-invalid');
+                                $("#txtDestinationPort").attr('title', response['error']['loading_port']);
+                            }
+                        }else if(response['result'] == 0){
+                            $("#formaddDestinationPortDetails")[0].reset();
+                            toastr.success('Succesfully saved!');
+                            $('#modalAddDestinationPortDetails').modal('hide');
+                            dtDestinationPortDetails.draw();
                         }
-                    });
+                        $("#btnAddDestinationPortDetailsIcon").removeClass('spinner-border spinner-border-sm');
+                        $("#btnAddDestinationPortDetails").removeClass('disabled');
+                        $("#btnAddDestinationPortDetailsIcon").addClass('fa fa-check');
+                    },
+                    error: function(data, xhr, status){
+                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                    }
                 });
+            });
 
-                $(document).on('click', '.btnEditDestinationPortDetails', function(){
-                    $('#modalAddDestinationPortDetails').modal('show');
-                    let destinationPortDetailsId = $(this).attr('data-id');
-                    $('#txtDestinationPortDetailsId').val(destinationPortDetailsId);
-                    console.log(destinationPortDetailsId);
+            $(document).on('click', '.btnEditDestinationPortDetails', function(){
+                $('#modalAddDestinationPortDetails').modal('show');
+                let destinationPortDetailsId = $(this).attr('data-id');
+                $('#txtDestinationPortDetailsId').val(destinationPortDetailsId);
+                console.log(destinationPortDetailsId);
 
-                    getDestinationPortDetailsId(destinationPortDetailsId);
-                });
+                getDestinationPortDetailsId(destinationPortDetailsId);
+            });
 
-                $(document).on('click', '.btnEditDestinationPortDetailsStatus', function(){
-                    $('#modalEditDestinationPortDetailsStatus').modal('show');
-                    let destinationPortDetailsId = $(this).attr('data-id');
-                    $('#textEditDestinationPortDetailsStatusId').val(destinationPortDetailsId);
-                });
+            $(document).on('click', '.btnEditDestinationPortDetailsStatus', function(){
+                $('#modalEditDestinationPortDetailsStatus').modal('show');
+                let destinationPortDetailsId = $(this).attr('data-id');
+                $('#textEditDestinationPortDetailsStatusId').val(destinationPortDetailsId);
+            });
 
-                $('#buttonEditDestinationPortDetailsStatus').on('click', function(){
+            $('#buttonEditDestinationPortDetailsStatus').on('click', function(){
                 let destinationPortDetailsId = $('#textEditDestinationPortDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "edit_destination_port_details_status",
-                        data: {
-                            'destination_port_details_id' : destinationPortDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Loading Port Deactivated!');
-                            $('#modalEditDestinationPortDetailsStatus').modal('hide');
-                            dtDestinationPortDetails.draw();
-                        }
-                    });
+                $.ajax({
+                    type: "get",
+                    url: "edit_destination_port_details_status",
+                    data: {
+                        'destination_port_details_id' : destinationPortDetailsId
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Loading Port Deactivated!');
+                        $('#modalEditDestinationPortDetailsStatus').modal('hide');
+                        dtDestinationPortDetails.draw();
+                    }
                 });
+            });
 
-                $(document).on('click', '.btnRestoreDestinationPortDetailsStatus', function(){
-                    $('#modalRestoreDestinationPortDetailsStatus').modal('show');
-                    let destinationPortDetailsId = $(this).attr('data-id');
-                    $('#textRestoreDestinationPortDetailsStatusId').val(destinationPortDetailsId);
-                });
+            $(document).on('click', '.btnRestoreDestinationPortDetailsStatus', function(){
+                $('#modalRestoreDestinationPortDetailsStatus').modal('show');
+                let destinationPortDetailsId = $(this).attr('data-id');
+                $('#textRestoreDestinationPortDetailsStatusId').val(destinationPortDetailsId);
+            });
 
-                $('#buttonRestoreDestinationPortDetailsStatus').on('click', function(){
+            $('#buttonRestoreDestinationPortDetailsStatus').on('click', function(){
                 let destinationPortDetailsId = $('#textRestoreDestinationPortDetailsStatusId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "restore_destination_port_status",
-                        data: {
-                            'destination_port_details_id' : destinationPortDetailsId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            toastr.success('Loading Port Deactivated!');
-                            $('#modalRestoreDestinationPortDetailsStatus').modal('hide');
-                            dtDestinationPortDetails.draw();
-                        }
-                    });
+                $.ajax({
+                    type: "get",
+                    url: "restore_destination_port_status",
+                    data: {
+                        'destination_port_details_id' : destinationPortDetailsId
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        toastr.success('Loading Port Deactivated!');
+                        $('#modalRestoreDestinationPortDetailsStatus').modal('hide');
+                        dtDestinationPortDetails.draw();
+                    }
                 });
-
-                
-                
-
-                // txtDestinationPort
-
-        // DESTINATION PORT DETAILS END 
+            });
+            // DESTINATION PORT DETAILS END 
+        }); 
 
         </script>
     @endsection
