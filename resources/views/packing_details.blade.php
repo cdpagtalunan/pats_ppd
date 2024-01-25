@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Packing')
 
     @section('content_page')
 
@@ -119,9 +119,9 @@
                                             data-bs-target="#modalEditPackingDetails" id="btnShowEditPackingDetails"><i
                                                 class="fas fa-clipboard-list"></i> Edit Packing Details
                                         </button> --}}
-                                    </div> <br><br>
+                                    </div>
 
-                                    <ul class="nav nav-tabs" id="myTab" role="tablist"> 
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" id="Prelim-tab" data-bs-toggle="tab" href="#prelimTab" role="tab" aria-controls="prelimTab" aria-selected="true">Preliminary Packing</a>
                                         </li>
@@ -132,7 +132,7 @@
 
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="prelimTab" role="tabpanel" aria-labelledby="prelimTab-tab"><br>
-                                            
+
                                             <div class="table-responsive">
                                                 <table id="tblPreliminaryPackingDetails" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
@@ -153,7 +153,7 @@
                                             </div>
                                         </div>
 
-                                        
+
                                         <div class="tab-pane fade show" id="finalPacking" role="tabpanel" aria-labelledby="finalPacking-tab"><br>
                                             <div class="table-responsive">
                                                 <table id="tblFinalPackingDetails" class="table table-sm table-bordered table-striped table-hover"
@@ -214,7 +214,7 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="txtPackingDetailsId" name="packing_details_id">
-                        
+
                         <div class="row">
 
                             <div class="col-sm-6">
@@ -302,7 +302,7 @@
                         <div class="text-center text-secondary"><span id="modalScanEmpIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </form>
-                
+
             </div>
         <!-- /.modal-content -->
         </div>
@@ -318,7 +318,7 @@
                 $('.select2').select2({
                     theme: 'bootstrap-5'
                 });
-            
+
             let scannedPO;
             let ParseScannedPo;
 
@@ -380,7 +380,7 @@
                     "serverSide"    : true,
                     "destroy"       : true,
                     "ajax" : {
-                        url: "view_packing_details_data",
+                        url: "view_final_packing_details_data",
                         data: function (param){
                             param.po_no = $("#txtSearchPONum").val();
                         },
@@ -389,14 +389,14 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
-                        { "data" : "stamping_production_info.material_name"},
+                        { "data" : "oqc_info.stamping_production_info.material_name"},
                         { "data" : "po_no"},
-                        { "data" : "stamping_production_info.po_qty"},
-                        { "data" : "packing_info.delivery_balance" },
-                        { "data" : "stamping_production_info.drawing_no"},
-                        { "data" : "stamping_production_info.prod_lot_no"},
-                        { "data" : "packing_info.no_of_cuts"},
-                        { "data" : "packing_info.material_quality" },
+                        { "data" : "oqc_info.stamping_production_info.ship_output"},
+                        { "data" : "final_packing_info.delivery_balance" },
+                        { "data" : "oqc_info.stamping_production_info.drawing_no"},
+                        { "data" : "oqc_info.stamping_production_info.prod_lot_no"},
+                        { "data" : "final_packing_info.no_of_cuts"},
+                        { "data" : "final_packing_info.material_quality" },
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
@@ -407,15 +407,15 @@
                         },
                     ],
                 });
-                
+
 
                 $(document).on('click', '.btnEditPackingDetails', function(e){
                     e.preventDefault();
-                    let oqcDetailsId =  $(this).attr('data-id');
-                    
-                    // $('#txtPackingDetailsId').val(oqcDetailsId);
+                    let oqcDetailsId =  $(this).attr('oqc-id');
+
+                    $('#txtPackingDetailsId').val(oqcDetailsId);
                     console.log(oqcDetailsId);
-                   
+
                     $('#modalEditPackingDetails').modal('show');
 
                     getOqcDetailsbyId(oqcDetailsId);
@@ -440,8 +440,8 @@
                         if(e.keyCode == 13){
                             // console.log('keyCode called');
                             scanEmpId = $('#txtScanEmpId').val();
-                            // console.log(scanEmpId); 
-                            // console.log(txtOqcDetailsId); 
+                            // console.log(scanEmpId);
+                            // console.log(txtOqcDetailsId);
                             // $('#formOqcDetails').trigger('submit');
                         }
                     });
@@ -504,9 +504,9 @@
                 });
             });
 
-                
+
             });
-        
+
         </script>
     @endsection
 @endauth

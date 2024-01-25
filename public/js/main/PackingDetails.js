@@ -10,7 +10,7 @@ function getOqcDetailsbyId(oqcDetailsId){
 
 			if(response['oqcData'] != null){
                     $('#txtPONumber').val(response['oqcData']['stamping_production_info']['po_num'])
-                    $('#txtPOQuantity').val(response['oqcData']['stamping_production_info']['po_qty'])
+                    $('#txtPOQuantity').val(response['oqcData']['stamping_production_info']['ship_output'])
                     $('#txtPartsName').val(response['oqcData']['stamping_production_info']['material_name'])
                     $('#txtProdLotNumber').val(response['oqcData']['stamping_production_info']['prod_lot_no'])
                     $('#txtDrawingNumber').val(response['oqcData']['stamping_production_info']['drawing_no'])

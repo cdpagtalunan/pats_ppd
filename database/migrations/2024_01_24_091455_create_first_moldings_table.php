@@ -16,7 +16,6 @@ class CreateFirstMoldingsTable extends Migration
         Schema::create('first_moldings', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('device_name')->comment = '1-CN171S-08#IN-VE, 2-CN171S-09#IN-R-VE, 3-CN171S-10#IN-L-VE';
-            $table->string('contact_name');
             $table->string('contact_lot_number');
             $table->string('production_lot');
             $table->tinyInteger('status')->comment ='';

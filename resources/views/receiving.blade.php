@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Receiving')
 
     @section('content_page')
 

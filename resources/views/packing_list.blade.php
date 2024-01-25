@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Packing List')
 
     @section('content_page')
 
@@ -464,7 +464,9 @@
                     let data = dtProductionDetails.row(this).data();
                     let array_data = Object.entries(data);
 
-                    packing_list_data_array.push(data['id']);
+                    console.log(`data`, data['oqc_id']);
+
+                    packing_list_data_array.push(data['oqc_id']);
                     console.log('packing_list_data_array ', packing_list_data_array);
                     // $(this).toggleClass('selected');
 

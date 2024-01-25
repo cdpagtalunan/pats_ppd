@@ -95,32 +95,65 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                    </div> <br><br>
-                                    <div class="table-responsive">
-                                        <table id="tblPackingDetails" class="table table-sm table-bordered table-striped table-hover"
-                                            style="width: 100%;">
-                                            <thead>
-                                                <tr>
-                                                    <th>Action</th>
-                                                    <th>Status</th>
-                                                    <th>Part Name</th>
-                                                    <th>Part Code</th>
-                                                    <th>Lot #</th>
-                                                    <th>Lot Qty</th>
-                                                    <th>Endorsed By</th>
-                                                    <th>Date</th>
-                                                    <th>Received By</th>
-                                                    <th>Date</th>
-                                                </tr>
-                                            </thead>
-                                        </table>
                                     </div>
-                                </div>
 
+                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="Packing-tab" data-bs-toggle="tab" href="#packingTab" role="tab" aria-controls="packingTab" aria-selected="true">For Endorsement</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" id="Received-tab" data-bs-toggle="tab" href="#moldingReceived" role="tab" aria-controls="moldingReceived" aria-selected="false">Molding Received</a>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="packingTab" role="tabpanel" aria-labelledby="packingTab-tab"><br>
+                                            <div class="table-responsive">
+                                                <table id="tblPackingDetailsForEndorsement" class="table table-sm table-bordered table-striped table-hover"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>Status</th>
+                                                            <th>Part Code</th>
+                                                            <th>Part Name</th>
+                                                            <th>Lot #</th>
+                                                            <th>Lot Qty</th>
+                                                            <th>Endorsed By</th>
+                                                            <th>Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade show" id="moldingReceived" role="tabpanel" aria-labelledby="moldingReceived-tab"><br>
+
+                                            <div class="table-responsive">
+                                                <table id="tblPackingDetailsEndorsed" class="table table-sm table-bordered table-striped table-hover"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>Part Code</th>
+                                                            <th>Part Name</th>
+                                                            <th>Lot #</th>
+                                                            <th>Lot Qty</th>
+                                                            <th>Endorsed By</th>
+                                                            <th>Date</th>
+                                                            <th>Received By</th>
+                                                            <th>Date</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
             </section>
         </div>
 
@@ -138,6 +171,19 @@
             <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
+
+    <div class="modal fade" id="modalScanEmployeeID">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <div class="modal-body">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanEmployeeID" name="id_scan" autocomplete="off">
+                    <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan your ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        <!-- /.modal-content -->
+        </div>
+            <!-- /.modal-dialog -->
+    </div>
 
     <div class="modal fade" id="modalEditPackingDetails" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
@@ -254,17 +300,17 @@
                             $('#txtSearchPOQty').val(ParseScannedPo['qty']);
 
                             $('#modalScanPO').modal('hide');
-                            dtPackingDetails.draw()
+                            dtPackingDetailsFE.draw()
                         }
                     });
                 });
 
-                dtPackingDetails = $("#tblPackingDetails").DataTable({
+                dtPackingDetailsFE = $("#tblPackingDetailsForEndorsement").DataTable({
                     "processing"    : false,
                     "serverSide"    : true,
                     "destroy"       : true,
                     "ajax" : {
-                        url: "view_packing_details_molding_data",
+                        url: "view_packing_details_fe",
                         data: function (param){
                             param.po_no = $("#txtSearchPONum").val();
                         },
@@ -272,32 +318,62 @@
 
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status" },
+                        { "data" : "status"},
+                        { "data" : "stamping_production_info.part_code"},
                         { "data" : "stamping_production_info.material_name"},
-                        { "data" : "po_no" },
-                        { "data" : "stamping_production_info.po_qty"},
-                        { "data" : "packing_info.delivery_balance" },
-                        { "data" : "stamping_production_info.drawing_no"},
                         { "data" : "stamping_production_info.prod_lot_no"},
-                        { "data" : "packing_info.no_of_cuts"},
-                        { "data" : "packing_info.material_quality" },
+                        { "data" : "stamping_production_info.ship_output"},
+                        { "data" : "first_molding_info.endorsedby" },
+                        { "data" : "first_molding_info.date_endorsed"},
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
                         {
-                            "targets": [1,5,8,9],
+                            "targets": [6,7],
                             "data": null,
                             "defaultContent": "---"
                         },
                     ],
                 });
 
-                $(document).on('click', '.btnEditPackingDetails', function(e){
+                 dtPackingDetailsE = $("#tblPackingDetailsEndorsed").DataTable({
+                    "processing"    : false,
+                    "serverSide"    : true,
+                    "destroy"       : true,
+                    "ajax" : {
+                        url: "view_packing_details_e",
+                        data: function (param){
+                            param.po_no = $("#txtSearchPONum").val();
+                        },
+                    },
+
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "stamping_production_info.part_code"},
+                        { "data" : "stamping_production_info.material_name"},
+                        { "data" : "stamping_production_info.prod_lot_no"},
+                        { "data" : "stamping_production_info.ship_output"},
+                        { "data" : "first_molding_info.endorsedby" },
+                        { "data" : "first_molding_info.date_endorsed"},
+                        { "data" : "first_molding_info.receivedby"},
+                        { "data" : "first_molding_info.date_received" },
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": "_all"},
+                        {
+                            "targets": [5,6,7,8],
+                            "data": null,
+                            "defaultContent": "---"
+                        },
+                    ],
+                });
+
+                $(document).on('click', '.btnScanPackingID', function(e){
                     e.preventDefault();
                     let oqcDetailsId =  $(this).attr('data-id');
                     $('#txtPackingDetailsId').val(oqcDetailsId);
                     console.log(oqcDetailsId);
-                    $('#modalEditPackingDetails').modal('show');
+                    $('#modalScanEmployeeID').modal('show');
 
                     getOqcDetailsbyId(oqcDetailsId);
 
@@ -314,14 +390,6 @@
                     success: function (response) {
                         if(response['validation'] == 1){
                             toastr.error('Saving data failed!');
-                            // if(response['error']['loading_port'] === undefined){
-                            //     $("#txtDestinationPort").removeClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', '');
-                            // }
-                            // else{
-                            //     $("#txtDestinationPort").addClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', response['error']['loading_port']);
-                            // }
                         }else if(response['result'] == 0){
                             $("#formEditPackingDetails")[0].reset();
                             toastr.success('Succesfully saved!');

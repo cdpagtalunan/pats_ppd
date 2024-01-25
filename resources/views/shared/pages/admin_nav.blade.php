@@ -213,7 +213,6 @@
                         </li>
                     @endif
 
-
                     @if (in_array(Auth::user()->position, [0,6]))
                         <li class="nav-header mt-3"><strong>WAREHOUSE</strong></li>
                         <li class="nav-item has-treeview">
@@ -237,34 +236,15 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    {{-- <a href="{{ route('route') }}" class="nav-link"> --}}
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('first_molding') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-08#IN-VE</p>
+                                        <p>1st Molding</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('second_molding') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-09#IN-R-VE</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-10#IN-L-VE</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-07</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171P-02</p>
+                                        <p>2nd Molding</p>
                                     </a>
                                 </li>
                             </ul>

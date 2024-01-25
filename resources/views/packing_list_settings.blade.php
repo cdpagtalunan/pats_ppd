@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Packing List Settings')
 
     @section('content_page')
 

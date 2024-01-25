@@ -12,6 +12,8 @@ use App\Models\ModeOfDefect;
 use App\Models\FirstStampingProduction;
 use App\Models\PackingDetails;
 use App\Models\PreliminaryPacking;
+use App\Models\PackingDetailsMolding;
+
 class OQCInspection extends Model
 {
     protected $table = "oqc_inspections";
@@ -44,5 +46,10 @@ class OQCInspection extends Model
     public function prelim_packing_info(){
         return $this->hasOne(PreliminaryPacking::class,'oqc_id', 'id');
     }
+
+    public function first_molding_info(){
+        return $this->hasOne(PackingDetailsMolding::class,'oqc_id', 'id');
+    }
+
 
 }

@@ -22,6 +22,9 @@ use App\Http\Controllers\LoadingPortDetailsController;
 use App\Http\Controllers\PackingListDetailsController;
 use App\Http\Controllers\DestinationPortDetailsController;
 use App\Http\Controllers\PackingDetailsController;
+use App\Http\Controllers\FirstMoldingController;
+use App\Http\Controllers\SecondMoldingController;
+use App\Http\Controllers\PackingDetailsMoldingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +85,10 @@ Route::view('/packing_details_molding','packing_details_molding')->name('packing
 Route::view('/packing_list','packing_list')->name('packing_list');
 Route::view('/packing_list_settings','packing_list_settings')->name('packing_list_settings');
 Route::view('/receiving','receiving')->name('receiving');
+
+/* MOLDING */
+Route::view('/second_molding','second_molding')->name('second_molding');
+Route::view('/first_molding','first_molding')->name('first_molding');
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
@@ -276,7 +283,7 @@ Route::controller(ReceivingDetailsController::class)->group(function () {
 });
 
 Route::controller(PackingDetailsController::class)->group(function () {
-    Route::get('/view_packing_details_data', 'viewPackingDetailsData')->name('view_packing_details_data');
+    Route::get('/view_final_packing_details_data', 'viewFinalPackingDetailsData')->name('view_final_packing_details_data');
     Route::get('/view_preliminary_packing_details', 'viewPrelimDetailsData')->name('view_preliminary_packing_details');
     Route::get('/get_oqc_details', 'getOqcDetailsForPacking')->name('get_oqc_details');
     Route::post('/add_packing_details', 'addPackingDetails')->name('add_packing_details');
@@ -284,16 +291,22 @@ Route::controller(PackingDetailsController::class)->group(function () {
 });
 
 Route::controller(PackingDetailsMoldingController::class)->group(function () {
-    Route::get('/view_packing_details_molding_data', 'viewPackingDetailsMoldingData')->name('view_packing_details_molding_data');
-    
+    Route::get('/view_packing_details_fe', 'viewPackingDetailsFE')->name('view_packing_details_fe');
+    Route::get('/view_packing_details_e', 'viewPackingDetailsE')->name('view_packing_details_e');
+
 });
 
 
 
 
+/* First Molding Process */
+Route::controller(FirstMoldingController::class)->group(function () {
+    Route::get('/get_first_molding_devices', 'getFirstMoldingDevices')->name('get_first_molding_devices');
+});
 
 
-
-
-
-
+/* Second Molding Controller */
+Route::controller(SecondMoldingController::class)->group(function () {
+    Route::get('/get_search_po_for_molding', 'getSearchPoForMolding')->name('get_search_po_for_molding');
+    Route::get('/check_material_lot_number', 'checkMaterialLotNumber')->name('check_material_lot_number');
+});

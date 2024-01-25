@@ -16,63 +16,6 @@ use App\Models\PreliminaryPacking;
 
 class PackingDetailsController extends Controller
 {
-    public function viewPackingDetailsData(Request $request){
-        // $packing_details = OQCInspection::with(['stamping_production_info', 'packing_info'])
-        // ->where('po_no', 'like', '%' . $request->po_no . '%')
-        // ->where('lot_accepted', 1)
-        // ->get();
-
-        $packing_details = PreliminaryPacking::with(['oqc_info.stamping_production_info'])
-        ->where('po_no', 'like', '%' . $request->po_no . '%')
-        ->where('status', 1)
-        ->get();
-
-        // return $packing_details;
-        // return $packing_details[3]->packing_info->status;
-
-        if(!isset($request->po_no)){
-            return [];
-        }else{
-            
-            return DataTables::of($packing_details)
-            ->addColumn('action', function($packing_details){
-                $result = "";
-                $result .= "<center>";
-                    $result .= "<button class='btn btn-primary btn-sm btnEditPackingDetails' data-id='$packing_details->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
-                $result .= "</center>";
-                return $result;
-            })
-            ->addColumn('status', function($packing_details){
-                $result = "";
-                $result .= "<center>";
-
-                if( $packing_details->packing_info != null){
-                    if($packing_details->packing_info->status == 0){
-                        $result .= '<span class="badge bg-info">For QC Inspection</span>';
-                    }else{
-                        $result .= '<span class="badge bg-success">Completed</span>';
-                    }
-                }else{
-                    $result .= '---';
-                }
-        
-                // if($test == 2){
-                //     $result .= '<span class="badge bg-success">Active</span>';
-                // }
-                // else{
-                //     $result .= '<span class="badge bg-danger">Disabled</span>';
-                // }
-
-                $result .= "</center>";
-                return $result;
-            })
-            ->addIndexColumn(['DT_RowIndex'])
-            ->rawColumns(['action','status'])
-            // ->rawColumns(['action','status','test'])
-            ->make(true);
-        }
-    }
-
     public function viewPrelimDetailsData(Request $request){
         $preliminary_packing_data = OQCInspection::with(['stamping_production_info', 'prelim_packing_info'])
         ->where('po_no', 'like', '%' . $request->po_no . '%')
@@ -106,7 +49,11 @@ class PackingDetailsController extends Controller
                 if( $preliminary_packing_data->prelim_packing_info == null){
                     $result .= '<span class="badge bg-info">OQC PASSED</span>';
                 }else{
-                    $result .= '<span class="badge bg-info">For Packing List</span>';
+                    if($preliminary_packing_data->prelim_packing_info->status == 1){
+                        $result .= '<span class="badge bg-info">For Packing List</span>';
+                    }else{
+                        $result .= '<span class="badge bg-success">Completed</span>';
+                    }
                 }
         
                 // if($test == 2){
@@ -126,6 +73,72 @@ class PackingDetailsController extends Controller
         }
     }
 
+    public function viewFinalPackingDetailsData(Request $request){
+        // $packing_details = OQCInspection::with(['stamping_production_info', 'packing_info'])
+        // ->where('po_no', 'like', '%' . $request->po_no . '%')
+        // ->where('lot_accepted', 1)
+        // ->get();
+
+        $prelim_packing_details = PreliminaryPacking::with(['oqc_info.stamping_production_info', 'final_packing_info'])
+        ->where('po_no', 'like', '%' . $request->po_no . '%')
+        ->where('status', 2)
+        ->get();
+
+        // return $prelim_packing_details;
+        // return $prelim_packing_details[3]->packing_info->status;
+
+        if(!isset($request->po_no)){
+            return [];
+        }else{
+            
+            return DataTables::of($prelim_packing_details)
+            ->addColumn('action', function($prelim_packing_details){
+                $result = "";
+                $result .= "<center>";
+                if($prelim_packing_details->final_packing_info == null){
+                    $result .= "<button class='btn btn-primary btn-sm btnEditPackingDetails' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+                }else{
+                    if($prelim_packing_details->final_packing_info->status == 1){
+                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
+                    }else if ($prelim_packing_details->final_packing_info->status == 2 ){
+                        $result .= '<span class="badge bg-info">Completed</span>';
+                    }
+                }
+                $result .= "</center>";
+                return $result;
+            })
+            ->addColumn('status', function($prelim_packing_details){
+                $result = "";
+                $result .= "<center>";
+
+                    if($prelim_packing_details->final_packing_info == null){
+                        $result .= '<span class="badge bg-info">For Packing Validation</span>';
+                    }else{
+                        if($prelim_packing_details->final_packing_info->status == 1){
+                            $result .= '<span class="badge bg-info">For Printing</span>';
+                        }
+                        else if($prelim_packing_details->final_packing_info->status == 2){
+                            $result .= '<span class="badge bg-info">For QC Validation</span>';
+                        }else if ($prelim_packing_details->final_packing_info->status == 3 ){
+                            $result .= '<span class="badge bg-info">Completed</span>';
+                        }
+                    }
+
+                    // if($prelim_packing_details->status == 2){
+                    //     $result .= '<span class="badge bg-info">For Packing Validation</span>';
+                    // }else{
+                    //     $result .= '<span class="badge bg-success">Completed</span>';
+                    // }
+
+                $result .= "</center>";
+                return $result;
+            })
+            ->addIndexColumn(['DT_RowIndex'])
+            ->rawColumns(['action','status'])
+            ->make(true);
+        }
+    }
+
     public function getOqcDetailsForPacking(Request $request){
         $oqc_data = OQCInspection::with(['stamping_production_info'])
         ->where('id', $request->oqc_details_id)
@@ -134,12 +147,16 @@ class PackingDetailsController extends Controller
         
         // return $oqc_data;
 
+        // return $request->oqc_details_id;
+
         return response()->json(['oqcData' => $oqc_data]);
     }
 
     public function addPackingDetails(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
+
+        // return $data;
 
         $rules = [
             // 'control_no'                 => 'required',
