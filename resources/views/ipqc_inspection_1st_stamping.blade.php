@@ -388,35 +388,29 @@
                                             </div>
                                             {{-- DROPDOWN --}}
                                             <div class="form-group">
-                                                <div id="BDrawingDiv">
                                                     <label class="form-label">Doc No.(B Drawing):</label>
-                                                </div>
-                                                {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
-                                                <div class="input-group input-group-sm">
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing" style="width: 100%;">
-                                                        {{-- <option disabled selected>-- Document No. --</option> --}}
+                                                <div class="input-group input-group-sm" style="width: 100%;">
+                                                    <div id="BDrawingDiv" class="input-group-prepend">
+                                                    </div>
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <div id="InspStandardDiv">
                                                     <label class="form-label">Doc No.(Inspection Standard):</label>
-                                                </div>
-                                                {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
-                                                <div class="input-group input-group-sm">
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard" style="width: 100%;">
-                                                        {{-- <option disabled selected>-- Document No. --</option> --}}
+                                                <div class="input-group input-group-sm" style="width: 100%;">
+                                                    <div id="InspStandardDiv" class="input-group-prepend">
+                                                    </div>
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <div id="UDDiv">
                                                     <label class="form-label">Doc No.(UD):</label>
-                                                </div>
-                                                {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
-                                                <div class="input-group input-group-sm">
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud" style="width: 100%;">
-                                                        {{-- <option disabled selected>-- Document No. --</option> --}}
+                                                <div class="input-group input-group-sm" style="width: 100%;">
+                                                    <div id="UDDiv" class="input-group-prepend">
+                                                    </div>
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud">
                                                     </select>
                                                 </div>
                                             </div>
@@ -473,36 +467,74 @@
         <script type="text/javascript">
             var prodData;
             $(document).ready(function(){
-                function redirect_to_drawing(drawing, index) {
+
+                console.log('b drawing', $('#txtSelectDocNoBDrawing').val());
+                console.log('ins', $('#txtSelectDocNoInspStandard').val());
+                console.log('ud', $('#txtSelectDocNoUD').val());
+
+                $('#txtSelectDocNoBDrawing').on('change', function() {
+                    if($('#txtSelectDocNoBDrawing').val() === null || $('#txtSelectDocNoBDrawing').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewBDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewBDrawings").prop('disabled', false);
+                    }
+                });
+
+                $('#txtSelectDocNoInspStandard').on('change', function() {
+                    if($('#txtSelectDocNoInspStandard').val() === null || $('#txtSelectDocNoInspStandard').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewInspStdDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewInspStdDrawings").prop('disabled', false);
+                    }
+                });
+
+                $('#txtSelectDocNoUD').on('change', function() {
+                    if($('#txtSelectDocNoUD').val() === null || $('#txtSelectDocNoUD').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewUdDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewUdDrawings").prop('disabled', false);
+                    }
+                });
+
+                ViewDocument($('#txtSelectDocNoBDrawing').val(), $('#BDrawingDiv'), 'btnViewBDrawings');
+                ViewDocument($('#txtSelectDocNoInspStandard').val(), $('#InspStandardDiv'), 'btnViewInspStdDrawings');
+                ViewDocument($('#txtSelectDocNoUD').val(), $('#UDDiv'), 'btnViewUdDrawings');
+
+                $('#btnViewBDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoBDrawing').val());
+                });
+                $('#btnViewInspStdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoInspStandard').val());
+                });
+                $('#btnViewUdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoUD').val());
+                });
+
+                function ViewDocument(document_no, div_id, btn_id){
+                    // let doc_no ='<a href="download_file/'+document_no+'">';
+                    let doc_no ='<button type="button" id="'+btn_id+'" class="btn btn-primary">';
+                        doc_no +=     '<i class="fa fa-file" data-bs-toggle="tooltip" data-bs-html="true" title="See Document in ACDCS"></i>';
+                        doc_no +='</button>';
+                        // doc_no +='</a>';
+                        // <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
+                    div_id.append(doc_no);
+                }
+
+                function redirect_to_drawing(drawing) {
                     console.log('Drawing No.:',drawing)
                     if( drawing  == 'N/A'){
                         alert('No Document Required')
                     }
                     else{
                         window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
-                        checkedDrawCount[index] = 1
                     }
-                    console.log('Check View Document:', checkedDrawCount)
                 }
-
-                if($('#txtSelectDocNoBDrawing').val() != ""){
-                    let download ='<a href="download_file/'+ipqc_data['id']+'">';
-                        download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
-                        download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
-                        download +=         '&nbsp;';
-                        download +=         'See Attachment';
-                        download +='</button>';
-                        download +='</a>';
-
-                    $('#AttachmentDiv').append(download);
-                }
-
-                // $('.select2').select2();
-
-                // //Initialize Select2 Elements
-                // $('.select2bs4').select2({
-                //     theme: 'bootstrap4'
-                // });
 
                 let dt1stStampingIpqcInspectionPending = $("#tbl1stStampingIpqcInspectionPending").DataTable({
                     "processing" : true,
@@ -855,6 +887,10 @@
                             $("#btnilqcmlink").prop('disabled', false);
                             $('input[name="keep_sample"]').attr('disabled', false);
 
+                            $("#btnViewBDrawings").prop('disabled', true);
+                            $("#btnViewInspStdDrawings").prop('disabled', true);
+                            $("#btnViewUdDrawings").prop('disabled', true);
+
                             if(fs_prod_data[0]['stamping_ipqc_data'] == 0){ //when fs_prod_id && stamping_ipqc_id is not existing in StampingIpqc Table //For Insert to StampingIpqc Table
 
                                 // let mat_name = fs_prod_data[0]['material_name'];
@@ -975,62 +1011,43 @@
                 };
 
                 function GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                    let result = '<option value="" disabled selected>--Select Document No.--</option>';
 
-                        let result = '<option value="" disabled selected>--Select Document No.--</option>';
-                    // }
-                        $.ajax({
-                            url: 'get_data_from_acdcs',
-                            method: 'get',
-                            data: {
-                                'doc_title': doc_title,
-                                'doc_type': doc_type
-                            },
-                            dataType: 'json',
-                            beforeSend: function() {
-                                    result = '<option value="0" disabled selected>--Loading--</option>';
-                                    cboElement.html(result);
-                            },
-                            success: function(response) {
-                                // console.log('test response', response['acdcs_data']);
-                                if (response['acdcs_data'].length > 0) {
+                    $.ajax({
+                        url: 'get_data_from_acdcs',
+                        method: 'get',
+                        data: {
+                            'doc_title': doc_title,
+                            'doc_type': doc_type
+                        },
+                        dataType: 'json',
+                        beforeSend: function() {
+                                result = '<option value="0" disabled selected>--Loading--</option>';
+                                cboElement.html(result);
+                        },
+                        success: function(response) {
+                            if (response['acdcs_data'].length > 0) {
 
-                                    // if(IpqcDocumentNo != ''){ //when Editting: Document No
-                                        // result = '<option value="" disabled selected>--Select Document No.--</option>';
-                                        // result = '<option selected disabled value="' + IpqcDocumentNo + '">' + IpqcDocumentNo + '</option>';
-                                        // cboElement.html(result);
-                                    // }else{ //when Inserting: Document No
-                                        result = '<option value="" disabled selected>--Select Document No.--</option>';
-                                    // }
-                                    // if(response['acdcs_data']['users'][0].model == 1){
-
-                                    // }
-                                    if(response['acdcs_data'][0].doc_type != 'B Drawing'){
-                                        result += '<option value="N/A"> N/A </option>';
-                                    }
-
-                                    // result = '<option value="" selected>-- N/A --</option>';
-                                    for (let index = 0; index < response['acdcs_data'].length; index++) {
-                                        result += '<option value="' + response['acdcs_data'][index].doc_no + '">' + response['acdcs_data'][index].doc_no + '</option>';
-                                        // console.log('test doc_no', response['acdcs_data'][index].doc_no);
-                                    }
-                                } else {
-                                    result = '<option value="0" selected disabled> -- No record found -- </option>';
+                                    result = '<option value="" disabled selected>--Select Document No.--</option>';
+                                if(response['acdcs_data'][0].doc_type != 'B Drawing'){
+                                    result += '<option value="N/A"> N/A </option>';
                                 }
-                                cboElement.html(result);
-                                // cboElement.select2();
-                                // $("#txtSelectDocumentNo").select2();
-                            },
-                            error: function(data, xhr, status) {
-                                result = '<option value="0" selected disabled> -- Reload Again -- </option>';
-                                cboElement.html(result);
-                                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+
+                                // result = '<option value="" selected>-- N/A --</option>';
+                                for (let index = 0; index < response['acdcs_data'].length; index++) {
+                                    result += '<option value="' + response['acdcs_data'][index].doc_no + '">' + response['acdcs_data'][index].doc_no + '</option>';
+                                }
+                            } else {
+                                result = '<option value="0" selected disabled> -- No record found -- </option>';
                             }
-                        });
-                    // }else{
-                        // result = '<option value="" disabled selected>--Select Document No.--</option>';
-                        // result += '<option value="' + ipqc_data['document_no'] + '">' + ipqc_data['document_no'] + '</option>';
-                        // cboElement.html(result);
-                    // }
+                            cboElement.html(result);
+                        },
+                        error: function(data, xhr, status) {
+                            result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                            cboElement.html(result);
+                            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+                    });
                 }
 
                 // ================================= RE-UPLOAD FILE =================================
@@ -1076,17 +1093,12 @@
                 $('#formIPQCInspectionData').submit(function(e){
                     e.preventDefault();
                     $('#modalScanQRSave').modal('show');
-                    // console.log('serialized', $('#formIPQCInspectionData').serialize());
-                    // AddIpqcInspection();
                 });
 
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        // console.log($(this).val());
                         validateUser($(this).val(), [0, 2, 5], function(result){
                             if(result == true){
-                                // submitProdData($(this).val());
-                                // console.log('', $('#txtKeepSample1').val());
                                 AddIpqcInspection();
                             }
                             else{ // Error Handler

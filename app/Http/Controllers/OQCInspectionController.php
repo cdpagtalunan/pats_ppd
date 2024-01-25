@@ -382,6 +382,7 @@ class OQCInspectionController extends Controller
             'mod_oqc_inspection_info'
         ])
         ->where('fs_productions_id', $request->poNoById)
+        ->where('logdel', 0)
         ->orderBy('id', 'DESC')
         ->get();
 
@@ -780,7 +781,9 @@ class OQCInspectionController extends Controller
                 $add_mod_quantity = $request->input("mod_qty_$mod_counter");
                 $defect_count += $add_mod_quantity;
             }
-            $yield = (($tist[0]->ship_output-$defect_count)/$tist[0]->ship_output*100).'%';
+            // $yield = (($tist[0]->ship_output-$defect_count)/$tist[0]->ship_output*100).'%';
+            $yield = number_format((($tist[0]->ship_output-$defect_count)/$tist[0]->ship_output*100),2).'%';
+            // return $yield;
         }
         $validator = Validator::make($data, [
             'oqc_inspection_stamping_line'          => 'required',
@@ -885,7 +888,7 @@ class OQCInspectionController extends Controller
                         );
                     }
                 }else{
-                    PrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    // PrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
                 if ($request->reel_lot_no_0 != null && $request->reel_lot_qty_0 != null) {
@@ -901,7 +904,7 @@ class OQCInspectionController extends Controller
                         );
                     }
                 }else{
-                    ReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    // ReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
                 if ($request->mod_0 != null && $request->mod_qty_0 != null) {
@@ -917,7 +920,7 @@ class OQCInspectionController extends Controller
                         );
                     }
                 }else{
-                    ModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    // ModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
             //     DB::commit();

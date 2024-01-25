@@ -41,20 +41,21 @@ class StampingController extends Controller
             $result .= "<center>";
             /*
                 * data-function on buttons will be the trigger point for viewing and editing for mass production
-                * 0 => viewing only, 1 => for mass production entry of data
+                * 0 => viewing only, 1 => for mass production entry of data, 2 => for re-setup, 3 => Edit data
             */
-            $result .= "<button class='btn btn-info btn-sm btnViewProdData mr-1' data-id='$stamping_data->id' data-function='0' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-eye'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm btnViewProdData' data-id='$stamping_data->id' data-function='0' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-eye'></i></button>";
 
             if($stamping_data->status == 1){
-                $result .= "<button class='btn btn-warning btn-sm btnMassProd' data-id='$stamping_data->id' data-function='1' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-up-right-from-square'></i></button>";
+                $result .= "<button class='btn btn-warning btn-sm btnMassProd ml-1' data-id='$stamping_data->id' data-function='1' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-up-right-from-square'></i></button>";
+                $result .= "<button class='btn btn-secondary btn-sm btnEditProdData ml-1' data-id='$stamping_data->id' data-function='3' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-pen-to-square'></i></button>";
+            
             }
             else if($stamping_data->status == 2){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-qrcode'></i></button>";
+                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData ml-1' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-qrcode'></i></button>";
             }
             else if ($stamping_data->status == 3){
-                $result .= "<button class='btn btn-danger btn-sm btnViewResetup' data-id='$stamping_data->id' data-function='2' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-repeat'></i></button>";
+                $result .= "<button class='btn btn-danger btn-sm btnViewResetup ml-1' data-id='$stamping_data->id' data-function='2' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-repeat'></i></button>";
             }
-
 
             if(count($stamping_data->first_stamping_history) > 0){
                 $result .= "<button class='btn btn-secondary btn-sm btnViewHistory ml-1' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
@@ -106,6 +107,10 @@ class StampingController extends Controller
             if($request->status == 2){
                 $validation = array(
                     'ng_count'        => ['required'],
+                    'qc_samp'        => ['required'],
+                    'adj_pins'        => ['required'],
+                    'setup_pins'        => ['required'],
+                    'remarks'        => ['required'],
                 );
             }
             else{
@@ -139,7 +144,7 @@ class StampingController extends Controller
                     'setup_pins'       => ['required'],
                     'adj_pins'         => ['required'],
                     'qc_samp'          => ['required'],
-                    'material_no'          => ['required'],
+                    'material_no'       => ['required'],
                 );
             }
             else{
@@ -152,7 +157,7 @@ class StampingController extends Controller
                     'drawing_rev'   => ['required'],
                     'opt_name'      => ['required'],
                     'opt_shift'     => ['required'],
-                    'act_qty'       => ['required'],
+                    // 'act_qty'       => ['required'],
                     'inpt_pins'     => ['required'],
                     'target_output' => ['required'],
                     'planned_loss'  => ['required'],
@@ -185,21 +190,22 @@ class StampingController extends Controller
                         FirstStampingProduction::query()
                         ->where('id', $request->id)
                         ->each(function ($oldRecord) use ($id, $request, $user_id) {
-                            $newRecord = new StampingProductionHistory();
-                            $newRecord->set_up_pins = $oldRecord->set_up_pins;
-                            $newRecord->adj_pins = $oldRecord->adj_pins;
-                            $newRecord->qc_samp = $oldRecord->qc_samp;
-                            $newRecord->ng_count = $oldRecord->ng_count;
+                            $newRecord                         = new StampingProductionHistory();
+                            $newRecord->set_up_pins            = $oldRecord->set_up_pins;
+                            $newRecord->adj_pins               = $oldRecord->adj_pins;
+                            $newRecord->qc_samp                = $oldRecord->qc_samp;
+                            $newRecord->ng_count               = $oldRecord->ng_count;
                             $newRecord->stamping_production_id = $id;
+                            $newRecord->remarks                = $request->remarks;
                             $newRecord->save();
 
-                            $oldRecord->status = 0;
+                            $oldRecord->status      = 0;
                             $oldRecord->set_up_pins = $request->setup_pins;
-                            $oldRecord->adj_pins = $request->adj_pins;
-                            $oldRecord->qc_samp = $request->qc_samp;
-                            $oldRecord->ng_count = $request->ng_count;
-                            $oldRecord->updated_at = NOW();
-                            $oldRecord->updated_by = $user_id->id;
+                            $oldRecord->adj_pins    = $request->adj_pins;
+                            $oldRecord->qc_samp     = $request->qc_samp;
+                            $oldRecord->ng_count    = $request->ng_count;
+                            $oldRecord->updated_at  = NOW();
+                            $oldRecord->updated_by  = $user_id->id;
                             $oldRecord->save();
                         });
                         // ->update([
@@ -229,8 +235,9 @@ class StampingController extends Controller
                         ]);
                     }
                     else{ // FOR MASS PRODUCTION
-                        FirstStampingProduction::where('id', $request->id)
-                        ->update([
+                        // $prod_array['trays'] = $request->tray;
+
+                        $insert_array_mass_prod = array(
                             'status'            => 2,
                             'prod_date'         => $request->prod_date,
                             'prod_samp'         => $request->prod_samp,
@@ -239,7 +246,12 @@ class StampingController extends Controller
                             // 'mat_yield'         => $request->mat_yield,
                             'updated_at'        => NOW(),
                             'updated_by'        => $user_id->id
-                        ]);
+                        );
+                        if($request->stamp_cat == 1){
+                            $insert_array_mass_prod['trays'] = $request->tray;
+                        }
+                        FirstStampingProduction::where('id', $request->id)
+                        ->update($insert_array_mass_prod);
                     }
                     
                     DB::commit();
@@ -283,10 +295,10 @@ class StampingController extends Controller
                         $prod_array['ppc_target_output'] = $request->target_output;
                     }
                     else{
-                        $prod_array['trays'] = $request->tray;
+                        // $prod_array['trays'] = $request->tray;
                         $prod_array['no_of_trays'] = $request->no_tray;
                         $prod_array['input_pins'] = $request->inpt_pins;
-                        $prod_array['actual_qty'] = $request->act_qty;
+                        // $prod_array['actual_qty'] = $request->act_qty;
                         $prod_array['target_output'] = $request->target_output;
                     }
     

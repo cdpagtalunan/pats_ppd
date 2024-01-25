@@ -242,7 +242,7 @@
 
                                             <div class="form-group">
                                                 <label class="form-label">Input Coil Weight (kg):</label>
-                                                <input type="number" class="form-control form-control-sm" name="inpt_coil_weight" id="txtInptCoilWeight">
+                                                <input type="number" class="form-control form-control-sm" name="inpt_coil_weight" id="txtInptCoilWeight" step="0.01">
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">PPC Target Output (Pins):</label>
@@ -318,8 +318,13 @@
 
                                             <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtTtlMachOutput_0" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                            </div>
+
+                                            <div class="form-group d-none" id="divRemarks">
+                                                <label class="form-label">Remarks:</label>
+                                                <textarea rows='5' name="remarks" id="txtRemarks" class="form-control form-control-sm"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -419,6 +424,7 @@
                                         <th>Adjustment Pins</th>
                                         <th>QC Samples</th>
                                         <th>NG Count</th>
+                                        <th>Remarks</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -442,6 +448,7 @@
             var printId;
             var printStampCat;
             var scanningFunction;
+            var btnFunction;
             var historyId = 0;
             $(document).ready(function(){
                 // getOperatorList($('.selOpName'));
@@ -516,7 +523,7 @@
                     planLoss = ppcTargtOut*0.1;
 
                     // $('#txtTargetOutput').val(ppcTargtOut);
-                    $('#txtPlannedLoss').val(planLoss);
+                    $('#txtPlannedLoss').val(planLoss.toFixed(2));
                 });
 
                 $('#txtTtlMachOutput').on('keyup', function(e){
@@ -577,6 +584,8 @@
                                     });
                                 }
                                 else{
+                                    $('#txtSearchMatName').val('');
+                                    $('#txtSearchPO').val('');
                                     toastr.error('No PO Found on Rapid PO Receive.')
                                 }
                             },
@@ -594,8 +603,9 @@
                         getProdLotNoCtrl();
 
                         // OPERATOR SHIFT
-                        $time_now = moment().format('LT');
-                        if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
+                        $time_now = moment().format('HH:mm:ss');
+                        console.log($time_now);
+                        if($time_now >= '7:30:00' || $time_now <= '19:29:00'){
                             $('#txtOptShift').val('A');
                         }
                         else{
@@ -815,12 +825,37 @@
                             { "data" : "adj_pins" },
                             { "data" : "qc_samp" },
                             { "data" : "ng_count" },
+                            { "data" : "remarks" },
                         ],
                     });//end of dataTableDevices
 
                     $('#modalHistory').modal('show');
 
-                })
+                });
+
+                $(document).on('click', '.btnEditProdData', function(e){
+                    printId = $(this).data('id');
+                    printStampCat = $(this).data('stampcat');
+                    btnFunction = $(this).data('function');
+
+    
+                    Swal.fire({
+                        // title: "Are you sure?",
+                        html: "Data already for mass production. <br> Do you want to re-setup this lot?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#modalScanQRSave').modal('show');
+                            $('#modalScanQRSaveText').html('Please Scan Supervisor ID.')
+                            scanningFunction = "editProdData";
+                        }
+                    });
+                    
+                });
 
 
             });
@@ -838,6 +873,19 @@
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
                             }
+                        });
+                    }
+                    else if(scanningFunction === "editProdData"){
+                        validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
+                            if(result == true){
+                                $('#modalScanQRSave').modal('hide');
+                                getProdDataById(printId, btnFunction, printStampCat);
+
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+
                         });
                     }
                     else{
