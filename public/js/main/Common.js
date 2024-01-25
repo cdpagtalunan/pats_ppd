@@ -107,6 +107,7 @@ function resetFormProdValues() {
     $('input[name="cut_point"]').prop('disabled', false);
     $('#radioCutPointWithout').prop('checked', true);
 
+    $('#button-addon2').prop('disabled', false);
 
     // $('#radioIQC').attr('checked', false);
     // $('#radioMassProd').attr('checked', false);
@@ -137,6 +138,7 @@ function resetFormProdSecondValues(){
     $('#txtTargetOutput').prop('readonly', false);
     $('#txtInptPins').prop('readonly', false);
     $('#txtActQty').prop('readonly', false);
+    $('#button-addon2').prop('disabled', false);
 
 }
 $("#modalProdSecondStamp").on('hidden.bs.modal', function () {

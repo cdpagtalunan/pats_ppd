@@ -911,7 +911,7 @@
               if(JsonObject['result'] == 1){
                 $("#imgGenUserBarcode").attr("src", JsonObject['qrcode']);
                 imgResultUserQrCode = JsonObject['qrcode'];
-                qrCodeName = JsonObject['user'][0].name;
+                qrCodeName = JsonObject['user'][0].firstname +" "+JsonObject['user'][0].lastname;
                 genUserqrcode = JsonObject['user'][0].employee_id;
               }
               $("#lblGenUserBarcodeVal").text(employeeId);

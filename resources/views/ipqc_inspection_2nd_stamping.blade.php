@@ -143,10 +143,9 @@
                                                         <i class="fa-solid fa-plus"></i> Add IPQC Inspection</button> --}}
                                                     {{-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalExport">Generate Excel Report</button> --}}
                                                     {{-- <div id="btnExportPDF"></div> --}}
-                                                    <button class="btn btn-primary" id="btnExportPackingList">
+                                                    {{-- <button class="btn btn-primary" id="btnExportPackingList">
                                                             <i class="fa-solid fa-file-export"></i> Export Packing List (PDF)
-                                                        </a>
-                                                    </button>
+                                                    </button> --}}
 
                                                     {{-- <button class="btn btn-success" data-bs-toggle="modal"
                                                         data-bs-target="#modalExportPackingList" id="btnExportPackingList">
@@ -391,29 +390,29 @@
                                             </div>
                                             {{-- DROPDOWN --}}
                                             <div class="form-group">
-                                                <label class="form-label">Doc No.(B Drawing):</label>
-                                                {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
-                                                <div class="input-group input-group-sm">
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing" style="width: 100%;">
-                                                        {{-- <option disabled selected>-- Document No. --</option> --}}
+                                                    <label class="form-label">Doc No.(B Drawing):</label>
+                                                <div class="input-group input-group-sm" style="width: 100%;">
+                                                    <div id="BDrawingDiv" class="input-group-prepend">
+                                                    </div>
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">Doc No.(Inspection Standard):</label>
-                                                {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
-                                                <div class="input-group input-group-sm">
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard" style="width: 100%;">
-                                                        {{-- <option disabled selected>-- Document No. --</option> --}}
+                                                    <label class="form-label">Doc No.(Inspection Standard):</label>
+                                                <div class="input-group input-group-sm" style="width: 100%;">
+                                                    <div id="InspStandardDiv" class="input-group-prepend">
+                                                    </div>
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard">
                                                     </select>
                                                 </div>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">Doc No.(UD):</label>
-                                                {{-- <input type="text" class="form-control form-control-sm" name="document_no" id="txtDocumentNo" readonly> --}}
-                                                <div class="input-group input-group-sm">
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud" style="width: 100%;">
-                                                        {{-- <option disabled selected>-- Document No. --</option> --}}
+                                                    <label class="form-label">Doc No.(UD):</label>
+                                                <div class="input-group input-group-sm" style="width: 100%;">
+                                                    <div id="UDDiv" class="input-group-prepend">
+                                                    </div>
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud">
                                                     </select>
                                                 </div>
                                             </div>
@@ -470,12 +469,70 @@
         <script type="text/javascript">
             var prodData;
             $(document).ready(function(){
-                // $('.select2').select2();
 
-                // //Initialize Select2 Elements
-                // $('.select2bs4').select2({
-                //     theme: 'bootstrap4'
-                // });
+                $('#txtSelectDocNoBDrawing').on('change', function() {
+                    if($('#txtSelectDocNoBDrawing').val() === null || $('#txtSelectDocNoBDrawing').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewBDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewBDrawings").prop('disabled', false);
+                    }
+                });
+
+                $('#txtSelectDocNoInspStandard').on('change', function() {
+                    if($('#txtSelectDocNoInspStandard').val() === null || $('#txtSelectDocNoInspStandard').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewInspStdDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewInspStdDrawings").prop('disabled', false);
+                    }
+                });
+
+                $('#txtSelectDocNoUD').on('change', function() {
+                    if($('#txtSelectDocNoUD').val() === null || $('#txtSelectDocNoUD').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewUdDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewUdDrawings").prop('disabled', false);
+                    }
+                });
+
+                ViewDocument($('#txtSelectDocNoBDrawing').val(), $('#BDrawingDiv'), 'btnViewBDrawings');
+                ViewDocument($('#txtSelectDocNoInspStandard').val(), $('#InspStandardDiv'), 'btnViewInspStdDrawings');
+                ViewDocument($('#txtSelectDocNoUD').val(), $('#UDDiv'), 'btnViewUdDrawings');
+
+                $('#btnViewBDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoBDrawing').val());
+                });
+                $('#btnViewInspStdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoInspStandard').val());
+                });
+                $('#btnViewUdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoUD').val());
+                });
+
+                function ViewDocument(document_no, div_id, btn_id){
+                    // let doc_no ='<a href="download_file/'+document_no+'">';
+                    let doc_no ='<button type="button" id="'+btn_id+'" class="btn btn-primary">';
+                        doc_no +=     '<i class="fa fa-file" data-bs-toggle="tooltip" data-bs-html="true" title="See Document in ACDCS"></i>';
+                        doc_no +='</button>';
+                        // doc_no +='</a>';
+                        // <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
+                    div_id.append(doc_no);
+                }
+
+                function redirect_to_drawing(drawing) {
+                    console.log('Drawing No.:',drawing)
+                    if( drawing  == 'N/A'){
+                        alert('No Document Required')
+                    }
+                    else{
+                        window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
+                    }
+                }
 
                 let dt2ndStampingIpqcInspectionPending = $("#tbl2ndStampingIpqcInspectionPending").DataTable({
                     "processing" : true,
@@ -625,7 +682,7 @@
                             type: "get",
                             url: "get_data_from_fs_production",
                             data: {
-                                "po_number" : ScanQrCodeVal.po
+                                "po_number" : ScanQrCodeVal.po_no
                                 // "po_number" : search_po_number_val
                             },
                             dataType: "json",
@@ -831,6 +888,10 @@
                             $("#txtSelectDocNoUD").prop('disabled', false);
                             $("#btnilqcmlink").prop('disabled', false);
                             $('input[name="keep_sample"]').attr('disabled', false);
+
+                            $("#btnViewBDrawings").prop('disabled', true);
+                            $("#btnViewInspStdDrawings").prop('disabled', true);
+                            $("#btnViewUdDrawings").prop('disabled', true);
 
                             if(fs_prod_data[0]['stamping_ipqc_data'] == 0){ //when fs_prod_id && stamping_ipqc_id is not existing in StampingIpqc Table //For Insert to StampingIpqc Table
 

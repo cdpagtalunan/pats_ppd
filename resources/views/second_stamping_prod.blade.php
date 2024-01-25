@@ -245,10 +245,10 @@
                                                 <label class="form-label">Input Pins:</label>
                                                 <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins">
                                             </div>
-                                            <div class="form-group">
+                                            {{-- <div class="form-group">
                                                 <label class="form-label">Actual Quantity:</label>
                                                 <input type="number" class="form-control form-control-sm" name="act_qty" id="txtActQty">
-                                            </div>
+                                            </div> --}}
                                             <div class="form-group">
                                                 <label class="form-label">Target Output</label>
                                                 {{-- <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Input Coil Weight / 0.005)"></i> --}}
@@ -325,6 +325,11 @@
                                             <div class="input-group mb-1">
                                                 <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtTtlMachOutput_0" readonly required>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                            </div>
+
+                                            <div class="form-group d-none" id="divRemarks">
+                                                <label class="form-label">Remarks:</label>
+                                                <textarea rows='5' name="remarks" id="txtRemarks" class="form-control form-control-sm"></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -444,6 +449,7 @@
                                         <th>Adjustment Pins</th>
                                         <th>QC Samples</th>
                                         <th>NG Count</th>
+                                        <th>Remarks</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -463,6 +469,9 @@
         <script>
             var poDetails;
             var stampCat;
+            var autogenLotNum
+            var btnFunction;
+
             // var img_barcode_PO_text_hidden;
             // var multipleMatId;
             // var printId;
@@ -543,7 +552,7 @@
                     planLoss = ppcTargtOut*0.1;
 
                     // $('#txtTargetOutput').val(ppcTargtOut);
-                    $('#txtPlannedLoss').val(planLoss);
+                    $('#txtPlannedLoss').val(planLoss.toFixed(2));
                 });
 
                 $('#txtTtlMachOutput').on('keyup', function(e){
@@ -607,10 +616,12 @@
                         console.log(poDetails);
                         checkMatrix(poDetails['part_code'], poDetails['material_name'], '2nd Stamping')
                         // getProdLotNoCtrl();
+                        $('#prodLotNoAuto').val(autogenLotNum);
 
                         // OPERATOR SHIFT
-                        $time_now = moment().format('LT');
-                        if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
+                        // $time_now = moment().format('LT');
+                        $time_now = moment().format('HH:mm:ss');
+                        if($time_now >= '7:30:00' || $time_now <= '19:29:00'){
                             $('#txtOptShift').val('A');
                         }
                         else{
@@ -632,6 +643,8 @@
                         $('#txtProdDate').prop('readonly', true);
                         $('#radioIQC').prop('checked', true);
                         $('#radioMassProd').prop('checked', false);
+                        $('input[name="tray"]',  $('#formProdDataSecondStamp')).prop('disabled', true);
+
                     }
                     else{
                         toastr.error('Please input PO.')
@@ -758,12 +771,17 @@
                 });
 
                 $('#txtScanQrCode').on('keyup', function(e){
+                    let scannedItem
                     if(e.keyCode == 13){
-                        let scannedItem = JSON.parse($(this).val());
-                        // $(`#${multipleMatId}`).val($(this).val());
-                        $(`#${multipleMatId}`).val(scannedItem['new_lot_no']);
+                        try{
+                            scannedItem = JSON.parse($(this).val());
+                            $(`#${multipleMatId}`).val(scannedItem['new_lot_no']);
+                            $('#modalScanQr').modal('hide');
+                        }
+                        catch (e){
+                            toastr.error('Invalid Sticker');
+                        }
                         $(this).val('');
-                        $('#modalScanQr').modal('hide');
                     }
                 });
 
@@ -828,12 +846,37 @@
                             { "data" : "adj_pins" },
                             { "data" : "qc_samp" },
                             { "data" : "ng_count" },
+                            { "data" : "remarks" },
                         ],
                     });//end of dataTableDevices
 
                     $('#modalHistorySecondStamp').modal('show');
 
                 })
+
+                $(document).on('click', '.btnEditProdData', function(e){
+                    printId = $(this).data('id');
+                    printStampCat = $(this).data('stampcat');
+                    btnFunction = $(this).data('function');
+
+    
+                    Swal.fire({
+                        // title: "Are you sure?",
+                        html: "Data already for mass production. <br> Do you want to re-setup this lot?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#modalScanQRSave').modal('show');
+                            $('#modalScanQRSaveText').html('Please Scan Supervisor ID.')
+                            scanningFunction = "editProdData";
+                        }
+                    });
+                    
+                });
 
 
 
@@ -853,6 +896,19 @@
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
                             }
+                        });
+                    }
+                    else if(scanningFunction === "editProdData"){
+                        validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
+                            if(result == true){
+                                $('#modalScanQRSave').modal('hide');
+                                getProdDataById(printId, btnFunction, printStampCat);
+
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+
                         });
                     }
                     else{

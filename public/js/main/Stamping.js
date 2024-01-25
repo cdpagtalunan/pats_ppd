@@ -147,6 +147,14 @@ const submitProdData = async (scannedId, form, stampCat) => {
                     $('#txtTtlMachOutput_0', form).addClass('is-invalid');
                     $('#txtTtlMachOutput_0', form).attr('title', response['error']['material_no']);
                 }
+                if(response['error']['remarks'] === undefined){
+                    $('#txtRemarks', form).removeClass('is-invalid');
+                    $('#txtRemarks', form).attr('title', '');
+                }
+                else{
+                    $('#txtRemarks', form).addClass('is-invalid');
+                    $('#txtRemarks', form).attr('title', response['error']['remarks']);
+                }
                 
             }
             $('input[name="status"]').prop('disabled', true);
@@ -170,6 +178,8 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
             $('#divProdLotView').removeClass('d-none');
             $('#divProdLotInput').addClass('d-none');
             getOperatorList($('.selOpName'));
+            $('#button-addon2').prop('disabled', true);
+
 
         },
         dataType: "json",
@@ -249,6 +259,7 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
                 $('#formProdData :input').attr('readonly','readonly');
                 $('#formProdDataSecondStamp :input').attr('readonly','readonly');
                 $('#selOperator').prop('disabled', true);
+                
             }
             else if(btnFunction == 1){ // FOR MASS PROD INPUTTING
                 $('#selOperator').prop('disabled', true);
@@ -258,15 +269,29 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
                 $('#txtAdjPin').prop('readonly', true);
                 $('#txtQcSamp').prop('readonly', true);
                 $('#txtTargetOutput').prop('readonly', true);
-                $('#txtNGCount').prop('readonly', true);
+                $('#txtNGCount').prop('readonly', false);
 
                 $('#txtInptPins', $('#formProdDataSecondStamp')).prop('readonly', true);
                 $('#txtActQty', $('#formProdDataSecondStamp')).prop('readonly', true);
-                $('input[name="tray"]',  $('#formProdDataSecondStamp')).prop('disabled', true);
+                $('input[name="tray"]',  $('#formProdDataSecondStamp')).prop('disabled', false);
 
                 $('#saveProdData').show();
             }
             else if(btnFunction == 2){ // For Resetup
+                $('#formProdData').find('input').prop('readonly', true);
+                $('#formProdDataSecondStamp').find('input').prop('readonly', true);
+
+                $('#txtSetupPin').prop('readonly', false);
+                $('#txtAdjPin').prop('readonly', false);
+                $('#txtQcSamp').prop('readonly', false);
+    
+                $('#selOperator').prop('disabled', true);
+                $('#txtNGCount').prop('readonly', false);
+                $('#divRemarks').removeClass('d-none');
+                
+                
+            }
+            else if(btnFunction == 3){ // For edit to resetup
                 $('#formProdData').find('input').prop('readonly', true);
                 $('#formProdDataSecondStamp').find('input').prop('readonly', true);
 
@@ -276,10 +301,13 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
                     $('#txtQcSamp').prop('readonly', false);
     
                 // }, 200);
-    
-
                 $('#selOperator').prop('disabled', true);
                 $('#txtNGCount').prop('readonly', false);
+
+                $('#radioIQC').prop('checked', false);
+                $('#radioMassProd').prop('checked', false);
+                $('#radioResetup').prop('checked', true);
+                $('#divRemarks').removeClass('d-none');
 
             }
 
@@ -434,13 +462,16 @@ const getSecondStampReq = (params) => {
 
             poDetails = response['poDetails'][0];
             $('#txtCtrlCounter').val(response['ctrl']);
-            $('#prodLotNoAuto').val(`${response['poDetails'][0]['drawing_rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`)
+            autogenLotNum = `${response['poDetails'][0]['drawing_rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`
+            // $('#prodLotNoAuto').val(`${response['poDetails'][0]['drawing_rev']}${response['year']}${response['month']}${response['day']}-${response['ctrl']}`)
             dtDatatableProdSecondStamp.draw();
             $('#modalScanPO').modal('hide');
 
         },
         error: function(data, xhr, status){
-            toastr.error('PO Not Found')
+            toastr.error('PO Not Found');
+            $('#txtSearchMatName').val('');
+            $('#txtSearchPO').val('');
             $('#modalScanPO').modal('hide');
 
         }

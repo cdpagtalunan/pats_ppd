@@ -20,6 +20,7 @@
                     ];
         @endphp
         <style>
+
             *{
                 margin: 0;
                 padding: 0;
@@ -294,6 +295,9 @@
     </head>
     <body>
         <div class="container">
+            @php
+                echo '<img src="'.$base64.'"/>';
+            @endphp
             <div class="item">
                 <span class="label">CTRL #:</span>
                 <span>{{ $packing_list_details[0]->control_no }}</span>
@@ -361,37 +365,36 @@
                     <th colspan="2">QUANTITY #</th>
                 </tr>
                 @php
-                    $total_qty = [];
-                    $grand_total_qty = [];
-
-                for($i = 0; $i < count($packing_list_details); $i++){
-                    for ($i = 0; $i < count($packing_list_details); $i++){
-                        echo    '<tr>';
-                        echo        '<td colspan="3" class="data">C/NO.'.$packing_list_details[$i]->box_no.'</td>';
-                        echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->po_no.'</td>';
-                        echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->mat_name.'</td>';
-                        echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->lot_no.'</td>';
-                        echo        '<td class="data" style="text-align:right !important;">'.$packing_list_details[$i]->quantity.'</td>';
-                        echo        '<td class="data">pcs.</td>';
-                        echo    '</tr>';
-
-                        $total_qty[] = $packing_list_details[$i]->quantity;
+                        $grand_total_qty = [];
+                    for($ii = 0; $ii < count($packing_list_details_mat_count); $ii++){
+                        $total_qty = [];
+                        for ($i = 0; $i < count($packing_list_details); $i++){
+                            if($packing_list_details_mat_count[$ii]->mat_name == $packing_list_details[$i]->mat_name){
+                                echo    '<tr>';
+                                echo        '<td colspan="3" class="data">C/NO.'.$packing_list_details[$i]->box_no.'</td>';
+                                echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->po_no.'</td>';
+                                echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->mat_name.'</td>';
+                                echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->lot_no.'</td>';
+                                echo        '<td class="data" style="text-align:right !important;">'.$packing_list_details[$i]->quantity.'</td>';
+                                echo        '<td class="data">pcs.</td>';
+                                echo    '</tr>';
+                                $total_qty[] = $packing_list_details[$i]->quantity;
+                            }
+                        }
+                            echo '<tr>
+                                    <td colspan="8"></td>
+                                    <td class="data">Total ===></td>
+                                    <td class="data" style="text-align:right !important;">'.array_sum($total_qty).'</td>
+                                    <td class="data">pcs.</td>
+                                </tr>';
+                            $grand_total_qty[] = array_sum($total_qty);
                     }
                         echo '<tr>
                                 <td colspan="8"></td>
-                                <td class="data">Total ===></td>
-                                <td class="data" style="text-align:right !important;">'.array_sum($total_qty).'</td>
+                                <td class="data">Grand Total ===></td>
+                                <td class="data" style="text-align:right !important;">'.array_sum($grand_total_qty).'</td>
                                 <td class="data">pcs.</td>
                             </tr>';
-                        $grand_total_qty[] = array_sum($total_qty);
-                }
-                // @endfor
-                    echo '<tr>
-                            <td colspan="8"></td>
-                            <td class="data">Grand Total ===></td>
-                            <td class="data" style="text-align:right !important;">'.array_sum($grand_total_qty).'</td>
-                            <td class="data">pcs.</td>
-                        </tr>';
                 @endphp
             </table>
 
@@ -418,13 +421,27 @@
             <div class="test_sanno">
                 <div class="test" style="margin-left:5px;">
                     <div class="data">Prepared By:</div>
-                    <div class="data">{{ $packing_list_details[0]->prepared_by }}</div>
+                    @php
+                        if($packing_list_details[0]->prepared_by == null){
+                            echo '<div class="data">&nbsp;</div>';
+                        }else{
+                            echo '<div class="data">'.$packing_list_details[0]->prepared_by.'</div>';
+                        }
+                    @endphp
+                    {{-- <div class="data">{{ $packing_list_details[0]->prepared_by }}</div> --}}
                     {{-- <div class="data">{{ 'Melea M. Alvarez' }}</div> --}}
                     <div class="data">{{ 'PPS-PPC CLERK' }}</div>
                 </div>
                 <div class="test">
                     <div class="data">Checked By:</div>
-                    <div class="data">{{ $packing_list_details[0]->checked_by }}</div>
+                    @php
+                        if($packing_list_details[0]->checked_by == null){
+                            echo '<div class="data">&nbsp;</div>';
+                        }else{
+                            echo '<div class="data">'.$packing_list_details[0]->checked_by.'</div>';
+                        }
+                    @endphp
+                    {{-- <div class="data">{{ $packing_list_details[0]->checked_by }}</div> --}}
                     {{-- <div class="data">{{ 'Jo B. Cahilig' }}</div> --}}
                     <div class="data">{{ 'PPS-PPC Sr. Planner' }}</div>
                 </div>
@@ -435,7 +452,14 @@
                 </div>
                 <div class="test">
                     <div class="data" style="text-align: left;">Cc:</div>
-                    <div class="data">{{ $packing_list_details[0]->cc_personnel }}</div>
+                    @php
+                        if($packing_list_details[0]->cc_personnel == null){
+                            echo '<div class="data">&nbsp;</div>';
+                        }else{
+                            echo '<div class="data">'.$packing_list_details[0]->cc_personnel.'</div>';
+                        }
+                    @endphp
+                    {{-- <div class="data">{{ $packing_list_details[0]->cc_personnel }}</div> --}}
                     {{-- <div class="data">{{ 'Cris M. / JR. /' }}</div> --}}
                     <div class="data">{{ 'Traffic / Prod`n / QC' }}</div>
                 </div>

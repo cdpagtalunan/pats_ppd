@@ -39,6 +39,7 @@ class CreateStampingProductionHistoriesTable extends Migration
             $table->integer('qc_samp')->nullable();
             $table->integer('ng_count')->nullable();
             $table->integer('prod_samp')->nullable();
+            $table->longText('remarks')->nullable();
             // $table->integer('total_mach_output')->nullable();
             // $table->integer('ship_output')->nullable();
             // $table->string('mat_yield')->nullable();

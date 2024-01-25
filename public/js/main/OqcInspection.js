@@ -167,16 +167,16 @@ function UpdateOqcInspection(){
                 }
 
                 if(response['error']['oqc_inspection_inspection_type'] === undefined){
-                    $("#txtOqcInspectionInspectionType").removeClass('is-invalid')
-                    $("#txtOqcInspectionInspectionType").attr('title', '')
-                    // $("#slctOqcInspectionInspectionType").removeClass('is-invalid')
-                    // $("#slctOqcInspectionInspectionType").attr('title', '')
+                    // $("#txtOqcInspectionInspectionType").removeClass('is-invalid')
+                    // $("#txtOqcInspectionInspectionType").attr('title', '')
+                    $("#slctOqcInspectionInspectionType").removeClass('is-invalid')
+                    $("#slctOqcInspectionInspectionType").attr('title', '')
                 }
                 else{
-                    $("#txtOqcInspectionInspectionType").addClass('is-invalid')
-                    $("#txtOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
-                    // $("#slctOqcInspectionInspectionType").addClass('is-invalid')
-                    // $("#slctOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
+                    // $("#txtOqcInspectionInspectionType").addClass('is-invalid')
+                    // $("#txtOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
+                    $("#slctOqcInspectionInspectionType").addClass('is-invalid')
+                    $("#slctOqcInspectionInspectionType").attr('title', response['error']['oqc_inspection_inspection_type'])
                 }
 
                 if(response['error']['oqc_inspection_inspection_severity'] === undefined){
@@ -372,7 +372,8 @@ function UpdateOqcInspection(){
                 $('#modalOqcInspection').modal('hide')
                 $('#modalOqcInspectionSecondStamping').modal('hide')
                 toastr.success('Succesfully saved!')
-                dataTableOQCInspection.draw()
+                dataTableOQCInspectionFirstStamping.draw()
+                dataTableOQCInspectionSecondStamping.draw()
             }
             // else{
             // }
@@ -463,7 +464,7 @@ function GetOqcInspectionById(getPo,
                 $('#slctOqcInspectionProductCategory').val(getOqcInspectionData[0].prod_category)
                 $('#slctOqcInspectionCustomer').val(getOqcInspectionData[0].customer)
                 $('#txtOqcInspectionFamily').val(getOqcInspectionData[0].family)
-                $('#txtOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
+                $('#slctOqcInspectionInspectionType').val(getOqcInspectionData[0].type_of_inspection)
                 $('#slctOqcInspectionInspectionSeverity').val(getOqcInspectionData[0].severity_of_inspection)
                 $('#slctOqcInspectionInspectionLevel').val(getOqcInspectionData[0].inspection_lvl)
                 $('#slctOqcInspectionAql').val(getOqcInspectionData[0].aql)
@@ -486,13 +487,17 @@ function GetOqcInspectionById(getPo,
 
                 if(getOqcInspectionData[0].lot_accepted == '0'){
                     $('.mod-class').removeClass('d-none')
+                }else{
+                    $('.mod-class').addClass('d-none')
                 }
 
                 for (let getPrintLot = 0; getPrintLot < getOqcInspectionData[0].print_lot_oqc_inspection_info.length; getPrintLot++) {
                     if(getPrintLot>0){
                         $('#btnAddPrintLot').trigger('click')
                     }else{
-                        $('#btnRemovePrintLot').trigger('click')
+                        for (let getPrintLot = 0; getPrintLot < getOqcInspectionData[0].print_lot_oqc_inspection_info.length; getPrintLot++) {
+                            $('#btnRemovePrintLot').trigger('click')
+                        }
                     }
                     $(`#txtPrintLotNo_${getPrintLot}`).val(getOqcInspectionData[0].print_lot_oqc_inspection_info[getPrintLot]['print_lot_no'])
                     $(`#txtPrintLotQty_${getPrintLot}`).val(getOqcInspectionData[0].print_lot_oqc_inspection_info[getPrintLot]['print_lot_qty'])
@@ -502,7 +507,9 @@ function GetOqcInspectionById(getPo,
                     if(getReelLot>0){
                         $('#btnAddReelLot').trigger('click')
                     }else{
-                        $('#btnRemoveReelLot').trigger('click')
+                        for (let getReelLot = 0; getReelLot < getOqcInspectionData[0].reel_lot_oqc_inspection_info.length; getReelLot++) {
+                            $('#btnRemoveReelLot').trigger('click')
+                        }
                     }
                     $(`#txtReelLotNo_${getReelLot}`).val(getOqcInspectionData[0].reel_lot_oqc_inspection_info[getReelLot]['reel_lot_no'])
                     $(`#txtReelLotQty_${getReelLot}`).val(getOqcInspectionData[0].reel_lot_oqc_inspection_info[getReelLot]['reel_lot_qty'])

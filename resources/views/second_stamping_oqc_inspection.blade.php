@@ -530,7 +530,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>No. of Defectives</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionDefectiveNum" name="oqc_inspection_defective_num" readonly>
+                                        <input type="text" class="form-control defectCounts form-control-sm" id="txtOqcInspectionDefectiveNum" name="oqc_inspection_defective_num" readonly>
                                     </div>
                                 </div>
                             </div><!-- /.End Row Visual Inspection -->
@@ -545,11 +545,11 @@
                                             <button class="btn btn-danger btn-sm d-none" id="btnRemoveMod" title="Remove  Mode of Defect"><i class="fas fa-times"></i></button>
                                         </div>
                                         <div class="col-4">
-                                            <select class="form-select form-control-sm defectiveCount inspectionModDropdown_0 mb-1" id="txtMod_0" name="mod_0"  placeholder="Mode of Defect">
+                                            <select class="form-select form-control-sm selectEmpty inspectionModDropdown_0 mb-1" id="txtMod_0" name="mod_0"  placeholder="Mode of Defect">
                                             </select>    
                                         </div>
                                         <div class="col-5 mr-1">
-                                            <input type="number" class="form-control defectiveCount form-control-sm" id="txtModQty_0" name="mod_qty_0"  placeholder="Mode of Defect Qty">
+                                            <input type="number" class="form-control defectCounts form-control-sm" id="txtModQty_0" name="mod_qty_0"  placeholder="Mode of Defect Qty">
                                         </div>
                                     </div>
                                 </div>
@@ -594,14 +594,14 @@
         <script type="text/javascript">
             let getPoNo
             let checkedDrawCount
-            let dataTableOQCInspection
+            let dataTableOQCInspectionSecondStamping
             $(document).ready(function() {
                 $('.select2bs4').select2({
                     theme: 'bootstrap-5'
                 });                
 
                 // ======================= START DATA TABLE =======================
-                dataTableOQCInspection = $("#tblOqcInspectionSecondStamping").DataTable({
+                dataTableOQCInspectionSecondStamping = $("#tblOqcInspectionSecondStamping").DataTable({
                     "processing"    : false,
                     "serverSide"    : true,
                     "destroy"       : true,
@@ -680,7 +680,7 @@
                     //     $('#txtPoNumber').val(po.po)
                     //     $('#txtMaterialName').val(po.name)
                     //     $('#txtPoQuantity').val(po.qty)
-                    //     dataTableOQCInspection.draw()
+                    //     dataTableOQCInspectionSecondStamping.draw()
                     //     $('#txtScanQrCode').val('')
                     //     $('#mdlScanQrCode').modal('hide')
                     // }
@@ -688,7 +688,7 @@
                         const scanQrCode = $('#txtScanQrCode').val()
                         if(scanQrCode != ''){
                             let po = JSON.parse(scanQrCode)
-                            getPoNo =  po.po_no
+                            getPoNo =  po.po
                             if(getPoNo != undefined){
                                 $('#txtPoNumber').val(po.po)
                                 $('#txtMaterialName').val(po.name)
@@ -700,7 +700,7 @@
                         }else{
                             alert('Please try again!')
                         }
-                        dataTableOQCInspection.draw()
+                        dataTableOQCInspectionSecondStamping.draw()
                         $('#txtScanQrCode').val('')
                     }
 
@@ -726,7 +726,7 @@
                         //     $('#slctOqcInspectionShift').val('A');
                         //     // $('#slctOqcInspectionShift').val('B');
                         // }
-                        $time_now = moment().format('LT');
+                        $time_now = moment().format('HH:mm:ss');
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
                             $('#slctOqcInspectionShift').val('A');
                         }
@@ -795,7 +795,7 @@
                     getPoNo = getPo;
                     $('#mdlOqcInspectionHistory').modal('show')
 
-                    $("#tblOqcInspectionHistory").DataTable({
+                    dataTableOQCInspectionSecondStamping =  $("#tblOqcInspectionHistory").DataTable({
                     "processing"    : false,
                     "serverSide"    : true,
                     "ajax" : {
@@ -878,14 +878,15 @@
 
                     checkedDrawCount = [0,0,0]
                     $(`.remove-class`).removeClass('bg-success-custom font-weight-bold text-white')
-                    dataTableOQCInspection.draw()
+                    $("#formOqcInspection")[0].reset()
+                    dataTableOQCInspectionSecondStamping.draw()
                 });
 
                 $('#mdlScanQrCode').on('hidden.bs.modal', function() {
                     console.log('HIDE SCAN CODE')
                     $('#txtScanUserId').val('')
                     $('#txtScanQrCode').val('')
-                    dataTableOQCInspection.draw()
+                    dataTableOQCInspectionSecondStamping.draw()
                 });
 
                 // ===================== SCRIPT FOR ADD PRINT LOT ===================
@@ -962,14 +963,14 @@
                     }
                 });
 
-                $('.defectiveCount').on('change', function () {
-                    $('.defectiveCount').on('keyup', function () {
-                        $('.defectiveCount').each(function (indexInArray, valueOfElement) { 
-                            console.log('indexInArray',indexInArray)
-                            console.log('valueOfElement',valueOfElement)
-                        });
-                    });
-                });
+                // $('.selectEmpty').on('change', function () {
+                //     $('.selectEmpty').on('keyup', function () {
+                //         $('.selectEmpty').each(function (indexInArray, valueOfElement) { 
+                //             console.log('indexInArray',indexInArray)
+                //             console.log('valueOfElement',valueOfElement)
+                //         });
+                //     });
+                // });
 
                 // ===================== SCRIPT FOR ADD MOD ===================
                 let modCounter = 0;
@@ -983,10 +984,10 @@
                     let html = '   <div class="col-2 mb-1 divAddMod_'+modCounter+'">'
                         html += '   </div>'
                         html += '   <div class="col-4 mb-1 divAddMod_'+modCounter+'">'
-                        html += '       <select class="form-select form-control-sm inspectionModDropdown_'+modCounter+' mb-1" id="txtMod_'+modCounter+'" name="mod_'+modCounter+'"  placeholder="Mode of Defect"></select>'    
+                        html += '       <select class="form-select form-control-sm selectEmpty inspectionModDropdown_'+modCounter+' mb-1" id="txtMod_'+modCounter+'" name="mod_'+modCounter+'"  placeholder="Mode of Defect"></select>'    
                         html += '   </div>'
                         html += '   <div class="col-5 mb-1 mr-1 divAddMod_'+modCounter+'">'
-                        html += '       <input type="number" class="form-control defectiveCount form-control-sm" id="txtModQty_'+modCounter+'" name="mod_qty_'+modCounter+'" placeholder="Defect of Defect Qty">'
+                        html += '       <input type="number" class="form-control defectCounts form-control-sm" id="txtModQty_'+modCounter+'" name="mod_qty_'+modCounter+'" placeholder="Defect of Defect Qty">'
                         html += '   </div>'
                         
                     $('#txtModCounter').val(modCounter)
@@ -1016,7 +1017,8 @@
                         $('.mod-class').addClass('d-none')
                         if($('#txtOqcInspectionLotAccepted').val() != ''){
                             $('#txtOqcInspectionJudgement').val('Accept')
-                            $('.defectiveCount').empty();
+                            $('.selectEmpty').empty();
+                            $('.defectCounts').val('')
                         }else{
                             $('#txtOqcInspectionJudgement').val('')
                         }
