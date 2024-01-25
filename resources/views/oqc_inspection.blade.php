@@ -580,8 +580,8 @@
                 <div class="modal-content">
                     <div class="modal-body mt-3">
                         {{-- <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}'> --}}
-                        <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
-                        <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
+                        <input type="text" class="scanQrBarCode1 w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        <input type="text" class="scanQrBarCode1 w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
                         <div class="text-center text-secondary scanningForFirstStamping"></div>
                         <div class="text-center text-secondary"><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
@@ -674,19 +674,25 @@
                     if( e.keyCode == 13 ){
                         const scanQrCode = $('#txtScanQrCode').val()
                         if(scanQrCode != ''){
-                            let po = JSON.parse(scanQrCode)
-                            getPoNo =  po.po
-                            if(getPoNo != undefined){
-                                $('#txtPoNumber').val(po.po)
-                                $('#txtMaterialName').val(po.name)
-                                $('#txtPoQuantity').val(po.qty)
-                                $('#mdlScanQrCode').modal('hide')
-                            }else{
+                            try {
+                                let po = JSON.parse(scanQrCode)
+                                getPoNo =  po.po
+                                if(getPoNo != undefined){
+                                    $('#txtPoNumber').val(po.po)
+                                    $('#txtMaterialName').val(po.name)
+                                    $('#txtPoQuantity').val(po.qty)
+                                    $('#mdlScanQrCode').modal('hide')
+                                }else{
+                                    alert('The Scan QR Code was not found!')
+                                }
+                            }
+                            catch (erur) {
                                 alert('The Scan QR Code was not found!')
                             }
                         }else{
                             alert('Please try again!')
                         }
+                        $('#mdlScanQrCode').modal('hide')
                         dataTableOQCInspectionFirstStamping.draw()
                         $('#txtScanQrCode').val('')
                     }
@@ -711,11 +717,6 @@
                     getInfoForFirstStamping     = $(this).attr('first-stamping')
                     
                     $('#txtStatus').val(getInfoForFirstStamping)
-                    // let dit = new Date();
-                    // let set = dit.setHours(19,29,00);
-                    // let setset = dit.setHours(7,29,00);
-                    // console.log('set: ',set)
-                    // console.log('setset: ',setset)
                     $time_now = moment().format('HH:mm:ss');
                     setTimeout(() => {     
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
@@ -724,16 +725,6 @@
                         else{
                             $('#slctOqcInspectionShift').val('B');
                         }
-                        // if( new Date().toLocaleTimeString() < dit.toLocaleTimeString()){
-                        // if( set.toLocaleTimeString() <= setset.toLocaleTimeString()){
-                        //     console.log('IF');
-                        //     $('#slctOqcInspectionShift').val('A');
-                        //     // $('#slctOqcInspectionShift').val('B');
-                        // }else{
-                        //     console.log('ELSE')
-                        //     // $('#slctOqcInspectionShift').val('A');
-                        //     $('#slctOqcInspectionShift').val('B');
-                        // }
                     }, 300);
 
                     GetOqcInspectionById(
@@ -959,7 +950,6 @@
                 
                 // ===================== SCRIPT FOR ADD MOD ===================
                 let modCounter = 0;
-                // defectiveCounts(modCounter);
                 $('#btnAddMod').on('click', function(e){
                     e.preventDefault()
                     modCounter++
@@ -980,8 +970,6 @@
                     $('#divModFields').append(html)
 
                     GetMOD($('.inspectionModDropdown_'+modCounter+''))
-                    // defectiveCounts(modCounter);
-                    // defectiveCounts()
                 });
                 // ================== SCRIPT FOR REMOVE MOD ======================
                 $("#btnRemoveMod").on('click', function(e){

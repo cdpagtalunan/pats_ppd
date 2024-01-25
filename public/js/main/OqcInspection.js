@@ -26,11 +26,8 @@ function defectiveCounts(valuePassed){
             console.log('innerValue', innerValue);
             value.push(innerValue);
         })
-        // defectiveCounts()
     });
-    // console.log(`value ${JSON.stringify(value)}`);
     console.log(`value ${value}`);
-    // $('#txtOqcInspectionDefectiveNum').val(value);
 }
 
 function ScanUserById() {
@@ -424,7 +421,6 @@ function GetOqcInspectionById(getPo,
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
-            // console.log('qweqwe', firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0])
             
             if(firstStampingProduction[0].stamping_ipqc != null){
                 if(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0] != null){
@@ -448,7 +444,6 @@ function GetOqcInspectionById(getPo,
 
             $('#txtOqcInspectionPoNo').val(getPo)
             $('#txtOqcInspectionPoQty').val(getPoQty)
-            console.log('getOqcInspectionData',getOqcInspectionData)
             if($('#txtStatus').val() == '1'){
                 $('#txtOqcInspectionLotNo').val(getProdLotNo)
             }else{

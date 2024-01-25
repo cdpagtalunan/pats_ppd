@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="background-image: <?php echo $base64; ?>">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -295,9 +295,9 @@
     </head>
     <body>
         <div class="container">
-            @php
+            {{-- @php
                 echo '<img src="'.$base64.'"/>';
-            @endphp
+            @endphp --}}
             <div class="item">
                 <span class="label">CTRL #:</span>
                 <span>{{ $packing_list_details[0]->control_no }}</span>

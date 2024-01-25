@@ -672,34 +672,28 @@
                 });
 
                 $('#txtScanQrCode').on('keypress',function(e){
-                    // if( e.keyCode == 13 ){
-                    //     const scanQrCode = $('#txtScanQrCode').val()
-                    //     let po = JSON.parse(scanQrCode)
-                    //     getPoNo =  po.po_no
-                        
-                    //     $('#txtPoNumber').val(po.po)
-                    //     $('#txtMaterialName').val(po.name)
-                    //     $('#txtPoQuantity').val(po.qty)
-                    //     dataTableOQCInspectionSecondStamping.draw()
-                    //     $('#txtScanQrCode').val('')
-                    //     $('#mdlScanQrCode').modal('hide')
-                    // }
                     if( e.keyCode == 13 ){
                         const scanQrCode = $('#txtScanQrCode').val()
                         if(scanQrCode != ''){
-                            let po = JSON.parse(scanQrCode)
-                            getPoNo =  po.po
-                            if(getPoNo != undefined){
-                                $('#txtPoNumber').val(po.po)
-                                $('#txtMaterialName').val(po.name)
-                                $('#txtPoQuantity').val(po.qty)
-                                $('#mdlScanQrCode').modal('hide')
-                            }else{
+                            try {
+                                let po = JSON.parse(scanQrCode)
+                                getPoNo =  po.po
+                                if(getPoNo != undefined){
+                                    $('#txtPoNumber').val(po.po)
+                                    $('#txtMaterialName').val(po.name)
+                                    $('#txtPoQuantity').val(po.qty)
+                                    $('#mdlScanQrCode').modal('hide')
+                                }else{
+                                    alert('The Scan QR Code was not found!')
+                                }
+                            }
+                            catch (erur) {
                                 alert('The Scan QR Code was not found!')
                             }
                         }else{
                             alert('Please try again!')
                         }
+                        $('#mdlScanQrCode').modal('hide')
                         dataTableOQCInspectionSecondStamping.draw()
                         $('#txtScanQrCode').val('')
                     }
@@ -719,13 +713,6 @@
                     
                     $('#txtStatus').val(getInfoForSecondStamping)
                     setTimeout(() => {     
-                        // if( new Date().toLocaleTimeString() <= '7:29:00 PM'){
-                        //     // $('#slctOqcInspectionShift').val('A');
-                        //     $('#slctOqcInspectionShift').val('B');
-                        // }else{
-                        //     $('#slctOqcInspectionShift').val('A');
-                        //     // $('#slctOqcInspectionShift').val('B');
-                        // }
                         $time_now = moment().format('HH:mm:ss');
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
                             $('#slctOqcInspectionShift').val('A');
