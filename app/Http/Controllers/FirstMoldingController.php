@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use DataTables;
+use App\Models\FirstMolding;
 use Illuminate\Http\Request;
 use App\Models\FirstMoldingDevice;
+use Illuminate\Support\Facades\DB;
 
 class FirstMoldingController extends Controller
 {
-    public function getFirstMoldingDevices(Request $request){
+    public function getFirstMoldingDevices(Request $request)
+    {
         $first_molding_device = FirstMoldingDevice::get();
         foreach ($first_molding_device as $key => $value_first_molding_device) {
             $arr_first_molding_device_id[] =$value_first_molding_device['id'];
@@ -18,4 +22,34 @@ class FirstMoldingController extends Controller
             'value' =>  $arr_first_molding_device_value
         ]);
     }
+
+    public function getFirstMoldingDevicesById(Request $request)
+    {
+        return $first_molding_device = FirstMoldingDevice::where('id',$request->first_molding_device_id)->get();
+    }
+    public function loadFirstMoldingDetails(Request $request)
+    {
+        // $first_molding_device = FirstMolding::where('first_molding_device_id',$request->first_molding_device_id)->get();
+        $first_molding_device_id= isset($request->first_molding_device_id) ? $request->first_molding_device_id : 0;
+        $first_molding_device = DB::connection('mysql')
+        ->select('
+                SELECT  first_moldings.*,devices.*
+                FROM first_moldings first_moldings
+                RIGHT JOIN first_molding_devices devices ON devices.id = first_moldings.first_molding_device_id
+                WHERE first_moldings.first_molding_device_id = '.$first_molding_device_id.'
+                ORDER BY first_moldings.created_at DESC
+        ');
+        return DataTables::of($first_molding_device)
+        ->addColumn('action', function($row){
+            $result = '1';
+            return $result;
+        })
+        ->addColumn('status', function($row){
+            $result = '1';
+            return $result;
+        })
+        ->rawColumns(['action','status'])
+        ->make(true);
+    }
+
 }
