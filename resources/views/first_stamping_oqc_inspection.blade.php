@@ -71,7 +71,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><strong>PO No.:</strong></span>
                                             </div>
-                                            <input type="search" class="form-control" id="txtPoNumber" placeholder="---------------" readonly>
+                                            <input type="search" class="form-control invalidScan" id="txtPoNumber" placeholder="---------------" readonly>
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -79,7 +79,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><Strong>Material Name:</Strong></span>
                                             </div>
-                                            <input type="search" class="form-control" id="txtMaterialName" placeholder="---------------" readonly>
+                                            <input type="search" class="form-control invalidScan" id="txtMaterialName" placeholder="---------------" readonly>
                                         </div>
                                     </div>
 
@@ -88,7 +88,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><strong>Po Qty:</strong></span>
                                             </div>
-                                            <input type="text" class="form-control" id="txtPoQuantity" placeholder="---------------" readonly>
+                                            <input type="text" class="form-control invalidScan" id="txtPoQuantity" placeholder="---------------" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
         </div><!-- /.End History Modal -->        
                 
         <!-- Start OQC Inspection Modal -->
-        <div class="modal fade" id="modalOqcInspection" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalOqcInspectionFirstStamping" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -581,7 +581,7 @@
                     <div class="modal-body mt-3">
                         {{-- <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}'> --}}
                         <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
-                        <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
+                        <input type="text" class="scanQrBarCode1 w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
                         <div class="text-center text-secondary scanningForFirstStamping"></div>
                         <div class="text-center text-secondary"><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
@@ -674,19 +674,31 @@
                     if( e.keyCode == 13 ){
                         const scanQrCode = $('#txtScanQrCode').val()
                         if(scanQrCode != ''){
-                            let po = JSON.parse(scanQrCode)
-                            getPoNo =  po.po
-                            if(getPoNo != undefined){
-                                $('#txtPoNumber').val(po.po)
-                                $('#txtMaterialName').val(po.name)
-                                $('#txtPoQuantity').val(po.qty)
-                                $('#mdlScanQrCode').modal('hide')
-                            }else{
+                            try {
+                                let po = JSON.parse(scanQrCode)
+                                getPoNo =  po.po
+                                if(po.cat == 1){
+                                    $('#txtPoNumber').val(po.po)
+                                    $('#txtMaterialName').val(po.name)
+                                    $('#txtPoQuantity').val(po.qty)
+                                    $('#mdlScanQrCode').modal('hide')
+                                }else{
+                                    alert('The Scan QR Code was not found!')
+                                    $('.invalidScan').val('')
+                                    getPoNo = ''
+                                }
+                            }
+                            catch (erur) {
                                 alert('The Scan QR Code was not found!')
+                                $('.invalidScan').val('')
+                                getPoNo = ''
                             }
                         }else{
                             alert('Please try again!')
+                            $('.invalidScan').val('')
+                            getPoNo = ''
                         }
+                        $('#mdlScanQrCode').modal('hide')
                         dataTableOQCInspectionFirstStamping.draw()
                         $('#txtScanQrCode').val('')
                     }
@@ -701,21 +713,16 @@
 
                 $(document).on('click', '.actionOqcInspectionFirstStamping', function(e){
                     e.preventDefault()
-                    getPo                       = $(this).attr('prod-po')
-                    getPoQty                    = $(this).attr('prod-po-qty')
-                    getOqcId                    = $(this).attr('oqc_inspection-id')
-                    getProdId                   = $(this).attr('prod-id')
-                    getProdLotNo                = $(this).attr('prod-lot-no')
-                    getMaterialName             = $(this).attr('prod-material-name')
-                    getProdShipOutput           = $(this).attr('prod-ship-output')
+                    getPo                       = $(this).attr('first_stamping_prod-po')
+                    getPoQty                    = $(this).attr('first_stamping_prod-po_qty')
+                    getOqcId                    = $(this).attr('first_stamping_oqc_inspection-id')
+                    getProdId                   = $(this).attr('first_stamping_prod-id')
+                    getProdLotNo                = $(this).attr('first_stamping_prod-lot_no')
+                    getMaterialName             = $(this).attr('first_Stamping_prod-material_name')
+                    getProdShipOutput           = $(this).attr('first_stamping_prod-ship_output')
                     getInfoForFirstStamping     = $(this).attr('first-stamping')
                     
                     $('#txtStatus').val(getInfoForFirstStamping)
-                    // let dit = new Date();
-                    // let set = dit.setHours(19,29,00);
-                    // let setset = dit.setHours(7,29,00);
-                    // console.log('set: ',set)
-                    // console.log('setset: ',setset)
                     $time_now = moment().format('HH:mm:ss');
                     setTimeout(() => {     
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
@@ -724,16 +731,6 @@
                         else{
                             $('#slctOqcInspectionShift').val('B');
                         }
-                        // if( new Date().toLocaleTimeString() < dit.toLocaleTimeString()){
-                        // if( set.toLocaleTimeString() <= setset.toLocaleTimeString()){
-                        //     console.log('IF');
-                        //     $('#slctOqcInspectionShift').val('A');
-                        //     // $('#slctOqcInspectionShift').val('B');
-                        // }else{
-                        //     console.log('ELSE')
-                        //     // $('#slctOqcInspectionShift').val('A');
-                        //     $('#slctOqcInspectionShift').val('B');
-                        // }
                     }, 300);
 
                     GetOqcInspectionById(
@@ -747,7 +744,7 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspection').modal('show')
+                    $('#modalOqcInspectionFirstStamping').modal('show')
                     $('.viewDrawingFirst').removeClass('slct')
                 });
 
@@ -774,7 +771,7 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspection').modal('show')
+                    $('#modalOqcInspectionFirstStamping').modal('show')
 
                     $('.viewDrawingFirst').removeClass('d-none')
                     $('.viewDrawingFirst').addClass('slct')
@@ -784,13 +781,13 @@
 
                 $(document).on('click', '.actionOqcInspectionHistory', function(e){
                     e.preventDefault()
-                    getPo               = $(this).attr('prod-po')
-                    getPoQty            = $(this).attr('prod-po-qty')
-                    getOqcId            = $(this).attr('oqc_inspection-id')
-                    getProdId           = $(this).attr('prod-id')
-                    getProdLotNo        = $(this).attr('prod-lot-no')
-                    getMaterialName     = $(this).attr('prod-material-name')
-                    getProdShipOutput   = $(this).attr('prod-ship-output')    
+                    getPo               = $(this).attr('first_stamping_prod-po')
+                    getPoQty            = $(this).attr('first_stamping_prod-po_qty')
+                    getOqcId            = $(this).attr('first_stamping_oqc_inspection-id')
+                    getProdId           = $(this).attr('first_stamping_prod-id')
+                    getProdLotNo        = $(this).attr('first_stamping_prod-lot_no')
+                    getMaterialName     = $(this).attr('first_Stamping_prod-material_name')
+                    getProdShipOutput   = $(this).attr('first_stamping_prod-ship_output')    
 
                     getPoNo = getPo;
                     $('#mdlOqcInspectionHistory').modal('show')
@@ -868,7 +865,7 @@
                     }
                 });
 
-                $('#modalOqcInspection').on('hide.bs.modal', function() {
+                $('#modalOqcInspectionFirstStamping').on('hide.bs.modal', function() {
                     console.log('Hide OQC Inspection modal')
                     $('#txtScanUserId').addClass('d-none')
                     $('#txtScanQrCode').addClass('d-none')
@@ -959,7 +956,6 @@
                 
                 // ===================== SCRIPT FOR ADD MOD ===================
                 let modCounter = 0;
-                // defectiveCounts(modCounter);
                 $('#btnAddMod').on('click', function(e){
                     e.preventDefault()
                     modCounter++
@@ -980,8 +976,6 @@
                     $('#divModFields').append(html)
 
                     GetMOD($('.inspectionModDropdown_'+modCounter+''))
-                    // defectiveCounts(modCounter);
-                    // defectiveCounts()
                 });
                 // ================== SCRIPT FOR REMOVE MOD ======================
                 $("#btnRemoveMod").on('click', function(e){

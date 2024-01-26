@@ -7,6 +7,7 @@ use App\Models\FirstMolding;
 use Illuminate\Http\Request;
 use App\Models\FirstMoldingDevice;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\FirstMoldingRequest;
 
 class FirstMoldingController extends Controller
 {
@@ -29,7 +30,6 @@ class FirstMoldingController extends Controller
     }
     public function loadFirstMoldingDetails(Request $request)
     {
-        // $first_molding_device = FirstMolding::where('first_molding_device_id',$request->first_molding_device_id)->get();
         $first_molding_device_id= isset($request->first_molding_device_id) ? $request->first_molding_device_id : 0;
         $first_molding_device = DB::connection('mysql')
         ->select('
@@ -50,6 +50,21 @@ class FirstMoldingController extends Controller
         })
         ->rawColumns(['action','status'])
         ->make(true);
+    }
+
+    public function saveFirstMolding(FirstMoldingRequest $request){
+        if( isset( $request->first_molding_id )){ //Edit
+            return 'edit';
+
+        }else{ //Add
+            FirstMolding::insert([
+                'first_molding_device_id' => $request->first_molding_device_id,
+                'contact_lot_number' => $request->contact_lot_number,
+                'production_lot' => $request->production_lot,
+                'remarks' => $request->remarks,
+            ]);
+        }
+        return response()->json( [ 'result' => 1 ] );
     }
 
 }

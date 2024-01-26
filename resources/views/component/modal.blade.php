@@ -355,141 +355,117 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalRuncardDetails" tabindex="-1" role="dialog" aria-labelledby="cnptsmodal" aria-hidden="true" data-backdrop="static">
-    <div class="modal-dialog modal-xl modal-xl-custom modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title"><i class="fa fa-info-circle text-info"></i> PMI - Runcard Details</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-sm-4 px-4">
-              <form id="frm_edit_material_details" method="post">
-                <div class="row">
-                  <div class="col">
-                    <hr>
-                    <span class="badge badge-secondary">1.</span> Runcard Details
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="input-group input-group-sm mb-3">
-                      <div class="input-group-prepend w-50">
-                        <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
-                      </div>
-                      <input type="text" class="form-control form-control-sm" id="txt_use_for_device" readonly>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="input-group input-group-sm mb-3">
-                      <div class="input-group-prepend w-50">
-                        <span class="input-group-text w-100" id="basic-addon1">Contact Name: </span>
-                      </div>
-                      <input type="text" class="form-control form-control-sm" id="txt_batch_num">
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="input-group input-group-sm mb-3">
-                      <div class="input-group-prepend w-50">
-                        <span class="input-group-text w-100" id="basic-addon1">Contact Lot #</span>
-                      </div>
-                      <input type="text" class="form-control form-control-sm" id="txt_prod_lot_num">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="row">
-                  <div class="col">
-                    <div class="input-group input-group-sm mb-3">
-                      <div class="input-group-prepend w-50">
-                        <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
-                      </div>
-                      <input type="text" class="form-control form-control-sm" id="txt_shift_no" name="txt_shift_no">
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="input-group input-group-sm mb-3">
-                      <div class="input-group-prepend w-50">
-                        <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
-                      </div>
-                      <textarea class="form-control form-control-sm" id="txt_remarks" name="txt_remarks" rows="5"></textarea>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col">
-                    <div class="input-group input-group-sm mb-3">
-                      <div class="input-group-prepend w-50">
-                        <span class="input-group-text w-100" id="basic-addon1">Created At</span>
-                      </div>
-                      <input type="text" class="form-control form-control-sm" id="txt_created_at" name="txt_created_at" readonly="true" placeholder="Auto generated">
-                    </div>
-                  </div>
-                </div>
-                <div class="row" style="display: none;">
-                  <div class="col text-right">
-                    @csrf
-                    <input type="hidden" name="txt_material_details_emp_num" id="txt_material_details_emp_num">
-                    <input type="hidden" name="txt_prod_runcard_id_query" id="txt_prod_runcard_id_query">
-                    <input type="hidden" name="txt_prod_runcard_status" id="txt_prod_runcard_status">
-                    <input type="hidden" name="txt_wbs_kit_issuance_id_query" id="txt_wbs_kit_issuance_id_query">
-                    <input type="hidden" name="txt_wbs_kit_issuance_device_code_query" id="txt_wbs_kit_issuance_device_code_query">
-                    <button type="button" class="btn btn-sm btn-success" id="btn_save_material_details_primary">Save</button>
-                    <button type="button" class="btn btn-sm btn-secondary" id="btn_cancel_material_details_primary">Cancel</button>
-                  </div>
-                </div>
-              </form>
-              <br>
+<div class="modal fade" id="modalFirstMolding" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-xl-custom">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"><i class="fa fa-plus"></i> Add Data</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="col-sm-8">
-              <div class="row">
-                <div class="col border py-3 px-4 border-left-0 border-bottom-0">
-                  <div style="float: left;">
-                    <span class="badge badge-secondary">2.</span> Process Stations 
-                  </div>
-                  <div style="float: right;">
-                    <button class="btn btn-primary btn-sm" id="btnAddProcess" data-toggle="modal" ><i class="fa fa-plus" ></i> Add Process</button>
-                  </div>
-                  <div class="table-responsive">
-                    <table class="table table-sm small table-bordered table-hover" id="tbl_prod_runcard_stations" style="width: 100%;">
-                      <thead>
-                        <tr class="bg-light">
-                          <th></th>
-                          <th>Step</th>
-                          <th>Step</th>
-                          <th>Process</th>
-                          <th>Date Time</th>
-                          <th>Operator</th>
-                          <th>Machine</th>
-                          <th>Material</th>
-                          <th>Input</th>
-                          <th>Output</th>
-                          <th>NG QTY</th>
-                          <th>MOD</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                      </tbody>
-                    </table>
-                  </div>
+            <form id="formFirstMolding" autocomplete="off">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-4 border px-4">
+                            <div class="py-3">
+                                <span class="badge badge-secondary">1.</span> Runcard Details
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Device Id </span>
+                                </div>
+                                <input class="form-control form-control-sm" type="number" id="first_molding_id" name="first_molding_id">
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                                </div>
+                                <select class="form-select form-control-sm" id="first_molding_device_id" name="first_molding_device_id" >
+                                </select>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Contact Name: </span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="contact_name" name="contact_name" readonly>
+                            </div>
+                                <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Contact Lot #</span>
+                                </div>
+                                <div class="input-group-prepend">
+                                    <button type="button" class="btn btn-dark" id="btnScanPo" data-toggle="modal" data-target="#mdlScanQrCode"><i class="fa fa-qrcode w-100"></i></button>
+                                </div>
+                                <input type="text" value="C1100R-1/2H 1.2X70" class="form-control form-control-sm" id="contact_lot_no" name="contact_lot_no">
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="production_lot" name="production_lot" value="2B40125-G-A-M-T-0600-1000">
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                                </div>
+                                <textarea class="form-control form-control-sm" id="txt_remarks" name="txt_remarks" rows="5"></textarea>
+                            </div>
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Created At</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="txt_created_at" name="txt_created_at" readonly="true" placeholder="Auto generated">
+                            </div>
+                            <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
+                                <button class="btn btn-sm btn-success" type="submit">
+                                    <i class="fa-solid fa-floppy-disk"></i> Save
+                                </button>
+                            </div>
+                        </div>
+                      </form>
+                        <div class="col-sm-8">
+                            <div class="col border px-4 border">
+                                <div class="py-3">
+                                    <div style="float: left;">
+                                        <span class="badge badge-secondary">2.</span> Stations
+                                    </div>
+                                    <div style="float: right;">
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" type="button" data-bs-target="#modalAddStation" style="margin-bottom: 5px;">
+                                            <i class="fa fa-plus" ></i> Add Station
+                                        </button>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm small table-bordered table-hover" id="tableStation" style="width: 100%;">
+                                            <thead>
+                                                <tr class="bg-light">
+                                                    <th></th>
+                                                    <!-- <th></th> -->
+                                                    <th>Station</th>
+                                                    <th>Date</th>
+                                                    <th>Name</th>
+                                                    <th>Input</th>
+                                                    <th>NG Qty</th>
+                                                    <th>Output</th>
+                                                    <th>Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-            </div>
-          </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="saveProdData" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-sm btn-success" id="btnSubmitToOQCLotApp">Submit</button>
-          <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
+        <!-- /.modal-content -->
     </div>
-  </div>
+    <!-- /.modal-dialog -->
+</div>

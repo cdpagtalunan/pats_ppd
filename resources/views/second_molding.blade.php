@@ -49,19 +49,19 @@
                                         <div class="col-sm-2">
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum">
+                                                <input type="text" class="form-control" placeholder="PO Number" id="textSearchPONumber">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMatName" readonly>
+                                                <input type="text" class="form-control" placeholder="Material Name" id="textSearchMaterialName" readonly>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">PO Quantity</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="PO Quantity" id="txtSearchPOQuantity" readonly>
+                                                <input type="text" class="form-control" placeholder="PO Quantity" id="textSearchPOQuantity" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -81,7 +81,7 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        <button class="btn btn-primary" id="btnAddProdData"><i class="fa-solid fa-plus"></i> Add</button>
+                                        <button class="btn btn-primary" id="buttonAddSecondMoldingData"><i class="fa-solid fa-plus"></i> Add</button>
                                     </div> <br><br>
                                     <div class="table-responsive">
                                         <!-- style="max-height: 600px; overflow-y: auto;" -->
@@ -126,7 +126,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form method="post" id="formSecondMoldingData" autocomplete="off">
+                    <form id="formSecondMolding" autocomplete="off">
                         @csrf
                         <div class="modal-body">
                             <input type="hidden" id="textSecondMoldingDataId" name="id">
@@ -139,25 +139,25 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textDeviceName" name="device_name" placeholder="Auto generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textDeviceName" name="device_name" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Parts Code</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textPartsCode" name="parts_code" placeholder="Auto generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textPartsCode" name="parts_code" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textPoNumber" name="po_number" placeholder="Auto generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textPONumber" name="po_number" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textPoQuantity" name="po_quantity" placeholder="Auto generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textPoQuantity" name="po_quantity" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -169,7 +169,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Machine Lot #</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textMachineLotNumber" name="machine_lot_number" placeholder="Machine Lot #" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textMachineLotNumber" name="machine_lot_number" placeholder="Scan Machine Lot #" readonly>
                                         <div class="input-group-append">
                                             <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMachineLotNumber"><i class="fa fa-qrcode"></i></button>
                                         </div>
@@ -178,7 +178,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Machine Name</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textMachineName" name="machine_name" placeholder="Auto Generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textMachineName" name="machine_name" placeholder="Auto Generated" readonly>
                                         <div class="input-group-append">
                                         </div>
                                     </div>
@@ -187,19 +187,25 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">MATL Drawing # on Rapid</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textDrawingNumber" name="drawing_number" placeholder="Auto generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textDrawingNumber" name="drawing_number" value="B137229-001" placeholder="Auto generated" readonly>
+                                        <button style="width:30px" type="button" class="btn btn-sm py-0 btn-info table-btns" id="buttonViewBDrawing">
+                                            <i class="fa fa-file" title="View"></i>
+                                        </button>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Revision # on Rapid</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textRevisionNumber" name="revision_number" placeholder="Auto generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textRevisionNumber" name="revision_number" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textProductionLot" name="production_lot" placeholder="Auto generated" readonly="true">
+                                        <input type="text" class="form-control form-control-sm" id="textProductionLot" name="production_lot" placeholder="Production Lot">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
+                                        <button type="submit" class="btn btn-sm btn-success" id="buttonSaveSecondMoldingData"><i class="fa-solid fa-floppy-disk"></i> Save</button>
                                     </div>
                                 </div>
                                 <div class="col-sm-8">
@@ -239,7 +245,6 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" id="saveProdData" class="btn btn-primary"><i class="fa fa-check"></i> Save</button>
                         </div>
                     </form>
                 </div>
@@ -256,7 +261,7 @@
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body pt-0">
-                        <input type="text" id="textEmployeeNumberScanner" class="hidden_scanner_input" class="" autocomplete="off">
+                        <input type="text" id="textMaterialLotNumberScanner" class="hidden_scanner_input" class="" autocomplete="off">
                         <div class="text-center text-secondary">
                             Please scan Material Lot #
                             <br><br>
@@ -266,7 +271,7 @@
                     </div>
                 </div>
             </div>
-          </div>
+        </div>
 
         <div class="modal fade" id="modalAddStation" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -371,14 +376,7 @@
     @section('js_content')
         <script>
             $(document).ready(function(){
-                var prodData = {};
-                var img_barcode_PO_text_hidden;
-                var multipleMatId;
-                var printId;
-                var printStampCat;
-                var scanningFunction;
-                var historyId = 0;
-                $(document).on('keypress', '#txtSearchPONum', function(e){
+                $(document).on('keypress', '#textSearchPONumber', function(e){
                     if(e.keyCode == 13){
                         $.ajax({
                             type: "get",
@@ -389,15 +387,14 @@
                             dataType: "json",
                             beforeSend: function(){},
                             success: function (response) {
-                                console.log(response);
                                 if(response.length > 0){
-                                    $('#txtSearchMatName').val(response[0]['ItemName']);
-                                    $('#txtSearchPOQuantity').val(response[0]['OrderQty']);
+                                    $('#textSearchMaterialName').val(response[0]['ItemName']);
+                                    $('#textSearchPOQuantity').val(response[0]['OrderQty']);
 
-                                    $('#textDeviceName', $('#formSecondMoldingData')).val(response[0]['ItemName']);
-                                    $('#textPartsCode', $('#formSecondMoldingData')).val(response[0]['ItemCode']);
-                                    $('#textPoNumber', $('#formSecondMoldingData')).val(response[0]['OrderNo']);
-                                    $('#textPoQuantity', $('#formSecondMoldingData')).val(response[0]['OrderQty']);
+                                    $('#textDeviceName', $('#formSecondMolding')).val(response[0]['ItemName']);
+                                    $('#textPartsCode', $('#formSecondMolding')).val(response[0]['ItemCode']);
+                                    $('#textPONumber', $('#formSecondMolding')).val(response[0]['OrderNo']);
+                                    $('#textPoQuantity', $('#formSecondMolding')).val(response[0]['OrderQty']);
                                 }
                                 else{
                                     toastr.error('No PO Found on Rapid PO Receive.')
@@ -410,43 +407,27 @@
                     }
                 });
 
-                $('#btnAddProdData').on('click', function(e){
-                    let poNumber = $('#txtSearchPONum').val();
-                    if(poNumber != "" && $('#txtSearchMatName').val() != ""){
+                $('#buttonAddSecondMoldingData').on('click', function(e){
+                    let poNumber = $('#textSearchPONumber').val();
+                    if(poNumber != "" && $('#textSearchMaterialName').val() != ""){
                         $('#modalSecondMoldingData').modal('show');
-                        // $('#textDeviceName', $('#formSecondMoldingData')).val();
-                        // $('#textPartsCode', $('#formSecondMoldingData')).val();
-                        // $('#textPoNumber', $('#formSecondMoldingData')).val();
-                        // $('#textPoQuantity', $('#formSecondMoldingData')).val();
-
-                        /* Operator Shift */
-                        $time_now = moment().format('LT');
-                        if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
-                            $('#txtOptShift').val('A');
-                        }
-                        else{
-                            $('#txtOptShift').val('B');
-                        }
                     }
                     else{
                         toastr.error('Please input PO.')
                     }
                 });
 
-                // 
                 $('#buttonQrScanMachineLotNumber').on('click', function(e){
-                    console.log('buttonQrScanMachineLotNumber');
                     $('#modalEmployeeNumberScanner').attr('data-formid','scanMachineLotNumber').modal('show');
-                    $('#textEmployeeNumberScanner').val('');
+                    $('#textMaterialLotNumberScanner').val('');
                     setTimeout(() => {
-                        $('#textEmployeeNumberScanner').focus();
+                        $('#textMaterialLotNumberScanner').focus();
                     }, 500);
                 });
 
-                $(document).on('keyup','#textEmployeeNumberScanner',function(e){
-                    let value = $('#textEmployeeNumberScanner').val();
+                $(document).on('keyup','#textMaterialLotNumberScanner',function(e){
+                    let value = $('#textMaterialLotNumberScanner').val();
                     if( e.keyCode == 13 ){
-                        console.log('value ', value);
                         $.ajax({
                             type: "get",
                             url: "check_material_lot_number",
@@ -455,11 +436,73 @@
                             },
                             dataType: "json",
                             success: function (response) {
-                                console.log('response ', response[0]);
+                                $('#textMachineLotNumber').val('');
+                                $('#textMachineName').val('');
+                                $('#textMaterialLotNumberScanner').val('');
+                                if(response[0] != undefined){
+                                    $('#textMachineLotNumber').val(response[0].machine_lot_number);
+                                    $('#textMachineName').val(response[0].machine_name);
+                                    $('#modalEmployeeNumberScanner').modal('hide');
+                                }else{
+                                    toastr.error('Incorrect machine lot number.')
+                                }
                             }
                         });
                     }
                 });
+
+                function redirectToACDCSDrawing(docNo, docTitle, docType) {
+                    if (docTitle == '' )
+                        alert('No Document')
+                    else{
+                        window.open(`http://rapid/ACDCS/prdn_home_pats_ppd_molding?doc_no=${docNo}&doc_title=${docTitle}&doc_type=${docType}`)
+                    }
+                }
+
+                $("#buttonViewBDrawing").click(function(){
+                    let docNo = $('#textDrawingNumber').val();
+                    let docTitle = $('#textDeviceName').val();
+                    let docType = "B Drawing";
+                    $.ajax({
+                        type: "GET",
+                        url: "get_revision_number_based_on_drawing_number",
+                        data: {
+                            doc_number: docNo,
+                            doc_title: docTitle,
+                            doc_type: docType,
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            if(response.length > 0){
+                                $('#textRevisionNumber').val(response[0].rev_no);
+                            }
+                        }
+                    });
+                    redirectToACDCSDrawing(docNo, docTitle, docType)
+                });
+                
+                $('#formSecondMolding').submit(function (e) { 
+                    e.preventDefault();
+                    let data = $(this).serialize();
+                    console.log('data ', data);
+                    $.ajax({
+                        type: "POST",
+                        url: "save_second_molding",
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+                            
+                        }
+                    });
+                });
+
+
+
+
+
+
+
+
 
 
 
@@ -471,7 +514,7 @@
                 //     "ajax" : {
                 //         url: "view_first_stamp_prod",
                 //             data: function (param){
-                //             param.po = $("#txtSearchPONum").val();
+                //             param.po = $("#textSearchPONumber").val();
                 //             param.stamp_cat = 1;
                 //         }
                 //     },

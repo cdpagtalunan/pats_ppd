@@ -15,11 +15,12 @@ class CreateFirstMoldingsTable extends Migration
     {
         Schema::create('first_moldings', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->integer('device_name')->comment = '1-CN171S-08#IN-VE, 2-CN171S-09#IN-R-VE, 3-CN171S-10#IN-L-VE';
-            $table->string('contact_lot_number');
-            $table->string('production_lot');
-            $table->tinyInteger('status')->comment ='';
-            $table->tinyInteger('logdel')->comment ='0-Active, 1-Deleted';
+            $table->bigInteger('first_molding_device_id ')->constrained()->comment = '1-CN171S-08#IN-VE, 2-CN171S-09#IN-R-VE, 3-CN171S-10#IN-L-VE';
+            $table->string('production_lot')->nullable();
+            $table->tinyInteger('status')->nullable()->default(0)->comment ='';
+            $table->string('remarks')->nullable();
+            $table->softDeletes()->nullable();
+            // $table->tinyInteger('logdel')->nullable()->comment ='0-Active, 1-Deleted';
             $table->timestamps();
         });
     }

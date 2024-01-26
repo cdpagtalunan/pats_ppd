@@ -28,7 +28,7 @@ class FirstStampingProduction extends Model
     }
 
     public function oqc_details(){
-        return $this->hasOne(OQCInspection::class,'fs_productions_id','id')->where('status', '!=', 1);
+        return $this->hasOne(OQCInspection::class,'fs_productions_id','id');
     }
 
     public function first_stamping_history(){

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use QrCode;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -84,7 +85,9 @@ class PackingDetailsController extends Controller
         ->where('status', 2)
         ->get();
 
-        // return $prelim_packing_details;
+        // if($prelim_packing_details->final_packing_info != null){
+            // return $prelim_packing_details;
+        // }
         // return $prelim_packing_details[3]->packing_info->status;
 
         if(!isset($request->po_no)){
@@ -96,12 +99,16 @@ class PackingDetailsController extends Controller
                 $result = "";
                 $result .= "<center>";
                 if($prelim_packing_details->final_packing_info == null){
-                    $result .= "<button class='btn btn-primary btn-sm btnEditPackingDetails' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+                    $result .= "<button class='btn btn-primary btn-sm btnEditPackingDetails' oqc-id='$prelim_packing_details->oqc_id'><i class='fa-solid fa-edit'></i></button>&nbsp";
                 }else{
+                    $count = $prelim_packing_details->final_packing_info->print_count;
                     if($prelim_packing_details->final_packing_info->status == 1){
-                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }else if ($prelim_packing_details->final_packing_info->status == 2 ){
-                        $result .= '<span class="badge bg-info">Completed</span>';
+                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-primary btn-sm btnScanQrCode' style='display: none;' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                    }else if ($prelim_packing_details->final_packing_info->status == 3 ){
+                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }
                 }
                 $result .= "</center>";
@@ -169,9 +176,15 @@ class PackingDetailsController extends Controller
         if($validator->passes()){
                         $array = [
                             'oqc_id'                => $request->packing_details_id,
+                            'po_no'                 => $request->po_no,
+                            'po_qty'                => $request->po_quantity,
+                            'material_name'         => $request->parts_name,
+                            'material_lot_no'       => $request->prod_lot_no,
+                            'drawing_no'            => $request->drawing_no,
                             'delivery_balance'      => $request->delivery_balance,
                             'no_of_cuts'            => $request->number_of_cuts,
                             'material_quality'      => $request->material_quality,
+                            'print_count'           => 0,
                             'status'                => 1,
                             'created_at'            => date('Y-m-d H:i:s'),
                         ];
@@ -217,6 +230,86 @@ class PackingDetailsController extends Controller
         else{
             return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
         }
+
+    }
+
+    public function generatePackingDetailsQr(Request $request){
+
+        $packing_data = PackingDetails::where('id', $request->id)
+        ->first(['po_no AS po_no', 'po_qty as po_qty', 'material_name as mat_name', 'material_lot_no as lot_no', 'drawing_no as drawing_no', 'delivery_balance as del_bal', 'no_of_cuts as no_of_cuts', 'material_quality as mat_quality']);
+        // ->first();
+
+        // return $packing_data;
+        // return $collection;
+
+
+        $qrcode = QrCode::format('png')
+        ->size(200)->errorCorrection('H')
+        ->generate($packing_data);
+
+        $QrCode = "data:image/png;base64," . base64_encode($qrcode);
+
+        $data[] = array(
+            'img' => $QrCode,
+            'text' =>  "<strong>$packing_data->po_no</strong><br>
+                        <strong>$packing_data->po_qty</strong><br>
+                        <strong>$packing_data->mat_name</strong><br>
+                        <strong>$packing_data->lot_no</strong><br>
+                        <strong>$packing_data->drawing_no</strong><br>
+                        <strong>$packing_data->del_bal</strong><br>
+                        <strong>$packing_data->no_of_cuts</strong><br>
+                        <strong>$packing_data->mat_quality</strong><br>
+                        "
+        );
+
+        $label = "
+            <table class='table table-sm table-borderless' style='width: 100%;'>
+                <tr>
+                    <td>PO #:</td>
+                    <td>$packing_data->po_no</td>
+                </tr>
+                <tr>
+                    <td>PO Qty:</td>
+                    <td>$packing_data->po_qty</td>
+                </tr>
+                <tr>
+                    <td>Material Name:</td>
+                    <td>$packing_data->mat_name</td>
+                </tr>
+                <tr>
+                    <td>Lot #:</td>
+                    <td>$packing_data->lot_no</td>
+                </tr>
+                <tr>
+                    <td>Drawing #:</td>
+                    <td>$packing_data->drawing_no</td>
+                </tr>
+                <tr>
+                    <td>Delivery Balance:</td>
+                    <td>$packing_data->del_bal</td>
+                </tr>
+                <tr>
+                    <td>No of Cuts:</td>
+                    <td>$packing_data->no_of_cuts</td>
+                </tr>
+                <tr>
+                    <td>Material Quality:</td>
+                    <td>$packing_data->mat_quality</td>
+                </tr>
+
+            </table>
+        ";
+
+        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label, 'prodData' => $packing_data]);
+    }
+
+    
+    public function changePrintingStatus(Request $request){
+        PackingDetails::where('id', $request->id)
+        ->update([
+            'print_count' => 1,
+            'status' => 2,
+        ]);
 
     }
 }

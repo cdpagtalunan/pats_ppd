@@ -134,20 +134,12 @@
     @section('js_content')
         <script>
             $(document).ready(function () {
-                const data = {
-                device_name     : "",
-                contact_name    : "",
-                }
-
                 const dt = {
                     firstMolding : "",
                 }
-
-                $('#btnAddFirstMolding').click(function (e) {
-                    e.preventDefault();
-                    $('#modalFirstMolding').modal('show');
-                });
-
+                const formModal = {
+                    firstMolding  : $("#formFirstMolding"),
+                }
                 dt.firstMolding = $("#tblFirstMoldingDetails").DataTable({
                     "processing" : true,
                     "serverSide" : true,
@@ -159,7 +151,7 @@
                     },
                     fixedHeader: true,
                     "columns":[
-
+                
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
                         { "data" : "device_name" },
@@ -170,10 +162,13 @@
                         { "data" : "created_at" },
                     ]
                 });
+                $('#btnAddFirstMolding').click(function (e) {
+                    e.preventDefault();
+                    $('#modalFirstMolding').modal('show');
+                });
+
                 getFirstModlingDevices();
-                
-                
-                
+
                 $('#global_device_name').change(function (e) {
                     e.preventDefault();
                     $.ajax({
@@ -188,13 +183,17 @@
 
                             $('#btnAddFirstMolding').prop('disabled',false);
                             $('#global_contact_name').val(contact_name);
-                            formModal.modalFirstMolding.find('#first_molding_device_id').html(`<option value="${first_molding_device_id} selected">${device_name}</option>`);
-                            formModal.modalFirstMolding.find('#contact_name').val(contact_name);
+                            formModal.firstMolding.find('#first_molding_device_id').html(`<option value="${first_molding_device_id}">${device_name}</option>`);
+                            formModal.firstMolding.find('#contact_name').val(contact_name);
 
                             dt.firstMolding.draw();
                             console.log($("#global_device_name").val())
                         }
                     });
+                });
+                formModal.firstMolding.submit(function (e) {
+                    e.preventDefault();
+                    saveFirstMolding();
                 });
             });
         </script>

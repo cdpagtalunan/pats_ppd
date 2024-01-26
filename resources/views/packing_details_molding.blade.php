@@ -99,7 +99,7 @@
 
                                      <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="Packing-tab" data-bs-toggle="tab" href="#packingTab" role="tab" aria-controls="packingTab" aria-selected="true">For Endorsement</a>
+                                            <a class="nav-link active" id="Packing-tab" data-bs-toggle="tab" href="#packingTab" role="tab" aria-controls="packingTab" aria-selected="true">Packing Data</a>
                                         </li>
                                         <li class="nav-item">
                                             <a class="nav-link" id="Received-tab" data-bs-toggle="tab" href="#moldingReceived" role="tab" aria-controls="moldingReceived" aria-selected="false">Molding Received</a>
@@ -117,10 +117,12 @@
                                                             <th>Status</th>
                                                             <th>Part Code</th>
                                                             <th>Part Name</th>
-                                                            <th>Lot #</th>
+                                                            <th>1st Press Lot #</th>
+                                                            <th>Plating Lot #</th>
+                                                            <th>2nd Press Lot #</th>
                                                             <th>Lot Qty</th>
-                                                            <th>Endorsed By</th>
-                                                            <th>Date</th>
+                                                            <th>Counted By</th>
+                                                            <th>Checked By</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -172,13 +174,19 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="modalScanEmployeeID">
+     <div class="modal fade" id="modalScanEmpId">
         <div class="modal-dialog center">
             <div class="modal-content modal-sm">
-                <div class="modal-body">
-                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanEmployeeID" name="id_scan" autocomplete="off">
-                    <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan your ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
-                </div>
+                <form id="formOqcDetails">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtOqcDetailsId" name="oqc_details_id">
+                        <input type="hidden" id="txtScanPONumber" name="po_no">
+                        <input type="text" class="scanner w-100 " id="txtScanEmpId" name="scan_id" autocomplete="off">
+                        <div class="text-center text-secondary"><span id="modalScanEmpIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </form>
+
             </div>
         <!-- /.modal-content -->
         </div>
@@ -321,15 +329,17 @@
                         { "data" : "status"},
                         { "data" : "stamping_production_info.part_code"},
                         { "data" : "stamping_production_info.material_name"},
+                        { "data" : "fs_lot_no"},
+                        { "data" : "plating_lot_no"},
                         { "data" : "stamping_production_info.prod_lot_no"},
                         { "data" : "stamping_production_info.ship_output"},
-                        { "data" : "first_molding_info.endorsedby" },
-                        { "data" : "first_molding_info.date_endorsed"},
+                        { "data" : "first_molding_info.countedby" },
+                        { "data" : "first_molding_info.checkedby"},
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
                         {
-                            "targets": [6,7],
+                            "targets": [8,9],
                             "data": null,
                             "defaultContent": "---"
                         },
@@ -368,43 +378,90 @@
                     ],
                 });
 
+                /* Ensdorsement */
                 $(document).on('click', '.btnScanPackingID', function(e){
                     e.preventDefault();
                     let oqcDetailsId =  $(this).attr('data-id');
-                    $('#txtPackingDetailsId').val(oqcDetailsId);
-                    console.log(oqcDetailsId);
-                    $('#modalScanEmployeeID').modal('show');
+                    let poNumber =  $(this).attr('po-no');
 
-                    getOqcDetailsbyId(oqcDetailsId);
+                    console.log(oqcDetailsId)
+                    console.log(poNumber)
+                    $('#txtOqcDetailsId').val(oqcDetailsId);
+                    $('#txtScanPONumber').val(poNumber);
+                    $('#modalScanEmpId').modal('show');
 
                 });
 
+                $('#formOqcDetails').submit(function(e){
+                    e.preventDefault();
+                    let data1 = $('#formOqcDetails').serialize();
+                    $.ajax({
+                        type: "post",
+                        url: "updated_counted_by",
+                        data: data1,
+                        dataType: "json",
+                        success: function (response) {
+                            if(response['validation'] == 1){
+                                toastr.error('Saving data failed!');
 
-            $('#formEditPackingDetails').submit(function(e){
-                e.preventDefault();
-                $.ajax({
-                    type: "post",
-                    url: "add_packing_details",
-                    data: $(this).serialize(),
-                    dataType: "json",
-                    success: function (response) {
-                        if(response['validation'] == 1){
-                            toastr.error('Saving data failed!');
-                        }else if(response['result'] == 0){
-                            $("#formEditPackingDetails")[0].reset();
-                            toastr.success('Succesfully saved!');
-                            $('#modalEditPackingDetails').modal('hide');
-                            dtPackingDetails.draw();
+                            }else if(response['result'] == 0){
+                                toastr.success('Validation Succesful!');
+                                $("#formOqcDetails")[0].reset();
+                                $('#modalScanEmpId').modal('hide');
+                                dtPackingDetailsFE.draw();
+                            }
                         }
-                        $("#btnEditPackingDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                        $("#btnEditPackingDetails").removeClass('disabled');
-                        $("#btnEditPackingDetailsIcon").addClass('fa fa-check');
-                    },
-                    error: function(data, xhr, status){
-                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                    }
+                    });
                 });
-            });
+
+                /* Receiving */
+                // $(document).on('click', '.btnScanMoldingID', function(e){
+                //     e.preventDefault();
+                //     let PDMId =  $(this).attr('data-id');
+                //     console.log(PDMId)
+                //     console.log(poNumber)
+                //     $('#txtOqcDetailsId').val(PDMId);
+                //     $('#txtScanPONumber').val(poNumber);
+                //     $('#modalScanEmpId').modal('show');
+
+                // });
+
+                // $('#modalScanEmpId').on('shown.bs.modal', function () {
+                //     $('#txtScanEmpId').focus();
+                //     $('#txtScanEmpId').on('keyup', function(e){
+                //         if(e.keyCode == 13){
+                //             scanEmpId = $('#txtScanEmpId').val();
+                //         }
+                //     });
+                // });
+
+
+                //  $('#formOqcDetails').submit(function(e){
+                //     e.preventDefault();
+                //     let data1 = $('#formOqcDetails').serialize();
+                //     $.ajax({
+                //         type: "post",
+                //         url: "updated_endorsed_by",
+                //         data: data1,
+                //         dataType: "json",
+                //         success: function (response) {
+                //             if(response['validation'] == 1){
+                //                 toastr.error('Saving data failed!');
+
+                //             }else if(response['result'] == 0){
+                //                 toastr.success('Validation Succesful!');
+                //                 $("#formOqcDetails")[0].reset();
+                //                 $('#modalScanEmpId').modal('hide');
+                //                 dtPackingDetailsFE.draw();
+                //             }
+                //         }
+                //     });
+                // });
+
+                
+
+
+
 
 
             });

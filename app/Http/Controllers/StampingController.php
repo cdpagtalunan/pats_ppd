@@ -43,22 +43,22 @@ class StampingController extends Controller
                 * data-function on buttons will be the trigger point for viewing and editing for mass production
                 * 0 => viewing only, 1 => for mass production entry of data, 2 => for re-setup, 3 => Edit data
             */
-            $result .= "<button class='btn btn-info btn-sm btnViewProdData' data-id='$stamping_data->id' data-function='0' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-eye'></i></button>";
+            $result .= "<button class='btn btn-dark btn-sm btnViewProdData' title='View Data'  data-id='$stamping_data->id' data-function='0' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-eye'></i></button>";
 
             if($stamping_data->status == 1){
-                $result .= "<button class='btn btn-warning btn-sm btnMassProd ml-1' data-id='$stamping_data->id' data-function='1' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-up-right-from-square'></i></button>";
-                $result .= "<button class='btn btn-secondary btn-sm btnEditProdData ml-1' data-id='$stamping_data->id' data-function='3' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-warning btn-sm btnMassProd ml-1' title='Proceed Mass Production' data-id='$stamping_data->id' data-function='1' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-up-right-from-square'></i></button>";
+                $result .= "<button class='btn btn-secondary btn-sm btnEditProdData ml-1' title='Edit'  data-id='$stamping_data->id' data-function='3' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-pen-to-square'></i></button>";
             
             }
             else if($stamping_data->status == 2){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData ml-1' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-qrcode'></i></button>";
+                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData ml-1' title='Print QR Code' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-qrcode'></i></button>";
             }
             else if ($stamping_data->status == 3){
-                $result .= "<button class='btn btn-danger btn-sm btnViewResetup ml-1' data-id='$stamping_data->id' data-function='2' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-repeat'></i></button>";
+                $result .= "<button class='btn btn-danger btn-sm btnViewResetup ml-1' title='See Re-setup' data-id='$stamping_data->id' data-function='2' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-repeat'></i></button>";
             }
 
             if(count($stamping_data->first_stamping_history) > 0){
-                $result .= "<button class='btn btn-secondary btn-sm btnViewHistory ml-1' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
+                $result .= "<button class='btn btn-info btn-sm btnViewHistory ml-1' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
             }
             $result .= "</center>";
             return $result;
@@ -345,7 +345,7 @@ class StampingController extends Controller
 
     public function print_qr_code(Request $request){
         $prod_data = FirstStampingProduction::where('id', $request->id)
-        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
+        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty', 'stamping_cat AS cat']);
 
         // $prod_data = DB::connection('mysql')
         // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM stamping_productions WHERE id = '".$request->id."'");

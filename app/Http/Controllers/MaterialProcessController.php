@@ -75,14 +75,19 @@ class MaterialProcessController extends Controller
         $machine_details = DB::connection('mysql_rapid_eedms')
         ->select('SELECT * FROM generallogistics WHERE machine_section = "PPS"');
 
-        $material_details = DB::connection('mysql_rapid_pps')
-        ->select('SELECT * FROM tbl_Warehouse');
+        $material_details_warehouse_data = DB::connection('mysql_rapid_pps')
+        ->select('SELECT PartNumber, MaterialType FROM tbl_Warehouse');
+
+        $material_details_dieset = DB::connection('mysql_rapid_pps')
+        ->select('SELECT R3Code, DeviceName FROM tbl_dieset');
+
+        
 
         $process_details = Process::where('status', 0)->get();
         
         return response()->json([
             'machine_details' => $machine_details,
-            'material_details' => $material_details,
+            // 'material_details' => $material_details,
             'process' => $process_details
         ]);
     }

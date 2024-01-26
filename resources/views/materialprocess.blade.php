@@ -703,7 +703,6 @@
 
     $(document).ready(function () {
 
-      getMaterialProcessForInputs();
 
       // GetUserList($(".selUser"));
 
@@ -722,6 +721,7 @@
         $("#uSelectedDeviceName").text(selectedDeviceName);
         $("#txtAddSubDeviceDeviceId").val(selectedDeviceId);
         $("#txtAddSubDeviceDeviceName").val(selectedDeviceName);
+        getMaterialProcessForInputs();
 
         dataTableMatProcess.draw();
       });

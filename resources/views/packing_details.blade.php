@@ -40,6 +40,9 @@
             #colDevice, #colMaterialProcess{
                 transition: .5s;
             }
+
+            .checked-ok { background: #5cec4c!important; }
+
         </style>
 
         <!-- Content Wrapper. Contains page content -->
@@ -114,12 +117,6 @@
 
                                 <!-- Start Page Content -->
                                 <div class="card-body">
-                                    <div style="float: right;">
-                                        {{-- <button class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#modalEditPackingDetails" id="btnShowEditPackingDetails"><i
-                                                class="fas fa-clipboard-list"></i> Edit Packing Details
-                                        </button> --}}
-                                    </div>
 
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
@@ -155,6 +152,12 @@
 
 
                                         <div class="tab-pane fade show" id="finalPacking" role="tabpanel" aria-labelledby="finalPacking-tab"><br>
+                                            {{-- <div style="float: right;"> --}}
+                                                <button class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#modalScanLotNumber" id="btnScanLotNumber"><i
+                                                        class="fa-solid fa-qrcode"></i>  Validate Lot #
+                                                </button><br><br>
+                                            {{-- </div> --}}
                                             <div class="table-responsive">
                                                 <table id="tblFinalPackingDetails" class="table table-sm table-bordered table-striped table-hover"
                                                 style="width: 100%;">
@@ -172,6 +175,7 @@
                                                             <th>Material Quality</th>
                                                         </tr>
                                                     </thead>
+                                                    <tbody></tbody>
                                                 </table>
                                             </div>
                                         </div>
@@ -310,6 +314,66 @@
     </div>
     <!-- /.modal -->
 
+       {{-- MODAL FOR PRINTING  --}}
+       <div class="modal fade" id="modalGeneratePackingDetailsQr">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Packing - QR Code</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- PO 1 -->
+                        <div class="col-sm-12">
+                            <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                            <label id="img_barcode_PO_text"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnGeneratePackingDetailsQr" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+
+    <!-- MODALS -->
+    <div class="modal fade" id="modalScanQRtoReprint">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <div class="modal-body">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserIdtoReprint" name="scan_id_to_reprint" autocomplete="off">
+                    <div class="text-center text-secondary"><span id="modalScanQRReprintText"></span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+<!-- /.modal -->
+
+    <!-- MODALS -->
+    <div class="modal fade" id="modalScanLotNumber">
+        <div class="modal-dialog modal-dialog-center">
+            <div class="modal-content modal-sm">
+                <div class="modal-body">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanLotNumber" name="scan_lot_number" autocomplete="off" value='{"po_no":"450244133600010","po_qty":"2400","mat_name":"CT 6009-VE","lot_no":"C240123-0101MZ-2","drawing_no":"B139312-001","del_bal":"2500","no_of_cuts":"1","mat_quality":"test"}'>
+                    {{-- <input type="text" class="w-100 " id="txtScanLotNumber" name="scan_lot_number" autocomplete="off"> --}}
+                    <div class="text-center text-secondary"><span id="modalScanLotNumber">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+
+
     @endsection
 
     @section('js_content')
@@ -321,6 +385,7 @@
 
             let scannedPO;
             let ParseScannedPo;
+            let img_barcode_PO_text_hidden;
 
             $(document).ready(function(){
 
@@ -337,7 +402,7 @@
                             $('#txtSearchPOQty').val(ParseScannedPo['qty']);
 
                             $('#modalScanPO').modal('hide');
-                            dtPackingDetails.draw();
+                            dtFinalPackingDetails.draw();
                             dtPrelimPackingDetails.draw();
                         }
                     });
@@ -375,7 +440,7 @@
                     ],
                 });
 
-                dtPackingDetails = $("#tblFinalPackingDetails").DataTable({
+                dtFinalPackingDetails = $("#tblFinalPackingDetails").DataTable({
                     "processing"    : false,
                     "serverSide"    : true,
                     "destroy"       : true,
@@ -448,62 +513,200 @@
                 });
 
 
-            $('#formOqcDetails').submit(function(e){
-                e.preventDefault();
-                let data1 = $('#formOqcDetails').serialize();
-                $.ajax({
-                    type: "post",
-                    url: "updated_validated_by",
-                    data: data1,
-                    dataType: "json",
-                    success: function (response) {
-                        if(response['validation'] == 1){
-                            toastr.error('Saving data failed!');
+                $('#formOqcDetails').submit(function(e){
+                    e.preventDefault();
+                    let data1 = $('#formOqcDetails').serialize();
+                    $.ajax({
+                        type: "post",
+                        url: "updated_validated_by",
+                        data: data1,
+                        dataType: "json",
+                        success: function (response) {
+                            if(response['validation'] == 1){
+                                toastr.error('Saving data failed!');
 
-                        }else if(response['result'] == 0){
-                            toastr.success('Validation Succesful!');
-                            $("#formOqcDetails")[0].reset();
-                            $('#modalScanEmpId').modal('hide');
-                            dtPrelimPackingDetails.draw();
+                            }else if(response['result'] == 0){
+                                toastr.success('Validation Succesful!');
+                                $("#formOqcDetails")[0].reset();
+                                $('#modalScanEmpId').modal('hide');
+                                dtPrelimPackingDetails.draw();
+                            }
                         }
+                    });
+                });
+
+                $('#formEditPackingDetails').submit(function(e){
+                    e.preventDefault();
+                    $.ajax({
+                        type: "post",
+                        url: "add_packing_details",
+                        data: $(this).serialize(),
+                        dataType: "json",
+                        success: function (response) {
+                            if(response['validation'] == 1){
+                                toastr.error('Saving data failed!');
+                                // if(response['error']['loading_port'] === undefined){
+                                //     $("#txtDestinationPort").removeClass('is-invalid');
+                                //     $("#txtDestinationPort").attr('title', '');
+                                // }
+                                // else{
+                                //     $("#txtDestinationPort").addClass('is-invalid');
+                                //     $("#txtDestinationPort").attr('title', response['error']['loading_port']);
+                                // }
+                            }else if(response['result'] == 0){
+                                $("#formEditPackingDetails")[0].reset();
+                                toastr.success('Succesfully saved!');
+                                $('#modalEditPackingDetails').modal('hide');
+                                dtFinalPackingDetails.draw();
+                            }
+                            $("#btnEditPackingDetailsIcon").removeClass('spinner-border spinner-border-sm');
+                            $("#btnEditPackingDetails").removeClass('disabled');
+                            $("#btnEditPackingDetailsIcon").addClass('fa fa-check');
+                        },
+                        error: function(data, xhr, status){
+                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+                    });
+                });
+
+                let printId;
+
+                $(document).on('click', '.btnGeneratePackingQr', function(e){
+                    e.preventDefault();
+                // $('#modalScanQRtoSave').modal('show');
+                    printId = $(this).data('id');
+                    let printCount = $(this).data('printcount');
+                    console.log(`id`, printId);
+                    console.log(`printCount`, printCount);
+                    if(printCount > 0){
+                        Swal.fire({
+                            // title: "Are you sure?",
+                            html: "Data already printed. <br> Do you want to reprint this data?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Yes"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $('#modalScanQRtoReprint').modal('show');
+                                $('#modalScanQRReprintText').html('Please Scan Supervisor ID.')
+                                scanningFunction = "reprintStamping"
+                            }
+                        });
+                    }
+                    else{
+                        generatePackingQr(printId);
+                        dtFinalPackingDetails.draw();
+                        dtPrelimPackingDetails.draw();
                     }
                 });
-            });
 
-            $('#formEditPackingDetails').submit(function(e){
-                e.preventDefault();
-                $.ajax({
-                    type: "post",
-                    url: "add_packing_details",
-                    data: $(this).serialize(),
-                    dataType: "json",
-                    success: function (response) {
-                        if(response['validation'] == 1){
-                            toastr.error('Saving data failed!');
-                            // if(response['error']['loading_port'] === undefined){
-                            //     $("#txtDestinationPort").removeClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', '');
+                $('#btnGeneratePackingDetailsQr').on('click', function(){
+                        popup = window.open();
+                        // console.log(img_barcode_PO_text_hidden);
+                        let content = '';
+
+                        content += '<html>';
+                        content += '<head>';
+                        content += '<title></title>';
+                        content += '<style type="text/css">';
+                        content += '@media print { .pagebreak { page-break-before: always; } }';
+                        content += '</style>';
+                        content += '</head>';
+                        content += '<body>';
+                        // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                            content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                                content += '<tr style="width: 290px;">';
+                                    content += '<td style="vertical-align: bottom;">';
+                                        content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                    content += '</td>';
+                                    content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                                content += '</tr>';
+                            content += '</table>';
+                            content += '<br>';
+                            // if( i < img_barcode_PO_text_hidden.length-1 ){
+                            //     content += '<div class="pagebreak"> </div>';
                             // }
-                            // else{
-                            //     $("#txtDestinationPort").addClass('is-invalid');
-                            //     $("#txtDestinationPort").attr('title', response['error']['loading_port']);
-                            // }
-                        }else if(response['result'] == 0){
-                            $("#formEditPackingDetails")[0].reset();
-                            toastr.success('Succesfully saved!');
-                            $('#modalEditPackingDetails').modal('hide');
-                            dtPackingDetails.draw();
+                        // }
+                        content += '</body>';
+                        content += '</html>';
+                        popup.document.write(content);
+
+                        popup.focus(); //required for IE
+                        popup.print();
+
+                        console.log(`id`, img_barcode_PO_text_hidden[0]['id']);
+
+                        /*
+                            * this event will trigger after closing the tab of printing
+                        */
+                        popup.addEventListener("beforeunload", function (e) {
+                            changePrintingStatus(img_barcode_PO_text_hidden[0]['id']);
+                        });
+
+                        popup.close();
+
+                });
+
+                $(document).on('keyup','#txtScanUserIdtoReprint', function(e){
+                    if(e.keyCode == 13){
+                        if(scanningFunction === "reprintStamping"){
+                            validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
+                                console.log(result);
+                                if(result == true){
+                                    $('#modalScanQRtoReprint').modal('hide');
+                                    generatePackingQr(printId);
+                                    dtFinalPackingDetails.draw();
+                                    dtPrelimPackingDetails.draw();
+                                }
+                                else{ // Error Handler
+                                    toastr.error('User not authorize!');
+                                }
+
+                            });
                         }
-                        $("#btnEditPackingDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                        $("#btnEditPackingDetails").removeClass('disabled');
-                        $("#btnEditPackingDetailsIcon").addClass('fa fa-check');
-                    },
-                    error: function(data, xhr, status){
-                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        setTimeout(() => {
+                            $(this).val('');
+
+                        }, 500);
                     }
                 });
-            });
 
+                $('#modalScanLotNumber').on('shown.bs.modal', function () {
+                    $('#txtScanLotNumber').focus();
+                });
+
+                $('#txtScanLotNumber').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        // alert('chris');
+                        try{
+                            scannedItem = JSON.parse($(this).val());
+                            $('#tblFinalPackingDetails tbody tr').each(function(index, tr){
+                                let lot_no = $(tr).find('td:eq(7)').text().trim().toUpperCase();
+
+                                // console.log('this ', $(this).find('td:nth-child(1)').children().children().removeAttr('style'));
+                                let powerOff = $(this).find('td:nth-child(1)').children().children();
+
+                                console.log('tblFinalPackingDetails', lot_no);
+                                console.log('scannedItem', scannedItem['lot_no']);
+                               
+                                if(scannedItem['lot_no'] === lot_no){
+                                    $(tr).addClass('checked-ok');
+                                    powerOff.removeAttr('style');
+
+                                    $('#modalScanLotNumber').modal('hide');
+                                }
+                                // console.log(lot_no);
+                            })
+                        }
+                        catch (e){
+                            toastr.error('Invalid Sticker');
+                            console.log(e);
+                        }
+                        $(this).val('');
+                    }
+                });
 
             });
 

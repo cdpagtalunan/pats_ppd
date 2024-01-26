@@ -55,13 +55,13 @@ class OQCInspectionController extends Controller
                 $result .= '
                     <button class="btn btn-warning btn-sm text-center 
                         actionOqcInspectionHistory" 
-                        oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '" 
-                        prod-id="' . $prod_info->id . '" 
-                        prod-po="' . $prod_info->po_num . '" 
-                        prod-material-name="' . $prod_info->material_name . '" 
-                        prod-po-qty="' . $prod_info->po_qty . '" 
-                        prod-lot-no="' . $prod_info->prod_lot_no . '" 
-                        prod-ship-output="' . $prod_info->ship_output . '" 
+                        first_stamping_oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '" 
+                        first_stamping_prod-id="' . $prod_info->id . '" 
+                        first_stamping_prod-po="' . $prod_info->po_num . '" 
+                        first_Stamping_prod-material_name="' . $prod_info->material_name . '" 
+                        first_stamping_prod-po_qty="' . $prod_info->po_qty . '" 
+                        first_stamping_prod-lot_no="' . $prod_info->prod_lot_no . '" 
+                        first_stamping_prod-ship_output="' . $prod_info->ship_output . '" 
                         data-toggle="modal" 
                         data-target="#mdlOqcInspectionHistory" 
                         data-keyboard="false" 
@@ -73,13 +73,14 @@ class OQCInspectionController extends Controller
                     $result .= '
                         <button class="btn btn-info btn-sm text-center 
                             actionOqcInspectionView" 
-                            first-stamping="1" 
-                            oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"
-                            prod-id="' . $prod_info->id . '" prod-po="' . $prod_info->po_num . '" 
-                            prod-material-name="' . $prod_info->material_name . '" 
-                            prod-po-qty="' . $prod_info->po_qty . '" 
-                            prod-lot-no="' . $prod_info->prod_lot_no . '" 
-                            prod-ship-output="' . $prod_info->ship_output . '" 
+                            first-stamping-id="1" 
+                            first_stamping_oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"
+                            first_stamping_prod-id="' . $prod_info->id . '" 
+                            first_stamping_prod-po="' . $prod_info->po_num . '" 
+                            first_Stamping_prod-material_name="' . $prod_info->material_name . '" 
+                            first_stamping_prod-po_qty="' . $prod_info->po_qty . '" 
+                            first_stamping_prod-lot_no="' . $prod_info->prod_lot_no . '" 
+                            first_stamping_prod-ship_output="' . $prod_info->ship_output . '" 
                             data-toggle="modal" 
                             data-target="#modalOqcInspection" 
                             data-keyboard="false" 
@@ -94,14 +95,14 @@ class OQCInspectionController extends Controller
                     $result .= '
                         <button class="btn btn-dark btn-sm text-center 
                             actionOqcInspectionFirstStamping"
-                            first-stamping="1" 
-                            oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '" 
-                            prod-id="' . $prod_info->id . '" 
-                            prod-po="' . $prod_info->po_num . '" 
-                            prod-material-name="' . $prod_info->material_name . '" 
-                            prod-po-qty="' . $prod_info->po_qty . '" 
-                            prod-lot-no="' . $prod_info->prod_lot_no . '" 
-                            prod-ship-output="' . $prod_info->ship_output . '" 
+                            first-stamping-id="1" 
+                            first_stamping_oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '" 
+                            first_stamping_prod-id="' . $prod_info->id . '" 
+                            first_stamping_prod-po="' . $prod_info->po_num . '" 
+                            first_Stamping_prod-material_name="' . $prod_info->material_name . '" 
+                            first_stamping_prod-po_qty="' . $prod_info->po_qty . '" 
+                            first_stamping_prod-lot_no="' . $prod_info->prod_lot_no . '" 
+                            first_stamping_prod-ship_output="' . $prod_info->ship_output . '" 
                             data-toggle="modal" 
                             data-target="#modalOqcInspection"
                             data-keyboard="false" 
@@ -113,14 +114,14 @@ class OQCInspectionController extends Controller
                 $result .= '
                 <button class="btn btn-dark btn-sm text-center 
                     actionOqcInspectionFirstStamping" 
-                    first-stamping="1" 
-                    oqc_inspection-id="0" 
-                    prod-id="' . $prod_info->id . '" 
-                    prod-po="' . $prod_info->po_num . '" 
-                    prod-material-name="' . $prod_info->material_name . '" 
-                    prod-po-qty="' . $prod_info->po_qty . '" 
-                    prod-lot-no="' . $prod_info->prod_lot_no . '"
-                    prod-ship-output="' . $prod_info->ship_output . '" 
+                    first-stamping-id="1" 
+                    first_stamping_oqc_inspection-id="0" 
+                    first_stamping_prod-id="' . $prod_info->id . '" 
+                    first_stamping_prod-po="' . $prod_info->po_num . '" 
+                    first_Stamping_prod-material_name="' . $prod_info->material_name . '" 
+                    first_stamping_prod-po_qty="' . $prod_info->po_qty . '" 
+                    first_stamping_prod-lot_no="' . $prod_info->prod_lot_no . '"
+                    first_stamping_prod-ship_output="' . $prod_info->ship_output . '" 
                     data-toggle="modal" 
                     data-target="#modalOqcInspection" 
                     data-keyboard="false" 
@@ -389,7 +390,20 @@ class OQCInspectionController extends Controller
         return DataTables::of($oqc_details)
         ->addColumn('action', function($oqc_info){
             $result = '<center>';
-            $result .= '<button class="btn btn-info btn-sm text-center actionOqcInspectionView" oqc_inspection-id="'. $oqc_info->id .'" prod-id="'. $oqc_info->stamping_production_info->id .'" prod-po="'. $oqc_info->stamping_production_info->po_num .'" prod-material-name="'. $oqc_info->stamping_production_info->material_name .'" prod-po-qty="'. $oqc_info->stamping_production_info->po_qty .'" prod-lot-no="'. $oqc_info->stamping_production_info->prod_lot_no .'" prod-ship-output="'. $oqc_info->stamping_production_info->ship_output .'" data-toggle="modal" data-target="#modalOqcInspection" data-keyboard="false" title="View"><i class="nav-icon fa fa-eye"></i></button>';
+            $result .= '
+                <button class="btn btn-info btn-sm text-center actionOqcInspectionView" 
+                    qc_inspection-id="'. $oqc_info->id .'" 
+                    prod-id="'. $oqc_info->stamping_production_info->id .'" 
+                    prod-po="'. $oqc_info->stamping_production_info->po_num .'" 
+                    prod-material-name="'. $oqc_info->stamping_production_info->material_name .'" 
+                    prod-po-qty="'. $oqc_info->stamping_production_info->po_qty .'" 
+                    prod-lot-no="'. $oqc_info->stamping_production_info->prod_lot_no .'" 
+                    prod-ship-output="'. $oqc_info->stamping_production_info->ship_output .'" 
+                    data-toggle="modal" 
+                    data-target="#modalOqcInspection" 
+                    data-keyboard="false" title="View">
+                    <i class="nav-icon fa fa-eye"></i>
+                </button>';
             $result .= '</center>';
             return $result;
         })
@@ -468,14 +482,14 @@ class OQCInspectionController extends Controller
                 if(count($get_oqc_inspection_per_row) != 0){
                     $result .= '
                         <button class="btn btn-info btn-sm text-center 
-                            actionOqcInspectionSecondStampingView" 
-                            oqc_inspection_second_stamping-id="' . $get_oqc_inspection_per_row[0]->id . '"
-                            prod_second_stamping-id="' . $prod_second_stamping_info->id . '" 
-                            prod_second_stamping-po="' . $prod_second_stamping_info->po_num . '" 
-                            prod_second_stamping-material_name="' . $prod_second_stamping_info->material_name . '" 
-                            prod_second_stamping-po_qty="' . $prod_second_stamping_info->po_qty . '" 
-                            prod_second_stamping-lot_no="' . $prod_second_stamping_info->prod_lot_no . '" 
-                            prod_second_stamping-ship_output="' . $prod_second_stamping_info->ship_output . '" 
+                            actionOqcInspectionView" 
+                            oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"
+                            prod-id="' . $prod_second_stamping_info->id . '" 
+                            prod-po="' . $prod_second_stamping_info->po_num . '" 
+                            prod-material-name="' . $prod_second_stamping_info->material_name . '" 
+                            prod-po-qty="' . $prod_second_stamping_info->po_qty . '" 
+                            prod-lot-no="' . $prod_second_stamping_info->prod_lot_no . '" 
+                            prod-ship_output="' . $prod_second_stamping_info->ship_output . '" 
                             data-toggle="modal" 
                             data-target="#modalOqcInspectionSecondStamping" 
                             data-keyboard="false" 
@@ -530,18 +544,18 @@ class OQCInspectionController extends Controller
 
         ->addColumn('status', function($prod_second_stamping_info){
             $result = '<center>';
-            $get_oqc_inspection_second_stamping_per_row = OQCInspection::where('fs_productions_id', $prod_second_stamping_info->id)->where('logdel', 0)->orderBy('id', 'DESC')->get();
-            if(count($get_oqc_inspection_second_stamping_per_row) > 0){
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_second_stamping_info->id)->where('logdel', 0)->orderBy('id', 'DESC')->get();
+            if(count($get_oqc_inspection_per_row) > 0){
                 switch($get_oqc_inspection_per_row[0]->lot_accepted)
                 {
                     case 0: // LOT ACCEPTED
                     {   
-                        $result .= '<span class="badge badge-pill badge-success"> Lot <br> Accepted</span>';
+                        $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
                         break;
                     }
                     case 1:  // LOT REJECTED
                     {   
-                        $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
+                        $result .= '<span class="badge badge-pill badge-success"> Lot <br> Accepted</span>';
                         break;
                     }
                     default:

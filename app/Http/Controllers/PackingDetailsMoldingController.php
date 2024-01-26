@@ -29,29 +29,55 @@ class PackingDetailsMoldingController extends Controller
         }else{
 
             return DataTables::of($packing_details)
+
             ->addColumn('action', function($packing_details){
                 $result = "";
-                $result .= "<center>";
-                    $result .= "<button class='btn btn-primary btn-sm btnScanPackingID' data-id='$packing_details->id'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
-                $result .= "</center>";
+
+                if( $packing_details->first_molding_info != null){
+                    if($packing_details->first_molding_info->status == 0){
+                        $result .= "<button class='btn btn-warning btn-sm btnScanMoldingID' data-id='".$packing_details->first_molding_info->id."'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                    }else{
+                        $result .= '<span class="badge bg-success">Received</span>';
+                    }
+                }else{
+                    $result .= "<button class='btn btn-primary btn-sm btnScanPackingID' data-id='$packing_details->id' po-no='$packing_details->po_no'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                }
                 return $result;
             })
 
-             ->addColumn('status', function($packing_details){
+            ->addColumn('status', function($packing_details){
                 $result = "";
                 $result .= "<center>";
 
                 if( $packing_details->first_molding_info != null){
                     if($packing_details->first_molding_info->status == 0){
-                        $result .= '<span class="badge bg-success">For Receiving</span>';
+                        $result .= '<span class="badge bg-success">For QC Checking</span>';
+                    }else if($packing_details->first_molding_info->status == 1){
+                        $result .= '<span class="badge bg-success">To Receive</span>';
                     }else{
                         $result .= '<span class="badge bg-success">Received</span>';
                     }
                 }else{
-                    $result .= '<span class="badge bg-success">For Endorsement</span>';
+                    $result .= '<span class="badge bg-success">For Packing Checking</span>';
                 }
 
                 $result .= "</center>";
+                return $result;
+            })
+
+            ->addColumn('fs_lot_no', function($packing_details){
+                $fs_lot_no = explode('/', $packing_details->stamping_production_info->material_lot_no);
+
+                $result = $fs_lot_no[0];
+               
+                return $result;
+            })
+
+            ->addColumn('plating_lot_no', function($packing_details){
+                $plating_lot_no = explode('/', $packing_details->stamping_production_info->material_lot_no);
+
+                $result = $plating_lot_no[1];
+               
                 return $result;
             })
 
@@ -87,4 +113,36 @@ class PackingDetailsMoldingController extends Controller
             ->make(true);
         }
     }
+
+     public function updatePackingDetailsMolding(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        $data = $request->all();
+
+        // return $data;
+
+        $rules = [
+            // 'control_no'                 => 'required',
+        ];
+
+        $validator = Validator::make($data, $rules);
+        if($validator->passes()){
+                        $array = [
+                            'oqc_id'               => $request->oqc_details_id,
+                            'po_no'                => $request->po_no,
+                            'countedby'            => $request->scan_id,
+                            'date_counted'         => date('Y-m-d H:i:s'),
+                            'status'               => 0,
+                            'created_at'           => date('Y-m-d H:i:s'),
+                        ];
+
+                        PackingDetailsMolding::insert($array);
+
+            return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+        }
+        else{
+            return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
+        }
+
+    }
+    
 }
