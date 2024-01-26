@@ -421,6 +421,7 @@ function GetOqcInspectionById(getPo,
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
+            console.log('firstStampingProduction', firstStampingProduction)
             
             if(firstStampingProduction[0].stamping_ipqc != null){
                 if(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0] != null){

@@ -71,7 +71,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><strong>PO No.:</strong></span>
                                             </div>
-                                            <input type="search" class="form-control" id="txtPoNumber" placeholder="---------------" readonly>
+                                            <input type="search" class="form-control invalidScan" id="txtPoNumber" placeholder="---------------" readonly>
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -79,7 +79,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><Strong>Material Name:</Strong></span>
                                             </div>
-                                            <input type="search" class="form-control" id="txtMaterialName" placeholder="---------------" readonly>
+                                            <input type="search" class="form-control invalidScan" id="txtMaterialName" placeholder="---------------" readonly>
                                         </div>
                                     </div>
 
@@ -88,7 +88,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><strong>Po Qty:</strong></span>
                                             </div>
-                                            <input type="text" class="form-control" id="txtPoQuantity" placeholder="---------------" readonly>
+                                            <input type="text" class="form-control invalidScan" id="txtPoQuantity" placeholder="---------------" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -580,7 +580,7 @@
                 <div class="modal-content">
                     <div class="modal-body mt-3">
                         {{-- <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}'> --}}
-                        <input type="text" class="scanQrBarCode1 w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
                         <input type="text" class="scanQrBarCode1 w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
                         <div class="text-center text-secondary scanningForFirstStamping"></div>
                         <div class="text-center text-secondary"><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
@@ -677,20 +677,26 @@
                             try {
                                 let po = JSON.parse(scanQrCode)
                                 getPoNo =  po.po
-                                if(getPoNo != undefined){
+                                if(po.cat == 1){
                                     $('#txtPoNumber').val(po.po)
                                     $('#txtMaterialName').val(po.name)
                                     $('#txtPoQuantity').val(po.qty)
                                     $('#mdlScanQrCode').modal('hide')
                                 }else{
                                     alert('The Scan QR Code was not found!')
+                                    $('.invalidScan').val('')
+                                    getPoNo = ''
                                 }
                             }
                             catch (erur) {
                                 alert('The Scan QR Code was not found!')
+                                $('.invalidScan').val('')
+                                getPoNo = ''
                             }
                         }else{
                             alert('Please try again!')
+                            $('.invalidScan').val('')
+                            getPoNo = ''
                         }
                         $('#mdlScanQrCode').modal('hide')
                         dataTableOQCInspectionFirstStamping.draw()
@@ -1001,13 +1007,13 @@
                         $('#txtOqcInspectionJudgement').val('Reject')
                         $('.mod-class').removeClass('d-none')
                     }
-                });
+                })
 
                 $('#formOqcInspection').submit(function (e) { 
                     e.preventDefault()
                     console.log('Save OQC Inspection')
                     ScanUserById()
-                });
+                })
 
                 $('#txtScanUserId').on('keypress',function(e){
                     if( e.keyCode == 13 ){
@@ -1027,7 +1033,7 @@
                                     toastr.error('ID Number Not Registered!')
                                 }
                             }
-                        });
+                        })
                         $('#txtScanUserId').val('')
                         $('#mdlScanQrCode').modal('hide')
                     }

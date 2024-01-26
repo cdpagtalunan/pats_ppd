@@ -345,7 +345,7 @@ class StampingController extends Controller
 
     public function print_qr_code(Request $request){
         $prod_data = FirstStampingProduction::where('id', $request->id)
-        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty']);
+        ->first(['po_num AS po', 'part_code AS code', 'material_name AS name' , 'prod_lot_no AS production_lot_no', 'po_qty AS qty', 'ship_output AS output_qty', 'stamping_cat AS cat']);
 
         // $prod_data = DB::connection('mysql')
         // ->select("SELECT po_num AS po, part_code AS code, material_name AS name, prod_lot_no AS production_lot_no, po_qty AS qty, ship_output AS output_qty FROM stamping_productions WHERE id = '".$request->id."'");

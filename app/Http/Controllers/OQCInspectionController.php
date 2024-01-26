@@ -468,14 +468,14 @@ class OQCInspectionController extends Controller
                 if(count($get_oqc_inspection_per_row) != 0){
                     $result .= '
                         <button class="btn btn-info btn-sm text-center 
-                            actionOqcInspectionSecondStampingView" 
-                            oqc_inspection_second_stamping-id="' . $get_oqc_inspection_per_row[0]->id . '"
-                            prod_second_stamping-id="' . $prod_second_stamping_info->id . '" 
-                            prod_second_stamping-po="' . $prod_second_stamping_info->po_num . '" 
-                            prod_second_stamping-material_name="' . $prod_second_stamping_info->material_name . '" 
-                            prod_second_stamping-po_qty="' . $prod_second_stamping_info->po_qty . '" 
-                            prod_second_stamping-lot_no="' . $prod_second_stamping_info->prod_lot_no . '" 
-                            prod_second_stamping-ship_output="' . $prod_second_stamping_info->ship_output . '" 
+                            actionOqcInspectionView" 
+                            oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"
+                            prod-id="' . $prod_second_stamping_info->id . '" 
+                            prod-po="' . $prod_second_stamping_info->po_num . '" 
+                            prod-material-name="' . $prod_second_stamping_info->material_name . '" 
+                            prod-po-qty="' . $prod_second_stamping_info->po_qty . '" 
+                            prod-lot-no="' . $prod_second_stamping_info->prod_lot_no . '" 
+                            prod-ship_output="' . $prod_second_stamping_info->ship_output . '" 
                             data-toggle="modal" 
                             data-target="#modalOqcInspectionSecondStamping" 
                             data-keyboard="false" 
@@ -530,18 +530,21 @@ class OQCInspectionController extends Controller
 
         ->addColumn('status', function($prod_second_stamping_info){
             $result = '<center>';
-            $get_oqc_inspection_second_stamping_per_row = OQCInspection::where('fs_productions_id', $prod_second_stamping_info->id)->where('logdel', 0)->orderBy('id', 'DESC')->get();
-            if(count($get_oqc_inspection_second_stamping_per_row) > 0){
+            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_second_stamping_info->id)
+            ->where('logdel', 0)
+            ->orderBy('id', 'DESC')
+            ->get();
+            if(count($get_oqc_inspection_per_row) > 0){
                 switch($get_oqc_inspection_per_row[0]->lot_accepted)
                 {
                     case 0: // LOT ACCEPTED
                     {   
-                        $result .= '<span class="badge badge-pill badge-success"> Lot <br> Accepted</span>';
+                        $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
                         break;
                     }
                     case 1:  // LOT REJECTED
                     {   
-                        $result .= '<span class="badge badge-pill badge-danger"> Lot <br> Rejected</span>';
+                        $result .= '<span class="badge badge-pill badge-success"> Lot <br> Accepted</span>';
                         break;
                     }
                     default:
@@ -814,14 +817,14 @@ class OQCInspectionController extends Controller
             'oqc_inspection_judgement'              => 'required',
             'oqc_inspection_lot_inspected'          => 'required',
             'oqc_inspection_lot_accepted'           => 'required',
-            // 'oqc_inspection_remarks'                => 'required'
+            'oqc_inspection_remarks'                => 'required'
         ]);
 
         if ($validator->fails()) {
             return response()->json(['validationHasError' => 1, 'error' => $validator->messages()]);
         } else {
-            // DB::beginTransaction();
-            // try {
+            DB::beginTransaction();
+            try {
                 $check_existing_record = OQCInspection::with(['stamping_production_info'])->where('id', $request->oqc_inspection_id)->where('logdel', 0)->get();
                 // return $check_existing_record;
 
@@ -887,8 +890,6 @@ class OQCInspectionController extends Controller
                             $add_print_lot
                         );
                     }
-                }else{
-                    // PrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
                 if ($request->reel_lot_no_0 != null && $request->reel_lot_qty_0 != null) {
@@ -903,8 +904,6 @@ class OQCInspectionController extends Controller
                             $add_reel_lot
                         );
                     }
-                }else{
-                    // ReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
                 if ($request->mod_0 != null && $request->mod_qty_0 != null) {
@@ -919,16 +918,14 @@ class OQCInspectionController extends Controller
                             $add_mod
                         );
                     }
-                }else{
-                    // ModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                 }
 
-            //     DB::commit();
+                DB::commit();
                 return response()->json(['hasError' => 0]);
-            // } catch (\Exception $e) {
-            //     DB::rollback();
-            //     return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
-            // }
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
+            }
         }
     }
 

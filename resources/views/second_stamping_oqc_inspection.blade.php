@@ -71,7 +71,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><strong>PO No.:</strong></span>
                                             </div>
-                                            <input type="search" class="form-control" id="txtPoNumber" placeholder="---------------" readonly>
+                                            <input type="search" class="form-control invalidScan" id="txtPoNumber" placeholder="---------------" readonly>
                                         </div>
                                     </div>
                                     <div class="col-3">
@@ -79,7 +79,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><Strong>Material Name:</Strong></span>
                                             </div>
-                                            <input type="search" class="form-control" id="txtMaterialName" placeholder="---------------" readonly>
+                                            <input type="search" class="form-control invalidScan" id="txtMaterialName" placeholder="---------------" readonly>
                                         </div>
                                     </div>
 
@@ -88,7 +88,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><strong>Po Qty:</strong></span>
                                             </div>
-                                            <input type="text" class="form-control" id="txtPoQuantity" placeholder="---------------" readonly>
+                                            <input type="text" class="form-control invalidScan" id="txtPoQuantity" placeholder="---------------" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -678,26 +678,31 @@
                             try {
                                 let po = JSON.parse(scanQrCode)
                                 getPoNo =  po.po
-                                if(getPoNo != undefined){
+                                if(po.cat == 1){
                                     $('#txtPoNumber').val(po.po)
                                     $('#txtMaterialName').val(po.name)
                                     $('#txtPoQuantity').val(po.qty)
                                     $('#mdlScanQrCode').modal('hide')
                                 }else{
                                     alert('The Scan QR Code was not found!')
+                                    $('.invalidScan').val('')
+                                    getPoNo = ''
                                 }
                             }
                             catch (erur) {
                                 alert('The Scan QR Code was not found!')
+                                $('.invalidScan').val('')
+                                getPoNo = ''
                             }
                         }else{
                             alert('Please try again!')
+                            $('.invalidScan').val('')
+                            getPoNo = ''
                         }
                         $('#mdlScanQrCode').modal('hide')
                         dataTableOQCInspectionSecondStamping.draw()
                         $('#txtScanQrCode').val('')
                     }
-
                 });
 
                 $(document).on('click', '.actionOqcInspectionSecondStamping', function(e){
@@ -738,15 +743,15 @@
                     $('.viewDrawingFirst').removeClass('slct')
                 });
 
-                $(document).on('click', '.actionOqcInspectionSecondStampingView', function(e){
+                $(document).on('click', '.actionOqcInspectionView', function(e){
                     e.preventDefault()
-                    getPo                       = $(this).attr('prod_second_stamping-po')
-                    getPoQty                    = $(this).attr('prod_second_stamping-po_qty')
-                    getOqcId                    = $(this).attr('oqc_inspection_second_stamping-id')
-                    getProdId                   = $(this).attr('prod_second_stamping-id')
-                    getProdLotNo                = $(this).attr('prod_second_stamping-lot_no')
-                    getMaterialName             = $(this).attr('prod_second_stamping-material_name')
-                    getProdShipOutput           = $(this).attr('prod_second_stamping-ship_output')
+                    getPo                       = $(this).attr('prod-po')
+                    getPoQty                    = $(this).attr('prod-po-qty')
+                    getOqcId                    = $(this).attr('oqc_inspection-id')
+                    getProdId                   = $(this).attr('prod-id')
+                    getProdLotNo                = $(this).attr('prod-lot-no')
+                    getMaterialName             = $(this).attr('prod-material-name')
+                    getProdShipOutput           = $(this).attr('prod-ship_output')
                     getInfoForSecondStamping    = $(this).attr('second-stamping')
                     $('#txtStatus').val(getInfoForSecondStamping)
 
