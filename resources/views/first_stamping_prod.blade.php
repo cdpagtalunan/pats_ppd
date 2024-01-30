@@ -218,7 +218,7 @@
                                                 <label class="form-label">Shift:</label>
                                                 <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
                                             </div>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
@@ -238,7 +238,7 @@
                                                     <input type="number" class="form-control form-control-sm" name="no_cut" id="txtNoCut" placeholder="No. of Cut" readonly>
                                                 </div>
                                             </div>
-                                            
+
 
                                             <div class="form-group">
                                                 <label class="form-label">Input Coil Weight (kg):</label>
@@ -509,7 +509,7 @@
                 //         });
                 //         setTimeout(() => {
                 //             $(this).val('');
-                            
+
                 //         }, 500);
                 //     }
                 // });
@@ -579,7 +579,7 @@
                                             // console.log(data.responseJSON.msg);
                                             toastr.error(data.responseJSON.msg)
                                             // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                                            
+
                                         }
                                     });
                                 }
@@ -591,7 +591,7 @@
                             },
                             error: function(data, xhr, status){
                                 toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                                
+
                             }
                         });
                     }
@@ -766,7 +766,7 @@
                     let id = $(this).data('id');
                     let btnFunction = $(this).data('function');
                     let stampCategory = $(this).data('stampcat');
-                    
+
                     // console.log(btnFunction);
                     getProdDataById(id, btnFunction, stampCategory);
                 });
@@ -788,7 +788,7 @@
                     getProdDataById(id, btnFunction, stampCategory);
 
                 });
-                
+
 
                 $(document).on('click', '.btnViewHistory', function(e){
                     historyId = $(this).data('id');
@@ -796,7 +796,7 @@
                     dtDatatableHistory = $("#tblHistory").DataTable({
                         "processing" : true,
                         "serverSide" : true,
-                        "paging": false, 
+                        "paging": false,
                         "searching": false,
                         "info": false,
                         "destroy": true,
@@ -810,12 +810,12 @@
                         fixedHeader: true,
                         "columns":[
 
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return meta.row + meta.settings._iDisplayStart + 1;
                                 }
                             },
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return po;
                                 }
@@ -838,7 +838,7 @@
                     printStampCat = $(this).data('stampcat');
                     btnFunction = $(this).data('function');
 
-    
+
                     Swal.fire({
                         // title: "Are you sure?",
                         html: "Data already for mass production. <br> Do you want to re-setup this lot?",
@@ -854,16 +854,16 @@
                             scanningFunction = "editProdData";
                         }
                     });
-                    
+
                 });
 
 
             });
 
             $(document).on('keyup','#txtScanUserId', function(e){
-                
+
                 if(e.keyCode == 13){
-                    
+
                     if(scanningFunction === "prodData"){
                         validateUser($(this).val().toUpperCase(), [0,4], function(result){
                             if(result == true){
@@ -901,10 +901,10 @@
                         });
 
                     }
-                  
+
                     setTimeout(() => {
                         $(this).val('');
-                        
+
                     }, 500);
                 }
             });
