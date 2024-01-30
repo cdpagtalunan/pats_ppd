@@ -126,14 +126,21 @@
             </section>
         </div>
 
-    <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
+
     @include('component.modal')
+    <!--- Go to component/modal.blade.php -->
+    <!--- modalSaveIqcInspection formSaveIqcInspection -->
+    <!--- modalFirstMolding formFirstMolding -->
+    <!--- modalFirstMoldingStation formFirstMoldingStation -->
 
     @endsection
 
     @section('js_content')
         <script>
             $(document).ready(function () {
+
+                getFirstModlingDevices();
+
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
                     formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMolding.find('#contact_lot_number').val('');
@@ -158,7 +165,26 @@
                     formModal.firstMoldingStation.find('.form-control').attr('title', '');
                 })
 
-                getFirstModlingDevices();
+                $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal', function () {
+                    $('#txtScanQrCodeFirstMolding').focus();
+                    const mdlScanQrCode = document.querySelector("#mdlScanQrCodeFirstMolding");
+                    const inptQrCode = document.querySelector("#txtScanQrCodeFirstMolding");
+                    let focus = false;
+
+                    mdlScanQrCode.addEventListener("mouseover", () => {
+                        if (inptQrCode === document.activeElement) {
+                            focus = true;
+                        } else {
+                            focus = false;
+                        }
+                    });
+
+                    mdlScanQrCode.addEventListener("click", () => {
+                        if (focus) {
+                            inptQrCode.focus()
+                        }
+                    });
+                });
 
                 dt.firstMolding = table.FirstMoldingDetails.DataTable({
                     "processing" : true,
@@ -206,21 +232,62 @@
                     ]
                 });
 
-
                 table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
                 table.FirstMoldingStationDetails.on('click','#btnEditFirstMoldingStation', editFirstMoldingStation);
 
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
+                    dt.firstMoldingStation.draw()
                     $('#modalFirstMolding').modal('show');
                     $('#btnFirstMoldingStation').prop('disabled',true);
+                    $('#btnSubmitFirstMoldingStation').prop('disabled',true);
+                    $('#btnRuncardDetails').removeClass('d-none',true);
                 });
 
                 $('#btnFirstMoldingStation').click(function (e) {
                     e.preventDefault();
+                    getStation();
                     $('#modalFirstMoldingStation').modal('show');
                     formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
-                    getStation();
+                });
+
+                $('#btnSubmitFirstMoldingStation').click(function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        // title: "Are you sure?",
+                        text: "Are you sure you want to submit this process",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: "GET",
+                                url: "first_molding_update_status",
+                                data: {
+                                    "first_molding_id" : formModal.firstMolding.find("#first_molding_id").val(),
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    if(response['result'] === 1){
+                                        $('#modalFirstMolding').modal('hide');
+                                        dt.firstMolding.draw();
+                                        Swal.fire({
+                                            position: "center",
+                                            icon: "success",
+                                            title: "Submitted Successfully !",
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                    }
+                                },error: function (data, xhr, status){
+                                    toastr.error(`Error: ${data.status}`);
+                                }
+                            });
+                        }
+                    });
                 });
 
                 $('#global_device_name').change(function (e) {
@@ -261,6 +328,26 @@
                     formModal.firstMoldingStation.find('#output').val(totalOutputQty);
                 }
 
+                $('#btnScanQrFirstMolding').click(function (e) {
+                    $('#mdlScanQrCodeFirstMolding').modal('show');
+                    $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal');
+
+                });
+
+                $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        console.log(($(this).val()));
+                        // let explodedMat = $(this).val().split(' $|| ');
+                        // $('#txtMaterialLot_0').val(explodedMat[0]);
+                        // $('#txtMaterialLotQty').val(explodedMat[1]);
+
+                        // // console.log(explodedMat);
+                        formModal.firstMolding.find('#contact_lot_number').val($(this).val());
+                        $(this).val('');
+                        $('#mdlScanQrCodeFirstMolding').modal('hide');
+                    }
+                });
+
                 $('#input').keyup(function (e) {
                     totalOutput(formModal.firstMoldingStation.find(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
                 });
@@ -279,46 +366,9 @@
                     savefirstMoldingStation();
                 });
 
-                $('#btnSubmitFirstMoldingStation').click(function (e) {
-                    e.preventDefault();
-                    Swal.fire({
-                        // title: "Are you sure?",
-                        text: "Are you sure you want to submit this process",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Yes"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                type: "GET",
-                                url: "first_molding_update_status",
-                                data: {
-                                    "first_molding_id" : formModal.firstMolding.find("#first_molding_id").val(),
-                                },
-                                dataType: "json",
-                                success: function (response) {
-                                    if(response['result'] === 1){
-                                        $('#modalFirstMolding').modal('hide');
-                                        dt.firstMoldingStation.draw();
-                                        Swal.fire({
-                                            position: "center",
-                                            icon: "success",
-                                            title: "Submitted Successfully !",
-                                            showConfirmButton: false,
-                                            timer: 1500
-                                        });
-                                    }
-                                },error: function (data, xhr, status){
-                                    toastr.error(`Error: ${data.status}`);
-                                }
-                            });
-                        }
-                    });
-                });
-                
-            
+
+
+
             });
         </script>
     @endsection

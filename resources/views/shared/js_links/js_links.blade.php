@@ -74,7 +74,7 @@
 <script src="{{ asset('public/js/main/IqcInspection.js?1234567') }}"></script>
 
 {{-- MOLDING --}}
-<script src="{{ asset('public/js/main/FirstMolding.js?1234567') }}"></script>
+<script src="{{ asset('public/js/main/FirstMolding.js?987654') }}"></script>
 
 {{-- Second Molding --}}
 <script src="@php echo asset("public/js/main/SecondMolding.js?".date("YmdHis")) @endphp"></script>
