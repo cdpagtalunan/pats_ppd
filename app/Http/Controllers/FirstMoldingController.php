@@ -84,11 +84,10 @@ class FirstMoldingController extends Controller
 
     public function saveFirstMolding(FirstMoldingRequest $request)
     {
+        // return 'true';
         date_default_timezone_set('Asia/Manila');
         try{
             if( isset( $request->first_molding_id )){ //Edit
-                // return 'edit';
-                // return $request->first_molding_id;
                 FirstMolding::where('id',$request->first_molding_id)
                 ->update([
                     'first_molding_device_id' => $request->first_molding_device_id,

@@ -30,7 +30,7 @@ class PdfController extends Controller
 
         // $cc_personnel_name = explode(' ', $packing_list_details[0]->cc_personnel);
         // $cc_personnel_surname = explode(',', $packing_list_details[0]->cc_personnel);
-        // $cc_personnel_surname1 = explode(' ', $cc_personnel_surname[1]);
+        // return $cc_personnel_surname1 = explode(' ', $cc_personnel_surname[1]);
         // return $cc_personnel_surname1[0].' '.$cc_personnel_surname1[1][0];
         // $packing_list_details = PackingListDetails::where('mat_name', $control_no)->orderBy('box_no', 'asc')->get();
         // $material_name = PackingListDetails::selectwhere('control_no', $control_no)->get();

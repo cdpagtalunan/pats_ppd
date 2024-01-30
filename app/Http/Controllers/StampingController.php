@@ -352,7 +352,7 @@ class StampingController extends Controller
         // return $request->stamp_cat;
         // return $prod_data[0];
         $qrcode = QrCode::format('png')
-        ->size(200)->errorCorrection('H')
+        ->size(250)->errorCorrection('H')
         ->generate($prod_data);
 
         $QrCode = "data:image/png;base64," . base64_encode($qrcode);
