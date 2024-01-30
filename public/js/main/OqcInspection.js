@@ -366,7 +366,7 @@ function UpdateOqcInspection(){
                 }
             }else if(response['hasError'] == 0){
                 $("#formOqcInspection")[0].reset()
-                $('#modalOqcInspection').modal('hide')
+                $('#modalOqcInspectionFirstStamping').modal('hide')
                 $('#modalOqcInspectionSecondStamping').modal('hide')
                 toastr.success('Succesfully saved!')
                 dataTableOQCInspectionFirstStamping.draw()
@@ -410,7 +410,6 @@ function GetOqcInspectionById(getPo,
             GetAQL($('.aqlDropdown'))
             GetFamily($('.familyDropdown'))
             GetCustomer($('.customerDropdown'))
-            GetMOD($('.inspectionModDropdown_0'))
             GeStampingLine($('.stampingLineDropdown'))
             GetInspectionType($('.inspectionTypeDropdown'))
             GetInspectionLevel($('.inspectionLevelDropdown'))
@@ -421,7 +420,6 @@ function GetOqcInspectionById(getPo,
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
-            console.log('firstStampingProduction', firstStampingProduction)
             
             if(firstStampingProduction[0].stamping_ipqc != null){
                 if(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0] != null){
@@ -482,6 +480,7 @@ function GetOqcInspectionById(getPo,
                 $('#txtOqcInspectionRemarks').val(getOqcInspectionData[0].remarks)
 
                 if(getOqcInspectionData[0].lot_accepted == '0'){
+                    GetMOD($('.inspectionModDropdown_0'))
                     $('.mod-class').removeClass('d-none')
                 }else{
                     $('.mod-class').addClass('d-none')

@@ -10,4 +10,5 @@ class PackingListDetails extends Model
     use HasFactory;
     protected $table = "packing_list_details";
     protected $connection = "mysql";
+    
 }

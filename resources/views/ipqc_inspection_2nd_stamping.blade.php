@@ -548,6 +548,7 @@
                     },
                     fixedHeader: true,
                     // bAutoWidth: false,
+                    "order":[[7, 'desc']],
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
@@ -586,6 +587,7 @@
                         }
                     },
                     bAutoWidth: false,
+                    "order":[[7, 'desc']],
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
@@ -623,6 +625,7 @@
                         }
                     },
                     bAutoWidth: false,
+                    "order":[[7, 'desc']],
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },

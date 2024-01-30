@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Packing List')
 
     @section('content_page')
 
@@ -134,7 +134,7 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download" ></i> Download</button>
+                        <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download"></i> Export</button>
                     </div>
                 </form>
             </div>
@@ -367,7 +367,8 @@
             $('#formGeneratePackingList').submit(function (e){
                 e.preventDefault();
                 let CtrlNo = $('#txtCtrlNo').val();
-                window.location.href = "view_pdf/"+CtrlNo;
+                // window.location.href = "view_pdf/"+CtrlNo;\
+                window.open(`view_pdf/${CtrlNo}`, '_blank');
                 $('#modalExportPackingList').modal('hide');
             });
 
@@ -464,7 +465,9 @@
                     let data = dtProductionDetails.row(this).data();
                     let array_data = Object.entries(data);
 
-                    packing_list_data_array.push(data['id']);
+                    console.log(`data`, data['oqc_id']);
+
+                    packing_list_data_array.push(data['oqc_id']);
                     console.log('packing_list_data_array ', packing_list_data_array);
                     // $(this).toggleClass('selected');
 

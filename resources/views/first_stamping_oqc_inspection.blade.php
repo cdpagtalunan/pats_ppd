@@ -173,7 +173,7 @@
         </div><!-- /.End History Modal -->        
                 
         <!-- Start OQC Inspection Modal -->
-        <div class="modal fade" id="modalOqcInspection" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalOqcInspectionFirstStamping" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -598,7 +598,7 @@
             $(document).ready(function() {
                 $('.select2bs4').select2({
                     theme: 'bootstrap-5'
-                });                
+                })          
 
                 // ======================= START DATA TABLE =======================
                 dataTableOQCInspectionFirstStamping = $("#tblOqcInspection").DataTable({
@@ -606,7 +606,7 @@
                     "serverSide"    : true,
                     "destroy"       : true,
                     "ajax" : {
-                        url: "view_oqc_inspection",
+                        url: "view_oqc_inspection_first_stamping",
                         data: function (pamparam){
                             pamparam.poNo = getPoNo
                         },
@@ -633,12 +633,12 @@
                         { "data" : "remarks" },
                         { "data" : "family" },
                         { "data" : "update_user" },
-                        { "data" : "updated_at" }
+                        { "data" : "created_at" }
                     ],
                     "columnDefs": [
                         // { className: "align-center", targets: [1, 2] },
                     ],
-                });
+                })
 
                 $('#btnScanPo').on('click', function(e){
                     e.preventDefault()
@@ -660,15 +660,15 @@
                             } else {
                                 focus = false
                             }
-                        });
+                        })
 
                         mdlScanQrCodeOqcInspection.addEventListener("click", () => {
                             if (focus) {
                                 inptQrCodeOqcInspection.focus()
                             }
-                        });
-                    });
-                });
+                        })
+                    })
+                })
 
                 $('#txtScanQrCode').on('keypress',function(e){
                     if( e.keyCode == 13 ){
@@ -688,7 +688,7 @@
                                     getPoNo = ''
                                 }
                             }
-                            catch (erur) {
+                            catch (error) {
                                 alert('The Scan QR Code was not found!')
                                 $('.invalidScan').val('')
                                 getPoNo = ''
@@ -702,24 +702,24 @@
                         dataTableOQCInspectionFirstStamping.draw()
                         $('#txtScanQrCode').val('')
                     }
-                });
+                })
 
                 $('#mdlScanQrCode').on('hidden.bs.modal', function() {
                     console.log('HIDE SCAN CODE')
                     $('#txtScanUserId').val('')
                     $('#txtScanQrCode').val('')
                     dataTableOQCInspectionFirstStamping.draw()
-                });
+                })
 
                 $(document).on('click', '.actionOqcInspectionFirstStamping', function(e){
                     e.preventDefault()
-                    getPo                       = $(this).attr('prod-po')
-                    getPoQty                    = $(this).attr('prod-po-qty')
-                    getOqcId                    = $(this).attr('oqc_inspection-id')
-                    getProdId                   = $(this).attr('prod-id')
-                    getProdLotNo                = $(this).attr('prod-lot-no')
-                    getMaterialName             = $(this).attr('prod-material-name')
-                    getProdShipOutput           = $(this).attr('prod-ship-output')
+                    getPo                       = $(this).attr('first_stamping_prod-po')
+                    getPoQty                    = $(this).attr('first_stamping_prod-po_qty')
+                    getOqcId                    = $(this).attr('first_stamping_oqc_inspection-id')
+                    getProdId                   = $(this).attr('first_stamping_prod-id')
+                    getProdLotNo                = $(this).attr('first_stamping_prod-lot_no')
+                    getMaterialName             = $(this).attr('first_Stamping_prod-material_name')
+                    getProdShipOutput           = $(this).attr('first_stamping_prod-ship_output')
                     getInfoForFirstStamping     = $(this).attr('first-stamping')
                     
                     $('#txtStatus').val(getInfoForFirstStamping)
@@ -744,19 +744,19 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspection').modal('show')
+                    $('#modalOqcInspectionFirstStamping').modal('show')
                     $('.viewDrawingFirst').removeClass('slct')
-                });
+                })
 
-                $(document).on('click', '.actionOqcInspectionView', function(e){
+                $(document).on('click', '.actionOqcInspectionViewFirstStamping', function(e){
                     e.preventDefault()
-                    getPo               = $(this).attr('prod-po')
-                    getPoQty            = $(this).attr('prod-po-qty')
-                    getOqcId            = $(this).attr('oqc_inspection-id')
-                    getProdId           = $(this).attr('prod-id')
-                    getProdLotNo        = $(this).attr('prod-lot-no')
-                    getMaterialName     = $(this).attr('prod-material-name')
-                    getProdShipOutput   = $(this).attr('prod-ship-output')
+                    getPo               = $(this).attr('first_stamping_prod-po')
+                    getPoQty            = $(this).attr('first_stamping_prod-po_qty')
+                    getOqcId            = $(this).attr('first_stamping_oqc_inspection-id')
+                    getProdId           = $(this).attr('first_stamping_prod-id')
+                    getProdLotNo        = $(this).attr('first_stamping_prod-lot_no')
+                    getMaterialName     = $(this).attr('first_stamping_prod-material_name')
+                    getProdShipOutput   = $(this).attr('first_stamping_prod-ship_output')
                     getInfoForFirstStamping     = $(this).attr('first-stamping')
                     $('#txtStatus').val(getInfoForFirstStamping)
 
@@ -771,77 +771,78 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspection').modal('show')
+                    $('#modalOqcInspectionFirstStamping').modal('show')
 
                     $('.viewDrawingFirst').removeClass('d-none')
                     $('.viewDrawingFirst').addClass('slct')
                     $('.viewing').addClass('d-none')
                     $('.drawing').addClass('d-none')
-                });
+                })
 
                 $(document).on('click', '.actionOqcInspectionHistory', function(e){
                     e.preventDefault()
-                    getPo               = $(this).attr('prod-po')
-                    getPoQty            = $(this).attr('prod-po-qty')
-                    getOqcId            = $(this).attr('oqc_inspection-id')
-                    getProdId           = $(this).attr('prod-id')
-                    getProdLotNo        = $(this).attr('prod-lot-no')
-                    getMaterialName     = $(this).attr('prod-material-name')
-                    getProdShipOutput   = $(this).attr('prod-ship-output')    
+                    getPo               = $(this).attr('first_stamping_prod-po')
+                    getPoQty            = $(this).attr('first_stamping_prod-po_qty')
+                    getOqcId            = $(this).attr('first_stamping_oqc_inspection-id')
+                    getProdId           = $(this).attr('first_stamping_prod-id')
+                    getProdLotNo        = $(this).attr('first_stamping_prod-lot_no')
+                    getMaterialName     = $(this).attr('first_Stamping_prod-material_name')
+                    getProdShipOutput   = $(this).attr('first_stamping_prod-ship_output')    
 
                     getPoNo = getPo;
                     $('#mdlOqcInspectionHistory').modal('show')
 
                     dataTableOQCInspectionFirstStamping = $("#tblOqcInspectionHistory").DataTable({
-                    "processing"    : false,
-                    "serverSide"    : true,
-                    "ajax" : {
-                        url: "view_oqc_inspection_history",
-                        data: function (pamparam){
-                            pamparam.poNoById = getProdId
+                        "processing"    : false,
+                        "serverSide"    : true,
+                        "destroy"       : true,
+                        "ajax" : {
+                            url: "view_oqc_inspection_history",
+                            data: function (pamparam){
+                                pamparam.poNoById = getProdId
+                            },
                         },
-                    },
 
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "stamping_production_info.po_num" },
-                        { "data" : "stamping_production_info.po_qty" },
-                        { "data" : "stamping_production_info.prod_lot_no" },
-                        { "data" : "stamping_production_info.ship_output" },
-                        { "data" : "stamping_production_info.material_name" },
-                        { "data" : "fy_ww" },
-                        { "data" : "date_inspected" },
-                        { "data" : "time_ins_from" },
-                        { "data" : "time_ins_to" },
-                        { "data" : "submission" },
-                        { "data" : "sample_size" },
-                        { "data" : "mod" },
-                        { "data" : "num_of_defects" },
-                        { "data" : "judgement" },
-                        { "data" : "inspector" },
-                        { "data" : "remarks" },
-                        { "data" : "family" },
-                        { "data" : "update_user" },
-                        { "data" : "updated_at" }
-                    ],
-                    "columnDefs": [
-                        // { className: "align-center", targets: [1, 2] },
-                    ],
-                });
-                });
+                        "columns":[
+                            { "data" : "action", orderable:false, searchable:false },
+                            { "data" : "stamping_production_info.po_num" },
+                            { "data" : "stamping_production_info.po_qty" },
+                            { "data" : "stamping_production_info.prod_lot_no" },
+                            { "data" : "stamping_production_info.ship_output" },
+                            { "data" : "stamping_production_info.material_name" },
+                            { "data" : "fy_ww" },
+                            { "data" : "date_inspected" },
+                            { "data" : "time_ins_from" },
+                            { "data" : "time_ins_to" },
+                            { "data" : "submission" },
+                            { "data" : "sample_size" },
+                            { "data" : "mod" },
+                            { "data" : "num_of_defects" },
+                            { "data" : "judgement" },
+                            { "data" : "inspector" },
+                            { "data" : "remarks" },
+                            { "data" : "family" },
+                            { "data" : "update_user" },
+                            { "data" : "created_at" }
+                        ],
+                        "columnDefs": [
+                            // { className: "align-center", targets: [1, 2] },
+                        ],
+                    })
+                })
 
                 $('#btnViewRDrawings').on('click', function(){
                     redirect_to_drawing($('#txtBDrawingNo').val(), 0)
                     SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
-                });
+                })
                 $('#btnViewUdDrawings').on('click', function(){
                     redirect_to_drawing($('#txtUdDrawingNo').val(), 1)
                     SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white')
-                });
+                })
                 $('#btnViewInspStdDrawings').on('click', function(){
                     redirect_to_drawing($('#txtInspStdDrawingNo').val(), 2)
                     SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white')
-                });
+                })
 
                 $('#oqcInspectionNextButton').on('click', function(){
                     let checkDrawings = false
@@ -863,9 +864,9 @@
                         $('.drawing').addClass('d-none')
                         console.log('All Documents has been viewed!')
                     }
-                });
+                })
 
-                $('#modalOqcInspection').on('hide.bs.modal', function() {
+                $('#modalOqcInspectionFirstStamping').on('hide.bs.modal', function() {
                     console.log('Hide OQC Inspection modal')
                     $('#txtScanUserId').addClass('d-none')
                     $('#txtScanQrCode').addClass('d-none')
@@ -877,7 +878,7 @@
                     $(`.remove-class`).removeClass('bg-success-custom font-weight-bold text-white')
                     $("#formOqcInspection")[0].reset()
                     dataTableOQCInspectionFirstStamping.draw()
-                });
+                })
 
                 // ===================== SCRIPT FOR ADD PRINT LOT ===================
                 let printLotCounter = 0;
@@ -899,7 +900,7 @@
 
                     $('#txtPrintLotCounter').val(printLotCounter)
                     $('#divPrintLotFields').append(html)
-                });
+                })
                 // ================== SCRIPT FOR REMOVE PRINT LOT ======================
                 $("#btnRemovePrintLot").on('click', function(e){
                     e.preventDefault()
@@ -914,7 +915,7 @@
                     if(printLotCounter < 1){
                         $('#btnRemovePrintLot').addClass('d-none')
                     }
-                });
+                })
 
                 // ===================== SCRIPT FOR ADD REEL LOT ===================
                 let reelLotCounter = 0;
@@ -936,7 +937,7 @@
 
                     $('#txtReelLotCounter').val(reelLotCounter)
                     $('#divReelLotFields').append(html)
-                });
+                })
                 // ================== SCRIPT FOR REMOVE REEL LOT ======================
                 $("#btnRemoveReelLot").on('click', function(e){
                     e.preventDefault()
@@ -951,8 +952,7 @@
                     if(reelLotCounter < 1){
                         $('#btnRemoveReelLot').addClass('d-none')
                     }
-                });
-
+                })
                 
                 // ===================== SCRIPT FOR ADD MOD ===================
                 let modCounter = 0;
@@ -976,7 +976,7 @@
                     $('#divModFields').append(html)
 
                     GetMOD($('.inspectionModDropdown_'+modCounter+''))
-                });
+                })
                 // ================== SCRIPT FOR REMOVE MOD ======================
                 $("#btnRemoveMod").on('click', function(e){
                     e.preventDefault()
@@ -991,7 +991,7 @@
                     if(modCounter < 1){
                         $('#btnRemoveMod').addClass('d-none')
                     }
-                });
+                })
 
                 $('#txtOqcInspectionLotAccepted').on('keyup', function () {
                     if($('#txtOqcInspectionLotAccepted').val() == '1' || $('#txtOqcInspectionLotAccepted').val() == ''){
@@ -1004,6 +1004,7 @@
                             $('#txtOqcInspectionJudgement').val('')
                         }
                     }else{
+                        GetMOD($('.inspectionModDropdown_0'))
                         $('#txtOqcInspectionJudgement').val('Reject')
                         $('.mod-class').removeClass('d-none')
                     }
@@ -1037,8 +1038,8 @@
                         $('#txtScanUserId').val('')
                         $('#mdlScanQrCode').modal('hide')
                     }
-                });
-            });
+                })
+            })
 
         </script>
     @endsection

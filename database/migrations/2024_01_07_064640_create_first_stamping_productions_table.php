@@ -23,6 +23,7 @@ class CreateFirstStampingProductionsTable extends Migration
             $table->string('part_code');
             $table->string('material_name');
             $table->string('material_lot_no');
+            $table->string('material_lot_qty');
             $table->string('drawing_no');
             $table->string('drawing_rev');
             $table->string('operator')->comment = "id from users";

@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Second Stamping')
 
     @section('content_page')
 
@@ -66,7 +66,7 @@
                                         <div class="col-sm-2">
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
-                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
+                                                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
                                                 <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
                                             </div>
@@ -108,7 +108,7 @@
                                         @endif
                                         @endif --}}
 
-                                        <button class="btn btn-primary" id="btnAddProdData">
+                                        <button class="btn btn-dark" id="btnAddProdData">
                                             <i class="fa-solid fa-plus"></i> Add</button>
                                     </div> <br><br>
                                     <div class="table-responsive">
@@ -417,12 +417,12 @@
             <div class="modal-dialog modal-sm modal-dialog-top" role="document">
                 <div class="modal-content">
                     <div class="modal-header border-bottom-0 pb-0">
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        {{-- <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> --}}
                     </div>
-                    <div class="modal-body pt-0">
+                    <div class="modal-body pt-2">
                         {{-- hidden_scanner_input --}}
                         {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO" name="" autocomplete="off"> --}}
-                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPO"  autocomplete="off">
+                        <input type="text" class="w-100 hidden_scanner_input" id="txtScanPO"  autocomplete="off">
                         {{-- <input type="text" class="scanner w-100" id="txtScanPO"  autocomplete="off"> --}}
                         {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan PO Number.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
@@ -530,7 +530,23 @@
                 });
                 $('#modalScanPO').on('shown.bs.modal', function () {
                     $('#txtScanPO').focus();
-                   
+                    const mdlScanPoNo = document.querySelector("#modalScanPO");
+                    const inptScanPoNo = document.querySelector("#txtScanPO");
+                    let focus = false
+
+                    mdlScanPoNo.addEventListener("mouseover", () => {
+                        if (inptScanPoNo === document.activeElement) {
+                            focus = true
+                        } else {
+                            focus = false
+                        }
+                    });
+
+                    mdlScanPoNo.addEventListener("click", () => {
+                        if (focus) {
+                            inptScanPoNo.focus()
+                        }
+                    });
                 });
                 $('#txtScanPO').on('keyup', function(e){
                     if(e.keyCode == 13){

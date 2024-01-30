@@ -176,24 +176,16 @@ class PackingListDetailsController extends Controller
             "prod_id" => [],
         ];
 
-        // $box_no = implode(',',$request->box_no);
-
-        // $date_time = $request->pickup_date_and_time;
-
-        // return $request->pickup_date_and_time;
-
-        // return 
         $date = substr($request->pickup_date_and_time,0,10);
         $time = substr($request->pickup_date_and_time,11,16);
 
-        // return gettype($box_no);
-       
-        
         if(count($request->packing_list_data_array) > 0){
             for ($i=0; $i < count($request->packing_list_data_array); $i++) { 
                 array_push($prod_id['prod_id'], $request->packing_list_data_array);
             }
         }
+
+        // return $request->packing_list_data_array;
 
         $prod_data = OQCInspection::
         with(['stamping_production_info'])
@@ -202,14 +194,11 @@ class PackingListDetailsController extends Controller
 
         // return $prod_data;
 
-        // return count($prod_data);
-
         $material_name = "";
         $prod_lot_no = "";
         $qty = "";
         $prod_id = "";
-        $imploded_cc = implode($request->carbon_copy, ', ');
-
+        $imploded_cc = implode($request->carbon_copy, ',');
 
         $rules = [
             // 'control_no'                 => 'required',
@@ -227,10 +216,6 @@ class PackingListDetailsController extends Controller
                     $material_name = $prod_data[$i]->stamping_production_info->material_name;
                     $prod_lot_no = $prod_data[$i]->stamping_production_info->prod_lot_no;
                     $qty = $prod_data[$i]->stamping_production_info->ship_output;
-
-
-                // return $prod_data[$i];
-
             
                         $array = [
                             'control_no'            => $request->ctrl_num,
@@ -264,14 +249,14 @@ class PackingListDetailsController extends Controller
                             'status'                => 0,
                             'created_at'            => date('Y-m-d H:i:s'),
                         ];
-                        if(isset($request->packing_list_id)){ // edit
-                            PackingListDetails::where('id', $request->packing_list_id)
-                            ->update($array);
-                        }
-                        else{ // insert
-                            PackingListDetails::insert($array);
-                            ReceivingDetails::insert($array_for_receiving);
-                        }
+                        $array_for_preliminary = [
+                            'status' => 2,
+                        ];
+
+                        PackingListDetails::insert($array);
+                        ReceivingDetails::insert($array_for_receiving);
+                        PreliminaryPacking::where('oqc_id', $prod_data[0]->id)
+                        ->update($array_for_preliminary);
         
                 
             }

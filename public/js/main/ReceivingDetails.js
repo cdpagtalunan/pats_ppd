@@ -36,8 +36,6 @@ const printReceivingData = async (id) => {
             img_barcode_PO_text_hidden = response['label_hidden'];
             $('#modalPrintQr').modal('show');
             console.log(response);
-
-
         }
     });
 }

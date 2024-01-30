@@ -177,7 +177,7 @@
             <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-edit"></i> First Stamping OQC Inspection</h4>
+                        <h4 class="modal-title"><i class="fa fa-edit"></i> Second Stamping OQC Inspection</h4>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -598,8 +598,8 @@
             $(document).ready(function() {
                 $('.select2bs4').select2({
                     theme: 'bootstrap-5'
-                });                
-
+                })   
+                
                 // ======================= START DATA TABLE =======================
                 dataTableOQCInspectionSecondStamping = $("#tblOqcInspectionSecondStamping").DataTable({
                     "processing"    : false,
@@ -633,12 +633,12 @@
                         { "data" : "remarks" },
                         { "data" : "family" },
                         { "data" : "update_user" },
-                        { "data" : "updated_at" }
+                        { "data" : "created_at" }
                     ],
                     "columnDefs": [
                         // { className: "align-center", targets: [1, 2] },
                     ],
-                });
+                })
 
                 $('#btnScanPo').on('click', function(e){
                     e.preventDefault()
@@ -667,9 +667,9 @@
                             if (focus) {
                                 inptQrCodeOqcInspection.focus()
                             }
-                        });
-                    });
-                });
+                        })
+                    })
+                })
 
                 $('#txtScanQrCode').on('keypress',function(e){
                     if( e.keyCode == 13 ){
@@ -678,7 +678,7 @@
                             try {
                                 let po = JSON.parse(scanQrCode)
                                 getPoNo =  po.po
-                                if(po.cat == 1){
+                                if(po.cat == 2){
                                     $('#txtPoNumber').val(po.po)
                                     $('#txtMaterialName').val(po.name)
                                     $('#txtPoQuantity').val(po.qty)
@@ -689,7 +689,7 @@
                                     getPoNo = ''
                                 }
                             }
-                            catch (erur) {
+                            catch (error) {
                                 alert('The Scan QR Code was not found!')
                                 $('.invalidScan').val('')
                                 getPoNo = ''
@@ -703,7 +703,7 @@
                         dataTableOQCInspectionSecondStamping.draw()
                         $('#txtScanQrCode').val('')
                     }
-                });
+                })
 
                 $(document).on('click', '.actionOqcInspectionSecondStamping', function(e){
                     e.preventDefault()
@@ -741,9 +741,9 @@
                     $('#txtOqcInspectionId').val(getOqcId)
                     $('#modalOqcInspectionSecondStamping').modal('show')
                     $('.viewDrawingFirst').removeClass('slct')
-                });
+                })
 
-                $(document).on('click', '.actionOqcInspectionView', function(e){
+                $(document).on('click', '.actionOqcInspectionViewSecondStamping', function(e){
                     e.preventDefault()
                     getPo                       = $(this).attr('prod-po')
                     getPoQty                    = $(this).attr('prod-po-qty')
@@ -772,7 +772,7 @@
                     $('.viewDrawingFirst').addClass('slct')
                     $('.viewing').addClass('d-none')
                     $('.drawing').addClass('d-none')
-                });
+                })
 
                 $(document).on('click', '.actionOqcInspectionSecondStampingHistory', function(e){
                     e.preventDefault()
@@ -784,59 +784,60 @@
                     getMaterialName     = $(this).attr('prod_second_stamping-material_name')
                     getProdShipOutput   = $(this).attr('prod_second_stamping-ship_output')    
 
-                    getPoNo = getPo;
+                    getPoNo = getPo
                     $('#mdlOqcInspectionHistory').modal('show')
 
                     dataTableOQCInspectionSecondStamping =  $("#tblOqcInspectionHistory").DataTable({
-                    "processing"    : false,
-                    "serverSide"    : true,
-                    "ajax" : {
-                        url: "view_oqc_inspection_history",
-                        data: function (pamparam){
-                            pamparam.poNoById = getProdId
+                        "processing"    : false,
+                        "serverSide"    : true,
+                        "destroy"    : true,
+                        "ajax" : {
+                            url: "view_oqc_inspection_history",
+                            data: function (pamparam){
+                                pamparam.poNoById = getProdId
+                            },
                         },
-                    },
 
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "stamping_production_info.po_num" },
-                        { "data" : "stamping_production_info.po_qty" },
-                        { "data" : "stamping_production_info.prod_lot_no" },
-                        { "data" : "stamping_production_info.ship_output" },
-                        { "data" : "stamping_production_info.material_name" },
-                        { "data" : "fy_ww" },
-                        { "data" : "date_inspected" },
-                        { "data" : "time_ins_from" },
-                        { "data" : "time_ins_to" },
-                        { "data" : "submission" },
-                        { "data" : "sample_size" },
-                        { "data" : "mod" },
-                        { "data" : "num_of_defects" },
-                        { "data" : "judgement" },
-                        { "data" : "inspector" },
-                        { "data" : "remarks" },
-                        { "data" : "family" },
-                        { "data" : "update_user" },
-                        { "data" : "updated_at" }
-                    ],
-                    "columnDefs": [
-                        // { className: "align-center", targets: [1, 2] },
-                    ],
-                });
-                });
+                        "columns":[
+                            { "data" : "action", orderable:false, searchable:false },
+                            { "data" : "stamping_production_info.po_num" },
+                            { "data" : "stamping_production_info.po_qty" },
+                            { "data" : "stamping_production_info.prod_lot_no" },
+                            { "data" : "stamping_production_info.ship_output" },
+                            { "data" : "stamping_production_info.material_name" },
+                            { "data" : "fy_ww" },
+                            { "data" : "date_inspected" },
+                            { "data" : "time_ins_from" },
+                            { "data" : "time_ins_to" },
+                            { "data" : "submission" },
+                            { "data" : "sample_size" },
+                            { "data" : "mod" },
+                            { "data" : "num_of_defects" },
+                            { "data" : "judgement" },
+                            { "data" : "inspector" },
+                            { "data" : "remarks" },
+                            { "data" : "family" },
+                            { "data" : "update_user" },
+                            { "data" : "created_at" }
+                        ],
+                        "columnDefs": [
+                            // { className: "align-center", targets: [1, 2] },
+                        ],
+                    })
+                })
 
                 $('#btnViewRDrawings').on('click', function(){
                     redirect_to_drawing($('#txtBDrawingNo').val(), 0)
                     SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
-                });
+                })
                 $('#btnViewUdDrawings').on('click', function(){
                     redirect_to_drawing($('#txtUdDrawingNo').val(), 1)
                     SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white')
-                });
+                })
                 $('#btnViewInspStdDrawings').on('click', function(){
                     redirect_to_drawing($('#txtInspStdDrawingNo').val(), 2)
                     SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white')
-                });
+                })
 
                 $('#oqcInspectionNextButton').on('click', function(){
                     let checkDrawings = false
@@ -858,7 +859,7 @@
                         $('.drawing').addClass('d-none')
                         console.log('All Documents has been viewed!')
                     }
-                });
+                })
 
                 $('#modalOqcInspectionSecondStamping').on('hide.bs.modal', function() {
                     console.log('Hide OQC Inspection modal: hide scan fields')
@@ -872,17 +873,17 @@
                     $(`.remove-class`).removeClass('bg-success-custom font-weight-bold text-white')
                     $("#formOqcInspection")[0].reset()
                     dataTableOQCInspectionSecondStamping.draw()
-                });
+                })
 
                 $('#mdlScanQrCode').on('hidden.bs.modal', function() {
                     console.log('HIDE SCAN CODE')
                     $('#txtScanUserId').val('')
                     $('#txtScanQrCode').val('')
                     dataTableOQCInspectionSecondStamping.draw()
-                });
+                })
 
                 // ===================== SCRIPT FOR ADD PRINT LOT ===================
-                let printLotCounter = 0;
+                let printLotCounter = 0
                 $('#btnAddPrintLot').on('click', function(e){
                     e.preventDefault()
                     printLotCounter++
@@ -901,7 +902,7 @@
 
                     $('#txtPrintLotCounter').val(printLotCounter)
                     $('#divPrintLotFields').append(html)
-                });
+                })
                 // ================== SCRIPT FOR REMOVE PRINT LOT ======================
                 $("#btnRemovePrintLot").on('click', function(e){
                     e.preventDefault()
@@ -916,7 +917,7 @@
                     if(printLotCounter < 1){
                         $('#btnRemovePrintLot').addClass('d-none')
                     }
-                });
+                })
 
                 // ===================== SCRIPT FOR ADD REEL LOT ===================
                 let reelLotCounter = 0;
@@ -938,7 +939,7 @@
 
                     $('#txtReelLotCounter').val(reelLotCounter)
                     $('#divReelLotFields').append(html)
-                });
+                })
                 // ================== SCRIPT FOR REMOVE REEL LOT ======================
                 $("#btnRemoveReelLot").on('click', function(e){
                     e.preventDefault()
@@ -953,16 +954,16 @@
                     if(reelLotCounter < 1){
                         $('#btnRemoveReelLot').addClass('d-none')
                     }
-                });
+                })
 
                 // $('.selectEmpty').on('change', function () {
                 //     $('.selectEmpty').on('keyup', function () {
                 //         $('.selectEmpty').each(function (indexInArray, valueOfElement) { 
                 //             console.log('indexInArray',indexInArray)
                 //             console.log('valueOfElement',valueOfElement)
-                //         });
-                //     });
-                // });
+                //         })
+                //     })
+                // })
 
                 // ===================== SCRIPT FOR ADD MOD ===================
                 let modCounter = 0;
@@ -987,7 +988,7 @@
 
                     GetMOD($('.inspectionModDropdown_'+modCounter+''))
                     // defectiveCounts()
-                });
+                })
                 // ================== SCRIPT FOR REMOVE MOD ======================
                 $("#btnRemoveMod").on('click', function(e){
                     e.preventDefault()
@@ -1002,7 +1003,7 @@
                     if(modCounter < 1){
                         $('#btnRemoveMod').addClass('d-none')
                     }
-                });
+                })
 
                 $('#txtOqcInspectionLotAccepted').on('keyup', function () {
                     if($('#txtOqcInspectionLotAccepted').val() == '1' || $('#txtOqcInspectionLotAccepted').val() == ''){
@@ -1015,16 +1016,17 @@
                             $('#txtOqcInspectionJudgement').val('')
                         }
                     }else{
+                        GetMOD($('.inspectionModDropdown_0'))
                         $('#txtOqcInspectionJudgement').val('Reject')
                         $('.mod-class').removeClass('d-none')
                     }
-                });
+                })
 
                 $('#formOqcInspection').submit(function (e) { 
                     e.preventDefault()
                     console.log('Save OQC Inspection')
                     ScanUserById()
-                });
+                })
 
                 $('#txtScanUserId').on('keypress',function(e){
                     if( e.keyCode == 13 ){
@@ -1044,12 +1046,12 @@
                                     toastr.error('ID Number Not Registered!')
                                 }
                             }
-                        });
+                        })
                         $('#txtScanUserId').val('')
                         $('#mdlScanQrCode').modal('hide')
                     }
-                });
-            });
+                })
+            })
 
         </script>
     @endsection

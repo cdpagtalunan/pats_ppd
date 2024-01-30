@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'First Stamping')
 
     @section('content_page')
 
@@ -31,6 +31,22 @@
 
             #colDevice, #colMaterialProcess{
                 transition: .5s;
+            }
+
+            table.table tbody td{
+                padding: 4px 4px;
+                margin: 1px 1px;
+                font-size: 13px;
+                /* text-align: center; */
+                vertical-align: middle;
+            }
+
+            table.table thead th{
+                padding: 4px 4px;
+                margin: 1px 1px;
+                font-size: 13px;
+                text-align: center;
+                vertical-align: middle;
             }
         </style>
 
@@ -108,7 +124,7 @@
                                         @endif
                                         @endif --}}
 
-                                        <button class="btn btn-primary" id="btnAddProdData">
+                                        <button class="btn btn-dark" id="btnAddProdData">
                                             <i class="fa-solid fa-plus"></i> Add</button>
                                     </div> <br><br>
                                     <div class="table-responsive">
@@ -117,7 +133,7 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th>Action</th>
+                                                    <th style="width: 15%;">Action</th>
                                                     <th>Status</th>
                                                     <th>PO Number</th>
                                                     <th>Production Lot No.</th>
@@ -318,9 +334,11 @@
 
                                             <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtTtlMachOutput_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
+                                            <input type="hidden" class="form-control form-control-sm" name="material_no_qty" id="txtMaterialLotQty">
+
 
                                             <div class="form-group d-none" id="divRemarks">
                                                 <label class="form-label">Remarks:</label>
@@ -339,7 +357,7 @@
                                             <label class="form-label">Material Lot No.:</label>
 
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtMaterialLot_0" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
                                             <input type="text" class="hidden_scanner_input" id="multipleCounter" value="0">
@@ -378,7 +396,7 @@
                         <div class="row">
                             <!-- PO 1 -->
                             <div class="col-sm-12">
-                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
                                 <label id="img_barcode_PO_text"></label>
                             </div>
                         </div>
@@ -399,7 +417,7 @@
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body pt-0">
-                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                        <input type="text" class="w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
                         <div class="text-center text-secondary">Please scan the material lot #.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
@@ -724,7 +742,7 @@
                     $('#multipleCounter').val(newCount);
                     let inputGroup = `
                             <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
-                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
+                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtMaterialLot_${newCount}' required readonly>
                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                             </div>
                     `;
@@ -746,8 +764,8 @@
                 });
 
                 $(document).on('click', '.btnQr', function(){
-                    multipleMatId = $(this).offsetParent().children().attr('id');
-                    console.log($(this).offsetParent().children().attr('id'));
+                    // multipleMatId = $(this).offsetParent().children().attr('id');
+                    // console.log($(this).offsetParent().children());
                     $('#modalScanQr').modal('show');
                     $('#modalScanQr').on('shown.bs.modal', function () {
                         $('#txtScanQrCode').focus();
@@ -756,7 +774,12 @@
 
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        $(`#${multipleMatId}`).val($(this).val());
+                        let explodedMat = $(this).val().split(' $|| ');
+                        $('#txtMaterialLot_0').val(explodedMat[0]);
+                        $('#txtMaterialLotQty').val(explodedMat[1]);
+
+                        // console.log(explodedMat);
+                        // $(`#${multipleMatId}`).val($(this).val());
                         $(this).val('');
                         $('#modalScanQr').modal('hide');
                     }
