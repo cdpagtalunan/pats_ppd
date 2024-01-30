@@ -212,8 +212,9 @@ const GetMatProcByIdToEdit = (id, selectedDeviceName) => {
             console.log(response['matDetails']['station_details']);
             let stationArrayId = [];
             for(let y = 0; y < response['matDetails']['station_details'].length; y++){
-                stationArrayId.push(`${response['matDetails']['station_details'][y]['id']}`);
+                stationArrayId.push(`${response['matDetails']['station_details'][y]['station_id']}`);
             }
+            console.log(stationArrayId);
             $('select[name="station[]"]').val(stationArrayId).trigger('change')
 
 
