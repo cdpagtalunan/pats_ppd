@@ -56,7 +56,16 @@ const editFirstMolding = function (){
             formModal.firstMolding.find('#created_at').val(data.created_at);
             dt.firstMoldingStation.draw();
             $('#modalFirstMolding').modal('show');
-            $('#btnFirstMoldingStation').prop('disabled',false);
+            if(data.status === 1){
+                $('#btnFirstMoldingStation').prop('disabled',true);
+                $('#btnSubmitFirstMoldingStation').prop('disabled',true);
+                $('#btnSubmitFirstMoldingStation').prop('disabled',true);
+                $('#btnRuncardDetails').addClass('d-none',true);
+            }else{
+                $('#btnFirstMoldingStation').prop('disabled',false);
+                $('#btnSubmitFirstMoldingStation').prop('disabled',false);
+                $('#btnRuncardDetails').removeClass('d-none',true);
+            }
         },error: function (data, xhr, status){
             toastr.error(`Error: ${data.status}`);
         }

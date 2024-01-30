@@ -30,7 +30,7 @@ class FirstMoldingController extends Controller
     {
         return $first_molding_device = FirstMoldingDevice::where('id',$request->first_molding_device_id)->get();
     }
-    
+
     public function loadFirstMoldingDetails(Request $request)
     {
         $first_molding_device_id= isset($request->first_molding_device_id) ? $request->first_molding_device_id : 0;
@@ -46,20 +46,33 @@ class FirstMoldingController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
+            switch ($row->status) {
+                case 0:
+                    $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    break;
+                case 1:
+                    $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
+                    break;
+                default:
+                    $result .= "";
+                    break;
+            }
             $result .= '</center>';
             return $result;
         })
         ->addColumn('status', function($row){
-            
+
             $result = '';
             $result .= '<center>';
             switch ($row->status) {
+                case 0:
+                    $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+                    break;
                 case 1:
                     $result .= '<span class="badge rounded-pill bg-success"> Done </span>';
                     break;
                 default:
-                    $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
+                    $result .= '<span class="badge rounded-pill bg-success"> Unknown Status </span>';
                     break;
             }
             $result .= '</center>';
@@ -121,7 +134,7 @@ class FirstMoldingController extends Controller
         return response()->json( [ 'result' => 1 ] );
     }
 
-    
+
 
 
 }

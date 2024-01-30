@@ -369,8 +369,15 @@ function UpdateOqcInspection(){
                 $('#modalOqcInspectionFirstStamping').modal('hide')
                 $('#modalOqcInspectionSecondStamping').modal('hide')
                 toastr.success('Succesfully saved!')
-                dataTableOQCInspectionFirstStamping.draw()
-                dataTableOQCInspectionSecondStamping.draw()
+
+                $('#modalOqcInspectionFirstStamping').on('hide.bs.modal', function() {
+                    dataTableOQCInspectionFirstStamping.draw()
+                })
+
+                $('#modalOqcInspectionSecondStamping').on('hide.bs.modal', function() {
+                    dataTableOQCInspectionSecondStamping.draw()
+                })
+
             }
             // else{
             // }

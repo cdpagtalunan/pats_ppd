@@ -396,7 +396,7 @@
                                     <span class="input-group-text w-100" id="basic-addon1">Contact Lot #</span>
                                 </div>
                                 <div class="input-group-prepend">
-                                    <button type="button" class="btn btn-dark" id="btnScanPo" data-toggle="modal" data-target="#mdlScanQrCode"><i class="fa fa-qrcode w-100"></i></button>
+                                    <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
                                 </div>
                                 <input type="text" class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number">
                                 {{-- <input type="text" value="C1100R-1/2H 1.2X70"  class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number"> --}}
@@ -421,7 +421,7 @@
                                 <input type="text" class="form-control form-control-sm" id="created_at" name="created_at" readonly="true" placeholder="Auto generated">
                             </div>
                             <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
-                                <button class="btn btn-sm btn-success" type="submit">
+                                <button class="btn btn-sm btn-success" type="submit" id="btnRuncardDetails">
                                     <i class="fa-solid fa-floppy-disk"></i> Save
                                 </button>
                             </div>
@@ -465,7 +465,7 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="btnSubmitFirstMoldingStation" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                    <button type="button" id="btnSubmitFirstMoldingStation" class="btn btn-primary" disabled><i class="fa fa-check"></i> Submit</button>
                 </div>
         </div>
         <!-- /.modal-content -->
@@ -591,3 +591,20 @@
         </div>
     </div>
 </div>
+
+<!-- Start Scan QR Modal First Molding -->
+<div class="modal fade" id="mdlScanQrCodeFirstMolding" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 pb-0">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body pt-0">
+                {{-- hidden_scanner_input --}}
+                <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCodeFirstMolding" name="scan_qr_code" autocomplete="off">
+                <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.End Scan QR Modal -->
