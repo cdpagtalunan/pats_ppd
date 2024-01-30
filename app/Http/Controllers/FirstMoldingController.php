@@ -30,7 +30,7 @@ class FirstMoldingController extends Controller
     {
         return $first_molding_device = FirstMoldingDevice::where('id',$request->first_molding_device_id)->get();
     }
-    
+
     public function loadFirstMoldingDetails(Request $request)
     {
         $first_molding_device_id= isset($request->first_molding_device_id) ? $request->first_molding_device_id : 0;
@@ -51,7 +51,7 @@ class FirstMoldingController extends Controller
             return $result;
         })
         ->addColumn('status', function($row){
-            
+
             $result = '';
             $result .= '<center>';
             switch ($row->status) {
@@ -71,11 +71,10 @@ class FirstMoldingController extends Controller
 
     public function saveFirstMolding(FirstMoldingRequest $request)
     {
+        // return 'true';
         date_default_timezone_set('Asia/Manila');
         try{
             if( isset( $request->first_molding_id )){ //Edit
-                // return 'edit';
-                // return $request->first_molding_id;
                 FirstMolding::where('id',$request->first_molding_id)
                 ->update([
                     'first_molding_device_id' => $request->first_molding_device_id,
@@ -121,7 +120,7 @@ class FirstMoldingController extends Controller
         return response()->json( [ 'result' => 1 ] );
     }
 
-    
+
 
 
 }

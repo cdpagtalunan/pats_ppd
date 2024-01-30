@@ -231,7 +231,7 @@ Route::controller(IqcInspectionController::class)->group(function () {
 
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {
-    Route::get('/view_oqc_inspection', 'viewOqcInspection')->name('view_oqc_inspection');
+    Route::get('/view_oqc_inspection_first_stamping', 'viewOqcInspectionFirstStamping')->name('view_oqc_inspection_first_stamping');
     Route::get('/view_oqc_inspection_history', 'viewOqcInspectionHistory')->name('view_oqc_inspection_history');
     Route::get('/view_oqc_inspection_second_stamping', 'viewOqcInspectionSecondStamping')->name('view_oqc_inspection_second_stamping');
     Route::post('/update_oqc_inspection', 'updateOqcInspection')->name('update_oqc_inspection');
