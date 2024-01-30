@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePackingDetailsMoldingsTable extends Migration
+class CreateFirstMoldingDevicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,14 @@ class CreatePackingDetailsMoldingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('packing_details_moldings', function (Blueprint $table) {
-            $table->id();
+        Schema::create('first_molding_devices', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->string('device_name')->nullable();
+            $table->string('contact_name')->nullable();
+            $table->softDeletes()->nullable();
             $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
@@ -26,6 +28,6 @@ class CreatePackingDetailsMoldingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('packing_details_moldings');
+        Schema::dropIfExists('first_molding_devices');
     }
 }

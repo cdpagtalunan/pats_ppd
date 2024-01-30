@@ -47,7 +47,7 @@ class UserController extends Controller
                     session_start();
                     $_SESSION["rapidx_user_id"] = $user_info->id;
                     $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
-                    $_SESSION["rapidx_username"] = $user_info->username;
+                    // $_SESSION["rapidx_username"] = $user_info->username;
                     $_SESSION["rapidx_name"] = $user_info->name;
                     $_SESSION["rapidx_email"] = $user_info->email;
                     $_SESSION["rapidx_department_id"] = $user_info->department_id;
@@ -109,13 +109,24 @@ class UserController extends Controller
             'password' => 'required|alphaNum|min:6'
         ]);
         if($validator->passes()){
+
             if(Auth::attempt($user_data)){
+                session_start();
+                $_SESSION["user_id"] = Auth::user()->id;
+                $_SESSION["user_level_id"] = Auth::user()->user_level_id;
+                $_SESSION["username"] = Auth::user()->username;
+                $_SESSION["email"] = Auth::user()->email;
+                $_SESSION["position"] = Auth::user()->position;
+                $_SESSION["employee_id"] =  Auth::user()->employee_id;
+
                 if(Auth::user()->is_password_changed == 0){
+                   
+
                     return response()->json(['result' => "2"]);
+
                 }
                 else{
-                    // rapidx_sign_in_admin();
-                    // echo $this->rapidx_sign_in_admin();
+
 
                     return response()->json(['result' => "1", 'username' => $user_data['username']]);
                 }
@@ -191,7 +202,6 @@ class UserController extends Controller
     // Change User Status
     public function change_user_stat(Request $request){
         date_default_timezone_set('Asia/Manila');
-
         $data = $request->all();
 
         $validator = Validator::make($data, [

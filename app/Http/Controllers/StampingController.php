@@ -43,22 +43,22 @@ class StampingController extends Controller
                 * data-function on buttons will be the trigger point for viewing and editing for mass production
                 * 0 => viewing only, 1 => for mass production entry of data, 2 => for re-setup, 3 => Edit data
             */
-            $result .= "<button class='btn btn-info btn-sm btnViewProdData' data-id='$stamping_data->id' data-function='0' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-eye'></i></button>";
+            $result .= "<button class='btn btn-dark btn-sm btnViewProdData' title='View Data'  data-id='$stamping_data->id' data-function='0' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-eye'></i></button>";
 
             if($stamping_data->status == 1){
-                $result .= "<button class='btn btn-warning btn-sm btnMassProd ml-1' data-id='$stamping_data->id' data-function='1' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-up-right-from-square'></i></button>";
-                $result .= "<button class='btn btn-secondary btn-sm btnEditProdData ml-1' data-id='$stamping_data->id' data-function='3' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= "<button class='btn btn-warning btn-sm btnMassProd ml-1' title='Proceed Mass Production' data-id='$stamping_data->id' data-function='1' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-up-right-from-square'></i></button>";
+                $result .= "<button class='btn btn-secondary btn-sm btnEditProdData ml-1' title='Edit'  data-id='$stamping_data->id' data-function='3' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-pen-to-square'></i></button>";
             
             }
             else if($stamping_data->status == 2){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData ml-1' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-qrcode'></i></button>";
+                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData ml-1' title='Print QR Code' data-id='$stamping_data->id' data-printcount='$stamping_data->print_count' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-qrcode'></i></button>";
             }
             else if ($stamping_data->status == 3){
-                $result .= "<button class='btn btn-danger btn-sm btnViewResetup ml-1' data-id='$stamping_data->id' data-function='2' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-repeat'></i></button>";
+                $result .= "<button class='btn btn-danger btn-sm btnViewResetup ml-1' title='See Re-setup' data-id='$stamping_data->id' data-function='2' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-repeat'></i></button>";
             }
 
             if(count($stamping_data->first_stamping_history) > 0){
-                $result .= "<button class='btn btn-secondary btn-sm btnViewHistory ml-1' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
+                $result .= "<button class='btn btn-info btn-sm btnViewHistory ml-1' data-id='$stamping_data->id' data-po='$stamping_data->po_num' title='See History'><i class='fa-solid fa-clock-rotate-left'></i></button>";
             }
             $result .= "</center>";
             return $result;
@@ -257,36 +257,36 @@ class StampingController extends Controller
                     DB::commit();
                 }
                 else{
-                    // return $request->all();
 
-                    // $imploded_mat_no = implode($request->material_no, ', ');
                     $imploded_operator = implode($request->opt_name, ', ');
+
                     $prod_array = array(
-                        'stamping_cat'      => $request->stamp_cat,
-                        'ctrl_counter'      => $request->ctrl_counter,
-                        'po_num'            => $request->po_num,
-                        'po_qty'            => $request->po_qty,
-                        'part_code'         => $request->part_code,
-                        'material_name'     => $request->mat_name,
-                        'material_lot_no'   => $request->material_no,
-                        'drawing_no'        => $request->drawing_no,
-                        'drawing_rev'       => $request->drawing_rev,
-                        // 'cut_off_point'     => $request->cut_point,
-                        // 'no_of_cuts'        => $request->no_cut,
-                        'prod_lot_no'       => $request->prod_log_no_auto."".$request->prod_log_no_ext_1."-".$request->prod_log_no_ext_2,
-                        // 'input_coil_weight' => $request->inpt_coil_weight,
-                        // 'ppc_target_output' => $request->target_output,
+                        'stamping_cat'     => $request->stamp_cat,
+                        'ctrl_counter'     => $request->ctrl_counter,
+                        'po_num'           => $request->po_num,
+                        'po_qty'           => $request->po_qty,
+                        'part_code'        => $request->part_code,
+                        'material_name'    => $request->mat_name,
+                        'material_lot_no'  => $request->material_no,
+                        'material_lot_qty' => $request->material_no_qty,
+                        'drawing_no'       => $request->drawing_no,
+                        'drawing_rev'      => $request->drawing_rev,
+                          // 'cut_off_point'     => $request->cut_point,
+                          // 'no_of_cuts'        => $request->no_cut,
+                        'prod_lot_no' => $request->prod_log_no_auto."".$request->prod_log_no_ext_1."-".$request->prod_log_no_ext_2,
+                          // 'input_coil_weight' => $request->inpt_coil_weight,
+                          // 'ppc_target_output' => $request->target_output,
                         'planned_loss'      => $request->planned_loss,
                         'set_up_pins'       => $request->setup_pins,
                         'adj_pins'          => $request->adj_pins,
                         'qc_samp'           => $request->qc_samp,
                         'total_mach_output' => $request->ttl_mach_output,
                         'ship_output'       => $request->ship_output,
-                        // 'mat_yield'         => $request->mat_yield,
-                        'shift'             => $request->opt_shift,
-                        'operator'          => $imploded_operator,
-                        'created_by'        => $user_id->id,
-                        'created_at'        => NOW()
+                          // 'mat_yield'         => $request->mat_yield,
+                        'shift'      => $request->opt_shift,
+                        'operator'   => $imploded_operator,
+                        'created_by' => $user_id->id,
+                        'created_at' => NOW()
                     );
                     if($request->stamp_cat == 1){
                         $prod_array['cut_off_point'] = $request->cut_point;

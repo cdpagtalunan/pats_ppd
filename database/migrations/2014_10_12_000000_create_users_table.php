@@ -32,10 +32,10 @@ class CreateUsersTable extends Migration
             $table->unsignedBigInteger('last_updated_by')->nullable();
             $table->timestamps();
 
-             // Foreign Key
-             $table->foreign('user_level_id')->references('id')->on('user_levels');
-             $table->foreign('created_by')->references('id')->on('users');
-             $table->foreign('last_updated_by')->references('id')->on('users');
+            // Foreign Key
+            $table->foreign('user_level_id')->references('id')->on('user_levels');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('last_updated_by')->references('id')->on('users');
         });
     }
 

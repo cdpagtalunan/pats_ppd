@@ -35,6 +35,14 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="{{ route('defectsinfo') }}" class="nav-link">
+                                <i class="fas fa-bolt"> </i>
+                                <p>
+                                    Defects
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="{{ route('process') }}" class="nav-link">
                                 <i class="fas fa-list-ol"> </i>
                                 <p>
@@ -77,7 +85,7 @@
 
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
-                                <i class="fas fa-list"> </i>
+                                <i class="fa-solid fa-microscope"> </i>
                                     <p> IPQC </p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"> </i>
                             </a>
                             <ul class="nav nav-treeview">
@@ -103,7 +111,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="{{ route('oqc_inspection') }}" class="nav-link">
+                                    <a href="{{ route('first_stamping_oqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>OQC 1st Stamping</p>
                                     </a>
@@ -213,7 +221,6 @@
                         </li>
                     @endif
 
-
                     @if (in_array(Auth::user()->position, [0,6]))
                         <li class="nav-header mt-3"><strong>WAREHOUSE</strong></li>
                         <li class="nav-item has-treeview">
@@ -237,37 +244,52 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    {{-- <a href="{{ route('route') }}" class="nav-link"> --}}
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('first_molding') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-08#IN-VE</p>
+                                        <p>1st Molding</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="{{ route('second_molding') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-09#IN-R-VE</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-10#IN-L-VE</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171S-07</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>CN171P-02</p>
+                                        <p>2nd Molding</p>
                                     </a>
                                 </li>
                             </ul>
+                            {{-- <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('oqc_inspection_molding') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>OQC Inspection Molding</p>
+                                    </a>
+                                </li>
+                            </ul> --}}
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->position, [0]))
+                        <li class="nav-header mt-3 font-weight-bold">ASSEMBLY</li>
+                        <li class="nav-item has-treeview">
+                            {{-- <a href="#" class="nav-link">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p><i class="fa-solid fa-shapes"> </i> Molding </p>
+                                    <i class="fas fa-angle-down"> </i>
+                                </div>
+                            </a> --}}
+                            {{-- <ul class="nav nav-treeview"> --}}
+                                <li class="nav-item">
+                                    <a href="{{ route('cn_assembly') }}" class="nav-link">
+                                        <i class="fa-brands fa-phabricator fa-xl" style="color: #29d6a2;"> </i>
+                                        <p>CN Assembly</p>
+                                    </a>
+                                </li>
+                                {{-- <li class="nav-item">
+                                    <a href="{{ route('second_molding') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>2nd Molding</p>
+                                    </a>
+                                </li> --}}
+                            {{-- </ul> --}}
                         </li>
                     @endif
                 @endauth

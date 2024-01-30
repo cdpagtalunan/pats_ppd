@@ -140,12 +140,12 @@ const submitProdData = async (scannedId, form, stampCat) => {
                     $('#txtActQty', form).attr('title', response['error']['act_qty']);
                 }
                 if(response['error']['material_no'] === undefined){
-                    $('#txtTtlMachOutput_0', form).removeClass('is-invalid');
-                    $('#txtTtlMachOutput_0', form).attr('title', '');
+                    $('#txtMaterialLot_0', form).removeClass('is-invalid');
+                    $('#txtMaterialLot_0', form).attr('title', '');
                 }
                 else{
-                    $('#txtTtlMachOutput_0', form).addClass('is-invalid');
-                    $('#txtTtlMachOutput_0', form).attr('title', response['error']['material_no']);
+                    $('#txtMaterialLot_0', form).addClass('is-invalid');
+                    $('#txtMaterialLot_0', form).attr('title', response['error']['material_no']);
                 }
                 if(response['error']['remarks'] === undefined){
                     $('#txtRemarks', form).removeClass('is-invalid');
@@ -251,7 +251,7 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
                 $('#txtNoCut').val(response['no_of_cuts'])
             }
 
-            $(`#txtTtlMachOutput_0`).val(response['material_lot_no']);
+            $(`#txtMaterialLot_0`).val(response['material_lot_no']);
 
             if(btnFunction == 0){
                 $('#saveProdData').hide();

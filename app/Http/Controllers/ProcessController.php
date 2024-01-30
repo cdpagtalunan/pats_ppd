@@ -18,7 +18,7 @@ class ProcessController extends Controller
         ->addColumn('action', function($process_details){
             $result = "";
             $result .= "<center>";
-            $result .= "<button class='btn btn-info btn-sm btnEdit mr-1' data-id='$process_details->id'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-secondary btn-sm btnEdit mr-1' data-id='$process_details->id'><i class='fa-solid fa-pen-to-square'></i></button>";
             if($process_details->status == 0){
                 $result .= "<button class='btn btn-danger btn-sm btnDisable' data-id='$process_details->id'><i class='fa-solid fa-ban'></i></button>";
             }

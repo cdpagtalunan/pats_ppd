@@ -200,11 +200,11 @@ $('.select2bs4').each(function () {
     });
 });
 
-$(this).on('select2:open', function(e) {
-    setTimeout(function () {
-        document.querySelector('input.select2-search__field').focus();
-    }, 0);
-});
+// $(this).on('select2:open', function(e) {
+//     setTimeout(function () {
+//         document.querySelector('input.select2-search__field').focus();
+//     }, 0);
+// });
 
 function validateUser(userId, validPosition, callback){ // this function will accept scanned id and validPosition based on user table (number only)
     console.log('validPosition', validPosition);
@@ -229,6 +229,21 @@ function validateUser(userId, validPosition, callback){ // this function will ac
         }
     });
 }
+
+const errorHandler = function (errors,formInput){
+    if(errors === undefined){
+        formInput.removeClass('is-invalid')
+        formInput.addClass('is-valid')
+        formInput.attr('title', '')
+    }else {
+        formInput.removeClass('is-valid')
+        formInput.addClass('is-invalid');
+        formInput.attr('title', errors[0])
+    }
+}
+
+
+
 // validateUser1 = function(userId, validPosition){ // this function will accept scanned id and validPosition based on user table (number only)
 //     console.log('validPosition', validPosition);
 //     $.ajax({
