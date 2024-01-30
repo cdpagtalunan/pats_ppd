@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+use App\Models\User;
 use App\Models\ReelLot;
 use App\Models\PrintLot;
 use App\Models\ModeOfDefect;
@@ -39,6 +40,10 @@ class OQCInspection extends Model
         return $this->hasOne(FirstStampingProduction::class,'id', 'fs_productions_id');
     }
 
+    public function user_info(){
+        return $this->hasOne(User::class, 'employee_id', 'update_user');
+    }
+
     public function packing_info(){
         return $this->hasOne(PackingDetails::class,'oqc_id', 'id');
     }
@@ -49,6 +54,10 @@ class OQCInspection extends Model
 
     public function first_molding_info(){
         return $this->hasOne(PackingDetailsMolding::class,'oqc_id', 'id');
+    }
+
+    public function prodn_info(){
+        return $this->hasOne(User::class, 'id', 'countedby');
     }
 
 

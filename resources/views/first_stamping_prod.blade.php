@@ -334,9 +334,11 @@
 
                                             <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtTtlMachOutput_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
+                                            <input type="hidden" class="form-control form-control-sm" name="material_no_qty" id="txtMaterialLotQty">
+
 
                                             <div class="form-group d-none" id="divRemarks">
                                                 <label class="form-label">Remarks:</label>
@@ -355,7 +357,7 @@
                                             <label class="form-label">Material Lot No.:</label>
 
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtTtlMachOutput_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtMaterialLot_0" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
                                             <input type="text" class="hidden_scanner_input" id="multipleCounter" value="0">
@@ -740,7 +742,7 @@
                     $('#multipleCounter').val(newCount);
                     let inputGroup = `
                             <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
-                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
+                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtMaterialLot_${newCount}' required readonly>
                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                             </div>
                     `;
@@ -762,8 +764,8 @@
                 });
 
                 $(document).on('click', '.btnQr', function(){
-                    multipleMatId = $(this).offsetParent().children().attr('id');
-                    console.log($(this).offsetParent().children().attr('id'));
+                    // multipleMatId = $(this).offsetParent().children().attr('id');
+                    // console.log($(this).offsetParent().children());
                     $('#modalScanQr').modal('show');
                     $('#modalScanQr').on('shown.bs.modal', function () {
                         $('#txtScanQrCode').focus();
@@ -772,7 +774,12 @@
 
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        $(`#${multipleMatId}`).val($(this).val());
+                        let explodedMat = $(this).val().split(' $|| ');
+                        $('#txtMaterialLot_0').val(explodedMat[0]);
+                        $('#txtMaterialLotQty').val(explodedMat[1]);
+
+                        // console.log(explodedMat);
+                        // $(`#${multipleMatId}`).val($(this).val());
                         $(this).val('');
                         $('#modalScanQr').modal('hide');
                     }

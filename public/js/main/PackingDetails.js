@@ -42,6 +42,7 @@ const generatePackingQr = async (id) => {
 }
 
 const changePrintingStatus = (printedId) => {
+    // alert(printedId);
     $.ajax({
         type: "get",
         url: "change_printing_status",

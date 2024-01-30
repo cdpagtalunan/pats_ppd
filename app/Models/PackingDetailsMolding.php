@@ -20,4 +20,12 @@ class PackingDetailsMolding extends Model
         ->where('lot_inspected', 1)
         ->where('status', 2);
     }
+
+    public function user_validated_by_info(){
+        return $this->hasOne(User::class, 'employee_id', 'countedby');
+    }
+
+    public function user_checked_by_info(){
+        return $this->hasOne(User::class, 'employee_id', 'checkedby');
+    }
 }

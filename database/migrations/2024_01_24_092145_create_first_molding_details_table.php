@@ -15,18 +15,18 @@ class CreateFirstMoldingDetailsTable extends Migration
     {
         Schema::create('first_molding_details', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('first_molding_id')->constrained()->comment = 'Id from first_moldings(table)';
+            $table->bigInteger('first_molding_id')->unsigned()->comment = 'Id from first_moldings(table)';
             $table->string('station')->nullable();
             $table->string('date')->nullable();
-            $table->string('name')->nullable();
+            $table->string('operator_name')->nullable();
             $table->integer('input')->nullable();
             $table->integer('ng_qty')->nullable();
             $table->integer('output')->nullable();
             $table->integer('remarks')->nullable();
             $table->tinyInteger('status')->nullable()->default(0)->comment ='';
             $table->softDeletes()->nullable();
-            // $table->tinyInteger('logdel')->comment ='0-Active, 1-Deleted';
             $table->timestamps();
+            $table->foreign('first_molding_id')->references('id')->on('first_moldings');
         });
     }
 

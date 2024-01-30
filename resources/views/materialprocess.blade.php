@@ -152,6 +152,7 @@
                                               <th>Process</th>
                                               <th>Material</th>
                                               <th>Machine</th>
+                                              <th>Station</th>
                                           </tr>
                                       </thead>
                                   </table>
@@ -392,19 +393,24 @@
 
                                   </select>
                               </div>
-
-                              <div class="form-group">
-                                <label>Material Name</label>
-                                <select class="form-control select2bs4" id="selAddMatProcMatName" name="material_name[]" multiple>
-
-                                </select>
-                              </div>
                               <div class="form-group">
                                 <label>Machine</label>
                                 <select class="form-control select2bs4" id="selAddMatProcMachine" name="machine">
 
                                 </select>
                               </div>
+                              <div class="form-group">
+                                <label>Station</label>
+                                <select class="form-control select2bs4" id="selAddMatStation" name="station[]" multiple>
+                                </select>
+                              </div>
+                              <div class="form-group">
+                                <label>Material Name</label>
+                                <select class="form-control select2bs4" id="selAddMatProcMatName" name="material_name[]" multiple>
+
+                                </select>
+                              </div>
+                             
                           </div>
                       </div>
                   </div>
@@ -893,8 +899,9 @@
             // { "data" : "mat_status" },
             { "data" : "step" },
             { "data" : "process_details.process_name"},
-            { "data" : "material_details"},
+            { "data" : "mat_details"},
             { "data" : "machine_code" },
+            { "data" : "stat_details" },
           ],
           "columnDefs": [
               {
@@ -986,6 +993,7 @@
         // Add Material Process
         $("#formAddMatProc").submit(function(event){
           event.preventDefault();
+          // console.log($(this).serialize());
           AddMaterialProcess();
         });
 
@@ -1062,62 +1070,62 @@
             });
         });
 
-        $(document).on('keypress',function(e){
-          if( ($("#mdl_qrcode_scanner").data('bs.modal') || {})._isShown ){
-            $('#txt_qrcode_scanner').focus();
-            if( e.keyCode == 13 ){
-              $('#mdl_qrcode_scanner').modal('hide');
-              // alert($("#txt_qrcode_scanner").val());
-              var formid = $("#mdl_qrcode_scanner").attr('data-formid');
+        // $(document).on('keypress',function(e){
+        //   if( ($("#mdl_qrcode_scanner").data('bs.modal') || {})._isShown ){
+        //     $('#txt_qrcode_scanner').focus();
+        //     if( e.keyCode == 13 ){
+        //       $('#mdl_qrcode_scanner').modal('hide');
+        //       // alert($("#txt_qrcode_scanner").val());
+        //       var formid = $("#mdl_qrcode_scanner").attr('data-formid');
 
-              if ( ( formid ).indexOf('#') > -1){
-                $( formid ).submit();
-              }
-              else{
-                switch( formid ){
-                  case 'fn_scan_machine_code':
-                    var val = $('#txt_qrcode_scanner').val();
-                    if ($('#selAddMatProcMachine').find("option[data-code='" + val + "']").length) {
-                      $('#selAddMatProcMachine option[data-code="'+val+'"]').prop('selected', true).trigger('change');
-                    }
-                    else{
-                      $('#selAddMatProcMachine').val("").trigger('change');
-                      toastr.warning('Invalid Machine!');
-                    }
-                    $('#txt_qrcode_scanner').val("");
-                  break;
+        //       if ( ( formid ).indexOf('#') > -1){
+        //         $( formid ).submit();
+        //       }
+        //       else{
+        //         switch( formid ){
+        //           case 'fn_scan_machine_code':
+        //             var val = $('#txt_qrcode_scanner').val();
+        //             if ($('#selAddMatProcMachine').find("option[data-code='" + val + "']").length) {
+        //               $('#selAddMatProcMachine option[data-code="'+val+'"]').prop('selected', true).trigger('change');
+        //             }
+        //             else{
+        //               $('#selAddMatProcMachine').val("").trigger('change');
+        //               toastr.warning('Invalid Machine!');
+        //             }
+        //             $('#txt_qrcode_scanner').val("");
+        //           break;
 
-                  case 'fn_scan_a_shift_user_code':
-                    var val = $('#txt_qrcode_scanner').val();
+        //           case 'fn_scan_a_shift_user_code':
+        //             var val = $('#txt_qrcode_scanner').val();
 
-                    if ($('#selAddMatProcAShiftManpower').find("option[data-code='" + val + "']").length) {
-                      $("#selAddMatProcAShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
-                    }
-                    else{
-                      toastr.warning('Invalid User!');
-                    }
-                    $('#txt_qrcode_scanner').val("0");
-                  break;
+        //             if ($('#selAddMatProcAShiftManpower').find("option[data-code='" + val + "']").length) {
+        //               $("#selAddMatProcAShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
+        //             }
+        //             else{
+        //               toastr.warning('Invalid User!');
+        //             }
+        //             $('#txt_qrcode_scanner').val("0");
+        //           break;
 
-                  case 'fn_scan_b_shift_user_code':
-                    var val = $('#txt_qrcode_scanner').val();
+        //           case 'fn_scan_b_shift_user_code':
+        //             var val = $('#txt_qrcode_scanner').val();
 
-                    if ($('#selAddMatProcBShiftManpower').find("option[data-code='" + val + "']").length) {
-                      $("#selAddMatProcBShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
-                    }
-                    else{
-                      toastr.warning('Invalid User!');
-                    }
-                    $('#txt_qrcode_scanner').val("0");
-                  break;
+        //             if ($('#selAddMatProcBShiftManpower').find("option[data-code='" + val + "']").length) {
+        //               $("#selAddMatProcBShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
+        //             }
+        //             else{
+        //               toastr.warning('Invalid User!');
+        //             }
+        //             $('#txt_qrcode_scanner').val("0");
+        //           break;
 
-                  default:
-                  break;
-                }
-              }
-            }//key
-          }
-        });
+        //           default:
+        //           break;
+        //         }
+        //       }
+        //     }//key
+        //   }
+        // });
 
         $(document).on('click','#btnAddMatProcScanMachineCode',function(e){
           $('#txt_qrcode_scanner').val('');

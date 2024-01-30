@@ -374,7 +374,7 @@
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Device Id </span>
+                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Id </span>
                                 </div>
                                 <input class="form-control form-control-sm" type="number" id="first_molding_id" name="first_molding_id">
                             </div>
@@ -398,25 +398,27 @@
                                 <div class="input-group-prepend">
                                     <button type="button" class="btn btn-dark" id="btnScanPo" data-toggle="modal" data-target="#mdlScanQrCode"><i class="fa fa-qrcode w-100"></i></button>
                                 </div>
-                                <input type="text" value="C1100R-1/2H 1.2X70" class="form-control form-control-sm" id="contact_lot_no" name="contact_lot_no">
+                                <input type="text" class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number">
+                                {{-- <input type="text" value="C1100R-1/2H 1.2X70"  class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number"> --}}
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="production_lot" name="production_lot" value="2B40125-G-A-M-T-0600-1000">
+                                <input type="text" class="form-control form-control-sm" id="production_lot" name="production_lot">
+                                {{-- <input value="2B40125-G-A-M-T-0600-1000" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot"> --}}
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
                                 </div>
-                                <textarea class="form-control form-control-sm" id="txt_remarks" name="txt_remarks" rows="5"></textarea>
+                                <textarea class="form-control form-control-sm" id="remarks" name="remarks" rows="5"></textarea>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Created At</span>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="txt_created_at" name="txt_created_at" readonly="true" placeholder="Auto generated">
+                                <input type="text" class="form-control form-control-sm" id="created_at" name="created_at" readonly="true" placeholder="Auto generated">
                             </div>
                             <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
                                 <button class="btn btn-sm btn-success" type="submit">
@@ -432,12 +434,12 @@
                                         <span class="badge badge-secondary">2.</span> Stations
                                     </div>
                                     <div style="float: right;">
-                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" type="button" data-bs-target="#modalAddStation" style="margin-bottom: 5px;">
+                                        <button class="btn btn-primary btn-sm" type="button" id="btnFirstMoldingStation" disabled>
                                             <i class="fa fa-plus" ></i> Add Station
                                         </button>
                                     </div>
                                     <div class="table-responsive">
-                                        <table class="table table-sm small table-bordered table-hover" id="tableStation" style="width: 100%;">
+                                        <table class="table table-sm small table-bordered table-hover" id="tblFirstMoldingStationDetails" style="width: 100%;">
                                             <thead>
                                                 <tr class="bg-light">
                                                     <th></th>
@@ -449,6 +451,7 @@
                                                     <th>NG Qty</th>
                                                     <th>Output</th>
                                                     <th>Remarks</th>
+                                                    <th>Created Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -462,10 +465,129 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" id="saveProdData" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                    <button type="button" id="btnSubmitFirstMoldingStation" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
                 </div>
         </div>
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="modalFirstMoldingStation" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-object-group text-info"></i> Stations</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="formFirstMoldingStation">
+                    @csrf
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Id</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="first_molding_id" name="first_molding_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Detail Id</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="first_molding_detail_id" name="first_molding_detail_id">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Station</span>
+                                </div>
+                                <select type="text" class="form-control form-control-sm" id="station" name="station" placeholder="Station">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Date</span>
+                                </div>
+                                <input type="date" class="form-control form-control-sm" id="date" name="date" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
+                                </div>
+                                <select type="text" class="form-control form-control-sm" id="operator_name" name="operator_name" placeholder="Station">
+                                <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option>
+                                </select>
+                                {{-- <input type="text" class="form-control form-control-sm" id="operator_name" name="operator_name"> --}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100" id="basic-addon1">Input</span>
+                            </div>
+                            <input type="number" class="form-control form-control-sm" id="input" name="input" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100" id="basic-addon1">NG Qty</span>
+                            </div>
+                            <input type="number" class="form-control form-control-sm" id="ng_qty" name="ng_qty" min="0" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100" id="basic-addon1">Output</span>
+                            </div>
+                            <input type="number" class="form-control form-control-sm" id="output" name="output" min="0" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend w-50">
+                                <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                            </div>
+                            <input type="text" class="form-control form-control-sm" id="remarks" name="remarks">
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-success">Save</button>
+            </div>
+        </form>
+        </div>
+    </div>
 </div>

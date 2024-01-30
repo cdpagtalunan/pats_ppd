@@ -598,8 +598,8 @@
             $(document).ready(function() {
                 $('.select2bs4').select2({
                     theme: 'bootstrap-5'
-                })            
-
+                })   
+                
                 // ======================= START DATA TABLE =======================
                 dataTableOQCInspectionSecondStamping = $("#tblOqcInspectionSecondStamping").DataTable({
                     "processing"    : false,
@@ -633,7 +633,7 @@
                         { "data" : "remarks" },
                         { "data" : "family" },
                         { "data" : "update_user" },
-                        { "data" : "updated_at" }
+                        { "data" : "created_at" }
                     ],
                     "columnDefs": [
                         // { className: "align-center", targets: [1, 2] },
@@ -689,7 +689,7 @@
                                     getPoNo = ''
                                 }
                             }
-                            catch (erur) {
+                            catch (error) {
                                 alert('The Scan QR Code was not found!')
                                 $('.invalidScan').val('')
                                 getPoNo = ''
@@ -743,7 +743,7 @@
                     $('.viewDrawingFirst').removeClass('slct')
                 })
 
-                $(document).on('click', '.actionOqcInspectionView', function(e){
+                $(document).on('click', '.actionOqcInspectionViewSecondStamping', function(e){
                     e.preventDefault()
                     getPo                       = $(this).attr('prod-po')
                     getPoQty                    = $(this).attr('prod-po-qty')
@@ -784,12 +784,13 @@
                     getMaterialName     = $(this).attr('prod_second_stamping-material_name')
                     getProdShipOutput   = $(this).attr('prod_second_stamping-ship_output')    
 
-                    getPoNo = getPo;
+                    getPoNo = getPo
                     $('#mdlOqcInspectionHistory').modal('show')
 
                     dataTableOQCInspectionSecondStamping =  $("#tblOqcInspectionHistory").DataTable({
                         "processing"    : false,
                         "serverSide"    : true,
+                        "destroy"    : true,
                         "ajax" : {
                             url: "view_oqc_inspection_history",
                             data: function (pamparam){
@@ -817,7 +818,7 @@
                             { "data" : "remarks" },
                             { "data" : "family" },
                             { "data" : "update_user" },
-                            { "data" : "updated_at" }
+                            { "data" : "created_at" }
                         ],
                         "columnDefs": [
                             // { className: "align-center", targets: [1, 2] },
@@ -1015,6 +1016,7 @@
                             $('#txtOqcInspectionJudgement').val('')
                         }
                     }else{
+                        GetMOD($('.inspectionModDropdown_0'))
                         $('#txtOqcInspectionJudgement').val('Reject')
                         $('.mod-class').removeClass('d-none')
                     }

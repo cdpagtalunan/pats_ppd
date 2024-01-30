@@ -162,6 +162,17 @@ class StampingIpqcController extends Controller
             ->make(true);
         }
     }
+
+    public function get_po_from_fs_production(Request $request){
+        $fs_production_po = FirstStampingProduction::select('po_num')
+                                        ->whereNull('deleted_at')
+                                        ->where('stamping_cat', $request->stamping_cat)
+                                        ->distinct()
+                                        ->get();
+
+        return response()->json(['fs_production_po' => $fs_production_po]);
+    }
+
     public function get_data_from_fs_production(Request $request){
         $data = FirstStampingProduction::select('id','stamping_cat','po_num','part_code','material_name','material_lot_no','prod_lot_no','qc_samp','status')
                                         ->whereNull('deleted_at')

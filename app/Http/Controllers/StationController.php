@@ -31,14 +31,14 @@ class StationController extends Controller
         })
         ->addColumn('label', function($stations){
             $result = "";
-
+            $result .= "<center>";
             if($stations->status == 0){
-                $result .= "<span class='badge bg-success'>Active</span>";
+                $result .= "<span class='badge rounded-pill bg-success'>Active</span>";
             }
             else{
-                $result .= "<span class='badge bg-danger'>Diactivated</span>";
+                $result .= "<span class='badge rounded-pill bg-danger'>Diactivated</span>";
             }
-
+            $result .= "</center>";
             return $result;
         })
         ->rawColumns(['label', 'action'])

@@ -26,6 +26,10 @@ class CreatePackingDetailsTable extends Migration
             $table->string('material_quality')->nullable();
             $table->integer('print_count')->nullable();
             $table->tinyInteger('status')->default(0)->comment = '0-For Packing List, 1-Completed';
+            $table->string('validated_by_packer')->nullable();
+            $table->string('validated_date_packer')->nullable();
+            $table->string('validated_by_qc')->nullable();
+            $table->string('validated_date_qc')->nullable();
             $table->timestamps();
         });
     }

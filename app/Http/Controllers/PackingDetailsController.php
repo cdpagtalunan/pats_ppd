@@ -18,7 +18,7 @@ use App\Models\PreliminaryPacking;
 class PackingDetailsController extends Controller
 {
     public function viewPrelimDetailsData(Request $request){
-        $preliminary_packing_data = OQCInspection::with(['stamping_production_info', 'prelim_packing_info'])
+        $preliminary_packing_data = OQCInspection::with(['stamping_production_info', 'prelim_packing_info', 'prelim_packing_info.user_info_prelim'])
         ->where('po_no', 'like', '%' . $request->po_no . '%')
         ->where('lot_accepted', 1)
         ->get();
@@ -36,7 +36,7 @@ class PackingDetailsController extends Controller
                 $result .= "<center>";
                 if( $preliminary_packing_data->prelim_packing_info == null){
 
-                    $result .= "<button class='btn btn-primary btn-sm btnValidatePrelimPackingDetails' po-no='$preliminary_packing_data->po_no' data-id='$preliminary_packing_data->id'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                    $result .= "<button class='btn btn-primary btn-sm btnValidatePrelimPackingDetails' style='display: none;' po-no='$preliminary_packing_data->po_no' data-id='$preliminary_packing_data->id'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
                 }else{
 
                 }
@@ -49,6 +49,8 @@ class PackingDetailsController extends Controller
 
                 if( $preliminary_packing_data->prelim_packing_info == null){
                     $result .= '<span class="badge bg-info">OQC PASSED</span>';
+                    $result .= '<br>';
+                    $result .= '<span class="badge bg-info">For Packing Validation</span>';
                 }else{
                     if($preliminary_packing_data->prelim_packing_info->status == 1){
                         $result .= '<span class="badge bg-info">For Packing List</span>';
@@ -56,13 +58,6 @@ class PackingDetailsController extends Controller
                         $result .= '<span class="badge bg-success">Completed</span>';
                     }
                 }
-        
-                // if($test == 2){
-                //     $result .= '<span class="badge bg-success">Active</span>';
-                // }
-                // else{
-                //     $result .= '<span class="badge bg-danger">Disabled</span>';
-                // }
 
                 $result .= "</center>";
                 return $result;
@@ -75,20 +70,19 @@ class PackingDetailsController extends Controller
     }
 
     public function viewFinalPackingDetailsData(Request $request){
-        // $packing_details = OQCInspection::with(['stamping_production_info', 'packing_info'])
-        // ->where('po_no', 'like', '%' . $request->po_no . '%')
-        // ->where('lot_accepted', 1)
-        // ->get();
 
-        $prelim_packing_details = PreliminaryPacking::with(['oqc_info.stamping_production_info', 'final_packing_info'])
+        $prelim_packing_details = PreliminaryPacking::with
+        (['oqc_info.stamping_production_info', 
+        'final_packing_info', 
+        'final_packing_info.user_validated_by_info',
+        'final_packing_info.user_checked_by_info'
+        
+        ])
         ->where('po_no', 'like', '%' . $request->po_no . '%')
         ->where('status', 2)
         ->get();
 
-        // if($prelim_packing_details->final_packing_info != null){
-            // return $prelim_packing_details;
-        // }
-        // return $prelim_packing_details[3]->packing_info->status;
+        // return $prelim_packing_details;
 
         if(!isset($request->po_no)){
             return [];
@@ -99,16 +93,17 @@ class PackingDetailsController extends Controller
                 $result = "";
                 $result .= "<center>";
                 if($prelim_packing_details->final_packing_info == null){
-                    $result .= "<button class='btn btn-primary btn-sm btnEditPackingDetails' oqc-id='$prelim_packing_details->oqc_id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+                    $result .= "<button class='btn btn-primary btn-sm btnEditPackingDetails' style='display: none;' oqc-id='$prelim_packing_details->oqc_id'><i class='fa-solid fa-edit'></i></button>&nbsp";
                 }else{
                     $count = $prelim_packing_details->final_packing_info->print_count;
+                    $id = $prelim_packing_details->final_packing_info->id;
+                    // return $id;
                     if($prelim_packing_details->final_packing_info->status == 1){
-                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-id='$id' data-printCount='$count'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }else if ($prelim_packing_details->final_packing_info->status == 2 ){
-                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
-                        $result .= "<button class='btn btn-primary btn-sm btnScanQrCode' style='display: none;' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-primary btn-sm btnScanQrCode' style='display: none;' data-id='$id' ><i class='fa-solid fa-qrcode'></i></button>&nbsp";
                     }else if ($prelim_packing_details->final_packing_info->status == 3 ){
-                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' oqc-id='$prelim_packing_details->oqc_id' data-id='$prelim_packing_details->id'><i class='fa-solid fa-print'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }
                 }
                 $result .= "</center>";
@@ -127,15 +122,9 @@ class PackingDetailsController extends Controller
                         else if($prelim_packing_details->final_packing_info->status == 2){
                             $result .= '<span class="badge bg-info">For QC Validation</span>';
                         }else if ($prelim_packing_details->final_packing_info->status == 3 ){
-                            $result .= '<span class="badge bg-info">Completed</span>';
+                            $result .= '<span class="badge bg-success">Completed</span>';
                         }
                     }
-
-                    // if($prelim_packing_details->status == 2){
-                    //     $result .= '<span class="badge bg-info">For Packing Validation</span>';
-                    // }else{
-                    //     $result .= '<span class="badge bg-success">Completed</span>';
-                    // }
 
                 $result .= "</center>";
                 return $result;
@@ -184,6 +173,9 @@ class PackingDetailsController extends Controller
                             'delivery_balance'      => $request->delivery_balance,
                             'no_of_cuts'            => $request->number_of_cuts,
                             'material_quality'      => $request->material_quality,
+                            'validated_by_packer'   => $request->scan_packer_id,
+                            'validated_date_packer' => date('Y-m-d H:i:s'),
+                            'material_quality'      => $request->material_quality,
                             'print_count'           => 0,
                             'status'                => 1,
                             'created_at'            => date('Y-m-d H:i:s'),
@@ -217,7 +209,7 @@ class PackingDetailsController extends Controller
                         $array = [
                             'oqc_id'                => $request->oqc_details_id,
                             'po_no'                 => $request->po_no,
-                            'validated_by'          => $request->scan_id,
+                            'validated_by'          => $request->scan_opeator_id,
                             'validated_date'          => date('Y-m-d H:i:s'),
                             'status'                => 1,
                             'created_at'            => date('Y-m-d H:i:s'),
@@ -238,11 +230,7 @@ class PackingDetailsController extends Controller
         $packing_data = PackingDetails::where('id', $request->id)
         ->first(['po_no AS po_no', 'po_qty as po_qty', 'material_name as mat_name', 'material_lot_no as lot_no', 'drawing_no as drawing_no', 'delivery_balance as del_bal', 'no_of_cuts as no_of_cuts', 'material_quality as mat_quality']);
         // ->first();
-
         // return $packing_data;
-        // return $collection;
-
-
         $qrcode = QrCode::format('png')
         ->size(200)->errorCorrection('H')
         ->generate($packing_data);
@@ -311,5 +299,24 @@ class PackingDetailsController extends Controller
             'status' => 2,
         ]);
 
+    }
+    public function updateQcDetails(Request $request){
+        date_default_timezone_set('Asia/Manila');
+
+        $data = $request->all();
+
+        // return $data;
+
+                        $array = [
+                            // 'oqc_id'                => $request->oqc_details_id,
+                            'validated_by_qc'          => $request->scan_id,
+                            'validated_date_qc'          => date('Y-m-d H:i:s'),
+                            'status'                => 3,
+                            // 'created_at'            => date('Y-m-d H:i:s'),
+                        ];
+
+        PackingDetails::where('id', $request->packing_details_id_qc)->update($array);
+
+        return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
     }
 }

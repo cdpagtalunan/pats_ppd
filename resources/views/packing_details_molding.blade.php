@@ -27,6 +27,8 @@
             #colDevice, #colMaterialProcess{
                 transition: .5s;
             }
+
+            .checked-ok { background: #5cec4c!important; }
         </style>
 
         <!-- Content Wrapper. Contains page content -->
@@ -108,6 +110,10 @@
 
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="packingTab" role="tabpanel" aria-labelledby="packingTab-tab"><br>
+                                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                                data-bs-target="#modalVerifyData" id="btnVerifyScanLotNumber"><i
+                                                    class="fa-solid fa-qrcode"></i>&nbsp;Validation of Lot #
+                                            </button><br><br>
                                             <div class="table-responsive">
                                                 <table id="tblPackingDetailsForEndorsement" class="table table-sm table-bordered table-striped table-hover"
                                                     style="width: 100%;">
@@ -181,8 +187,10 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="txtOqcDetailsId" name="oqc_details_id">
+                        <input type="hidden" id="txtPMId" name="PM_details_id">
                         <input type="hidden" id="txtScanPONumber" name="po_no">
-                        <input type="text" class="scanner w-100 " id="txtScanEmpId" name="scan_id" autocomplete="off">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPackerId" name="packer_scan_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtScanPackerId" name="packer_scan_id" autocomplete="off"> --}}
                         <div class="text-center text-secondary"><span id="modalScanEmpIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </form>
@@ -281,6 +289,44 @@
     </div>
     <!-- /.modal -->
 
+    <!-- MODALS -->
+    <div class="modal fade" id="modalVerifyData">
+        <div class="modal-dialog modal-dialog-center">
+            <div class="modal-content modal-sm">
+                <div class="modal-body">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off">
+                    {{-- <input type="text" class="scanner w-100 " id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off"> --}}
+                    <div class="text-center text-secondary"><span id="modalScanPackingIdText">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <!-- MODALS -->
+    <div class="modal fade" id="modalScanQCId">
+        <div class="modal-dialog">
+            <div class="modal-content modal-sm">
+                <form id="formScanQCId">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtPackingMoldingDetailsId" name="molding_packing_details_id">
+                        {{-- <input type="hidden" id="txtScanPONumber" name="po_no"> --}}
+                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQcId" name="scan_id" autocomplete="off"> --}}
+                        <input type="text" class="scanner w-100 " id="txtScanQcId" name="qc_scan_id" autocomplete="off">
+                        <div class="text-center text-secondary"><span id="modalScanQCIdText">Please scan QC ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </form>
+
+            </div>
+        <!-- /.modal-content -->
+        </div>
+            <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
     @endsection
 
     @section('js_content')
@@ -292,6 +338,7 @@
 
             let scannedPO;
             let ParseScannedPo;
+            let PackingMoldingId;
 
             $(document).ready(function(){
 
@@ -333,8 +380,8 @@
                         { "data" : "plating_lot_no"},
                         { "data" : "stamping_production_info.prod_lot_no"},
                         { "data" : "stamping_production_info.ship_output"},
-                        { "data" : "first_molding_info.countedby" },
-                        { "data" : "first_molding_info.checkedby"},
+                        { "data" : "first_molding_info.user_checked_by_info.firstname" },
+                        { "data" : "first_molding_info.user_validated_by_info.firstname"},
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
@@ -378,91 +425,159 @@
                     ],
                 });
 
+                $('#modalVerifyData').on('shown.bs.modal', function () {
+                    $('#txtScanVerifyData').focus();
+                });
+
+                $('#txtScanVerifyData').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        try{
+                            // alert('hehe');
+                            scannedItem = JSON.parse($(this).val());
+                            $('#tblPackingDetailsForEndorsement tbody tr').each(function(index, tr){
+                                let second_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+                                // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+
+                                let powerOff = $(this).find('td:nth-child(1)').children();
+                                // console.log(powerOff);
+
+                                // console.log('tblPreliminaryPackingDetails', lot_no);
+                                // console.log('scannedItem', scannedItem['production_lot_no']);
+                            
+                                if(scannedItem['production_lot_no'] === second_stamping_lot_no){
+                                    $(tr).addClass('checked-ok');
+                                    powerOff.removeAttr('style');
+
+                                    $('#modalVerifyData').modal('hide');
+                                }
+                                console.log(`tblScanSecondStamping`, second_stamping_lot_no);
+                            })
+                        }
+                        catch (e){
+                            toastr.error('Invalid Sticker');
+                            // console.log(e);
+                        }
+                        $(this).val('');
+                    }
+                });
+
                 /* Ensdorsement */
-                $(document).on('click', '.btnScanPackingID', function(e){
+                $(document).on('click', '.btnPackingScanPackingID', function(e){
                     e.preventDefault();
                     let oqcDetailsId =  $(this).attr('data-id');
                     let poNumber =  $(this).attr('po-no');
 
-                    console.log(oqcDetailsId)
-                    console.log(poNumber)
+                    console.log(`status`, 0); // PACKING CHECKING
+                    // console.log(oqcDetailsId)
+                    // console.log(poNumber)
                     $('#txtOqcDetailsId').val(oqcDetailsId);
                     $('#txtScanPONumber').val(poNumber);
                     $('#modalScanEmpId').modal('show');
 
                 });
+                
+                $('#modalScanEmpId').on('shown.bs.modal', function () {
+                    $('#txtScanPackerId').focus();
+                });
 
                 $('#formOqcDetails').submit(function(e){
                     e.preventDefault();
-                    let data1 = $('#formOqcDetails').serialize();
-                    $.ajax({
-                        type: "post",
-                        url: "updated_counted_by",
-                        data: data1,
-                        dataType: "json",
-                        success: function (response) {
-                            if(response['validation'] == 1){
-                                toastr.error('Saving data failed!');
+                });
 
-                            }else if(response['result'] == 0){
-                                toastr.success('Validation Succesful!');
-                                $("#formOqcDetails")[0].reset();
-                                $('#modalScanEmpId').modal('hide');
-                                dtPackingDetailsFE.draw();
-                            }
-                        }
-                    });
+                $('#txtScanPackerId').on('keyup', function(e){
+                    let toScanPackerId =  $('#txtScanPackerId').val();
+                    let packerScanId = {
+                    'packer_scan_id' : toScanPackerId
+                    }
+                    // console.log('asdasd', $('#txtScanPackerId').val());
+                    if(e.keyCode == 13){
+                        validateUser($(this).val().toUpperCase(), [4,9], function(result){    
+                            if(result == true){
+                                    // $('#txtScanPackerId').val();
+                                    // alert('true');
+                                    e.preventDefault();
+                                    let data1 = $('#formOqcDetails').serialize() + '&' + $.param(packerScanId);
+                                    $.ajax({
+                                        type: "post",
+                                        url: "updated_counted_by",
+                                        data: data1,
+                                        dataType: "json",
+                                        success: function (response) {
+                                            if(response['validation'] == 1){
+                                                toastr.error('Saving data failed!');
+                                            }else if(response['result'] == 0){
+                                                toastr.success('Validation Succesful!');
+                                                $("#formOqcDetails")[0].reset();
+                                                $('#modalScanEmpId').modal('hide');
+                                                dtPackingDetailsFE.draw();
+                                            }
+                                        }
+                                    });
+                                }
+                                else{ // Error Handler
+                                    toastr.error('User not authorize!');
+                                } 
+
+                            });
+                            $(this).val('');
+                    }
                 });
 
                 /* Receiving */
-                // $(document).on('click', '.btnScanMoldingID', function(e){
-                //     e.preventDefault();
-                //     let PDMId =  $(this).attr('data-id');
-                //     console.log(PDMId)
-                //     console.log(poNumber)
-                //     $('#txtOqcDetailsId').val(PDMId);
-                //     $('#txtScanPONumber').val(poNumber);
-                //     $('#modalScanEmpId').modal('show');
+                $(document).on('click', '.btnQCScanMoldingID', function(e){
+                    e.preventDefault();
+                    PackingMoldingId =  $(this).attr('data-id');
+                    // console.log(`button click id`, PackingMoldingId)
+                    $('#txtPackingMoldingDetailsId').val(PackingMoldingId);
+                    $('#modalScanQCId').modal('show');
 
-                // });
+                });
 
-                // $('#modalScanEmpId').on('shown.bs.modal', function () {
-                //     $('#txtScanEmpId').focus();
-                //     $('#txtScanEmpId').on('keyup', function(e){
-                //         if(e.keyCode == 13){
-                //             scanEmpId = $('#txtScanEmpId').val();
-                //         }
-                //     });
-                // });
+                $('#modalScanQCId').on('shown.bs.modal', function () {
+                    $('#txtScanQcId').focus();
+                });
 
+                $('#formScanQCId').submit(function(e){
+                    e.preventDefault();
+                })
 
-                //  $('#formOqcDetails').submit(function(e){
-                //     e.preventDefault();
-                //     let data1 = $('#formOqcDetails').serialize();
-                //     $.ajax({
-                //         type: "post",
-                //         url: "updated_endorsed_by",
-                //         data: data1,
-                //         dataType: "json",
-                //         success: function (response) {
-                //             if(response['validation'] == 1){
-                //                 toastr.error('Saving data failed!');
+                $('#txtScanQcId').on('keyup', function(e){
+                    let toScanQcId =  $('#txtScanQcId').val();
+                    let scannedQcId = {
+                    'qc_scan_id' : toScanQcId
+                    }
+                        if(e.keyCode == 13){
+                            validateUser($(this).val().toUpperCase(), [4,9], function(result){    
+                            if(result == true){
+                                    let data1 = $('#formScanQCId').serialize()+ '&' + $.param(scannedQcId);
+                                    $.ajax({
+                                        type: "post",
+                                        url: "update_checked_by",
+                                        data: data1,
+                                        dataType: "json",
+                                        success: function (response) {
+                                            if(response['validation'] == 1){
+                                                toastr.error('Saving data failed!');
 
-                //             }else if(response['result'] == 0){
-                //                 toastr.success('Validation Succesful!');
-                //                 $("#formOqcDetails")[0].reset();
-                //                 $('#modalScanEmpId').modal('hide');
-                //                 dtPackingDetailsFE.draw();
-                //             }
-                //         }
-                //     });
-                // });
+                                            }else if(response['result'] == 0){
+                                                toastr.success('Validation Succesful!');
+                                                $("#formOqcDetails")[0].reset();
+                                                $('#modalScanQCId').modal('hide');
+                                                dtPackingDetailsFE.draw();
+                                            }
+                                        }
+                                    });
+                                }
+                                else{ // Error Handler
+                                    toastr.error('User not authorize!');
+                                } 
 
-                
+                            });
+                            $(this).val('');
+                        }
+                });
 
-
-
-
+                ;
 
             });
 

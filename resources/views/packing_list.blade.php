@@ -134,7 +134,7 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download" ></i> Download</button>
+                        <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download"></i> Export</button>
                     </div>
                 </form>
             </div>
@@ -367,7 +367,8 @@
             $('#formGeneratePackingList').submit(function (e){
                 e.preventDefault();
                 let CtrlNo = $('#txtCtrlNo').val();
-                window.location.href = "view_pdf/"+CtrlNo;
+                // window.location.href = "view_pdf/"+CtrlNo;\
+                window.open(`view_pdf/${CtrlNo}`, '_blank');
                 $('#modalExportPackingList').modal('hide');
             });
 

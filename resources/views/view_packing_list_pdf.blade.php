@@ -19,13 +19,14 @@
             }
 
             body{
-                font:12px Georgia, serif;
+                font:14px Georgia, serif;
             }
 
             .control_no {
                 position: absolute;
                 top: 80px;
                 left: 500px;
+                font:18px Georgia, serif;
             }
 
             .date_created {
@@ -79,7 +80,7 @@
                 bottom: 0;
                 width: 80%;
                 height: 380px;
-                font:11px Georgia, serif;
+                font:14px Georgia, serif;
             }
 
             .table_content .data{
@@ -114,7 +115,8 @@
                 display: inline-block !important;
                 height: 50px;
                 width: 190px;
-                margin: 0.5px;
+                margin: 0.1px;
+                /* border: 1 solid black; */
             }
 
             .doc_footer_div .data{
@@ -128,24 +130,27 @@
             $final_grand_total = [];
             $loop = 1;
             // if(count($packing_list_details) > 10){
-                 if(count($packing_list_details) > 10 && count($packing_list_details) <= 20){
+                 if(count($packing_list_details) > 7 && count($packing_list_details) <= 14){
                         $loop = 2;
-                 }else if(count($packing_list_details) > 20 && count($packing_list_details) <= 30){
+                 }else if(count($packing_list_details) > 14 && count($packing_list_details) <= 21){
                         $loop = 3;
-                 }else if(count($packing_list_details) > 30 && count($packing_list_details) <= 40){
+                 }else if(count($packing_list_details) > 21 && count($packing_list_details) <= 28){
                         $loop = 4;
-                 }else if(count($packing_list_details) > 40){
+                 }else if(count($packing_list_details) > 28){
                         $loop = 5;
                  }
 
                 for($index = 1; $index <= $loop; $index++){
         ?>
                 <div class="container">
-                    <img src="<?php echo $base64 ?>" width="100%" height="100%"/>
+                    {{-- COMMENT BACKGROUND IMAGE --}}
+                    {{-- <img src="<?php //echo $base64 ?>" width="100%" height="100%"/> --}} 
 
                     <div class="control_no">
-                        <span class="label">CTRL #:</span>
-                        <span>{{ $packing_list_details[0]->control_no }}</span>
+                        <b>
+                            <span class="label">CTRL #:</span>
+                            <span>{{ $packing_list_details[0]->control_no }}</span>
+                        </b>
                     </div>
                     <div class="date_created">
                         <span class="data">{{ $created_at[0] }}</span>
@@ -235,41 +240,63 @@
                     </table>
 
                     <div class="doc_footer">
-                        <div class="doc_footer_div" style="margin-left:5px;">
+                        <div class="doc_footer_div" style="margin-left: 5px; width: 24%;">
                             <div class="data"><b>Prepared By:</b></div>
                             @php
-                                if($packing_list_details[0]->prepared_by == null){
-                                    echo '<div class="data">&nbsp;</div>';
-                                }else{
-                                    echo '<div class="data">'.$packing_list_details[0]->prepared_by.'</div>';
-                                }
-                            @endphp
-                            <div class="data">{{ 'PPS-PPC CLERK' }}</div>
-                        </div>
-                        <div class="doc_footer_div">
-                            <div class="data"><b>Checked By:</b></div>
-                            @php
+                                $prepared_by_arr = [];
                                 if($packing_list_details[0]->checked_by == null){
                                     echo '<div class="data">&nbsp;</div>';
                                 }else{
-                                    echo '<div class="data">'.$packing_list_details[0]->checked_by.'</div>';
+                                    $prepared_by = explode(' ', $packing_list_details[0]->prepared_by);
+                                    $prepared_by_arr[] = $prepared_by[0];
+                                    for($cbi = 0; $cbi < count($prepared_by); $cbi++){
+                                        if($cbi == (count($prepared_by) - 1)){
+                                            $prepared_by_arr[] = $prepared_by[$cbi][0];
+                                        }
+                                    }
                                 }
+                                echo '<div class="data">'.implode(' ',$prepared_by_arr).'.'.'</div>';
+                            @endphp
+                            <div class="data">{{ 'PPS-PPC CLERK' }}</div>
+                        </div>
+                        <div class="doc_footer_div" style="width: 23%;">
+                            <div class="data"><b>Checked By:</b></div>
+                            @php
+                                $checked_by_arr = [];
+                                if($packing_list_details[0]->checked_by == null){
+                                    echo '<div class="data">&nbsp;</div>';
+                                }else{
+                                    $checked_by = explode(' ', $packing_list_details[0]->checked_by);
+                                    $checked_by_arr[] = $checked_by[0];
+                                    for($cbi = 0; $cbi < count($checked_by); $cbi++){
+                                        if($cbi == (count($checked_by) - 1)){
+                                            $checked_by_arr[] = $checked_by[$cbi][0];
+                                        }
+                                    }
+                                }
+                                echo '<div class="data">'.implode(' ',$checked_by_arr).'.'.'</div>';
                             @endphp
                             <div class="data">{{ 'PPS-PPC Sr. Planner' }}</div>
                         </div>
-                        <div class="doc_footer_div">
+                        <div class="doc_footer_div" style="width: 20%;">
                             <div class="data">&nbsp;</div>
                             <div class="data">&nbsp;</div>
                             <div class="data">{{ 'Whse Supvr / Manager' }}</div>
                         </div>
-                        <div class="doc_footer_div">
+                        <div class="doc_footer_div" style="width: 30%;">
                             <div class="data" style="text-align: left;"><b>Cc:</b></div>
                             @php
+                                $cc_personnel_arr = [];
                                 if($packing_list_details[0]->cc_personnel == null){
                                     echo '<div class="data">&nbsp;</div>';
                                 }else{
-                                    echo '<div class="data">'.$packing_list_details[0]->cc_personnel.'</div>';
+                                    $cc_personnel = explode(',', $packing_list_details[0]->cc_personnel);
+                                    for($cci = 0; $cci < count($cc_personnel); $cci++){
+                                        $cc_personnel1 = explode(' ', $cc_personnel[$cci]);
+                                        $cc_personnel_arr[] = $cc_personnel1[0].' '.$cc_personnel1[1][0].'.';
+                                    }
                                 }
+                                echo '<div class="data">'.implode(' / ',$cc_personnel_arr).'</div>';
                             @endphp
                             <div class="data">{{ 'Traffic / Prod`n / QC' }}</div>
                         </div>

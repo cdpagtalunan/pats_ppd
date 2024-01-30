@@ -198,7 +198,7 @@ class PackingListDetailsController extends Controller
         $prod_lot_no = "";
         $qty = "";
         $prod_id = "";
-        $imploded_cc = implode($request->carbon_copy, ', ');
+        $imploded_cc = implode($request->carbon_copy, ',');
 
         $rules = [
             // 'control_no'                 => 'required',

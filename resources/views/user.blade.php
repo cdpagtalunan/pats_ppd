@@ -268,13 +268,15 @@
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
                       <option value="4">Production Operator</option>
-                      <option value="5">Inspector</option>
+                      <option value="5">IQC Inspector</option>
                       <option value="6">Warehouse</option>
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
                       <option value="10">PPC - Clerk</option>
                       <option value="11">Technician</option>
+                      <option value="12">IPQC Inspector</option>
+                      <option value="13">OQC Inspector</option>
                     </select>
                 </div>
 
@@ -515,13 +517,15 @@
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
                       <option value="4">Production Operator</option>
-                      <option value="5">Inspector</option>
+                      <option value="5">IQC Inspector</option>
                       <option value="6">Warehouse</option>
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
                       <option value="10">PPC - Clerk</option>
                       <option value="11">Technician</option>
+                      <option value="12">IPQC Inspector</option>
+                      <option value="13">OQC Inspector</option>
                     </select>
                 </div>
 
@@ -645,7 +649,7 @@
                       return "Production Operator";
                     }
                     else if (row.position == 5) {
-                      return "Inspector";
+                      return "IQC Inspector";
                     }
                     else if (row.position == 6) {
                       return "Warehouse";
@@ -664,6 +668,12 @@
                     }
                     else if (row.position == 11) {
                       return "Technician";
+                    }
+                    else if (row.position == 12) {
+                      return "IPQC Inspector";
+                    }
+                    else if (row.position == 13) {
+                      return "OQC Inspector";
                     }
                   },
                 },

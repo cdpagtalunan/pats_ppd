@@ -257,36 +257,36 @@ class StampingController extends Controller
                     DB::commit();
                 }
                 else{
-                    // return $request->all();
 
-                    // $imploded_mat_no = implode($request->material_no, ', ');
                     $imploded_operator = implode($request->opt_name, ', ');
+
                     $prod_array = array(
-                        'stamping_cat'      => $request->stamp_cat,
-                        'ctrl_counter'      => $request->ctrl_counter,
-                        'po_num'            => $request->po_num,
-                        'po_qty'            => $request->po_qty,
-                        'part_code'         => $request->part_code,
-                        'material_name'     => $request->mat_name,
-                        'material_lot_no'   => $request->material_no,
-                        'drawing_no'        => $request->drawing_no,
-                        'drawing_rev'       => $request->drawing_rev,
-                        // 'cut_off_point'     => $request->cut_point,
-                        // 'no_of_cuts'        => $request->no_cut,
-                        'prod_lot_no'       => $request->prod_log_no_auto."".$request->prod_log_no_ext_1."-".$request->prod_log_no_ext_2,
-                        // 'input_coil_weight' => $request->inpt_coil_weight,
-                        // 'ppc_target_output' => $request->target_output,
+                        'stamping_cat'     => $request->stamp_cat,
+                        'ctrl_counter'     => $request->ctrl_counter,
+                        'po_num'           => $request->po_num,
+                        'po_qty'           => $request->po_qty,
+                        'part_code'        => $request->part_code,
+                        'material_name'    => $request->mat_name,
+                        'material_lot_no'  => $request->material_no,
+                        'material_lot_qty' => $request->material_no_qty,
+                        'drawing_no'       => $request->drawing_no,
+                        'drawing_rev'      => $request->drawing_rev,
+                          // 'cut_off_point'     => $request->cut_point,
+                          // 'no_of_cuts'        => $request->no_cut,
+                        'prod_lot_no' => $request->prod_log_no_auto."".$request->prod_log_no_ext_1."-".$request->prod_log_no_ext_2,
+                          // 'input_coil_weight' => $request->inpt_coil_weight,
+                          // 'ppc_target_output' => $request->target_output,
                         'planned_loss'      => $request->planned_loss,
                         'set_up_pins'       => $request->setup_pins,
                         'adj_pins'          => $request->adj_pins,
                         'qc_samp'           => $request->qc_samp,
                         'total_mach_output' => $request->ttl_mach_output,
                         'ship_output'       => $request->ship_output,
-                        // 'mat_yield'         => $request->mat_yield,
-                        'shift'             => $request->opt_shift,
-                        'operator'          => $imploded_operator,
-                        'created_by'        => $user_id->id,
-                        'created_at'        => NOW()
+                          // 'mat_yield'         => $request->mat_yield,
+                        'shift'      => $request->opt_shift,
+                        'operator'   => $imploded_operator,
+                        'created_by' => $user_id->id,
+                        'created_at' => NOW()
                     );
                     if($request->stamp_cat == 1){
                         $prod_array['cut_off_point'] = $request->cut_point;

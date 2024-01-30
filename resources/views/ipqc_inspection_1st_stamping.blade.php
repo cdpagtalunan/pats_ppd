@@ -74,8 +74,8 @@
                                         <div class="col-sm-2">
                                                 <label class="form-label">PO Number:</label>
                                             <div class="input-group mb-3">
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Press Enter Key to Search PO Number"></i>
-                                                <select class="form-control" id="txtSelectPONo" name="po_number" placeholder="Search PO Number"></select>
+                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select PO Number"></i>
+                                                <select class="form-control select2bs5" id="txtSelectPONo" name="po_number" placeholder="Select PO Number"></select>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -476,6 +476,9 @@
                 // $('.select2bs4').select2({
                 //     theme: 'bootstrap4'
                 // });
+                $( '.select2bs5' ).select2( {
+                    theme: 'bootstrap-5'
+                } );
 
                 GetPOFromFirstStampingProd($("#txtSelectPONo"));
 
@@ -484,7 +487,7 @@
 
                     $.ajax({
                             type: "get",
-                            url: "get_data_from_fs_production",
+                            url: "get_po_from_fs_production",
                             data: {
                                 "stamping_cat" : 1
                             },
@@ -494,33 +497,15 @@
                                 cboElement.html(result);
                             },
                             success: function(response) {
-                                let arr = response['fs_production_data'];
-                                const findDuplicates = (arr) => {
-                                    let sorted_arr = arr.slice().sort(); // You can define the comparing function here.
-                                    // JS by default uses a crappy string compare.
-                                    // (we use slice to clone the array so the
-                                    // original array won't be modified)
-                                    let results = [];
-                                    for (let i = 0; i < sorted_arr.length - 1; i++) {
-                                        if (sorted_arr[i + 1] == sorted_arr[i]) {
-                                        results.push(sorted_arr[i]);
-                                        }
-                                    }
-                                    return results;
-                                }
-
-                               let  findDuplicates(duplicatedArray);
-
-                                if (response['fs_production_data'].length > 0) {
+                                if (response['fs_production_po'].length > 0) {
                                         result = '<option value="" disabled selected>-- Select PO No. --</option>';
-                                    for (let index = 0; index < response['fs_production_data'].length; index++) {
-                                        result += '<option value="' + response['fs_production_data'][index].po_num + '">' + response['fs_production_data'][index].po_num + '</option>';
+                                    for (let index = 0; index < response['fs_production_po'].length; index++) {
+                                        result += '<option value="' + response['fs_production_po'][index].po_num + '">' + response['fs_production_po'][index].po_num + '</option>';
                                     }
                                 } else {
                                     result = '<option value="0" selected disabled> -- No record found -- </option>';
                                 }
                                 cboElement.html(result);
-                                cboElement.select2();
                             },
                             error: function(data, xhr, status) {
                                 result = '<option value="0" selected disabled> -- Reload Again -- </option>';
@@ -591,7 +576,7 @@
                 function redirect_to_drawing(drawing) {
                     console.log('Drawing No.:',drawing)
                     if( drawing  == 'N/A'){
-                        alert('No Document Required')
+                        alert('Document No is Not Existing')
                     }
                     else{
                         window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
@@ -612,6 +597,7 @@
                     },
                     fixedHeader: true,
                     // bAutoWidth: false,
+                    "order":[[7, 'asc']],
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
@@ -649,7 +635,9 @@
                         param.fs_prod_stamping_cat = 1; // Stamping productions Stamping Category: 1
                         }
                     },
-                    bAutoWidth: false,
+                    fixedHeader: true,
+                    // bAutoWidth: false,
+                    "order":[[7, 'desc']],
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
@@ -686,7 +674,9 @@
                         param.fs_prod_stamping_cat = 1; // Stamping productions Stamping Category: 1
                         }
                     },
-                    bAutoWidth: false,
+                    fixedHeader: true,
+                    // bAutoWidth: false,
+                    "order":[[7, 'desc']],
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },

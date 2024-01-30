@@ -28,7 +28,10 @@ class PdfController extends Controller
         $packing_list_details_mat_count = PackingListDetails::select('mat_name')->where('control_no', $control_no)->distinct()->get();
         // $packing_list_details_count = $packing_list_details->count('mat_name');
 
-        // return $packing_list_details;
+        // $cc_personnel_name = explode(' ', $packing_list_details[0]->cc_personnel);
+        // $cc_personnel_surname = explode(',', $packing_list_details[0]->cc_personnel);
+        // $cc_personnel_surname1 = explode(' ', $cc_personnel_surname[1]);
+        // return $cc_personnel_surname1[0].' '.$cc_personnel_surname1[1][0];
         // $packing_list_details = PackingListDetails::where('mat_name', $control_no)->orderBy('box_no', 'asc')->get();
         // $material_name = PackingListDetails::selectwhere('control_no', $control_no)->get();
         // return $packing_list_details;

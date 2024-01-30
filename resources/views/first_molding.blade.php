@@ -134,13 +134,33 @@
     @section('js_content')
         <script>
             $(document).ready(function () {
-                const dt = {
-                    firstMolding : "",
-                }
-                const formModal = {
-                    firstMolding  : $("#formFirstMolding"),
-                }
-                dt.firstMolding = $("#tblFirstMoldingDetails").DataTable({
+                $('#modalFirstMolding').on('hidden.bs.modal', function() {
+                    formModal.firstMolding.find('#first_molding_id').val('');
+                    formModal.firstMolding.find('#contact_lot_number').val('');
+                    formModal.firstMolding.find('#production_lot').val('');
+                    formModal.firstMolding.find('#remarks').val('');
+                    formModal.firstMolding.find('#created_at').val('');
+                    formModal.firstMolding.find('.form-control').removeClass('is-valid')
+                    formModal.firstMolding.find('.form-control').removeClass('is-invalid');
+                    formModal.firstMolding.find('.form-control').attr('title', '');
+                })
+
+                $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
+                    formModal.firstMoldingStation.find('#first_molding_detail_id').val('');
+                    formModal.firstMoldingStation.find('#date').val('');
+                    formModal.firstMoldingStation.find('#operator_name').val('');
+                    formModal.firstMoldingStation.find('#input').val('');
+                    formModal.firstMoldingStation.find('#ng_qty').val(0);
+                    formModal.firstMoldingStation.find('#output').val('');
+                    formModal.firstMoldingStation.find('#remarks').val('');
+                    formModal.firstMoldingStation.find('.form-control').removeClass('is-valid')
+                    formModal.firstMoldingStation.find('.form-control').removeClass('is-invalid');
+                    formModal.firstMoldingStation.find('.form-control').attr('title', '');
+                })
+
+                getFirstModlingDevices();
+
+                dt.firstMolding = table.FirstMoldingDetails.DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
@@ -151,7 +171,6 @@
                     },
                     fixedHeader: true,
                     "columns":[
-                
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
                         { "data" : "device_name" },
@@ -162,12 +181,47 @@
                         { "data" : "created_at" },
                     ]
                 });
+
+                dt.firstMoldingStation = table.FirstMoldingStationDetails.DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "load_first_molding_station_details",
+                        data: function (param){
+                            param.first_molding_id = formModal.firstMolding.find("#first_molding_id").val();
+                        }
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        // { "data" : "status" },
+                        { "data" : "stations" },
+                        { "data" : "date" },
+                        { "data" : "operator_names" },
+                        { "data" : "input" },
+                        { "data" : "ng_qty" },
+                        { "data" : "output" },
+                        { "data" : "remarks" },
+                        { "data" : "created_at" },
+                    ]
+                });
+
+
+                table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
+                table.FirstMoldingStationDetails.on('click','#btnEditFirstMoldingStation', editFirstMoldingStation);
+
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
                     $('#modalFirstMolding').modal('show');
+                    $('#btnFirstMoldingStation').prop('disabled',true);
                 });
 
-                getFirstModlingDevices();
+                $('#btnFirstMoldingStation').click(function (e) {
+                    e.preventDefault();
+                    $('#modalFirstMoldingStation').modal('show');
+                    formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
+                    getStation();
+                });
 
                 $('#global_device_name').change(function (e) {
                     e.preventDefault();
@@ -191,10 +245,80 @@
                         }
                     });
                 });
+                const totalOutput = function (input_qty,ng_qty){
+                    let totalOutputQty = input_qty - ng_qty;
+                    if(totalOutputQty < 0 ){
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Output qty. cannot be negative value!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                        formModal.firstMoldingStation.find('#output').val('');
+                        return;
+                    }
+                    formModal.firstMoldingStation.find('#output').val(totalOutputQty);
+                }
+
+                $('#input').keyup(function (e) {
+                    totalOutput(formModal.firstMoldingStation.find(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
+                });
+
+                $('#ng_qty').keyup(function (e) {
+                    totalOutput(formModal.firstMoldingStation.find("#input").val(),formModal.firstMoldingStation.find(this).val());
+                });
+
                 formModal.firstMolding.submit(function (e) {
                     e.preventDefault();
                     saveFirstMolding();
                 });
+
+                formModal.firstMoldingStation.submit(function (e) {
+                    e.preventDefault();
+                    savefirstMoldingStation();
+                });
+
+                $('#btnSubmitFirstMoldingStation').click(function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        // title: "Are you sure?",
+                        text: "Are you sure you want to submit this process",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: "GET",
+                                url: "first_molding_update_status",
+                                data: {
+                                    "first_molding_id" : formModal.firstMolding.find("#first_molding_id").val(),
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    if(response['result'] === 1){
+                                        $('#modalFirstMolding').modal('hide');
+                                        dt.firstMoldingStation.draw();
+                                        Swal.fire({
+                                            position: "center",
+                                            icon: "success",
+                                            title: "Submitted Successfully !",
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                    }
+                                },error: function (data, xhr, status){
+                                    toastr.error(`Error: ${data.status}`);
+                                }
+                            });
+                        }
+                    });
+                });
+                
+            
             });
         </script>
     @endsection

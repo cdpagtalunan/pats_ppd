@@ -410,7 +410,6 @@ function GetOqcInspectionById(getPo,
             GetAQL($('.aqlDropdown'))
             GetFamily($('.familyDropdown'))
             GetCustomer($('.customerDropdown'))
-            GetMOD($('.inspectionModDropdown_0'))
             GeStampingLine($('.stampingLineDropdown'))
             GetInspectionType($('.inspectionTypeDropdown'))
             GetInspectionLevel($('.inspectionLevelDropdown'))
@@ -481,6 +480,7 @@ function GetOqcInspectionById(getPo,
                 $('#txtOqcInspectionRemarks').val(getOqcInspectionData[0].remarks)
 
                 if(getOqcInspectionData[0].lot_accepted == '0'){
+                    GetMOD($('.inspectionModDropdown_0'))
                     $('.mod-class').removeClass('d-none')
                 }else{
                     $('.mod-class').addClass('d-none')
