@@ -145,7 +145,7 @@
                                                         <th>Parts Name</th>
                                                         <th>Production Lot #</th>
                                                         <th>Lot Qty</th>
-                                                        <th>Validated By</th>
+                                                        <th> PACKER Validated By</th>
                                                         <th>Validated Date</th>
                                                     </tr>
                                                 </thead>
@@ -370,8 +370,8 @@
             <div class="modal-content modal-sm">
                 <div class="modal-body">
                     {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanLotNumber" name="scan_lot_number" autocomplete="off" value='{"po_no":"450244133600010","po_qty":"2400","mat_name":"CT 6009-VE","lot_no":"C240123-0101MZ-2","drawing_no":"B139312-001","del_bal":"2500","no_of_cuts":"1","mat_quality":"test"}'> --}}
-                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off">
-                    {{-- <input type="text" class="w-100 " id="txtScanLotNumber" name="scan_lot_number" autocomplete="off"> --}}
+                    {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off"> --}}
+                    <input type="text" class="w-100 " id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off">
                     <div class="text-center text-secondary"><span id="modalQCScanLotNumber">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                 </div>
             </div>
@@ -848,11 +848,11 @@
                             // alert('haha');
                             scannedItem = JSON.parse($(this).val());
                             $('#tblFinalPackingDetails tbody tr').each(function(index, tr){
+                                console.log(scannedItem);
                                 let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
-
                                 let removeClassDNoneButton = $(this).find('td:nth-child(1)').children().children();
                             
-                                if(scannedItem['lot_no'] === lot_no){
+                                if(scannedItem['production_lot_no'] === lot_no){
                                     $(tr).addClass('checked-ok');
                                     removeClassDNoneButton.removeAttr('style');
 

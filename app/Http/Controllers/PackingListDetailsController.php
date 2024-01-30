@@ -210,6 +210,7 @@ class PackingListDetailsController extends Controller
         $validator = Validator::make($data, $rules);
         if($validator->passes()){
             for ($i=0; $i <count($prod_data); $i++) { 
+                    $oqc_id = $prod_data[$i]->id;
                     $prod_id = $prod_data[$i]->stamping_production_info->id;
                     $po_no = $prod_data[$i]->po_no;
                     $part_code = $prod_data[$i]->stamping_production_info->part_code;
@@ -253,9 +254,12 @@ class PackingListDetailsController extends Controller
                             'status' => 2,
                         ];
 
+                        // return $oqc_id;
+
                         PackingListDetails::insert($array);
                         ReceivingDetails::insert($array_for_receiving);
-                        PreliminaryPacking::where('oqc_id', $prod_data[0]->id)
+
+                        PreliminaryPacking::where('oqc_id', $oqc_id)
                         ->update($array_for_preliminary);
         
                 

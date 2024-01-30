@@ -1147,7 +1147,8 @@
                     $('#modalScanQRSave').modal('show');
                 });
 
-                $('#txtScanUserId').on('keyup', function(e){
+                // $('#txtScanUserId').on('keyup', function(e){
+                $(document).on('keyup','#txtScanUserId', function(e){
                     if(e.keyCode == 13){
                         validateUser($(this).val(), [0, 2, 5], function(result){
                             if(result == true){
@@ -1176,14 +1177,12 @@
                         success: function (response) {
                             let result = response['result'];
                             if (result == 'Insert Successful' || result == 'Update Successful') {
-                                // dataTableDmrpqc.draw();
                                 toastr.success('Successful!');
                                 $('#modalIpqcInspection').modal('hide');
                                 $('#modalScanQRSave').modal('hide');
                                 dt1stStampingIpqcInspectionPending.draw();
                                 dt1stStampingIpqcInspectionCompleted.draw();
                                 dt1stStampingIpqcInspectionResetup.draw();
-                                // $("#modalConfirmSubmitIPQCInspection").modal('hide');
                             }
                             else if(result == 'Duplicate'){
                                 toastr.error('Request Already Submitted!');

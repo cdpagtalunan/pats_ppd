@@ -581,7 +581,7 @@
                     <div class="modal-body mt-3">
                         {{-- <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off" value='{"po":"450244133600010","code":"108321601","name":"CT 6009-VE","mat_lot_no":"1","qty":88000,"output_qty":2500}'> --}}
                         <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
-                        <input type="text" class="scanQrBarCode1 w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
+                        <input type="text" class="scanQrBarCode w-100 d-none" id="txtScanUserId" name="scan_user_id" autocomplete="off">
                         <div class="text-center text-secondary scanningForFirstStamping"></div>
                         <div class="text-center text-secondary"><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>

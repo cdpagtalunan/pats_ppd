@@ -372,7 +372,7 @@
                             <div class="py-3">
                                 <span class="badge badge-secondary">1.</span> Runcard Details
                             </div>
-                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group input-group-sm mb-3 d-none">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">First Molding Id </span>
                                 </div>
@@ -485,7 +485,7 @@
             <div class="modal-body">
                 <form id="formFirstMoldingStation">
                     @csrf
-                    <div class="row">
+                    <div class="row  d-none">
                         <div class="col">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -495,7 +495,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row  d-none">
                         <div class="col">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
