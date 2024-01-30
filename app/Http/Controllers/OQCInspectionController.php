@@ -30,7 +30,7 @@ use App\Models\DropdownOqcInspectionCustomer;
 
 class OQCInspectionController extends Controller
 {
-    //============================== VIEW ==============================
+    //============================== VIEW FIRST STAMPING ==============================
     public function viewOqcInspectionFirstStamping(Request $request){
         date_default_timezone_set('Asia/Manila');
         
@@ -374,7 +374,7 @@ class OQCInspectionController extends Controller
         ->make(true);
     }
 
-    //============================== VIEW ==============================
+    //============================== MULTIPLE DATA VIEWING HISTORY 1ST & 2ND STAMPING ==============================
     public function viewOqcInspectionHistory(Request $request){
         date_default_timezone_set('Asia/Manila');
         
@@ -395,10 +395,10 @@ class OQCInspectionController extends Controller
                     oqc_inspection-id="'. $oqc_info->id .'" 
                     prod-id="'. $oqc_info->stamping_production_info->id .'" 
                     prod-po="'. $oqc_info->stamping_production_info->po_num .'" 
-                    prod-material-name="'. $oqc_info->stamping_production_info->material_name .'" 
-                    prod-po-qty="'. $oqc_info->stamping_production_info->po_qty .'" 
-                    prod-lot-no="'. $oqc_info->stamping_production_info->prod_lot_no .'" 
-                    prod-ship-output="'. $oqc_info->stamping_production_info->ship_output .'" 
+                    prod-material_name="'. $oqc_info->stamping_production_info->material_name .'" 
+                    prod-po_qty="'. $oqc_info->stamping_production_info->po_qty .'" 
+                    prod-lot_no="'. $oqc_info->stamping_production_info->prod_lot_no .'" 
+                    prod-ship_output="'. $oqc_info->stamping_production_info->ship_output .'" 
                     data-toggle="modal" 
                     data-target="#modalOqcInspection" 
                     data-keyboard="false" title="View">
@@ -456,7 +456,7 @@ class OQCInspectionController extends Controller
         ->make(true);
     }
 
-    //============================== VIEW ==============================
+    //============================== VIEW SECOND STAMPING ==============================
     public function viewOqcInspectionSecondStamping(Request $request){
         date_default_timezone_set('Asia/Manila');
         

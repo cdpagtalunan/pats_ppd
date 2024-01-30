@@ -225,9 +225,7 @@ Route::controller(IqcInspectionController::class)->group(function () {
     Route::get('/view_coc_file_attachment/{id}', 'viewCocFileAttachment')->name('view_coc_file_attachment');
 
     Route::post('/save_iqc_inspection', 'saveIqcInspection')->name('save_iqc_inspection');
-
 });
-
 
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {

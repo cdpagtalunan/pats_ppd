@@ -426,7 +426,7 @@ function GetOqcInspectionById(getPo,
             let getInspector            = response['getInspector']
             let getOqcInspectionData    = response['getOqcInspectionData']
             let firstStampingProduction = response['firstStampingProduction']
-            
+
             if(firstStampingProduction[0].stamping_ipqc != null){
                 if(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0] != null){
                     $('#txtBDrawing').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_title)
@@ -526,16 +526,16 @@ function GetOqcInspectionById(getPo,
                             $('#btnRemoveMod').trigger('click')
                         }
                     }
-                    
-                    setTimeout(() => {     
+
+                    setTimeout(() => {
                         $(`#txtMod_${mod}`).val(getOqcInspectionData[0].mod_oqc_inspection_info[mod]['mod']).trigger('change')
                         $(`#txtModQty_${mod}`).val(getOqcInspectionData[0].mod_oqc_inspection_info[mod]['mod_qty'])
                     }, 400);
 
                     $('#txtOqcInspectionDefectiveNum').val(countDefects)
                 }
-                
-                let percentage = (firstStampingProduction[0].ship_output-countDefects)/firstStampingProduction[0].ship_output*100                
+
+                let percentage = (firstStampingProduction[0].ship_output-countDefects)/firstStampingProduction[0].ship_output*100
                 $('#txtOqcInspectionYield').val(percentage.toFixed(2)+'%')
             }else{
                 $('#txtOqcInspectionInspector').val(getInspector.firstname+' '+getInspector.lastname)

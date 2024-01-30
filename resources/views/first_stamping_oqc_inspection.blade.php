@@ -748,16 +748,17 @@
                     $('.viewDrawingFirst').removeClass('slct')
                 })
 
-                $(document).on('click', '.actionOqcInspectionViewFirstStamping', function(e){
+                $(document).on('click', '.actionOqcInspectionView', function(e){
                     e.preventDefault()
-                    getPo               = $(this).attr('first_stamping_prod-po')
-                    getPoQty            = $(this).attr('first_stamping_prod-po_qty')
-                    getOqcId            = $(this).attr('first_stamping_oqc_inspection-id')
-                    getProdId           = $(this).attr('first_stamping_prod-id')
-                    getProdLotNo        = $(this).attr('first_stamping_prod-lot_no')
-                    getMaterialName     = $(this).attr('first_stamping_prod-material_name')
-                    getProdShipOutput   = $(this).attr('first_stamping_prod-ship_output')
+                    getPo                       = $(this).attr('prod-po')
+                    getPoQty                    = $(this).attr('prod-po_qty')
+                    getOqcId                    = $(this).attr('oqc_inspection-id')
+                    getProdId                   = $(this).attr('prod-id')
+                    getProdLotNo                = $(this).attr('prod-lot_no')
+                    getMaterialName             = $(this).attr('prod-material_name')
+                    getProdShipOutput           = $(this).attr('prod-ship_output')
                     getInfoForFirstStamping     = $(this).attr('first-stamping')
+                    
                     $('#txtStatus').val(getInfoForFirstStamping)
 
                     GetOqcInspectionById(
