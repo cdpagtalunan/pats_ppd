@@ -90,13 +90,13 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
+                                                    <th>Action</th>
                                                     <th>Status</th>
                                                     <th>Ctrl #</th>
-                                                    <th>Box #</th>
                                                     <th>PO</th>
-                                                    <th>Material Name</th>
-                                                    <th>Lot #</th>
-                                                    <th>Shipment Output</th>
+                                                    {{-- <th>Material Name</th> --}}
+                                                    {{-- <th>Lot #</th> --}}
+                                                    {{-- <th>Shipment Output</th> --}}
                                                 </tr>
                                             </thead>
                                         </table>
@@ -306,6 +306,54 @@
     </div>
     <!-- /.modal -->
 
+     {{-- * ADD --}}
+     <div class="modal fade" id="modalViewPackingListDetails" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="fa fa-plus"></i>Packing List Details</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtPackingListId" name="packing_list_id">
+                        <div class="col-sm-12">
+                            <strong>Packing List Details</strong>
+                        </div>
+                        <hr>
+
+                            <div class="table-responsive">
+                                <table id="tblProductionListDetails" class="table table-sm table-bordered table-striped table-hover"style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 3%"><center>Id</center></th>
+                                            <th style="width: 3%"><center>Box #</center></th>
+                                            <th>Status</th>
+                                            <th>PO</th>
+                                            <th>Material Name</th>
+                                            <th>Production Lot #</th>
+                                            <th>Product Code</th>
+                                            <th>Qty</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <hr>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="btnSavePackingListDetails" class="btn btn-primary"><i id="btnSavePackingListDetailsIcon"
+                                class="fa fa-check"></i> Save</button>
+                    </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
     @endsection
 
     @section('js_content')
@@ -415,14 +463,14 @@
                 fixedHeader: true,
                 "columns":[
                     // { "data"  : 'DT_RowIndex'},
-                    // { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "action", orderable:false, searchable:false },
                     { "data" : "status"},
                     { "data" : "control_no"},
-                    { "data" : "box_no"},
-                    { "data" : "po_no"},
-                    { "data" : "mat_name"},
-                    { "data" : "lot_no"},
-                    { "data" : "quantity"},
+                    // { "data" : "box_no"},
+                    { "data" : "po"},
+                    // { "data" : "mat_name"},
+                    // { "data" : "lot_no"},
+                    // { "data" : "quantity"},
                 ],
             });
 
@@ -596,6 +644,16 @@
                             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
                         }
                     });
+                });
+
+                $(document).on('click', '.btnEditPackingListDetails', function(e){
+                    // alert('xd');
+                    e.preventDefault();
+                    let packingDetailsCtrlNo =  $(this).attr('data-ctrl-no');
+
+                    // $('#txtPackingDetailsId').val(packingDetailsCtrlNo);
+                    $('#modalViewPackingListDetails').modal('show');
+                    console.log(packingDetailsCtrlNo);
                 });
         });
 

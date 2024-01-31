@@ -14,6 +14,7 @@ function getOqcDetailsbyId(oqcDetailsId){
                     $('#txtPartsName').val(response['oqcData']['stamping_production_info']['material_name'])
                     $('#txtProdLotNumber').val(response['oqcData']['stamping_production_info']['prod_lot_no'])
                     $('#txtDrawingNumber').val(response['oqcData']['stamping_production_info']['drawing_no'])
+                    $('#txtNumberOfCuts').val(response['oqcData']['stamping_production_info']['no_of_cuts'])
 			}else{
                 toastr.warning('warning messages');
             }

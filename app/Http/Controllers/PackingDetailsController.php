@@ -102,7 +102,7 @@ class PackingDetailsController extends Controller
                         $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-id='$id' data-printCount='$count'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }else if ($prelim_packing_details->final_packing_info->status == 2 ){
                         $result .= "<button class='btn btn-primary btn-sm btnScanQrCode' style='display: none;' data-id='$id' ><i class='fa-solid fa-qrcode'></i></button>&nbsp";
-                        // $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
 
                     }else if ($prelim_packing_details->final_packing_info->status == 3 ){
                         $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
@@ -172,7 +172,7 @@ class PackingDetailsController extends Controller
                             'material_name'         => $request->parts_name,
                             'material_lot_no'       => $request->prod_lot_no,
                             'drawing_no'            => $request->drawing_no,
-                            'delivery_balance'      => $request->delivery_balance,
+                            // 'delivery_balance'      => $request->delivery_balance,
                             'no_of_cuts'            => $request->number_of_cuts,
                             'material_quality'      => $request->material_quality,
                             'validated_by_packer'   => $request->scan_packer_id,
