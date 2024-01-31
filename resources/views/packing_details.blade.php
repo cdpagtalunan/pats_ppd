@@ -175,6 +175,10 @@
                                                             <th>Drawing #</th>
                                                             <th>Production Lot #</th>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                                                            <th>Delivery Balance</th>
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
 =======
                                                             <th>Delivery Balance</th>
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
@@ -268,7 +272,10 @@
                             </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Delivery Balance</label>
@@ -539,6 +546,10 @@
                         { "data" : "oqc_info.stamping_production_info.drawing_no"},
                         { "data" : "oqc_info.stamping_production_info.prod_lot_no"},
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                        { "data" : "final_packing_info.delivery_balance" },
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
 =======
                         { "data" : "final_packing_info.delivery_balance" },
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)

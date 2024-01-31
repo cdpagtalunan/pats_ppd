@@ -1,6 +1,7 @@
 {
     "workbench.colorCustomizations": {
 <<<<<<< HEAD
+<<<<<<< HEAD
         "activityBar.activeBackground": "#50642d",
         "activityBar.background": "#50642d",
         "activityBar.foreground": "#e7e7e7",
@@ -21,6 +22,8 @@
     },
     "peacock.color": "#34411d"
 =======
+=======
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
         "activityBar.activeBackground": "#4eecfd",
         "activityBar.background": "#4eecfd",
         "activityBar.foreground": "#15202b",
@@ -40,5 +43,8 @@
         "titleBar.inactiveForeground": "#15202b99"
     }
 } "#1d8ea8"
+<<<<<<< HEAD
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
+=======
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
 }

@@ -378,5 +378,8 @@ Route::controller(DefectsInfoController::class)->group(function () {
     // Route::get('/get_process_by_id', 'get_process_by_id');
 });
 
+<<<<<<< HEAD
 
 Route::view('/production_history','production_history')->name('production_history');
+=======
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
