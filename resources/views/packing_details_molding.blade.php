@@ -346,16 +346,24 @@
                     $('#txtScanPO').focus();
                     $('#txtScanPO').on('keyup', function(e){
                         if(e.keyCode == 13){
+                           
+
                             scannedPO = $('#txtScanPO').val();
                             ParseScannedPo = JSON.parse(scannedPO);
-                            console.log(ParseScannedPo);
-                            // alert('heey');
-                            $('#txtSearchPONum').val(ParseScannedPo['po']);
-                            $('#txtSearchMatName').val(ParseScannedPo['name']);
-                            $('#txtSearchPOQty').val(ParseScannedPo['qty']);
+                            console.log(ParseScannedPo['cat']);
+                            if(ParseScannedPo['cat'] != 1){
+                                alert('heey');
+                                $('#txtSearchPONum').val(ParseScannedPo['po']);
+                                $('#txtSearchMatName').val(ParseScannedPo['name']);
+                                $('#txtSearchPOQty').val(ParseScannedPo['qty']);
 
-                            $('#modalScanPO').modal('hide');
-                            dtPackingDetailsFE.draw()
+                                $('#modalScanPO').modal('hide');
+                                dtPackingDetailsFE.draw()
+                            }else{
+                                
+                                toastr.error('Invalid Sticker');
+                            }
+
                         }
                     });
                 });
@@ -434,7 +442,9 @@
                         try{
                             // alert('hehe');
                             scannedItem = JSON.parse($(this).val());
-                            $('#tblPackingDetailsForEndorsement tbody tr').each(function(index, tr){
+                            console.log('scannedItem', scannedItem['cat']);
+                            if(scannedItem['cat'] != 1){
+                                $('#tblPackingDetailsForEndorsement tbody tr').each(function(index, tr){
                                 let second_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
                                 // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
 
@@ -442,7 +452,6 @@
                                 // console.log(powerOff);
 
                                 // console.log('tblPreliminaryPackingDetails', lot_no);
-                                // console.log('scannedItem', scannedItem['production_lot_no']);
                             
                                 if(scannedItem['production_lot_no'] === second_stamping_lot_no){
                                     $(tr).addClass('checked-ok');
@@ -452,6 +461,10 @@
                                 }
                                 console.log(`tblScanSecondStamping`, second_stamping_lot_no);
                             })
+                            }else{
+                                toastr.error('Invalid Sticker');
+                            }
+                            
                         }
                         catch (e){
                             toastr.error('Invalid Sticker');

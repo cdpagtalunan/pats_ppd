@@ -223,6 +223,13 @@
 
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                    <label class="form-label">Invoice #</label>
+                                    <input type="text" class="form-control form-control-sm" name="invoice_no" id="txtInvoiceNo" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
                                     <label class="form-label">Supplier Lot #</label>
                                     <input type="text" class="form-control form-control-sm" name="supplier_lot_no" id="txtSupplierLotNo" autocomplete="off">
                                 </div>

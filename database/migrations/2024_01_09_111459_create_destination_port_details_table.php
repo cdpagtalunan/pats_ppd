@@ -14,7 +14,7 @@ class CreateDestinationPortDetailsTable extends Migration
     public function up()
     {
         Schema::create('destination_port_details', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('destination_port')->nullable();
             $table->tinyInteger('status')->default(0)->comment = '0-Active, 1-Deactivated';
             $table->timestamps();

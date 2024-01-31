@@ -22,6 +22,7 @@ class CreateReceivingDetailsTable extends Migration
             $table->string('mat_name')->nullable();
             $table->string('lot_no')->nullable();
             $table->string('quantity')->nullable();
+            $table->string('invoice_no')->nullable();
             $table->string('supplier_name')->nullable();
             $table->string('supplier_lot_no')->nullable();
             $table->string('supplier_quantity')->nullable();

@@ -159,7 +159,7 @@
                                             {{-- <div style="float: right;"> --}}
                                                 <button class="btn btn-primary" data-bs-toggle="modal"
                                                     data-bs-target="#modalQCScanLotNumber" id="btnScanLotNumber"><i
-                                                        class="fa-solid fa-qrcode"></i>&nbsp; QC Validation of Lot #
+                                                        class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
                                                 </button><br><br>
                                             {{-- </div> --}}
                                             <div class="table-responsive">
@@ -370,8 +370,8 @@
             <div class="modal-content modal-sm">
                 <div class="modal-body">
                     {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanLotNumber" name="scan_lot_number" autocomplete="off" value='{"po_no":"450244133600010","po_qty":"2400","mat_name":"CT 6009-VE","lot_no":"C240123-0101MZ-2","drawing_no":"B139312-001","del_bal":"2500","no_of_cuts":"1","mat_quality":"test"}'> --}}
-                    {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off"> --}}
-                    <input type="text" class="w-100 " id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off">
+                    {{-- <input type="text" class="w-100 " id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off"> --}}
                     <div class="text-center text-secondary"><span id="modalQCScanLotNumber">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                 </div>
             </div>
@@ -852,7 +852,7 @@
                                 let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
                                 let removeClassDNoneButton = $(this).find('td:nth-child(1)').children().children();
                             
-                                if(scannedItem['production_lot_no'] === lot_no){
+                                if(scannedItem['lot_no'] === lot_no){
                                     $(tr).addClass('checked-ok');
                                     removeClassDNoneButton.removeAttr('style');
 
@@ -892,7 +892,7 @@
                     'scan_id' : toScanQcId
                     }
                         if(e.keyCode == 13){
-                            validateUser($(this).val().toUpperCase(), [2], function(result){    
+                            validateUser($(this).val().toUpperCase(), [2,5], function(result){    
                                 if(result == true){
                                     // alert('true');
                                     e.preventDefault();

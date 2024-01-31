@@ -14,7 +14,7 @@ class CreateLoadingPortDetailsTable extends Migration
     public function up()
     {
         Schema::create('loading_port_details', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('loading_port')->nullable();
             $table->tinyInteger('status')->default(0)->comment = '0-Active, 1-Deactivated';
             $table->timestamps();
