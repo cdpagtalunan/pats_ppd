@@ -255,6 +255,12 @@
                                         <p>2nd Molding</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('cn_assembly') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Assy</p>
+                                    </a>
+                                </li>
                             </ul>
                             {{-- <ul class="nav nav-treeview">
                                 <li class="nav-item">
@@ -265,11 +271,19 @@
                                 </li>
                             </ul> --}}
                         </li>
+                         <li class="nav-item">
+                            <a href="{{ route('production_history') }}" class="nav-link">
+                                <i class="fas fa-gears"> </i>
+                                <p>
+                                    Production History
+                                </p>
+                            </a>
+                        </li>
                     @endif
 
                     @if (in_array(Auth::user()->position, [0]))
-                        <li class="nav-header mt-3 font-weight-bold">ASSEMBLY</li>
-                        <li class="nav-item has-treeview">
+                        {{-- <li class="nav-header mt-3 font-weight-bold">ASSEMBLY</li>
+                        <li class="nav-item has-treeview"> --}}
                             {{-- <a href="#" class="nav-link">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <p><i class="fa-solid fa-shapes"> </i> Molding </p>
@@ -277,12 +291,12 @@
                                 </div>
                             </a> --}}
                             {{-- <ul class="nav nav-treeview"> --}}
-                                <li class="nav-item">
+                                {{-- <li class="nav-item">
                                     <a href="{{ route('cn_assembly') }}" class="nav-link">
                                         <i class="fa-brands fa-phabricator fa-xl" style="color: #29d6a2;"> </i>
                                         <p>CN Assembly</p>
                                     </a>
-                                </li>
+                                </li> --}}
                                 {{-- <li class="nav-item">
                                     <a href="{{ route('second_molding') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
@@ -290,7 +304,7 @@
                                     </a>
                                 </li> --}}
                             {{-- </ul> --}}
-                        </li>
+                        {{-- </li> --}}
                     @endif
 
                     @if (in_array(Auth::user()->position, [0]))

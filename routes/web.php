@@ -378,3 +378,5 @@ Route::controller(DefectsInfoController::class)->group(function () {
     // Route::get('/get_process_by_id', 'get_process_by_id');
 });
 
+
+Route::view('/production_history','production_history')->name('production_history');
