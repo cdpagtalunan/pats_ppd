@@ -744,6 +744,7 @@
                         getMaterialName,
                         getProdShipOutput
                     )
+
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
                     $('.viewDrawingFirst').removeClass('slct')
@@ -1041,6 +1042,16 @@
                     }
                 })
             })
+
+            if("<?php echo Auth::user()->position; ?>" == 0 || "<?php echo Auth::user()->position; ?>" == 2){
+                $('#txtPoNumber').attr('readonly', false)
+                $('#txtPoNumber').on('keypress',function(e){
+                    if( e.keyCode == 13 ){
+                        getPoNo =  $('#txtPoNumber').val();
+                        dataTableOQCInspectionFirstStamping.draw()
+                    }
+                })
+            }
 
         </script>
     @endsection

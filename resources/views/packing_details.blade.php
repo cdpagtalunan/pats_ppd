@@ -176,12 +176,16 @@
                                                             <th>Production Lot #</th>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                                                             <th>Delivery Balance</th>
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
 =======
                                                             <th>Delivery Balance</th>
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
+=======
+                                                            {{-- <th>Delivery Balance</th> --}}
+>>>>>>> parent of e42c11b (Before merging main)
                                                             <th>No. of Cuts</th>
                                                             <th>Material Quality</th>
                                                             <th>Validated by</th>
@@ -273,17 +277,26 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
                             <div class="col-sm-6">
+=======
+                            {{-- <div class="col-sm-6">
+>>>>>>> parent of e42c11b (Before merging main)
                                 <div class="form-group">
                                     <label class="form-label">Delivery Balance</label>
                                     <input type="text" class="form-control form-control-sm" name="delivery_balance" id="txtDeliveryBalance" autocomplete="off">
                                 </div>
+<<<<<<< HEAD
                             </div>
 
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
+=======
+                            </div> --}}
+
+>>>>>>> parent of e42c11b (Before merging main)
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">No. of Cuts</label>
@@ -547,12 +560,16 @@
                         { "data" : "oqc_info.stamping_production_info.prod_lot_no"},
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                         { "data" : "final_packing_info.delivery_balance" },
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
 =======
                         { "data" : "final_packing_info.delivery_balance" },
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
+=======
+                        // { "data" : "final_packing_info.delivery_balance" },
+>>>>>>> parent of e42c11b (Before merging main)
                         { "data" : "final_packing_info.no_of_cuts"},
                         { "data" : "final_packing_info.material_quality" },
                         { "data" : "final_packing_info.user_validated_by_info.firstname" },
@@ -563,7 +580,7 @@
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
                         {
-                            "targets": [1,7,8,9,10,11,12],
+                            "targets": [1,7,8,9,10,11,12,13],
                             "data": null,
                             "defaultContent": "---"
                         },
@@ -667,6 +684,14 @@
                                         success: function (response) {
                                             if(response['validation'] == 1){
                                                 toastr.error('Saving data failed!');
+                                                if(response['error']['delivery_balance'] === undefined){
+                                                    $("#txtDeliveryBalance").removeClass('is-invalid');
+                                                    $("#txtDeliveryBalance").attr('title', '');
+                                                }
+                                                else{
+                                                    $("#txtDeliveryBalance").addClass('is-invalid');
+                                                    $("#txtDeliveryBalance").attr('title', response['error']['delivery_balance']);
+                                                }
                                                 if(response['error']['number_of_cuts'] === undefined){
                                                     $("#txtNumberOfCuts").removeClass('is-invalid');
                                                     $("#txtNumberOfCuts").attr('title', '');

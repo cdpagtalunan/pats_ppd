@@ -174,7 +174,7 @@
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="textMaterialLotNumber" name="material_lot_number" placeholder="Scan Machine Lot #" readonly>
                                         <div class="input-group-append">
-                                            <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMachineLotNumber" form-value="formMachineLotNumber"><i class="fa fa-qrcode"></i></button>
+                                            <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumber" form-value="formMaterialLotNumber"><i class="fa fa-qrcode"></i></button>
                                         </div>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
@@ -379,7 +379,10 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name">
+                                        <select type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name" placeholder="Operator Name">
+                                            <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option>
+                                        </select>
+                                        {{-- <input type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name"> --}}
                                     </div>
                                 </div>
                             </div>
@@ -444,7 +447,7 @@
                 let dataTablesSecondMolding, dataTablesSecondMoldingStation;
                 $(document).on('keypress', '#textSearchPONumber', function(e){
                     if(e.keyCode == 13){
-                        getWarehouseTransactionByPONumber($(this).val());
+                        getPOReceivedByPONumber($(this).val());
                         dataTablesSecondMolding.draw();
                     }
                 });
@@ -459,7 +462,7 @@
                     let materialNameSubstring = materialName.substring(0,6);
                     
                     if(poNumber != "" && materialName != ""){
-                        getWarehouseTransactionByPONumber(poNumber);
+                        getPOReceivedByPONumber(poNumber);
                         if(materialNameSubstring == 'CN171S'){
                             $('#divMaterialLotNumbers').removeClass('d-none');
                             $('#textMaterialLotNumberChecking').val(1);
@@ -514,7 +517,7 @@
                  * QR Code Scanner
                  * Start
                 */
-                $('#buttonQrScanMachineLotNumber, #buttonQrScanMaterialLotNumberEight, #buttonQrScanMaterialLotNumberNine, #buttonQrScanMaterialLotNumberTen, #buttonQrScanContactLotNumberOne, #buttonQrScanContactLotNumberSecond, #buttonQrScanMELotNumberOne, #buttonQrScanMELotNumberSecond').each(function(e){
+                $('#buttonQrScanMaterialLotNumber, #buttonQrScanMaterialLotNumberEight, #buttonQrScanMaterialLotNumberNine, #buttonQrScanMaterialLotNumberTen, #buttonQrScanContactLotNumberOne, #buttonQrScanContactLotNumberSecond, #buttonQrScanMELotNumberOne, #buttonQrScanMELotNumberSecond').each(function(e){
                     $(this).on('click',function (e) {
                         let formValue = $(this).attr('form-value');
                         $('#modalQrScanner').attr('data-form-id', formValue).modal('show');
@@ -526,113 +529,26 @@
                 });
 
                 $('#textQrScanner').keyup(delay(function(e){
-                    let valueQrScanner = $('#textQrScanner').val();
+                    let qrScannerValue = $('#textQrScanner').val();
                     let formId = $('#modalQrScanner').attr('data-form-id');
                     if( e.keyCode == 13 ){
                         $('#textQrScanner').val(''); // Clear after enter
                         switch (formId) {
-                            case 'formMachineLotNumber':
-                                $.ajax({
-                                    type: "get",
-                                    url: "check_machine_lot_number",
-                                    data: {
-                                        machine_lot_number: valueQrScanner,
-                                    },
-                                    dataType: "json",
-                                    success: function (response) {
-                                        $('#textMaterialLotNumber').val('');
-                                        $('#textMaterialName').val('');
-                                        if(response[0] != undefined){
-                                            $('#textMaterialLotNumber').val(response[0].machine_lot_number);
-                                            $('#textMaterialName').val(response[0].machine_name);
-                                            $('#modalQrScanner').modal('hide');
-                                        }else{
-                                            toastr.error('Incorrect machine lot number.')
-                                        }
-                                    }
-                                });
+                            case 'formMaterialLotNumber':
+                                checkMaterialLotNumber(qrScannerValue);
                                 break;
                             case 'formMaterialLotNumberEight':
-                                $.ajax({
-                                    type: "get",
-                                    url: "check_material_lot_number",
-                                    data: {
-                                        material_lot_number: valueQrScanner,
-                                    },
-                                    dataType: "json",
-                                    success: function (response) {
-                                        let data = response;
-                                        $('#textLotNumberEight').val('');
-                                        $('#textLotNumberEightFirstMoldingId').val('');
-                                        if(data.length > 0){
-                                            if(data[0].first_molding_device_id == 1){
-                                                $('#textLotNumberEight').val(data[0].contact_lot_number);
-                                                $('#textLotNumberEightFirstMoldingId').val(data[0].first_molding_device_id);
-                                                $('#modalQrScanner').modal('hide');
-                                            }else{
-                                                toastr.error('Incorrect machine lot number.')
-                                            }
-                                        }else{
-                                            toastr.error('Incorrect machine lot number.')
-                                        }
-                                    }
-                                });
+                                checkMaterialLotNumberOfFirstMolding(qrScannerValue, 'formMaterialLotNumberEight');
                                 break;
                             case 'formMaterialLotNumberNine':
-                                $.ajax({
-                                    type: "get",
-                                    url: "check_material_lot_number",
-                                    data: {
-                                        material_lot_number: valueQrScanner,
-                                    },
-                                    dataType: "json",
-                                    success: function (response) {
-                                        let data = response;
-                                        $('#textLotNumberNine').val('');
-                                        $('#textLotNumberNineFirstMoldingId').val('');
-                                        if(data.length > 0){
-                                            if(data[0].first_molding_device_id == 2){
-                                                $('#textLotNumberNine').val(data[0].contact_lot_number);
-                                                $('#textLotNumberNineFirstMoldingId').val(data[0].first_molding_device_id);
-                                                $('#modalQrScanner').modal('hide');
-                                            }else{
-                                                toastr.error('Incorrect machine lot number.')
-                                            }
-                                        }else{
-                                            toastr.error('Incorrect machine lot number.')
-                                        }
-                                    }
-                                });
+                                checkMaterialLotNumberOfFirstMolding(qrScannerValue, 'formMaterialLotNumberNine');
                                 break;
                             case 'formMaterialLotNumberTen':
-                                $.ajax({
-                                    type: "get",
-                                    url: "check_material_lot_number",
-                                    data: {
-                                        material_lot_number: valueQrScanner,
-                                    },
-                                    dataType: "json",
-                                    success: function (response) {
-                                        let data = response;
-                                        $('#textLotNumberTen').val('');
-                                        $('#textLotNumberTenFirstMoldingId').val('');
-                                        if(data.length > 0){
-                                            if(data[0].first_molding_device_id == 3){
-                                                $('#textLotNumberTen').val(data[0].contact_lot_number);
-                                                $('#textLotNumberTenFirstMoldingId').val(data[0].first_molding_device_id);
-                                                $('#modalQrScanner').modal('hide');
-                                            }else{
-                                                toastr.error('Incorrect machine lot number.')
-                                            }
-                                        }else{
-                                            toastr.error('Incorrect machine lot number.')
-                                        }
-                                    }
-                                });
+                                checkMaterialLotNumberOfFirstMolding(qrScannerValue, 'formMaterialLotNumberTen');
                                 break;
                             case 'formContactLotNumberOne':
-                                if(valueQrScanner != ''){
-                                    $('#textContactLotNumberOne').val(valueQrScanner);
+                                if(qrScannerValue != ''){
+                                    $('#textContactLotNumberOne').val(qrScannerValue);
                                 }else{
                                     $('#textContactLotNumberOne').val('N/A');
                                     toastr.error('Please scan Contact lot number.')
@@ -640,8 +556,8 @@
                                 $('#modalQrScanner').modal('hide');
                                 break;
                             case 'formContactLotNumberSecond':
-                                if(valueQrScanner != ''){
-                                    $('#textContactLotNumberSecond').val(valueQrScanner);
+                                if(qrScannerValue != ''){
+                                    $('#textContactLotNumberSecond').val(qrScannerValue);
                                 }else{
                                     $('#textContactLotNumberSecond').val('N/A');
                                     toastr.error('Please scan Contact lot number.')
@@ -649,8 +565,8 @@
                                 $('#modalQrScanner').modal('hide');
                                 break;
                             case 'formMELotNumberOne':
-                                if(valueQrScanner != ''){
-                                    $('#textMELotNumberOne').val(valueQrScanner);
+                                if(qrScannerValue != ''){
+                                    $('#textMELotNumberOne').val(qrScannerValue);
                                 }else{
                                     $('#textMELotNumberOne').val('N/A');
                                     toastr.error('Please scan ME lot number.')
@@ -658,8 +574,8 @@
                                 $('#modalQrScanner').modal('hide');
                                 break;
                             case 'formMELotNumberSecond':
-                                if(valueQrScanner != ''){
-                                    $('#textMELotNumberSecond').val(valueQrScanner);
+                                if(qrScannerValue != ''){
+                                    $('#textMELotNumberSecond').val(qrScannerValue);
                                 }else{
                                     $('#textMELotNumberSecond').val('N/A');
                                     toastr.error('Please scan ME lot number.')
@@ -740,6 +656,8 @@
                                     $('#buttonAddStation').prop('disabled', false); // remove disabled after save
                                     getSecondMoldingById(response['second_molding_id']);
                                     // $('#modalSecondMolding').modal('hide');
+                                }else if(response['sessionError']){
+                                    toastr.error('Session Expired. Please re-login again.');
                                 }else{
                                     toastr.error('Saving failed');
                                 }

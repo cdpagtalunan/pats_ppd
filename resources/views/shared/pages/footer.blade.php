@@ -1,4 +1,4 @@
-<footer class="main-footer fixed-bottom">
+<footer class="main-footer">
     <div class="float-right d-none d-sm-block">
         <b id="footerTimer"></b>
     </div>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCnAssemblyRuncardsTable extends Migration
+class CreateAssemblyRuncardsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateCnAssemblyRuncardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('cn_assembly_runcards', function (Blueprint $table) {
+        Schema::create('assembly_runcards', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('sec_molding_runcard_id')->comment ='Id from sec_molding_runcards(table)';
+            $table->string('series_name')->nullable();
             $table->string('device_name')->nullable();
             $table->string('parts_code')->nullable();
             $table->string('po_number')->nullable();
@@ -41,6 +41,6 @@ class CreateCnAssemblyRuncardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cn_assembly_runcards');
+        Schema::dropIfExists('assembly_runcards');
     }
 }

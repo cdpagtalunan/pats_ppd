@@ -141,6 +141,34 @@
 
                 getFirstModlingDevices();
 
+                const getPmiPoReceivedDetails = function (pmiPoNo){
+                    $.ajax({
+                        type: "GET",
+                        url: "get_pmi_po_received_details",
+                        data: {"pmi_po_no" : pmiPoNo},
+                        dataType: "json",
+                        success: function (response) {
+                            if( response.result_count === 1 ){
+                                formModal.firstMolding.find('#po_no').val(response.po_no);
+                                formModal.firstMolding.find('#po_qty').val(response.order_qty);
+                                formModal.firstMolding.find('#po_target').val(response.order_qty);
+                                formModal.firstMolding.find('#po_balance').val(response.po_balance);
+                                formModal.firstMolding.find('#item_code').val(response.item_code);
+                                formModal.firstMolding.find('#item_name').val(response.item_name);
+                            }else{
+                                formModal.firstMolding.find('#po_no').val('');
+                                formModal.firstMolding.find('#po_qty').val('');
+                                formModal.firstMolding.find('#po_balance').val('');
+                                formModal.firstMolding.find('#po_balance').val('');
+                                formModal.firstMolding.find('#item_code').val('');
+                                formModal.firstMolding.find('#item_name').val('');
+
+                            }
+                        }
+                    });
+                }
+
+
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
                     formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMolding.find('#contact_lot_number').val('');
@@ -312,23 +340,14 @@
                         }
                     });
                 });
-                const totalOutput = function (input_qty,ng_qty){
-                    let totalOutputQty = input_qty - ng_qty;
-                    if(totalOutputQty < 0 ){
-                        Swal.fire({
-                            position: "center",
-                            icon: "error",
-                            title: "Output qty. cannot be negative value!",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        formModal.firstMoldingStation.find('#input').val('');
-                        formModal.firstMoldingStation.find('#output').val('');
-                        formModal.firstMoldingStation.find('#ng_qty').val('');
-                        return;
-                    }
-                    formModal.firstMoldingStation.find('#output').val(totalOutputQty);
-                }
+
+                formModal.firstMolding.find('#pmi_po_no').on('keyup',function (e) {
+                    e.preventDefault();
+                    // if(e.keyCode == 13){
+                        getPmiPoReceivedDetails( $(this).val() );
+                    // }
+                });
+
 
                 $('#btnScanQrFirstMolding').click(function (e) {
                     $('#mdlScanQrCodeFirstMolding').modal('show');
@@ -350,12 +369,12 @@
                     }
                 });
 
-                $('#input').keyup(function (e) {
-                    totalOutput(formModal.firstMoldingStation.find(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
+                formModal.firstMoldingStation.find('#input').keyup(function (e) {
+                    totalOutput($(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
                 });
 
-                $('#ng_qty').keyup(function (e) {
-                    totalOutput(formModal.firstMoldingStation.find("#input").val(),formModal.firstMoldingStation.find(this).val());
+                formModal.firstMoldingStation.find('#ng_qty').keyup(function (e) {
+                    totalOutput(formModal.firstMoldingStation.find("#input").val(),$(this).val());
                 });
 
                 formModal.firstMolding.submit(function (e) {

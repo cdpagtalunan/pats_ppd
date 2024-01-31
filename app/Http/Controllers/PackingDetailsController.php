@@ -22,7 +22,6 @@ class PackingDetailsController extends Controller
         ->where('po_no', 'like', '%' . $request->po_no . '%')
         ->where('lot_accepted', 1)
         ->get();
-        // ->orderBy('prelim_packing_info.status', 'DESC');
 
         // return $preliminary_packing_data;
         // return $preliminary_packing_data[3]->packing_info->status;
@@ -103,7 +102,7 @@ class PackingDetailsController extends Controller
                         $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-id='$id' data-printCount='$count'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }else if ($prelim_packing_details->final_packing_info->status == 2 ){
                         $result .= "<button class='btn btn-primary btn-sm btnScanQrCode' style='display: none;' data-id='$id' ><i class='fa-solid fa-qrcode'></i></button>&nbsp";
-                        $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
+                        // $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
 
                     }else if ($prelim_packing_details->final_packing_info->status == 3 ){
                         $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
@@ -178,7 +177,6 @@ class PackingDetailsController extends Controller
                             'material_quality'      => $request->material_quality,
                             'validated_by_packer'   => $request->scan_packer_id,
                             'validated_date_packer' => date('Y-m-d H:i:s'),
-                            'material_quality'      => $request->material_quality,
                             'print_count'           => 0,
                             'status'                => 1,
                             'created_at'            => date('Y-m-d H:i:s'),

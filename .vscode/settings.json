@@ -2,6 +2,7 @@
     "workbench.colorCustomizations": {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         "activityBar.activeBackground": "#50642d",
         "activityBar.background": "#50642d",
         "activityBar.foreground": "#e7e7e7",
@@ -47,4 +48,25 @@
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
 =======
 >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
+=======
+        "activityBar.activeBackground": "#a9c5fc",
+        "activityBar.background": "#a9c5fc",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#f7276e",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#a9c5fc",
+        "statusBar.background": "#78a4fa",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#4783f8",
+        "statusBarItem.remoteBackground": "#78a4fa",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#78a4fa",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#78a4fa99",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#78a4fa"
+>>>>>>> parent of e42c11b (Before merging main)
 }
