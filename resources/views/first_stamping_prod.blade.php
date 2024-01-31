@@ -99,6 +99,12 @@
                                                 <input type="text" class="form-control" placeholder="PO Quantity" id="txtSearchPO" readonly>
                                             </div>
                                         </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Total Shipment Output</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Total Shipment Output" id="txtTtlShipOutput" readonly>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -502,6 +508,20 @@
                             "defaultContent": "---"
                         },
                     ],
+                    'drawCallback': function( settings ) {
+                        let dtApi = this.api();
+                        let dtDatas = dtApi.rows( {page:'current'} ).data();
+                        let totalShipOutput = 0;
+                        if(dtDatas.length>0){
+                            for(let x = 0; x < dtDatas.length; x++){
+                                let shipOutput = dtDatas[x]['ship_output'];
+                                totalShipOutput = totalShipOutput + shipOutput
+                            }
+
+                            $('#txtTtlShipOutput').val(totalShipOutput);
+                        }
+
+                    }
                 });//end of dataTableDevices
 
                 $('#formProdData').submit(function(e){
@@ -616,6 +636,12 @@
                 });
 
                 $('#btnAddProdData').on('click', function(e){
+
+                    if($('#txtTtlShipOutput').val() <= $('#txtSearchPO').val()){
+                        toastr.error('Total Machine Output is greater than PO Quantity.');
+                        return;
+                    }
+
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
                         checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'], '1st Stamping')
                         getProdLotNoCtrl();
