@@ -65,10 +65,12 @@ class CarrierDetailsController extends Controller
                     'created_at'    => date('Y-m-d H:i:s'),
                 ];
                 if(isset($request->carrier_details_id)){ // edit
+                    // return 'if';
                     CarrierDetails::where('id', $request->carrier_details_id)
                     ->update($array);
                 }
                 else{ // insert
+                    // return 'else';
                     CarrierDetails::insert($array);
                 }
 

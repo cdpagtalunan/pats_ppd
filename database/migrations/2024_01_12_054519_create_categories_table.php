@@ -14,7 +14,7 @@ class CreateCategoriesTable extends Migration
     public function up()
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('category_name')->nullable();
             $table->unsignedTinyInteger('logdel')->default(0)->comment = '0-show,1-hide';
             $table->timestamps();

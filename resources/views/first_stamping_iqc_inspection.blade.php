@@ -123,11 +123,11 @@
                                                             <th>Status</th>
                                                             <th>Date Inspected</th>
                                                             <th>Time Inspected</th>
+                                                            <th>Supplier</th>
                                                             <th>App Ctrl No.</th>
                                                             {{-- <th>Classification</th> --}}
                                                             {{-- <th>Family</th> --}}
                                                             {{-- <th>Category</th> --}}
-                                                            <th>Supplier</th>
                                                             <th>Part Code</th>
                                                             <th>Part Name</th>
                                                             <th>Lot No.</th>

@@ -26,7 +26,7 @@ class ReceivingDetailsController extends Controller
             if($sanno_receiving_data->status == 0){
                 $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
             }else if($sanno_receiving_data->status == 1){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
+                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-print'></i></button>";
 
             }
             $result .= "</center>";
@@ -120,6 +120,8 @@ class ReceivingDetailsController extends Controller
 
         $data = $request->all();
 
+        // return $data;
+
         // return $request->scan_id;
 
         $pmi_supplier_lot_no = $request->pmi_lot_no .'/'. $request->supplier_lot_no;
@@ -137,6 +139,7 @@ class ReceivingDetailsController extends Controller
             ->update([
                 'supplier_name' => $request->supplier_name,
                 'supplier_lot_no' => $request->supplier_lot_no,
+                'invoice_no'     => $request->invoice_no,
                 'supplier_quantity' => $request->supplier_qty,
                 'supplier_pmi_lot_no' => $pmi_supplier_lot_no,
                 'status' => 1,

@@ -102,6 +102,8 @@ class PackingDetailsController extends Controller
                         $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-id='$id' data-printCount='$count'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }else if ($prelim_packing_details->final_packing_info->status == 2 ){
                         $result .= "<button class='btn btn-primary btn-sm btnScanQrCode' style='display: none;' data-id='$id' ><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                        // $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
+
                     }else if ($prelim_packing_details->final_packing_info->status == 3 ){
                         $result .= "<button class='btn btn-primary btn-sm btnGeneratePackingQr' data-printCount='$count' data-id='$id'><i class='fa-solid fa-print'></i></button>&nbsp";
                     }
@@ -228,7 +230,7 @@ class PackingDetailsController extends Controller
     public function generatePackingDetailsQr(Request $request){
 
         $packing_data = PackingDetails::where('id', $request->id)
-        ->first(['po_no AS po_no', 'po_qty as po_qty', 'material_name as mat_name', 'material_lot_no as lot_no', 'drawing_no as drawing_no', 'delivery_balance as del_bal', 'no_of_cuts as no_of_cuts', 'material_quality as mat_quality']);
+        ->first(['po_no AS po_no', 'po_qty as po_qty', 'material_name as mat_name', 'material_lot_no as lot_no', 'drawing_no as drawing_no', 'no_of_cuts as no_of_cuts', 'material_quality as mat_quality']);
         // ->first();
         // return $packing_data;
         $qrcode = QrCode::format('png')
@@ -244,7 +246,6 @@ class PackingDetailsController extends Controller
                         <strong>$packing_data->mat_name</strong><br>
                         <strong>$packing_data->lot_no</strong><br>
                         <strong>$packing_data->drawing_no</strong><br>
-                        <strong>$packing_data->del_bal</strong><br>
                         <strong>$packing_data->no_of_cuts</strong><br>
                         <strong>$packing_data->mat_quality</strong><br>
                         "
@@ -271,10 +272,6 @@ class PackingDetailsController extends Controller
                 <tr>
                     <td>Drawing #:</td>
                     <td>$packing_data->drawing_no</td>
-                </tr>
-                <tr>
-                    <td>Delivery Balance:</td>
-                    <td>$packing_data->del_bal</td>
                 </tr>
                 <tr>
                     <td>No of Cuts:</td>

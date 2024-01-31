@@ -947,7 +947,7 @@
                     else{
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
-                                $('#modalScanQRSave').modal('hide');
+                                $('#modalScanQRSave').modal('hide');tr
                                 printProdData(printId, printStampCat);
                             }
                             else{ // Error Handler

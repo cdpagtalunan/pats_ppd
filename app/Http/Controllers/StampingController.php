@@ -89,7 +89,7 @@ class StampingController extends Controller
             $exploded_mat_no = explode(', ', $stamping_data->material_lot_no);
 
             for ($i=0; $i <  count($exploded_mat_no); $i++) { 
-                $result .= "<span class='badge bg-primary mr-1'>$exploded_mat_no[$i]</span>";
+                $result .= "$exploded_mat_no[$i]";
             }
 
             $result .= "</center>";

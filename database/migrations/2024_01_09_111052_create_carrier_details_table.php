@@ -14,7 +14,7 @@ class CreateCarrierDetailsTable extends Migration
     public function up()
     {
         Schema::create('carrier_details', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('carrier_name')->nullable();
             $table->tinyInteger('status')->default(0)->comment = '0-Active, 1-Deactivated';
             $table->timestamps();
