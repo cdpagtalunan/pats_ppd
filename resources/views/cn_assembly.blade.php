@@ -47,29 +47,26 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            <label class="form-label">Series Name</label>
+                                            <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Series Name"></i>
-                                                {{-- <select class="form-control select2bs5" id="txtSelectPONo" name="series_name" placeholder="Select PO Number"></select> --}}
-                                                <select class="form-control" type="text" name="series_name" id="txtSeriesName" required>
-                                                    <option value="" disabled selected>Select Series Name</option>
-                                                    <option value="CN171P-007-1002-VE(01)">CN171P-007-1002-VE(01)</option>
-                                                    <option value="CN171S-007-1002-VE(01)">CN171S-007-1002-VE(01)</option>
-                                                </select>
+                                                {{-- <button class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button> --}}
+                                                {{-- <button type="button" class="btn btn-dark" id="btnScanPo" data-toggle="modal" data-target="#mdlScanQrCode"><i class="fa fa-qrcode w-100"></i></button> --}}
+                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Press Enter Key to Search PO Number"></i>
+                                                <input type="text" class="form-control" placeholder="Search PO Number" aria-label="po_number" name="po_number" id="txtSearchPONum">
                                             </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label">Device Name</label>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Device Name" id="txtSearchDeviceName" readonly>
+                                                <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMatName" readonly>
                                             </div>
                                         </div>
-                                        {{-- <div class="col-sm-2">
+                                        <div class="col-sm-2">
                                             <label class="form-label">Part Code</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="Part Code" id="txtSearchPartCode" readonly>
                                             </div>
-                                        </div> --}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -91,7 +88,7 @@
                                     </div> <br><br>
                                     <div class="table-responsive">
                                         <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                        <table id="tblAssemblyRuncard" class="table table-sm table-bordered table-striped table-hover"
+                                        <table id="tblCnAssemblyRuncard" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
@@ -146,27 +143,21 @@
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Series Name</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtSeriesName" name="series_name" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtDeviceName" name="device_name" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtPONumber" name="po_number" placeholder="Auto generated">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Parts Code</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtPartsCode" name="parts_code" placeholder="Auto generated" readonly>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtPONumber" name="po_number" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -181,7 +172,7 @@
                                         <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Runcard No">
                                     </div>
                                     <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
-                                        <button class="btn btn-sm btn-success" type="button" id="btnRuncardDetails">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btnRuncardDetails">
                                             <i class="fa-solid fa-floppy-disk"></i> Save
                                         </button>
                                     </div>
@@ -194,11 +185,11 @@
                                             </div>
                                             <div style="float: right;">
                                                 <button class="btn btn-primary btn-sm" data-bs-toggle="modal" type="button" data-bs-target="#modalAddStation" style="margin-bottom: 5px;">
-                                                    <i class="fa fa-plus"></i> Add Station
+                                                    <i class="fa fa-plus" ></i> Add Station
                                                 </button>
                                             </div>
                                             <div class="table-responsive">
-                                                <table class="table table-sm small table-bordered table-hover" id="tblAssemblyRuncardStation" style="width: 100%;">
+                                                <table class="table table-sm small table-bordered table-hover" id="tableStation" style="width: 100%;">
                                                     <thead>
                                                         <tr class="bg-light">
                                                             <th></th>
@@ -280,20 +271,6 @@
                     <div class="modal-body">
                         <form id="formAddAssemblyRuncardStation">
                             @csrf
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Assembly Runcard ID</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="txtAssyRuncardId" name="assy_runcard_id" readonly>
-                            </div>
-
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Assembly Runcard Station ID</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="txtAssyRuncardStationId" name="assy_runcard_id" readonly>
-                            </div>
-
                             <div class="row">
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
@@ -410,70 +387,51 @@
                     });
                 });
 
-                $('#txtSeriesName').on('change', function(e){
-                    let search_po_number_val = $('#txtSeriesName').val();
-                    $.ajax({
-                        type: "get",
-                        url: "get_data_from_matrix",
-                        data: {
-                            // "series_name" : ScanQrCodeVal.po_no
-                            "series_name" : search_po_number_val
-                        },
-                        dataType: "json",
-                        beforeSend: function(){
-                            // prodData = {};
-                        },
-                        success: function (response) {
-                            let material_details = response['material_details'];
-                            console.log(material_details);
-                            if(material_details[0] == undefined){
-                                toastr.error('Series does not exists')
-                            }else{
-                                // $('#txtSeriesName').val(sm_runcard_data[0]['series_name']);
-                                $('#txtSearchDeviceName').val(material_details);
-                                $('#txtSeriesName', $('#formCNAssemblyRuncard')).val($('#txtSeriesName').val());
-                                $('#txtDeviceName', $('#formCNAssemblyRuncard')).val(material_details);
-                                // $('#txtPartsCode', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['parts_code']);
-                                // $('#txtPONumber', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['series_name']);
-                                // $('#txtPoQuantity', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['po_quantity']);
-                                dtAssemblyRuncard.draw();
-                                // $('#txtScanQrCode').val('');
-                                // $('#mdlScanQrCode').modal('hide');
+                $('#txtSearchPONum').on('keypress', function(e){
+                    // $('#txtScanQrCode').on('keypress', function(e){
+                    if(e.keyCode == 13){
+                        let search_po_number_val = $('#txtSearchPONum').val();
+                        // let ScanQrCodeVal = jQuery.parseJSON($('#txtScanQrCode').val());
+                        $.ajax({
+                            type: "get",
+                            url: "get_data_from_2nd_molding",
+                            data: {
+                                // "po_number" : ScanQrCodeVal.po_no
+                                "po_number" : search_po_number_val
+                            },
+                            dataType: "json",
+                            beforeSend: function(){
+                                // prodData = {};
+                            },
+                            success: function (response) {
+                                let sm_runcard_data = response['sec_molding_runcard_data'];
+                                if(sm_runcard_data[0] == undefined){
+                                    toastr.error('PO does not exists')
+                                }else{
+                                    $('#txtSearchPONum').val(sm_runcard_data[0]['po_number']);
+                                    $('#txtSearchPartCode').val(sm_runcard_data[0]['parts_code']);
+                                    $('#txtSearchMatName').val(sm_runcard_data[0]['device_name']);
+
+                                    $('#txtDeviceName', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['device_name']);
+                                    $('#txtPartsCode', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['parts_code']);
+                                    $('#txtPONumber', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['po_number']);
+                                    $('#txtPoQuantity', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['po_quantity']);
+                                    dtCnAssemblyRuncard.draw();
+                                    // $('#txtScanQrCode').val('');
+                                    // $('#mdlScanQrCode').modal('hide');
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 });
 
-                $('#formCNAssemblyRuncard').keypress('#txtPONumber', function(e){
-                    let search_po_number_val = $('#txtPONumber').val();
-                    $.ajax({
-                        type: "get",
-                        url: "get_data_from_2nd_molding",
-                        data: {
-                            "po_number" : search_po_number_val
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            let sm_runcard_data = response['sec_molding_runcard_data'];
-                            // console.log(sm_runcard_data);
-                            if(sm_runcard_data[0] == undefined){
-                                toastr.error('PO does not exists')
-                            }else{
-                                $('#txtPartsCode', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['parts_code']);
-                                $('#txtPoQuantity', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['po_quantity']);
-
-                            }
-                        }
-                    });
-                });
-
-                dtAssemblyRuncard = $("#tblAssemblyRuncard").DataTable({
+                dtCnAssemblyRuncard = $("#tblCnAssemblyRuncard").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_assembly_runcard",
+                        url: "view_cn_assembly_runcard",
                         data: function (param){
-                            param.series_name = $("#txtSeriesName").val();
+                            param.po_number = $("#txtSearchPONum").val();
                         }
                     },
                     fixedHeader: true,
@@ -482,38 +440,8 @@
                         { "data" : "status" },
                         { "data" : "device_name" },
                         { "data" : "parts_code" },
-                        { "data" : "series_name" },
+                        { "data" : "po_number" },
                         { "data" : "runcard_no" },
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": "_all"},
-                        {
-                            "targets": [2],
-                            "data": null,
-                            "defaultContent": "---"
-                        },
-                    ],
-                });
-
-                dtAssemblyRuncardStation = $("#tblAssemblyRuncardStation").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_cn_assembly_runcard",
-                        data: function (param){
-                            param.assembly_runcard_id = $("#txtSeriesName").val();
-                        }
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status" },
-                        { "data" : "date" },
-                        { "data" : "operator_name" },
-                        { "data" : "input" },
-                        { "data" : "ng_qty" },
-                        { "data" : "output" },
-                        { "data" : "remarks" },
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
@@ -527,7 +455,7 @@
 
                 $('#btnAddCnAssemblyRuncard').on('click', function(e){
                     // $('#modalCNAssembly').modal('show');
-                    let poNumber = $('#txtSeriesName').val();
+                    let poNumber = $('#txtSearchPONum').val();
                     let materialName = $('#txtSearchMatName').val();
                     // let materialNameSubstring = materialName.substring(0,6);
                     // getWarehouseTransactionByPONumber(poNumber);
@@ -607,7 +535,7 @@
                 //                     isResponseError('textPartsCode', true);
                 //                 }
 
-                //                 if(response['error']['series_name'] === undefined){
+                //                 if(response['error']['po_number'] === undefined){
                 //                     isResponseError('textPONumber', false);
                 //                 }
                 //                 else{
@@ -726,7 +654,7 @@
                 //                 $('#textSecondMoldingId').val(responseData[0].id);
                 //                 $('#txtDeviceName').val(responseData[0].device_name);
                 //                 $('#textPartsCode').val(responseData[0].parts_code);
-                //                 $('#textPONumber').val(responseData[0].series_name);
+                //                 $('#textPONumber').val(responseData[0].po_number);
                 //                 $('#textPoQuantity').val(responseData[0].po_quantity);
                 //                 $('#textMachineNumber').val(responseData[0].machine_number);
                 //                 $('#textMaterialLotNumber').val(responseData[0].material_lot_number);

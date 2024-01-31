@@ -86,26 +86,43 @@ class PackingListDetailsController extends Controller
     }
 
     public function viewPackingListData(Request $request){
-        $packing_list_data = PackingListDetails::
-        where('shipment_status', 1)
-        ->get();
+        // $packing_list_data = PackingListDetails::
+        // where('shipment_status', 1)
+        // ->select('control_no', 'any_value(`po_no`) AS po')
+        // ->groupBy('control_no')
+        // ->get();
+
+        $packing_list_data = DB::connection('mysql')
+        ->select("SELECT `control_no`, any_value(`po_no`) AS po FROM `packing_list_details` WHERE `shipment_status` = 1 GROUP BY `control_no`");
+
+        // return $packing_list_data;
 
         return DataTables::of($packing_list_data)
+        ->addColumn('action', function($packing_list_data){
+            $result = "";
+            $result .= "<center>";
+
+            $result .= "<button class='btn btn-primary btn-sm btnEditPackingListDetails' data-ctrl-no='$packing_list_data->control_no'><i class='fa-solid fa-eye'></i></button>&nbsp";
+
+
+            $result .= "</center>";
+            return $result;
+        })
             ->addColumn('status', function($packing_list_data){
                 $result = "";
                 $result .= "<center>";
 
-                if($packing_list_data->shipment_status == 1){
+                // if($packing_list_data->shipment_status == 1){
                     $result .= '<span class="badge bg-success">Completed</span>';
-                }
-                else{
-                    $result .= '<span class="badge bg-danger">Cancelled</span>';
-                }
+                // }
+                // else{
+                    // $result .= '<span class="badge bg-danger">Cancelled</span>';
+                // }
                 $result .= "</center>";
                 return $result;
             })
             // ->addIndexColumn(['DT_RowIndex'])
-            ->rawColumns(['status'])
+            ->rawColumns(['action','status'])
             ->make(true);
     }
 
@@ -271,5 +288,41 @@ class PackingListDetailsController extends Controller
         }
 
         
+    }
+
+    public function getPackingListDetailsbyCtrl(Request $request){
+        $packing_list_data_by_ctrl = PackingListDetails::
+        where('control_no', $request->packing_list_ctrl_no)
+        ->get();
+        
+        return DataTables::of($packing_list_data_by_ctrl)
+            ->addColumn('action', function($packing_list_data_by_ctrl){
+                $result = "";
+                $result .= "<center>";
+
+                $result .= "</center>";
+                return $result;
+            })
+            ->addColumn('status', function($packing_list_data_by_ctrl){
+                $result = "";
+                $result .= "<center>";
+        
+                $result .= '<span class="badge bg-success">Completed</span>';
+
+                $result .= "</center>";
+                return $result;
+            })
+            ->addIndexColumn(['DT_RowIndex'])
+            ->rawColumns(['action','status'])
+            // ->rawColumns(['action','status','test'])
+            ->make(true);
+    }
+
+    public function getPackingListDetails(Request $request){
+        $packing_list_details = PackingListDetails::
+        where('control_no', $request->packing_list_ctrl_no)
+        ->get();
+
+        return response()->json(['packingListDetails' => $packing_list_details]);
     }
 }

@@ -14,6 +14,36 @@ function getOqcDetailsbyId(oqcDetailsId){
                     $('#txtPartsName').val(response['oqcData']['stamping_production_info']['material_name'])
                     $('#txtProdLotNumber').val(response['oqcData']['stamping_production_info']['prod_lot_no'])
                     $('#txtDrawingNumber').val(response['oqcData']['stamping_production_info']['drawing_no'])
+                    $('#txtNumberOfCuts').val(response['oqcData']['stamping_production_info']['no_of_cuts'])
+			}else{
+                toastr.warning('warning messages');
+            }
+			
+        }
+    });
+}
+
+function getPackingListDetails(packingDetailsCtrlNo){
+    $.ajax({
+        type: "get",
+        url: "get_packing_list_details",
+        data: {
+            "packing_list_ctrl_no" : packingDetailsCtrlNo,
+        },
+        dataType: "json",
+        success: function (response) {
+
+			if(response['packingListDetails'] != null){
+                    $('#getTextCtrlNumber').val(response['packingListDetails'][0]['control_no'])
+                    $('#getTextPickUpDateAndTime').val(response['packingListDetails'][0]['pick_up_date'] + ' ' + response['packingListDetails'][0]['pick_up_time'])
+                    $('#getTextCarrier').val(response['packingListDetails'][0]['carrier'])
+                    $('#getTextShipFrom').val(response['packingListDetails'][0]['product_from'])
+                    $('#getTextShipTo').val(response['packingListDetails'][0]['product_to'])
+                    $('#getTextPortOfLoading').val(response['packingListDetails'][0]['port_of_loading'])
+                    $('#getTextPortOfDestination').val(response['packingListDetails'][0]['port_of_destination'])
+                    $('#getPreparedBy').val(response['packingListDetails'][0]['prepared_by'])
+                    $('#getCheckedBy').val(response['packingListDetails'][0]['checked_by'])
+                    $('#getCarbonCopy').val(response['packingListDetails'][0]['cc_personnel'])
 			}else{
                 toastr.warning('warning messages');
             }
@@ -55,3 +85,5 @@ const changePrintingStatus = (printedId) => {
         }
     });
 }
+
+

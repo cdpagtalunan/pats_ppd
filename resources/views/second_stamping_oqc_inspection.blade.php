@@ -1048,17 +1048,6 @@
                         $('#mdlScanQrCode').modal('hide')
                     }
                 })
-
-                if("<?php echo Auth::user()->position; ?>" == 0 || "<?php echo Auth::user()->position; ?>" == 2){
-                    $('#txtPoNumber').attr('readonly', false)
-                    $('#txtPoNumber').on('keypress',function(e){
-                        if( e.keyCode == 13 ){
-                            getPoNo =  $('#txtPoNumber').val();
-                            dataTableOQCInspectionSecondStamping.draw()
-                        }
-                    })
-                }
-
             })
 
         </script>

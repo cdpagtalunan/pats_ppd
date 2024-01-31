@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAssemblyRuncardStationsTable extends Migration
+class CreateCnAssemblyRuncardStationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateAssemblyRuncardStationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('assembly_runcard_stations', function (Blueprint $table) {
+        Schema::create('cn_assembly_runcard_stations', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('assembly_runcards_id')->comment ='Id from assembly_runcards(table)';
+            $table->unsignedBigInteger('cn_assembly_runcards_id')->comment ='Id from cn_assembly_runcards(table)';
             $table->string('station')->nullable();
             $table->string('date')->nullable();
             $table->string('operator_name')->nullable();
@@ -32,7 +32,7 @@ class CreateAssemblyRuncardStationsTable extends Migration
             // Foreign Key
             $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('last_updated_by')->references('id')->on('users');
-            $table->foreign('assembly_runcards_id')->references('id')->on('assembly_runcards');
+            $table->foreign('cn_assembly_runcards_id')->references('id')->on('cn_assembly_runcards');
         });
     }
 
@@ -43,6 +43,6 @@ class CreateAssemblyRuncardStationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('assembly_runcard_stations');
+        Schema::dropIfExists('cn_assembly_runcard_stations');
     }
 }

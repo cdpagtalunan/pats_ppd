@@ -46,7 +46,7 @@
  				<div class="col-12">
  					<!-- general form elements -->
  					<div>
-						<iframe  src="http://rapidx/cn_ppts/oqc_inspection_ppd?username={{ Auth::user()->username }}&emp_id={{ Auth::user()->employee_id }}" style="border: none;" no-border height="850" width="100%">></iframe>
+						<iframe id="iframe_d_label_printing" src="http://rapidx/cn_ppts/"></iframe>
  					</div>
 				</div>
 			</div>
@@ -61,7 +61,6 @@
 
 @section('js_content')
 <script type="text/javascript">
-	
 </script>
 @endsection
 @endauth

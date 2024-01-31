@@ -15,21 +15,21 @@ use App\Models\SecMoldingRuncard;
 
 class SecondMoldingController extends Controller
 {
-    public function getPOReceivedByPONumber(Request $request){
+    public function getSearchPoForMolding(Request $request){
         return DB::connection('mysql_rapid_pps')->select("
             SELECT * FROM tbl_POReceived WHERE OrderNo = '$request->po_number'
         ");
     }
     
-    public function checkMaterialLotNumber(Request $request){
-        return DB::connection('mysql_rapid_pps')->select("SELECT a.Lot_number AS material_lot_number, b.MaterialType AS material_name FROM tbl_WarehouseTransaction AS a 
+    public function checkMachineLotNumber(Request $request){
+        return DB::connection('mysql_rapid_pps')->select("SELECT a.Lot_number AS machine_lot_number, b.MaterialType AS machine_name FROM tbl_WarehouseTransaction AS a 
                 INNER JOIN tbl_Warehouse AS b
                     ON b.id = a.fkid
-                WHERE Lot_number = '$request->material_lot_number'
+                WHERE Lot_number = '$request->machine_lot_number'
         ");
     }
 
-    public function checkMaterialLotNumberOfFirstMolding(Request $request){
+    public function checkMaterialLotNumber(Request $request){
         return DB::select("SELECT a.contact_lot_number, a.first_molding_device_id FROM first_moldings AS a
                 INNER JOIN first_molding_devices AS b
                     ON b.id = a.first_molding_device_id
@@ -161,7 +161,7 @@ class SecondMoldingController extends Controller
                     return response()->json(['hasError' => false, 'second_molding_id' => $secondMoldingId]);
                 } catch (\Exception $e) {
                     DB::rollback();
-                    return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage(), 'sessionError' => true]);
+                    return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage()]);
                 }
             }
         }
@@ -240,7 +240,7 @@ class SecondMoldingController extends Controller
                     return response()->json(['hasError' => false]);
                 } catch (\Exception $e) {
                     DB::rollback();
-                    return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage(), 'sessionError' => true]);
+                    return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage()]);
                 }
             }
         }

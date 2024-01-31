@@ -28,6 +28,27 @@ class PdfController extends Controller
         $packing_list_details_mat_count = PackingListDetails::select('mat_name')->where('control_no', $control_no)->distinct()->get();
         // $packing_list_details_count = $packing_list_details->count('mat_name');
 
+        // $cc_personnel_name = explode(' ', $packing_list_details[0]->cc_personnel);
+        // $cc_personnel_surname = explode(',', $packing_list_details[0]->cc_personnel);
+        // return $cc_personnel_surname1 = explode(' ', $cc_personnel_surname[1]);
+        // return $cc_personnel_surname1[0].' '.$cc_personnel_surname1[1][0];
+        // $packing_list_details = PackingListDetails::where('mat_name', $control_no)->orderBy('box_no', 'asc')->get();
+        // $material_name = PackingListDetails::selectwhere('control_no', $control_no)->get();
+        // return $packing_list_details;
+
+        // $invoiceItems = [
+        //     ['item' => 'Website Design', 'amount' => 50.50],
+        //     ['item' => 'Hosting (3 months)', 'amount' => 80.50],
+        //     ['item' => 'Domain (1 year)', 'amount' => 10.50]
+        // ];
+        // $invoiceData = [
+        //     'invoice_id' => 123,
+        //     'transaction_id' => 1234567,
+        //     'payment_method' => 'Paypal',
+        //     'creation_date' => date('M d, Y'),
+        //     'total_amount' => 141.50
+        // ];
+
         $pdf = PDF::loadView('view_packing_list_pdf', compact('packing_list_details','packing_list_details_mat_count', 'base64'))
                     ->setPaper('A4', 'portrait');
 

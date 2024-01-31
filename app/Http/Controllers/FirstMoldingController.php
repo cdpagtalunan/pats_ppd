@@ -8,7 +8,6 @@ use App\Models\Station;
 use App\Models\FirstMolding;
 use App\Models\FirstMoldingDevice;
 use App\Models\FirstMoldingDetail;
-use App\Models\TblPoReceived;
 use App\Http\Requests\FirstMoldingRequest;
 use App\Http\Requests\FirstMoldingStationRequest;
 
@@ -130,38 +129,8 @@ class FirstMoldingController extends Controller
 
     public function firstMoldingUpdateStatus(Request $request)
     {
-        try{
-            FirstMolding::where('id',$request->first_molding_id)->update(['status' => 1]);
-            return response()->json( [ 'result' => 1 ] );
-        } catch (\Throwable $th) {
-            return $th;
-        }
-        
-    }
-
-    public function getPmiPoReceivedDetails (Request $request)
-    {
-        try{
-            $tbl_po_received = TblPoReceived::where('OrderNo',$request->pmi_po_no)->get();
-            
-            if( count($tbl_po_received) == 1){
-                return response()->json( [ 
-                    'result_count' => count($tbl_po_received),
-                    'po_no' => $tbl_po_received[0]->ProductPONo ,
-                    'order_qty' => $tbl_po_received[0]->OrderQty ,
-                    'po_balance' => $tbl_po_received[0]->POBalance ,
-                    'item_code' => $tbl_po_received[0]->ItemCode ,
-                    'item_name' => $tbl_po_received[0]->ItemName ,
-                ] );
-            }else{
-                return response()->json( [ 
-                    'result_count' => 0,
-                ] );
-            }
-        
-        } catch (\Throwable $th) {
-            return $th;
-        }
+        FirstMolding::where('id',$request->first_molding_id)->update(['status' => 1]);
+        return response()->json( [ 'result' => 1 ] );
     }
 
 
