@@ -15,7 +15,7 @@ class CreateCnAssemblyRuncardsTable extends Migration
     {
         Schema::create('cn_assembly_runcards', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('sec_molding_runcards_id')->comment ='Id from sec_molding_runcards(table)';
+            $table->unsignedBigInteger('sec_molding_runcard_id')->comment ='Id from sec_molding_runcards(table)';
             $table->string('device_name')->nullable();
             $table->string('parts_code')->nullable();
             $table->string('po_number')->nullable();

@@ -144,7 +144,7 @@
         ?>
                 <div class="container">
                     {{-- COMMENT BACKGROUND IMAGE --}}
-                    {{-- <img src="<?php //echo $base64 ?>" width="100%" height="100%"/> --}} 
+                    {{-- <img src="<?php //echo $base64 ?>" width="100%" height="100%"/> --}}
 
                     <div class="control_no">
                         <b>
@@ -193,7 +193,7 @@
                     <table class="table_content">
                         <tr>
                             <th style="width:90px;"></th>
-                            <th style="width:130px;">PO #</th>
+                            <th style="width:135px;">PO #</th>
                             <th style="width:150px;">Various Contact for Plating Raw Materials</th>
                             <th style="width:130px;" colspan="2">LOT NO</th>
                             <th style="width:130px;" colspan="2">QUANTITY</th>
@@ -208,10 +208,10 @@
                                         echo        '<td class="data">C/NO.'.$packing_list_details[$i]->box_no.'</td>';
                                         echo        '<td></td>';
                                         // echo        '<td class="data">'.$packing_list_details[$i]->po_no.'</td>';
-                                        echo        '<td class="data">'.$packing_list_details[$i]->mat_name.'</td>';
-                                        echo        '<td colspan="2" class="data">'.$packing_list_details[$i]->lot_no.'</td>';
-                                        echo        '<td class="data" style="text-align:right !important;">'.$packing_list_details[$i]->quantity.'</td>';
-                                        echo        '<td class="data" style="text-align:left !important;">pcs.</td>';
+                                        echo        '<td class="data" style="text-align:left !important;">'.$packing_list_details[$i]->mat_name.'</td>';
+                                        echo        '<td colspan="2"  style="text-align:left !important;" class="data">'.$packing_list_details[$i]->lot_no.'</td>';
+                                        echo        '<td colspan="2"  style="text-align:right !important;" class="data">'.$packing_list_details[$i]->quantity.' pcs.</td>';
+                                        // echo        '<td class="data" style="text-align:left !important;">pcs.</td>';
                                         echo    '</tr>';
                                         $total_qty[] = $packing_list_details[$i]->quantity;
                                     }
@@ -219,8 +219,7 @@
                                     echo '<tr>
                                             <td colspan="3"></td>
                                             <td colspan="2" style="text-align:right !important;" class="data"><strong>Total ===><strong></td>
-                                            <td class="data" style="text-align:right !important;"><strong>'.array_sum($total_qty).'</strong></td>
-                                            <td class="data" style="text-align:left !important;"><strong>pcs.<strong></td>
+                                            <td colspan="2 class="data" style="text-align:right !important;"><strong>'.array_sum($total_qty).'pcs.</strong></td>
                                         </tr><br>';
 
                                     $grand_total_qty[] = array_sum($total_qty);
@@ -231,8 +230,7 @@
                                 echo '<tr>
                                         <td colspan="3"></td>
                                         <td colspan="2" style="text-align:right !important;" class="data"><strong>Grand Total ===><strong></td>
-                                        <td class="data" style="text-align:right !important;"><strong>'.array_sum($final_grand_total).'</strong></td>
-                                        <td class="data" style="text-align:left !important;"><strong>pcs.<strong></td>
+                                        <td colspan="2 class="data" style="text-align:right !important;"><strong>'.array_sum($final_grand_total).'pcs.</strong></td>
                                     </tr>';
                             }
 
@@ -296,7 +294,7 @@
                                         $cc_personnel_arr[] = $cc_personnel1[0].' '.$cc_personnel1[1][0].'.';
                                     }
                                 }
-                                echo '<div class="data">'.implode(' / ',$cc_personnel_arr).'</div>';
+                                echo '<div class="data">Cris M. /'.implode(' / ',$cc_personnel_arr).'</div>';
                             @endphp
                             <div class="data">{{ 'Traffic / Prod`n / QC' }}</div>
                         </div>

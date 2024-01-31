@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Validator;
 use DataTables;
 
 use App\Models\SecMoldingRuncard;
+use App\Models\CnAssemblyRuncard;
+use App\Models\CnAssemblyRuncardStation;
 
 class CnAssemblyRuncardController extends Controller
 {
@@ -26,12 +28,19 @@ class CnAssemblyRuncardController extends Controller
         if(!isset($request->po_number)){
             return [];
         }else{
-            $AssemblyRuncardData = DB::connection('mysql')->select("SELECT a.* FROM cn_assembly_runcards AS a 
-                    INNER JOIN sec_molding_runcards AS b
-                            ON b.id = a.sec_molding_runcards_id
-                        WHERE a.po_number = '$request->po_number'
-                        ORDER BY a.id ASC
-            ");
+            $AssemblyRuncardData = SecMoldingRuncard::whereNull('deleted_at')
+                                    // ->whereIn('status', $request->fs_prod_status)
+                                    // ->where('stamping_cat', $request->fs_prod_stamping_cat)
+                                    ->with(['cn_assembly_runcard'])
+                                    ->where('po_number', $request->po_number)
+                                    ->get();
+
+            // $AssemblyRuncardData = DB::connection('mysql')->select("SELECT a.* FROM cn_assembly_runcards AS a
+            //          JOIN sec_molding_runcards AS b
+            //                 ON b.id = a.sec_molding_runcard_id
+            //             WHERE a.po_number = '$request->po_number'
+            //             ORDER BY a.id ASC
+            // ");
 
             return DataTables::of($AssemblyRuncardData)
             ->addColumn('action', function($row){
@@ -64,5 +73,98 @@ class CnAssemblyRuncardController extends Controller
             ->rawColumns(['action','status','runcard_no'])
             ->make(true);
         }
+    }
+
+    public function add_assembly_runcard_data(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        session_start();
+
+                $data = $request->all();
+                if(!isset($request->assy_runcard_id)){
+                    $validator = Validator::make($data, [
+                        'runcard_no' => 'required'
+                    ]);
+
+                    if ($validator->fails()) {
+                        return response()->json(['validation' => 'hasError', 'error' => $validator->messages()]);
+                    }else {
+                            CnAssemblyRuncard::insert([
+                                                        'device_name'             => $request->stamping_category,
+                                                        'parts_code'              => $request->parts_code,
+                                                        'po_number'               => $request->po_number,
+                                                        'po_quantity'             => $request->po_quantity,
+                                                        'runcard_no'              => $request->runcard_no,
+                                                        // 'sec_molding_runcard_id'  => $request->sec_molding_runcard_id,
+                                                        'created_by'              => Auth::user()->id,
+                                                        'last_updated_by'         => Auth::user()->id,
+                                                        'created_at'              => date('Y-m-d H:i:s'),
+                                                        'updated_at'              => date('Y-m-d H:i:s'),
+                            ]);
+
+                            DB::commit();
+                            return response()->json(['result' => 'Insert Successful']);
+                    }
+                }else{
+                    if(isset($request->uploaded_file)){
+                        $original_filename = $request->file('uploaded_file')->getClientOriginalName();
+                            Storage::putFileAs('public/stamping_ipqc_inspection_attachments', $request->uploaded_file,  $original_filename);
+                    }else{
+                        $original_filename = $request->re_uploaded_file;
+                    }
+
+                    if($request->judgement == "Accepted"){
+                        $status = 1;
+                    }else if($request->judgement == "Rejected"){
+                        $status = 2;
+                    }
+
+                    StampingIpqc::where('id', $request->stamping_ipqc_id)
+                            ->update([
+                                'judgement'               => $request->judgement,
+                                'input'                   => $request->input,
+                                'output'                  => $request->output,
+                                'ipqc_inspector_name'     => $request->inspector_id,
+                                'keep_sample'             => $request->keep_sample,
+                                'doc_no_b_drawing'        => $request->doc_no_b_drawing,
+                                'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
+                                'doc_no_urgent_direction' => $request->doc_no_ud,
+                                'measdata_attachment'     => $original_filename,
+                                'status'                  => $status,
+                                'last_updated_by'         => Auth::user()->id,
+                                'updated_at'              => date('Y-m-d H:i:s'),
+                            ]);
+
+                        DB::commit();
+                        return response()->json(['result' => 'Update Successful']);
+                        // }
+                }
+
+    }
+
+    public function update_status_of_ipqc_inspection(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        // session_start();
+            if($request->stamping_ipqc_status == 1){
+                //For Mass Production
+                $fs_prod_status = 1;
+                $ipqc_status = 3;
+
+            }else if($request->stamping_ipqc_status == 2){
+                //For Re-Setup
+                $fs_prod_status = 3;
+                $ipqc_status = 4;
+            }
+            StampingIpqc::where('id', $request->stamping_ipqc_id)
+                    ->update([
+                        'status'              => $ipqc_status,
+                        'last_updated_by'     => Auth::user()->id,
+                        'updated_at'          => date('Y-m-d H:i:s'),
+                    ]);
+
+                FirstStampingProduction::where('id', $request->fs_productions_id)
+                ->update(['status' => $fs_prod_status]);
+
+                    DB::commit();
+        return response()->json(['result' => 'Successful']);
     }
 }

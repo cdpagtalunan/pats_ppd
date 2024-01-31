@@ -134,7 +134,7 @@
         </div><!-- /.Content-wrapper -->
 
         <!-- Start History Modal -->
-        <div class="modal fade" id="mdlOqcInspectionHistory" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="mdlOqcInspectionSecondStampingHistory" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-body ">
@@ -739,7 +739,6 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspectionSecondStamping').modal('show')
                     $('.viewDrawingFirst').removeClass('slct')
                 })
 
@@ -766,8 +765,6 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspectionSecondStamping').modal('show')
-
                     $('.viewDrawingFirst').removeClass('d-none')
                     $('.viewDrawingFirst').addClass('slct')
                     $('.viewing').addClass('d-none')

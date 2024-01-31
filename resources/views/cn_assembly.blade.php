@@ -129,11 +129,17 @@
                     <form id="formCNAssemblyRuncard" autocomplete="off">
                         @csrf
                         <div class="modal-body">
-                            <input type="text" id="textSecondMoldingId" class="d-none" name="id">
+                            {{-- <input type="text" id="textSecondMoldingId" class="d-none" name="id"> --}}
                             <div class="row">
                                 <div class="col-sm-4 border px-4">
                                     <div class="py-3">
                                         <span class="badge badge-secondary">1.</span> Runcard Details
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Assembly Runcard ID</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtAssyRuncardId" name="assy_runcard_id" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -477,7 +483,22 @@
                     $('div').find('input').removeClass('is-invalid');
                     $("div").find('input').attr('title', '');
                 });
-                
+
+                $('#btnRuncardDetails').click( function(e){
+                    e.preventDefault();
+                    // let data = $('#formCNAssemblyRuncard').serialize();
+                    $.ajax({
+                        type:"POST",
+                        url: "add_assembly_runcard_data",
+                        data: $('#formCNAssemblyRuncard').serialize(),
+                        dataType: "json",
+                        success: function(response){
+                            console.log('success');
+                        }
+                    });
+
+                });
+
                 // CLARK CODE UNTIL HERE
 
                 // $('#formSecondMolding').submit(function (e) {
