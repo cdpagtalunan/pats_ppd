@@ -1047,7 +1047,7 @@
                 $('#txtPoNumber').attr('readonly', false)
                 $('#txtPoNumber').on('keypress',function(e){
                     if( e.keyCode == 13 ){
-                        getPoNo =  $('#txtPoNumber').val()
+                        getPoNo =  $('#txtPoNumber').val();
                         dataTableOQCInspectionFirstStamping.draw()
                     }
                 })
