@@ -174,6 +174,10 @@
                                                             <th>Quantity</th>
                                                             <th>Drawing #</th>
                                                             <th>Production Lot #</th>
+<<<<<<< HEAD
+=======
+                                                            <th>Delivery Balance</th>
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
                                                             <th>No. of Cuts</th>
                                                             <th>Material Quality</th>
                                                             <th>Validated by</th>
@@ -263,6 +267,16 @@
                                 </div>
                             </div>
 
+<<<<<<< HEAD
+=======
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="form-label">Delivery Balance</label>
+                                    <input type="text" class="form-control form-control-sm" name="delivery_balance" id="txtDeliveryBalance" autocomplete="off">
+                                </div>
+                            </div>
+
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">No. of Cuts</label>
@@ -524,6 +538,10 @@
                         { "data" : "oqc_info.stamping_production_info.ship_output"},
                         { "data" : "oqc_info.stamping_production_info.drawing_no"},
                         { "data" : "oqc_info.stamping_production_info.prod_lot_no"},
+<<<<<<< HEAD
+=======
+                        { "data" : "final_packing_info.delivery_balance" },
+>>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
                         { "data" : "final_packing_info.no_of_cuts"},
                         { "data" : "final_packing_info.material_quality" },
                         { "data" : "final_packing_info.user_validated_by_info.firstname" },

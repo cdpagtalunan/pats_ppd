@@ -173,7 +173,7 @@ class PackingDetailsController extends Controller
                             'material_name'         => $request->parts_name,
                             'material_lot_no'       => $request->prod_lot_no,
                             'drawing_no'            => $request->drawing_no,
-                            // 'delivery_balance'      => $request->delivery_balance,
+                            'delivery_balance'      => $request->delivery_balance,
                             'no_of_cuts'            => $request->number_of_cuts,
                             'material_quality'      => $request->material_quality,
                             'validated_by_packer'   => $request->scan_packer_id,

@@ -1036,7 +1036,7 @@
                             dataType: "json",
                             success: function (response) {
                                 let userDetails = response['userDetails']
-                                if(userDetails != null && userDetails.position == 0 || userDetails.position == 2 || userDetails.position == 5){
+                                if(userDetails != null){
                                     $('#txtEmployeeNo').val(userDetails.employee_id)
                                     UpdateOqcInspection()
                                 }else{
