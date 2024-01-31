@@ -345,12 +345,12 @@
                                                 <input type="text" class="form-control form-control-sm" name="production_lot" id="txtProductionLot" readonly>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">Input:</label>
+                                                <label class="form-label">QC Sample:</label>
                                                 <i class="fa-solid fa-circle-info fa-lg mt-2 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="QC Sample Qty"></i>
                                                 <input type="text" class="form-control form-control-sm" name="input" id="txtInput" readonly>
                                             </div>
                                             <div class="form-group">
-                                                <label class="form-label">Output:</label>
+                                                <label class="form-label">OK:</label>
                                                 <input type="text" class="form-control form-control-sm" name="output" id="txtOutput"
                                                     oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>
                                             </div>

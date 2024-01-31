@@ -322,7 +322,9 @@
                             showConfirmButton: false,
                             timer: 1500
                         });
+                        formModal.firstMoldingStation.find('#input').val('');
                         formModal.firstMoldingStation.find('#output').val('');
+                        formModal.firstMoldingStation.find('#ng_qty').val('');
                         return;
                     }
                     formModal.firstMoldingStation.find('#output').val(totalOutputQty);

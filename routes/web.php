@@ -100,6 +100,10 @@ Route::view('/first_molding','first_molding')->name('first_molding');
 /* CN ASSEMBLY */
 Route::view('/cn_assembly','cn_assembly')->name('cn_assembly');
 
+/* * PPTS VIEW */
+Route::view('/ppts_oqc_inspection','ppts_oqc_inspection')->name('ppts_oqc_inspection');
+
+
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
     Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
@@ -336,7 +340,7 @@ Route::controller(FirstMoldingStationController::class)->group(function () {
     Route::get('/get_stations', 'getStations')->name('get_stations');
     Route::get('/load_first_molding_station_details', 'loadFirstMoldingStationDetails')->name('load_first_molding_station_details');
     Route::get('/get_first_molding_station_details', 'getFirstMoldingStationDetails')->name('get_first_molding_station_details');
-    
+
     Route::post('/save_first_molding_station', 'saveFirstMoldingStation')->name('save_first_molding_station');
 });
 
@@ -360,6 +364,7 @@ Route::controller(SecondMoldingStationController::class)->group(function () {
 Route::controller(CnAssemblyRuncardController::class)->group(function(){
     Route::get('/get_data_from_2nd_molding', 'get_data_from_2nd_molding')->name('get_data_from_2nd_molding');
     Route::get('/view_cn_assembly_runcard', 'view_cn_assembly_runcard')->name('view_cn_assembly_runcard');
+    Route::post('/add_assembly_runcard_data', 'add_assembly_runcard_data')->name('add_assembly_runcard_data');
 });
 
 // MODE OF DEFECTS CONTROLLER

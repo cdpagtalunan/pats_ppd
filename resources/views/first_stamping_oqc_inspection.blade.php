@@ -134,7 +134,7 @@
         </div><!-- /.Content-wrapper -->
 
         <!-- Start History Modal -->
-        <div class="modal fade" id="mdlOqcInspectionHistory" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="mdlOqcInspectionFirstStampingHistory" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-body ">
@@ -713,6 +713,8 @@
 
                 $(document).on('click', '.actionOqcInspectionFirstStamping', function(e){
                     e.preventDefault()
+                    console.log('actionOqcInspectionFirstStamping')
+
                     getPo                       = $(this).attr('first_stamping_prod-po')
                     getPoQty                    = $(this).attr('first_stamping_prod-po_qty')
                     getOqcId                    = $(this).attr('first_stamping_oqc_inspection-id')
@@ -744,12 +746,12 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspectionFirstStamping').modal('show')
                     $('.viewDrawingFirst').removeClass('slct')
                 })
 
                 $(document).on('click', '.actionOqcInspectionView', function(e){
                     e.preventDefault()
+                    console.log('actionOqcInspectionView')
                     getPo                       = $(this).attr('prod-po')
                     getPoQty                    = $(this).attr('prod-po_qty')
                     getOqcId                    = $(this).attr('oqc_inspection-id')
@@ -772,16 +774,15 @@
                     )
                     $('#txtProdId').val(getProdId)
                     $('#txtOqcInspectionId').val(getOqcId)
-                    $('#modalOqcInspectionFirstStamping').modal('show')
-
                     $('.viewDrawingFirst').removeClass('d-none')
                     $('.viewDrawingFirst').addClass('slct')
                     $('.viewing').addClass('d-none')
                     $('.drawing').addClass('d-none')
                 })
 
-                $(document).on('click', '.actionOqcInspectionHistory', function(e){
+                $(document).on('click', '.actionOqcInspectionFirstStampingHistory', function(e){
                     e.preventDefault()
+                    console.log('actionOqcInspectionFirstStampingHistory')
                     getPo               = $(this).attr('first_stamping_prod-po')
                     getPoQty            = $(this).attr('first_stamping_prod-po_qty')
                     getOqcId            = $(this).attr('first_stamping_oqc_inspection-id')
@@ -791,7 +792,6 @@
                     getProdShipOutput   = $(this).attr('first_stamping_prod-ship_output')    
 
                     getPoNo = getPo;
-                    $('#mdlOqcInspectionHistory').modal('show')
 
                     dataTableOQCInspectionFirstStamping = $("#tblOqcInspectionHistory").DataTable({
                         "processing"    : false,

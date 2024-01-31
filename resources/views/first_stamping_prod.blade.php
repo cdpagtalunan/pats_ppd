@@ -637,7 +637,7 @@
 
                 $('#btnAddProdData').on('click', function(e){
 
-                    if($('#txtTtlShipOutput').val() <= $('#txtSearchPO').val()){
+                    if($('#txtTtlShipOutput').val() >= $('#txtSearchPO').val()){
                         toastr.error('Total Machine Output is greater than PO Quantity.');
                         return;
                     }
@@ -801,6 +801,13 @@
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
                         let explodedMat = $(this).val().split(' $|| ');
+                        console.log(explodedMat);
+                        if(explodedMat.length != 2){
+                            toastr.error('Invalid Sticker');
+                            $(this).val('');
+                            $('#modalScanQr').modal('hide');
+                            return;
+                        }
                         $('#txtMaterialLot_0').val(explodedMat[0]);
                         $('#txtMaterialLotQty').val(explodedMat[1]);
 
