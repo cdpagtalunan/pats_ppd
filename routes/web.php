@@ -291,6 +291,8 @@ Route::controller(PackingListDetailsController::class)->group(function () {
     Route::get('/get_ppc_clerk_details', 'getPpcClerk')->name('get_ppc_clerk_details');
     Route::get('/get_ppc_sr_planner', 'getPpcSrPlanner')->name('get_ppc_sr_planner');
     Route::get('/get_carbon_copy_user', 'carbonCopyUser')->name('get_carbon_copy_user');
+    Route::get('/get_packing_list_details_by_ctrl', 'getPackingListDetailsbyCtrl')->name('get_packing_list_details_by_ctrl');
+    Route::get('/get_packing_list_details', 'getPackingListDetails')->name('get_packing_list_details');
 });
 
 Route::controller(ReceivingDetailsController::class)->group(function () {

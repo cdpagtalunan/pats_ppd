@@ -318,34 +318,102 @@
                 </div>
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" id="txtPackingListId" name="packing_list_id">
+                        <input type="hidden" id="txtPackingListCtrlId" name="packing_details_ctrl_no">
                         <div class="col-sm-12">
                             <strong>Packing List Details</strong>
                         </div>
                         <hr>
 
                             <div class="table-responsive">
-                                <table id="tblProductionListDetails" class="table table-sm table-bordered table-striped table-hover"style="width: 100%;">
+                                <table id="tblViewPackingListDetails" class="table table-sm table-bordered table-striped table-hover"style="width: 100%;">
                                     <thead>
                                         <tr>
-                                            <th style="width: 3%"><center>Id</center></th>
-                                            <th style="width: 3%"><center>Box #</center></th>
+                                            <th>Action</th>
                                             <th>Status</th>
+                                            <th style="width: 3%"><center>Box #</center></th>
                                             <th>PO</th>
                                             <th>Material Name</th>
                                             <th>Production Lot #</th>
-                                            <th>Product Code</th>
                                             <th>Qty</th>
                                         </tr>
                                     </thead>
                                 </table>
                             </div>
                             <hr>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Ctrl #</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_ctrl_num" id="getTextCtrlNumber" readonly>
+                                    </div>
+                                </div>
+    
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label for="textPickUpDateAndTime">Pick-up Time & Date</label>
+                                        {{-- <input type="text" class="form-control" name="edit_pickup_date_and_time" id="getTextPickUpDateAndTime" readonly> --}}
+                                        <input type="datetime-local" class="form-control" id="getTextPickUpDateAndTime" name="edit_pickup_date_and_time" readonly>
+
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Carrier</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_carrier" id="getTextCarrier" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">From :</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_ship_from" id="getTextShipFrom" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">To :</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_ship_to" id="getTextShipTo" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Port of Loading :</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_port_of_loading" id="getTextPortOfLoading" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Port of Destination :</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_port_of_destination" id="getTextPortOfDestination" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Prepared by :</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_prepared_by" id="getPreparedBy" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Checked by :</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_checked_by" id="getCheckedBy" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">CC:</label>
+                                        <input type="text" class="form-control form-control-sm" name="edit_carbon_copy" id="getCarbonCopy" readonly>
+                                    </div>
+                                </div>
+                            </div>
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="btnSavePackingListDetails" class="btn btn-primary"><i id="btnSavePackingListDetailsIcon"
-                                class="fa fa-check"></i> Save</button>
+                        {{-- <button type="submit" id="btnSavePackingListDetails" class="btn btn-primary"><i id="btnSavePackingListDetailsIcon"class="fa fa-check"></i> Save</button> --}}
                     </div>
             </div>
             <!-- /.modal-content -->
@@ -646,15 +714,43 @@
                     });
                 });
 
+                // 
+                // let dtViewPackingListDetails;
                 $(document).on('click', '.btnEditPackingListDetails', function(e){
                     // alert('xd');
                     e.preventDefault();
                     let packingDetailsCtrlNo =  $(this).attr('data-ctrl-no');
 
-                    // $('#txtPackingDetailsId').val(packingDetailsCtrlNo);
+                    $('#txtPackingListCtrlId').val(packingDetailsCtrlNo);
+                    // console.log(packingDetailsCtrlNo);
+                    getPackingListDetails(packingDetailsCtrlNo);
+                    
                     $('#modalViewPackingListDetails').modal('show');
-                    console.log(packingDetailsCtrlNo);
+                    dtViewPackingListDetails.draw();
                 });
+
+                let dtViewPackingListDetails = $("#tblViewPackingListDetails").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "get_packing_list_details_by_ctrl",
+                        data: function(param){
+                        param.packing_list_ctrl_no =  $("#txtPackingListCtrlId").val();
+                        }
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        // { "data"  : 'DT_RowIndex'},
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status"},
+                        { "data" : "box_no"},
+                        { "data" : "po_no"},
+                        { "data" : "mat_name"},
+                        { "data" : "lot_no"},
+                        { "data" : "quantity"},
+                    ],
+                });
+
         });
 
         </script>

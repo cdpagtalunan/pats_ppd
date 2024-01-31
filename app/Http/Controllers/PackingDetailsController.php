@@ -22,6 +22,7 @@ class PackingDetailsController extends Controller
         ->where('po_no', 'like', '%' . $request->po_no . '%')
         ->where('lot_accepted', 1)
         ->get();
+        // ->orderBy('prelim_packing_info.status', 'DESC');
 
         // return $preliminary_packing_data;
         // return $preliminary_packing_data[3]->packing_info->status;
