@@ -408,6 +408,29 @@
                                 <input type="text" class="form-control form-control-sm" id="production_lot" name="production_lot">
                                 {{-- <input value="2B40125-G-A-M-T-0600-1000" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot"> --}}
                             </div>
+
+                            {{-- <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                                </div>
+                                <select type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
+                                </select>
+                            </div>
+
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="po_no" name="po_no">
+                            </div>
+
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="po_qty" name="po_qty">
+                            </div> --}}
+
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
@@ -539,6 +562,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col">
                             <div class="input-group input-group-sm mb-3">

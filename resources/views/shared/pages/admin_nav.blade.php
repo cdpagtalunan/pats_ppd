@@ -161,7 +161,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,6,7,9]))
+                    @if (in_array(Auth::user()->position, [0,6,7,9,11,13,2]))
                         <li class="nav-header mt-3"><strong>PACKING</strong></li>
 
                         <li class="nav-item has-treeview">
@@ -292,6 +292,32 @@
                             {{-- </ul> --}}
                         </li>
                     @endif
+
+                    @if (in_array(Auth::user()->position, [0]))
+                    <li class="nav-header mt-3 font-weight-bold">MOLDING PACKING</li>
+                    <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p><i class="fa-solid fa-shapes"> </i> PPTS </p>
+                                <i class="fas fa-angle-down"> </i>
+                            </div>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route("ppts_oqc_inspection") }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon ml-2"> </i>
+                                    <p>OQC Inspection</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="" class="nav-link">
+                                    <i class="far fa-circle nav-icon ml-2"> </i>
+                                    <p>Packing and Shipping</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
                 @endauth
 
             </ul>
