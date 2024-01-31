@@ -1,67 +1,54 @@
-
 @php $layout = 'layouts.admin_layout'; @endphp
 
 @auth
   @extends($layout)
 
-@section('title', 'D Label Printing')
+@section('title', 'Warehouse')
 
 @section('content_page')
 <!-- <link href="{{ URL::asset('public/template/plugins/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet" media="all"> -->
 
 <style type="text/css">
-	#iframe_d_label_printing{
+	#iframe_ppsmis{
 		position: absolute;
 		width: 100%;
 		height: 900px;
-/*		width: 100%!important;
-		height: 100%!important;
-*/		border: none;
+		border: none;
 	}
  </style>
- <!-- Content Wrapper. Contains page content -->
  <div class="content-wrapper">
- 	<!-- Content Header (Page header) -->
  	<section class="content-header">
  		<div class="container-fluid">
  			<div class="row mb-2">
  				<div class="col-sm-6">
- 					<h1>WEB EDI Printing</h1>
+ 					<h1>PPSMIS - Warehouse Module</h1>
  				</div>
  				<div class="col-sm-6">
  					<ol class="breadcrumb float-sm-right">
  						<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
- 						<li class="breadcrumb-item active">CN PPTS</li>
+ 						<li class="breadcrumb-item active">PPSMIS</li>
  					</ol>
  				</div>
  			</div>
- 		</div><!-- /.container-fluid -->
+ 		</div>
  	</section>
 
- 	<!-- Main content -->
  	<section class="content">
  		<div class="container-fluid">
  			<div class="row">
- 				<!-- left column -->
  				<div class="col-12">
- 					<!-- general form elements -->
- 					<div>
-						<iframe  src="http://rapidx/cn_ppts/oqc_inspection_ppd?username={{ Auth::user()->username }}&emp_id={{ Auth::user()->employee_id }}" style="border: none;" no-border height="850" width="100%">></iframe>
- 					</div>
+                    <iframe id="iframe_ppsmis" src="http://rapid/PPSMIS/Resin" no-border></iframe>
 				</div>
 			</div>
-			<!-- /.row -->
-		</div><!-- /.container-fluid -->
+		</div>
 	</section>
-	<!-- /.content -->
 
 </div>
-<!-- /.content-wrapper -->
 @endsection
 
 @section('js_content')
 <script type="text/javascript">
-	
+
 </script>
 @endsection
 @endauth

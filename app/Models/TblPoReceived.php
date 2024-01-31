@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CnAssemblyRuncard extends Model
+class TblPoReceived extends Model
 {
     use HasFactory;
 
-    protected $table = 'cn_assembly_runcards';
-    protected $connection = 'mysql';
+    protected $connection = 'mysql_rapid_pps';
+    protected $table = 'tbl_POReceived';
+
 }

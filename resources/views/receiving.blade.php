@@ -53,7 +53,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Receiving</h1>
+                            <h1>Receiving from SANNO</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -90,14 +90,14 @@
                                             data-bs-target="#modalAddPackingList" id="btnShowAddPackingList"><i
                                                 class="fas fa-clipboard-list"></i> Add Packing List
                                         </button> --}}
-                                    </div> <br><br>
+                                    </div>
 
                                      <ul class="nav nav-tabs" id="myTab" role="tablist"> {{-- by nessa --}}
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">For Receive</a>
+                                            <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">To Receive</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Accepted</a>
+                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Received/Accepted</a>
                                         </li>
                                     </ul>
 
@@ -111,20 +111,20 @@
                                                         <tr>
                                                             <th rowspan="2" class="text-center pl-5 pr-5">Action</th>
                                                             <th rowspan="2" class="text-center pl-5 pr-5">Status</th>
-                                                            <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
-                                                            <th colspan="4" style="text-align: center;">PMI Details</th>
-                                                            <th colspan="3" style="text-align: center;">Supplier Details</th>
+                                                            <th rowspan="2" class="text-center pl-5 pr-5" style="text-align: center; background-color:#ABEBC6">New Lot #</th>
+                                                            <th colspan="4" style="text-align: center; background-color:#AED6F1">PMI Details</th>
+                                                            <th colspan="3" style="text-align: center; background-color:#FAD7A0">Supplier Details</th>
                                                         </tr>
 
                                                         <tr>
-                                                            <th>Packing List Ctrl #</th>
-                                                            <th>Material name</th>
-                                                            <th>Production Lot #</th>
-                                                            <th>Shipment Qty</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Packing List Ctrl #</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Material name</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Production Lot #</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Shipment Qty</th>
 
-                                                            <th>Name</th>
-                                                            <th>Lot #</th>
-                                                            <th>Qty</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Name</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Lot #</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Qty</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -138,20 +138,20 @@
                                                     <thead>
                                                         <tr>
 
-                                                            <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
-                                                            <th colspan="4" style="text-align: center;">PMI Details</th>
-                                                            <th colspan="3" style="text-align: center;">Supplier Details</th>
+                                                            <th rowspan="2" class="text-center pl-5 pr-5" style="text-align: center; background-color:#ABEBC6">New Lot #</th>
+                                                            <th colspan="4" style="text-align: center; background-color:#AED6F1">PMI Details</th>
+                                                            <th colspan="3" style="text-align: center; background-color:#FAD7A0">Supplier Details</th>
                                                         </tr>
 
                                                         <tr>
-                                                            <th>Packing List Ctrl #</th>
-                                                            <th>Material name</th>
-                                                            <th>Production Lot #</th>
-                                                            <th>Shipment Qty</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Packing List Ctrl #</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Material name</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Production Lot #</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Shipment Qty</th>
 
-                                                            <th>Name</th>
-                                                            <th>Lot #</th>
-                                                            <th>Qty</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Name</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Lot #</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Qty</th>
                                                         </tr>
                                                     </thead>
                                                 </table>

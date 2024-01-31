@@ -28,7 +28,7 @@ use App\Http\Controllers\PackingDetailsMoldingController;
 use App\Http\Controllers\DestinationPortDetailsController;
 use App\Http\Controllers\SecondMoldingController;
 use App\Http\Controllers\SecondMoldingStationController;
-use App\Http\Controllers\CnAssemblyRuncardController;
+use App\Http\Controllers\AssemblyRuncardController;
 use App\Http\Controllers\DefectsInfoController;
 
 
@@ -133,6 +133,7 @@ Route::get('/get_user_levels',  [UserLevelController::class, 'get_user_levels'])
 Route::controller(CommonController::class)->group(function () {
     Route::get('/get_search_po', 'get_search_po')->name('get_search_po');
     Route::get('/validate_user', 'validate_user')->name('validate_user');
+    Route::get('/get_data_from_matrix', 'get_data_from_matrix')->name('get_data_from_matrix');
 });
 
 // DEVICE CONTROLLER
@@ -332,6 +333,7 @@ Route::controller(FirstMoldingController::class)->group(function () {
     Route::get('/load_first_molding_details', 'loadFirstMoldingDetails')->name('load_first_molding_details');
     Route::get('/get_molding_details', 'getMoldingDetails')->name('get_molding_details');
     Route::get('/first_molding_update_status', 'firstMoldingUpdateStatus')->name('first_molding_update_status');
+    Route::get('/get_pmi_po_received_details', 'getPmiPoReceivedDetails')->name('get_pmi_po_received_details');
 
     Route::post('/save_first_molding', 'saveFirstMolding')->name('save_first_molding');
 });
@@ -346,10 +348,10 @@ Route::controller(FirstMoldingStationController::class)->group(function () {
 
 /* Second Molding Controller */
 Route::controller(SecondMoldingController::class)->group(function () {
-    Route::get('/get_search_po_for_molding', 'getSearchPoForMolding')->name('get_search_po_for_molding');
+    Route::get('/get_po_received_by_po_number', 'getPOReceivedByPONumber')->name('get_po_received_by_po_number');
     Route::get('/get_revision_number_based_on_drawing_number', 'getRevisionNumberBasedOnDrawingNumber')->name('get_revision_number_based_on_drawing_number');
-    Route::get('/check_machine_lot_number', 'checkMachineLotNumber')->name('check_machine_lot_number');
     Route::get('/check_material_lot_number', 'checkMaterialLotNumber')->name('check_material_lot_number');
+    Route::get('/check_material_lot_number_of_first_molding', 'checkMaterialLotNumberOfFirstMolding')->name('check_material_lot_number_of_first_molding');
     Route::post('/save_second_molding', 'saveSecondMolding')->name('save_second_molding');
     Route::get('/view_second_molding', 'viewSecondMolding')->name('view_second_molding');
     Route::get('/get_second_molding_by_id', 'getSecondMoldingById')->name('get_second_molding_by_id');
@@ -361,9 +363,10 @@ Route::controller(SecondMoldingStationController::class)->group(function () {
 });
 
 /* CN Assembly Controller */
-Route::controller(CnAssemblyRuncardController::class)->group(function(){
+Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/get_data_from_2nd_molding', 'get_data_from_2nd_molding')->name('get_data_from_2nd_molding');
-    Route::get('/view_cn_assembly_runcard', 'view_cn_assembly_runcard')->name('view_cn_assembly_runcard');
+    Route::get('/view_assembly_runcard', 'view_assembly_runcard')->name('view_assembly_runcard');
+    // Route::get('/view_assembly_runcard_stations', 'view_assembly_runcard_stations')->name('view_assembly_runcard_stations');
     Route::post('/add_assembly_runcard_data', 'add_assembly_runcard_data')->name('add_assembly_runcard_data');
 });
 
@@ -375,4 +378,8 @@ Route::controller(DefectsInfoController::class)->group(function () {
     // Route::post('/update_status', 'update_status');
     // Route::get('/get_process_by_id', 'get_process_by_id');
 });
+
+/* Warehouse iframe */
+Route::view('/warehouse_resin','warehouse_resin')->name('warehouse_resin');
+Route::view('/production_history','production_history')->name('production_history');
 

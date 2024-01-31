@@ -368,7 +368,7 @@
                 @csrf
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-sm-4 border px-4">
+                        <div class="col-sm-6 border px-4">
                             <div class="py-3">
                                 <span class="badge badge-secondary">1.</span> Runcard Details
                             </div>
@@ -378,79 +378,245 @@
                                 </div>
                                 <input class="form-control form-control-sm" type="number" id="first_molding_id" name="first_molding_id">
                             </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                                        </div>
+                                        <select class="form-select form-control-sm" id="first_molding_device_id" name="first_molding_device_id" >
+                                        </select>
+                                    </div>
                                 </div>
-                                <select class="form-select form-control-sm" id="first_molding_device_id" name="first_molding_device_id" >
-                                </select>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Machine No.: </span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="machine_no" name="machine_no">
+                                    </div>
+                                </div>
                             </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Contact Name: </span>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Contact Name: </span>
+                                        </div>
+                                        <input value="25" type="text" class="form-control form-control-sm" id="contact_name" name="contact_name">
+                                    </div>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="contact_name" name="contact_name" readonly>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">25 Shots </span>
+                                        </div>
+                                        <input value="25" type="number" class="form-control form-control-sm" id="target_shots" name="target_shots">
+                                    </div>
+                                </div>
                             </div>
-                                <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Contact Lot #</span>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Contact Lot #</span>
+                                        </div>
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number">
+                                        {{-- <input type="text" value="C1100R-1/2H 1.2X70"  class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number"> --}}
+                                    </div>
                                 </div>
-                                <div class="input-group-prepend">
-                                    <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Adjustment Shots</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="adjustment_shots" name="adjustment_shots">
+                                    </div>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number">
-                                {{-- <input type="text" value="C1100R-1/2H 1.2X70"  class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number"> --}}
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="production_lot" name="production_lot">
-                                {{-- <input value="2B40125-G-A-M-T-0600-1000" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot"> --}}
                             </div>
 
-                            {{-- <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
+                                            </div>
+                                            <input value="2E240130-" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot" readonly>
+                                            <input value="M-7:30-11:30" type="text" class="form-control form-control-sm" id="production_lot_extension" name="production_lot_extension">
+                                            {{-- <input value="2B40125-G-A-M-T-0600-1000" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot"> --}}
+                                        </div>
+                                    </div>
                                 </div>
-                                <select type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
-                                </select>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="qc_samples" name="qc_samples">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                                        </div>
+                                        <input value="PR2310089320" type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Prod Samples</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="prod_samples" name="prod_samples">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="po_no" name="po_no" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="ng_count" name="ng_count">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Item Code</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="item_code" name="item_code" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Total Machine Output</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="total_machine_output" name="total_machine_output">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Item Name</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="item_name" name="item_name" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="shipment_output" name="shipment_output">
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Order Balance</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="po_qty" name="po_qty" readonly>
+                                    </div>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="po_no" name="po_no">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Material Yield</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="material_yield" name="material_yield">
+                                    </div>
+                                </div>
                             </div>
-
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Target For S/O</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="po_target" name="po_target" readonly>
+                                    </div>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="po_qty" name="po_qty">
-                            </div> --}}
-
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                                <div class="col-sm-6">
+                                    
                                 </div>
-                                <textarea class="form-control form-control-sm" id="remarks" name="remarks" rows="5"></textarea>
                             </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Created At</span>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Variance</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="po_balance" name="po_balance" readonly>
+                                    </div>
                                 </div>
-                                <input type="text" class="form-control form-control-sm" id="created_at" name="created_at" readonly="true" placeholder="Auto generated">
+                                <div class="col-sm-6">
+                                    
+                                </div>
                             </div>
-                            <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
-                                <button class="btn btn-sm btn-success" type="submit" id="btnRuncardDetails">
-                                    <i class="fa-solid fa-floppy-disk"></i> Save
-                                </button>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                                        </div>
+                                        <textarea class="form-control form-control-sm" id="remarks" name="remarks" rows="5"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Created At</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="created_at" name="created_at" readonly="true" placeholder="Auto generated">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
+                                        <button class="btn btn-sm btn-success" type="submit" id="btnRuncardDetails">
+                                            <i class="fa-solid fa-floppy-disk"></i> Save
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                </div>
                             </div>
                         </div>
                       </form>
-                        <div class="col-sm-8">
+                        <div class="col-sm-6">
                             <div class="col border px-4 border">
                                 <div class="py-3">
                                     <div style="float: left;">
