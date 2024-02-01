@@ -161,7 +161,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,6,7,9,11,13,2]))
+                    @if (in_array(Auth::user()->position, [0,4,6,7,9,11,13,2]))
                         <li class="nav-header mt-3"><strong>PACKING</strong></li>
 
                         <li class="nav-item has-treeview">

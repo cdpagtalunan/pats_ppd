@@ -567,9 +567,9 @@
                     $('#modalScanOperatorId').modal('show');
                 });
 
-                // $('#modalScanOperatorId').on('shown.bs.modal', function () {
-                //     $('#txtScanProdOperatorId').focus();
-                // });
+                $('#modalScanOperatorId').on('shown.bs.modal', function () {
+                    $('#txtScanProdOperatorId').focus();
+                });
 
                 $('#formScanOperatorId').submit(function(e){
                     e.preventDefault();
