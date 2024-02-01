@@ -1,4 +1,5 @@
 <aside class="main-sidebar sidebar-dark-navy elevation-4" style="height: 100vh">
+{{-- <aside class="main-sidebar sidebar-dark-navy elevation-4" > --}}
 
     <!-- System title and logo -->
     <a href="{{ route('dashboard') }}" class="brand-link text-center">
@@ -149,12 +150,12 @@
                                     </a>
                                 </li>
                             </ul>
-        
+
 
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,6,7,9,11,13,2]))
+                    @if (in_array(Auth::user()->position, [0,4,6,7,9,11,13,2]))
                         <li class="nav-header mt-3"><strong>PACKING</strong></li>
 
                         <li class="nav-item has-treeview">
@@ -280,24 +281,12 @@
                                         <p>2nd Molding</p>
                                     </a>
                                 </li>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                <li class="nav-item">
-                                    <a href="{{ route('cn_assembly') }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>Assy</p>
-                                    </a>
-                                </li>
-=======
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
                                 <li class="nav-item">
                                     <a href="{{ route('cn_assembly') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>Assembly</p>
                                     </a>
                                 </li>
->>>>>>> parent of e42c11b (Before merging main)
                             </ul>
                             {{-- <ul class="nav nav-treeview">
                                 <li class="nav-item">
@@ -308,12 +297,7 @@
                                 </li>
                             </ul> --}}
                         </li>
-<<<<<<< HEAD
-<<<<<<< HEAD
-                         <li class="nav-item">
-=======
                         <li class="nav-item">
->>>>>>> parent of e42c11b (Before merging main)
                             <a href="{{ route('production_history') }}" class="nav-link">
                                 <i class="fas fa-gears"> </i>
                                 <p>
@@ -321,12 +305,6 @@
                                 </p>
                             </a>
                         </li>
-<<<<<<< HEAD
-=======
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
-                
->>>>>>> parent of e42c11b (Before merging main)
                     @endif
 
                     @if (in_array(Auth::user()->position, [0]))
@@ -372,7 +350,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="" class="nav-link">
+                                <a href="{{ route("ppts_packing_and_shipping") }}" class="nav-link">
                                     <i class="far fa-circle nav-icon ml-2"> </i>
                                     <p>Packing and Shipping</p>
                                 </a>
