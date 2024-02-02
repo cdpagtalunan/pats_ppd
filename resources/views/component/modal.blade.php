@@ -390,13 +390,15 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Machine No.: </span>
+                                        <div class="input-group-prepend w-30">
+                                            <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="machine_no" name="machine_no">
-                                    </div>
+                                        <input value="2E240130-" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot" readonly>
+                                        <input value="M-7:30-11:30" type="text" class="form-control form-control-sm" id="production_lot_extension" name="production_lot_extension">
+                                </div>
                                 </div>
                             </div>
+
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
@@ -408,10 +410,10 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">25 Shots </span>
+                                        <div class="input-group-prepend w-30">
+                                            <span class="input-group-text w-100" id="basic-addon1">Drawing No</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm sumTotalShipmentOutput" id="target_shots" name="target_shots" value="25" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="drawing_no" name="drawing_no" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -425,7 +427,24 @@
                                             <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number">
-                                        {{-- <input type="text" value="C1100R-1/2H 1.2X70"  class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number"> --}}
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-30">
+                                            <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">25 Shots </span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm sumTotalShipmentOutput" id="target_shots" name="target_shots" value="25" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -437,35 +456,13 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-30">
-                                                <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
-                                            </div>
-                                            <input value="2E240130-" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot" readonly>
-                                            <input value="M-7:30-11:30" type="text" class="form-control form-control-sm" id="production_lot_extension" name="production_lot_extension">
-                                            {{-- <input value="2B40125-G-A-M-T-0600-1000" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot"> --}}
-                                    </div>
-                                </div>
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
                                         </div>
                                         <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="qc_samples" name="qc_samples" min="0" step="0.01">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
-                                        </div>
-                                        <input value="PR2310089320" type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -481,47 +478,9 @@
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="po_no" name="po_no" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
                                         </div>
                                         <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="ng_count" name="ng_count" min="0" step="0.01">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Qty</span>
-                                        </div>
-                                        <input type="number" class="form-control form-control-sm" id="po_qty" name="po_qty" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Material Yield</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Item Code</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="item_code" name="item_code" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -535,23 +494,31 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Item Name</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="item_name" name="item_name" readonly>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
                                         </div>
                                         <input type="number" class="form-control form-control-sm" id="shipment_output" name="shipment_output" min="0" step="0.01" readonly>
                                     </div>
                                 </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Material Yield</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="row">
+                            <div class="row mt-3">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                                        </div>
+                                        <input value="PR2310089320" type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
+                                    </div>
+                                </div>
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -565,17 +532,50 @@
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="po_no" name="po_no" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PO Qty</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="po_qty" name="po_qty" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Item Code</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="item_code" name="item_code" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Item Name</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="item_name" name="item_name" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6 d-none">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Target For S/O</span>
                                         </div>
                                         <input type="number" class="form-control form-control-sm" id="po_target" name="po_target" min="0" step="0.01" readonly>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-6 d-none">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Variance</span>
@@ -583,10 +583,8 @@
                                         <input type="number" class="form-control form-control-sm" id="po_balance" name="po_balance" min="0" step="0.01" readonly>
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-
-                                </div>
                             </div>
+
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
@@ -597,7 +595,12 @@
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
-
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Machine No.: </span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="machine_no" name="machine_no">
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">

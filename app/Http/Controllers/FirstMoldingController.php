@@ -3,14 +3,17 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use DataTables;
 use App\Models\Station;
 use App\Models\FirstMolding;
 use App\Models\FirstMoldingDevice;
 use App\Models\FirstMoldingDetail;
 use App\Models\TblPoReceived;
+use App\Models\TblDieset;
 use App\Http\Requests\FirstMoldingRequest;
 use App\Http\Requests\FirstMoldingStationRequest;
+
 
 class FirstMoldingController extends Controller
 {
@@ -30,6 +33,7 @@ class FirstMoldingController extends Controller
     public function getFirstMoldingDevicesById(Request $request)
     {
         return $first_molding_device = FirstMoldingDevice::where('id',$request->first_molding_device_id)->get();
+
     }
 
     public function loadFirstMoldingDetails(Request $request)
@@ -85,23 +89,41 @@ class FirstMoldingController extends Controller
 
     public function saveFirstMolding(FirstMoldingRequest $request)
     {
-        // return 'true';
+        // return $request->all();
+
         date_default_timezone_set('Asia/Manila');
         try{
+            $data = $request->all();
+            $validation = array(
+                'production_lot' => ['required'],
+                'production_lot_extension' => ['required'],
+                'contact_name' => ['required'],
+                'contact_lot_number' => ['required'],
+            );
+
+            $validator = Validator::make($data, $validation);
+
+            if ($validator->fails()) {
+                return response()->json(['result' => '0', 'error' => $validator->messages()]);
+            }
+
             if( isset( $request->first_molding_id )){ //Edit
+                FirstMolding::where('id',$request->first_molding_id)->update($request->validated());
                 FirstMolding::where('id',$request->first_molding_id)
                 ->update([
                     'first_molding_device_id' => $request->first_molding_device_id,
                     'contact_lot_number' => $request->contact_lot_number,
-                    'production_lot' => $request->production_lot,
+                    'production_lot' => $request->production_lot . $request->production_lot_extension ,
                     'remarks' => $request->remarks,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
+
             }else{ //Add
-                FirstMolding::insert([
+                $first_molding_id = FirstMolding::insertGetId($request->validated());
+                FirstMolding::where('id',$first_molding_id)
+                ->update([
                     'first_molding_device_id' => $request->first_molding_device_id,
-                    'contact_lot_number' => $request->contact_lot_number,
-                    'production_lot' => $request->production_lot,
+                    'production_lot' => $request->production_lot . $request->production_lot_extension ,
                     'remarks' => $request->remarks,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
@@ -136,16 +158,16 @@ class FirstMoldingController extends Controller
         } catch (\Throwable $th) {
             return $th;
         }
-        
+
     }
 
     public function getPmiPoReceivedDetails (Request $request)
     {
         try{
             $tbl_po_received = TblPoReceived::where('OrderNo',$request->pmi_po_no)->get();
-            
+
             if( count($tbl_po_received) == 1){
-                return response()->json( [ 
+                return response()->json( [
                     'result_count' => count($tbl_po_received),
                     'po_no' => $tbl_po_received[0]->ProductPONo ,
                     'order_qty' => $tbl_po_received[0]->OrderQty ,
@@ -154,14 +176,24 @@ class FirstMoldingController extends Controller
                     'item_name' => $tbl_po_received[0]->ItemName ,
                 ] );
             }else{
-                return response()->json( [ 
+                return response()->json( [
                     'result_count' => 0,
                 ] );
             }
-        
+
         } catch (\Throwable $th) {
             return $th;
         }
+    }
+
+    public function getDiesetDetailsByDeviceName (Request $request){
+        $tbl_dieset =  TblDieset::where('DeviceName',$request->device_name)->get();
+        return response()->json( [
+             'dieset_no' => $tbl_dieset[0]->DieNo,
+             'drawing_no' => $tbl_dieset[0]->DrawingNo,
+             'rev_no' => $tbl_dieset[0]->Rev,
+        ] );
+
     }
 
 

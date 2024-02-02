@@ -56,6 +56,8 @@
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
                 formModal.firstMolding.find('#machine_no').val(data.machine_no);
+                formModal.firstMolding.find('#drawing_no').val(data.drawing_no);
+                formModal.firstMolding.find('#revision_no').val(data.revision_no);
                 formModal.firstMolding.find('#target_shots').val(data.target_shots);
                 formModal.firstMolding.find('#adjustment_shots').val(data.adjustment_shots);
                 formModal.firstMolding.find('#qc_samples').val(data.qc_samples);
@@ -151,11 +153,14 @@
                     errorHandler( errors.production_lot,formModal.firstMolding.find('#production_lot') );
                     errorHandler( errors.production_lot_extension,formModal.firstMolding.find('#production_lot_extension') );
                     errorHandler( errors.machine_no,formModal.firstMolding.find('#machine_no') );
+                    errorHandler( errors.drawing_no,formModal.firstMolding.find('#drawing_no') );
+                    errorHandler( errors.revision_no,formModal.firstMolding.find('#revision_no') );
                     errorHandler( errors.target_shots,formModal.firstMolding.find('#target_shots') );
                     errorHandler( errors.adjustment_shots,formModal.firstMolding.find('#adjustment_shots') );
                     errorHandler( errors.qc_samples,formModal.firstMolding.find('#qc_samples') );
                     errorHandler( errors.prod_samples,formModal.firstMolding.find('#prod_samples') );
                     errorHandler( errors.pmi_po_no,formModal.firstMolding.find('#pmi_po_no') );
+                    errorHandler( errors.po_no,formModal.firstMolding.find('#po_no') );
                     errorHandler( errors.ng_count,formModal.firstMolding.find('#ng_count') );
                     errorHandler( errors.item_code,formModal.firstMolding.find('#item_code') );
                     errorHandler( errors.total_machine_output,formModal.firstMolding.find('#total_machine_output') );
@@ -246,10 +251,10 @@
                 showConfirmButton: false,
                 timer: 1500
             });
-            formModal.firstMoldingStation.find('#input').val('');
-            formModal.firstMoldingStation.find('#output').val('');
-            formModal.firstMoldingStation.find('#ng_qty').val('');
-            formModal.firstMoldingStation.find("#station_yield").val('');
+            formModal.firstMoldingStation.find('#input').val(0);
+            formModal.firstMoldingStation.find('#output').val(0);
+            formModal.firstMoldingStation.find('#ng_qty').val(0);
+            formModal.firstMoldingStation.find("#station_yield").val('0%');
             return;
         }
         formModal.firstMoldingStation.find('#output').val(totalOutputQty);
@@ -257,11 +262,20 @@
 
     const totalStationYield = function (station_input,station_output){
         let stationYield = (station_output/station_input)*100;
-        if(station_input == "" || station_output == "" || station_output == 0 || station_input == 0){
+        if(station_input == "" || station_output == ""){
             formModal.firstMoldingStation.find("#station_yield").val('0%');
             return;
         }
         formModal.firstMoldingStation.find("#station_yield").val(stationYield.toFixed(2)+'%');
+    }
+
+    const calculateTotalMaterialYield = function (machineOutput,shipmentOutput){
+        if( shipmentOutput == "" || machineOutput == "" || shipmentOutput == 0 || machineOutput == 0 ){
+            formModal.firstMolding.find("#material_yield").val('0%');
+            return;
+        }
+        let totalMaterialYield = ( parseFloat( shipmentOutput ) / parseFloat( machineOutput ) )*100;
+        formModal.firstMolding.find('#material_yield').val(`${totalMaterialYield.toFixed(2)}%`);
     }
 
     const getPmiPoReceivedDetails = function (pmiPoNo){

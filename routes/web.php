@@ -31,6 +31,7 @@ use App\Http\Controllers\SecondMoldingStationController;
 use App\Http\Controllers\AssemblyRuncardController;
 use App\Http\Controllers\DefectsInfoController;
 use App\Http\Controllers\ProductionHistoryController;
+use App\Http\Controllers\MoldingIpqcInspectionController;
 
 
 /*
@@ -82,7 +83,7 @@ Route::view('/ipqc_inspection_2nd_stamping','ipqc_inspection_2nd_stamping')->nam
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/first_stamping_oqc_inspection','first_stamping_oqc_inspection')->name('first_stamping_oqc_inspection');
 Route::view('/second_stamping_oqc_inspection','second_stamping_oqc_inspection')->name('second_stamping_oqc_inspection');
-Route::view('/oqc_inspection_molding','oqc_inspection_molding')->name('oqc_inspection_molding');
+// Route::view('/oqc_inspection_molding','oqc_inspection_molding')->name('oqc_inspection_molding');
 
 /* PACKING  */
 Route::view('/packing_details','packing_details')->name('packing_details');
@@ -97,6 +98,7 @@ Route::view('/receiving','receiving')->name('receiving');
 /* MOLDING */
 Route::view('/second_molding','second_molding')->name('second_molding');
 Route::view('/first_molding','first_molding')->name('first_molding');
+Route::view('/first_molding_ipqc_inspection','first_molding_ipqc_inspection')->name('first_molding_ipqc_inspection');
 
 /* CN ASSEMBLY */
 Route::view('/cn_assembly','cn_assembly')->name('cn_assembly');
@@ -108,6 +110,10 @@ Route::view('/ppts_packing_and_shipping','ppts_packing_and_shipping')->name('ppt
 /* *PATS SHIPMENT CONFIRMATION */
 Route::view('/pats_shipment_con','pats_shipment_confirmation')->name('pats_shipment_con');
 
+/* TRACEABILITY REPORT */
+Route::view('/cn171_traceability_report','cn171_traceability_report')->name('cn171_traceability_report');
+
+//
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
@@ -314,7 +320,8 @@ Route::controller(PackingDetailsController::class)->group(function () {
     Route::get('/view_preliminary_packing_details', 'viewPrelimDetailsData')->name('view_preliminary_packing_details');
     Route::get('/get_oqc_details', 'getOqcDetailsForPacking')->name('get_oqc_details');
     Route::get('/view_final_packing_details_for_validation', 'viewFinalPackingDataForValidation')->name('view_final_packing_details_for_validation');
-    Route::post('/updated_validated_by', 'updatePrelimDetails')->name('updated_validated_by');
+    Route::post('/validate_prelim_details', 'updatePrelimDetails')->name('validate_prelim_details');
+    Route::post('/validate_final_packing_details', 'validateFinalPackingDetails')->name('validate_final_packing_details');
     Route::get('/generate_packing_qr', 'generatePackingDetailsQr')->name('generate_packing_qr');
     Route::get('/change_printing_status', 'changePrintingStatus')->name('change_printing_status');
     Route::post('/update_qc_details', 'updateQcDetails')->name('update_qc_details');
@@ -341,6 +348,7 @@ Route::controller(FirstMoldingController::class)->group(function () {
     Route::get('/get_molding_details', 'getMoldingDetails')->name('get_molding_details');
     Route::get('/first_molding_update_status', 'firstMoldingUpdateStatus')->name('first_molding_update_status');
     Route::get('/get_pmi_po_received_details', 'getPmiPoReceivedDetails')->name('get_pmi_po_received_details');
+    Route::get('/get_dieset_details_by_device_name', 'getDiesetDetailsByDeviceName')->name('get_dieset_details_by_device_name');
 
     Route::post('/save_first_molding', 'saveFirstMolding')->name('save_first_molding');
 });
@@ -353,6 +361,11 @@ Route::controller(FirstMoldingStationController::class)->group(function () {
     Route::post('/save_first_molding_station', 'saveFirstMoldingStation')->name('save_first_molding_station');
 });
 
+Route::controller(MoldingIpqcInspectionController::class)->group(function () {
+    Route::get('/view_first_molding_ipqc_Inspection', 'viewFirstMoldingIpqcInspection')->name('view_first_molding_ipqc_Inspection');
+    Route::get('/get_molding_device_name', 'getMoldingDeviceName')->name('get_molding_device_name');
+});
+
 /* Second Molding Controller */
 Route::controller(SecondMoldingController::class)->group(function () {
     Route::get('/get_po_received_by_po_number', 'getPOReceivedByPONumber')->name('get_po_received_by_po_number');
@@ -363,6 +376,7 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::get('/view_second_molding', 'viewSecondMolding')->name('view_second_molding');
     Route::get('/get_second_molding_by_id', 'getSecondMoldingById')->name('get_second_molding_by_id');
     Route::get('/get_material_process_station', 'getMaterialProcessStation')->name('get_material_process_station');
+    Route::get('/get_mode_of_defect_for_second_molding', 'getModeOfDefectForSecondMolding')->name('get_mode_of_defect_for_second_molding');
 });
 /* Second Molding Station Controller */
 Route::controller(SecondMoldingStationController::class)->group(function () {
@@ -380,6 +394,7 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::post('/add_assembly_runcard_station_data', 'add_assembly_runcard_station_data')->name('add_assembly_runcard_station_data');
     Route::get('/get_assembly_runcard_data', 'get_assembly_runcard_data')->name('get_assembly_runcard_data');
     Route::get('/get_data_from_matrix', 'get_data_from_matrix')->name('get_data_from_matrix');
+    Route::get('/chk_device_prod_lot_from_sec_molding', 'chk_device_prod_lot_from_sec_molding')->name('chk_device_prod_lot_from_sec_molding');
 });
 
 // MODE OF DEFECTS CONTROLLER
@@ -387,8 +402,7 @@ Route::controller(DefectsInfoController::class)->group(function () {
 
     Route::get('/view_defectsinfo', 'view_defectsinfo')->name('view_defectsinfo');
     Route::post('/add_defects', 'add_defects')->name('add_defects');
-    // Route::post('/update_status', 'update_status');
-    // Route::get('/get_process_by_id', 'get_process_by_id');
+    Route::get('/get_defects_by_id', 'get_defects_by_id')->name('get_defects_by_id');
 });
 
 
