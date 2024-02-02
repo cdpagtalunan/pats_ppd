@@ -34,14 +34,4 @@ class CommonController extends Controller
             return response()->json(['result' => 2]);
         }
     }
-
-    public function get_data_from_matrix(Request $request){
-        $material_name = [];
-        $matrix_data = Device::with(['material_process.material_details'])->where('name', $request->series_name)->where('status', 1)->get();
-        foreach($matrix_data[0]->material_process[0]->material_details as $material_details){
-            $material_name[] = $material_details->material_type;
-        }
-        $material_type = implode(',',$material_name);
-        return response()->json(['material_details' => $material_type]);
-    }
 }

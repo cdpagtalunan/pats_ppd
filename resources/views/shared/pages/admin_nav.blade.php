@@ -344,6 +344,12 @@
                         </a>
                         <ul class="nav nav-treeview">
                             <li class="nav-item">
+                                <a href="{{ route("pats_shipment_con") }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon ml-2"> </i>
+                                    <p>Shipment Confimation</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route("ppts_oqc_inspection") }}" class="nav-link">
                                     <i class="far fa-circle nav-icon ml-2"> </i>
                                     <p>OQC Inspection</p>

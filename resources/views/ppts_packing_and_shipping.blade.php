@@ -4,7 +4,7 @@
 @auth
   @extends($layout)
 
-@section('title', 'D Label Printing')
+@section('title', 'Packing and Shipping')
 
 @section('content_page')
 <!-- <link href="{{ URL::asset('public/template/plugins/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet" media="all"> -->
