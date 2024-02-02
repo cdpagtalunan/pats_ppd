@@ -51,12 +51,27 @@
 
                 let data = response['first_molding'][0];
 
+                dt.firstMoldingStation.draw();
                 formModal.firstMolding.find('#first_molding_id').val(data.id);
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
-                formModal.firstMolding.find('#remarks').val(data.remarks);
+                formModal.firstMolding.find('#machine_no').val(data.machine_no);
+                formModal.firstMolding.find('#target_shots').val(data.target_shots);
+                formModal.firstMolding.find('#adjustment_shots').val(data.adjustment_shots);
+                formModal.firstMolding.find('#qc_samples').val(data.qc_samples);
+                formModal.firstMolding.find('#pmi_po_no').val(data.pmi_po_no);
+                formModal.firstMolding.find('#po_no').val(data.po_no);
+                formModal.firstMolding.find('#prod_samples').val(data.prod_samples);
+                formModal.firstMolding.find('#ng_count').val(data.ng_count);
+                formModal.firstMolding.find('#item_code').val(data.item_code);
+                formModal.firstMolding.find('#total_machine_output').val(data.total_machine_output);
+                formModal.firstMolding.find('#item_name').val(data.item_name);
+                formModal.firstMolding.find('#shipment_output').val(data.shipment_output);
+                formModal.firstMolding.find('#po_qty').val(data.po_qty);
+                formModal.firstMolding.find('#material_yield').val(data.material_yield);
+                formModal.firstMolding.find('#required_output').val(data.required_output);
                 formModal.firstMolding.find('#created_at').val(data.created_at);
-                dt.firstMoldingStation.draw();
+                formModal.firstMolding.find('#remarks').val(data.remarks);
                 $('#modalFirstMolding').modal('show');
                 if(data.status === 1){
                     $('#btnFirstMoldingStation').prop('disabled',true);
@@ -130,8 +145,26 @@
             },error: function (data, xhr, status){
                 if(data.status === 422){
                     let errors = data.responseJSON.errors ;
+                    toastr.error(`Saving Failed, Please fill up all required fields`);
+                    errorHandler( errors.first_molding_device_id,formModal.firstMolding.find('#first_molding_device_id') );
                     errorHandler( errors.contact_lot_number,formModal.firstMolding.find('#contact_lot_number') );
                     errorHandler( errors.production_lot,formModal.firstMolding.find('#production_lot') );
+                    errorHandler( errors.production_lot_extension,formModal.firstMolding.find('#production_lot_extension') );
+                    errorHandler( errors.machine_no,formModal.firstMolding.find('#machine_no') );
+                    errorHandler( errors.target_shots,formModal.firstMolding.find('#target_shots') );
+                    errorHandler( errors.adjustment_shots,formModal.firstMolding.find('#adjustment_shots') );
+                    errorHandler( errors.qc_samples,formModal.firstMolding.find('#qc_samples') );
+                    errorHandler( errors.prod_samples,formModal.firstMolding.find('#prod_samples') );
+                    errorHandler( errors.pmi_po_no,formModal.firstMolding.find('#pmi_po_no') );
+                    errorHandler( errors.ng_count,formModal.firstMolding.find('#ng_count') );
+                    errorHandler( errors.item_code,formModal.firstMolding.find('#item_code') );
+                    errorHandler( errors.total_machine_output,formModal.firstMolding.find('#total_machine_output') );
+                    errorHandler( errors.item_name,formModal.firstMolding.find('#item_name') );
+                    errorHandler( errors.shipment_output,formModal.firstMolding.find('#shipment_output') );
+                    errorHandler( errors.shipment_output,formModal.firstMolding.find('#shipment_output') );
+                    errorHandler( errors.po_qty,formModal.firstMolding.find('#po_qty') );
+                    errorHandler( errors.material_yield,formModal.firstMolding.find('#material_yield') );
+                    errorHandler( errors.required_output,formModal.firstMolding.find('#required_output') );
                 }else{
                     toastr.error(`Error: ${data.status}`);
                 }
@@ -205,7 +238,7 @@
 
     const totalOutput = function (input_qty,ng_qty){
         let totalOutputQty = input_qty - ng_qty;
-        if(totalOutputQty < 0 ){
+        if(input_qty == "" || ng_qty == "" || totalOutputQty < 0 ){
             Swal.fire({
                 position: "center",
                 icon: "error",
@@ -216,9 +249,51 @@
             formModal.firstMoldingStation.find('#input').val('');
             formModal.firstMoldingStation.find('#output').val('');
             formModal.firstMoldingStation.find('#ng_qty').val('');
+            formModal.firstMoldingStation.find("#station_yield").val('');
             return;
         }
         formModal.firstMoldingStation.find('#output').val(totalOutputQty);
     }
 
+    const totalStationYield = function (station_input,station_output){
+        let stationYield = (station_output/station_input)*100;
+        if(station_input == "" || station_output == "" || station_output == 0 || station_input == 0){
+            formModal.firstMoldingStation.find("#station_yield").val('0%');
+            return;
+        }
+        formModal.firstMoldingStation.find("#station_yield").val(stationYield.toFixed(2)+'%');
+    }
+
+    const getPmiPoReceivedDetails = function (pmiPoNo){
+        $.ajax({
+            type: "GET",
+            url: "get_pmi_po_received_details",
+            data: {"pmi_po_no" : pmiPoNo},
+            dataType: "json",
+            success: function (response) {
+                if( response.result_count === 1 ){
+                    let poQty = parseFloat(response.order_qty);
+                    let productOfPoPercentage =  poQty * 5 * 0.05;
+                    let sumOfPoPercentagePoQty = poQty + productOfPoPercentage;
+
+                    formModal.firstMolding.find('#po_no').val(response.po_no);
+                    formModal.firstMolding.find('#po_qty').val(response.order_qty);
+                    formModal.firstMolding.find('#po_target').val(response.order_qty);
+                    formModal.firstMolding.find('#po_balance').val(response.po_balance);
+                    formModal.firstMolding.find('#item_code').val(response.item_code);
+                    formModal.firstMolding.find('#item_name').val(response.item_name);
+                    formModal.firstMolding.find('#required_output').val(sumOfPoPercentagePoQty);
+                }else{
+                    formModal.firstMolding.find('#po_no').val('');
+                    formModal.firstMolding.find('#po_qty').val('');
+                    formModal.firstMolding.find('#po_target').val('');
+                    formModal.firstMolding.find('#po_balance').val('');
+                    formModal.firstMolding.find('#po_balance').val('');
+                    formModal.firstMolding.find('#item_code').val('');
+                    formModal.firstMolding.find('#item_name').val('');
+
+                }
+            }
+        });
+    }
 // });

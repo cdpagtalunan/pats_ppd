@@ -141,34 +141,6 @@
 
                 getFirstModlingDevices();
 
-                const getPmiPoReceivedDetails = function (pmiPoNo){
-                    $.ajax({
-                        type: "GET",
-                        url: "get_pmi_po_received_details",
-                        data: {"pmi_po_no" : pmiPoNo},
-                        dataType: "json",
-                        success: function (response) {
-                            if( response.result_count === 1 ){
-                                formModal.firstMolding.find('#po_no').val(response.po_no);
-                                formModal.firstMolding.find('#po_qty').val(response.order_qty);
-                                formModal.firstMolding.find('#po_target').val(response.order_qty);
-                                formModal.firstMolding.find('#po_balance').val(response.po_balance);
-                                formModal.firstMolding.find('#item_code').val(response.item_code);
-                                formModal.firstMolding.find('#item_name').val(response.item_name);
-                            }else{
-                                formModal.firstMolding.find('#po_no').val('');
-                                formModal.firstMolding.find('#po_qty').val('');
-                                formModal.firstMolding.find('#po_balance').val('');
-                                formModal.firstMolding.find('#po_balance').val('');
-                                formModal.firstMolding.find('#item_code').val('');
-                                formModal.firstMolding.find('#item_name').val('');
-
-                            }
-                        }
-                    });
-                }
-
-
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
                     formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMolding.find('#contact_lot_number').val('');
@@ -213,6 +185,9 @@
                         }
                     });
                 });
+
+                formModal.firstMoldingStation.find('[type="number"]').val(0)
+                formModal.firstMolding.find('[type="number"]').val(0)
 
                 dt.firstMolding = table.FirstMoldingDetails.DataTable({
                     "processing" : true,
@@ -343,11 +318,8 @@
 
                 formModal.firstMolding.find('#pmi_po_no').on('keyup',function (e) {
                     e.preventDefault();
-                    // if(e.keyCode == 13){
                         getPmiPoReceivedDetails( $(this).val() );
-                    // }
                 });
-
 
                 $('#btnScanQrFirstMolding').click(function (e) {
                     $('#mdlScanQrCodeFirstMolding').modal('show');
@@ -368,13 +340,68 @@
                         $('#mdlScanQrCodeFirstMolding').modal('hide');
                     }
                 });
-
+                
                 formModal.firstMoldingStation.find('#input').keyup(function (e) {
                     totalOutput($(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
+                    totalStationYield($(this).val(),formModal.firstMoldingStation.find("#output").val());
+                    // station_yield
+
                 });
 
                 formModal.firstMoldingStation.find('#ng_qty').keyup(function (e) {
-                    totalOutput(formModal.firstMoldingStation.find("#input").val(),$(this).val());
+                    let ngCount = $(this).val();
+                    let totalShipmentOutput = formModal.firstMolding.find('#total_machine_output').val();
+                    totalOutput(formModal.firstMoldingStation.find("#input").val(),ngCount);
+                    totalStationYield(formModal.firstMoldingStation.find("#input").val(),formModal.firstMoldingStation.find("#output").val());
+                });
+
+                formModal.firstMolding.find('#ng_count').keyup(function (e) {
+                    let ngCount = $(this).val();
+                    let totalShipmentOutput = formModal.firstMolding.find('#total_machine_output').val();
+                    calculateTotalMaterialYield(totalShipmentOutput,ngCount);
+                });
+
+                formModal.firstMolding.find('.sumTotalShipmentOutput').keyup(function (e) {
+                    let arr = document.getElementsByClassName('sumTotalShipmentOutput');
+                    let inputTotalMachineOuput = formModal.firstMolding.find('#total_machine_output').val();
+
+                    total=0;
+                    for(let i=0;i<arr.length;i++){
+                        if(parseFloat(arr[i].value))
+                            total += parseFloat(arr[i].value);
+                    }
+                    let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
+
+                    if( inputTotalMachineOuput === '' | inputTotalMachineOuput < 0 ){
+                        formModal.firstMolding.find('#shipment_output').val(0);
+                        return;
+                    }
+                    formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
+                });
+
+                const calculateTotalMaterialYield = function (shipmentOutput,ngCount){
+                    let totalMaterialYield = ( parseFloat( shipmentOutput ) - parseFloat( ngCount ) ) / parseFloat( shipmentOutput )*100;
+                    if( shipmentOutput == "" || ngCount == "" || shipmentOutput == 0 || ngCount == 0 ){
+                        alert('dsad')
+                        formModal.firstMoldingStation.find("#material_yield").val('0%');
+                        return;
+                    }
+                    formModal.firstMolding.find('#material_yield').val(`${totalMaterialYield.toFixed(2)}%`);
+                }
+
+                formModal.firstMolding.find('#total_machine_output').keyup(function (e) {
+                    let inputTotalMachineOuput = formModal.firstMolding.find('#total_machine_output').val();
+                    let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
+                    let ngCount = formModal.firstMolding.find("#ng_count").val();
+
+
+                    if( inputTotalMachineOuput === '' | inputTotalMachineOuput < 0 ){
+                        formModal.firstMolding.find('#shipment_output').val(0);
+                        return;
+                    }
+
+                    formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
+                    calculateTotalMaterialYield(differenceOfTotalShipmentOutput,ngCount);
                 });
 
                 formModal.firstMolding.submit(function (e) {
@@ -386,8 +413,6 @@
                     e.preventDefault();
                     savefirstMoldingStation();
                 });
-
-
 
 
             });
