@@ -30,6 +30,7 @@ use App\Http\Controllers\SecondMoldingController;
 use App\Http\Controllers\SecondMoldingStationController;
 use App\Http\Controllers\AssemblyRuncardController;
 use App\Http\Controllers\DefectsInfoController;
+use App\Http\Controllers\ProductionHistoryController;
 
 
 /*
@@ -102,6 +103,10 @@ Route::view('/cn_assembly','cn_assembly')->name('cn_assembly');
 
 /* * PPTS VIEW */
 Route::view('/ppts_oqc_inspection','ppts_oqc_inspection')->name('ppts_oqc_inspection');
+Route::view('/ppts_packing_and_shipping','ppts_packing_and_shipping')->name('ppts_packing_and_shipping');
+
+/* *PATS SHIPMENT CONFIRMATION */
+Route::view('/pats_shipment_con','pats_shipment_confirmation')->name('pats_shipment_con');
 
 
 // USER CONTROLLER
@@ -133,7 +138,6 @@ Route::get('/get_user_levels',  [UserLevelController::class, 'get_user_levels'])
 Route::controller(CommonController::class)->group(function () {
     Route::get('/get_search_po', 'get_search_po')->name('get_search_po');
     Route::get('/validate_user', 'validate_user')->name('validate_user');
-    Route::get('/get_data_from_matrix', 'get_data_from_matrix')->name('get_data_from_matrix');
 });
 
 // DEVICE CONTROLLER
@@ -177,7 +181,7 @@ Route::controller(ProcessController::class)->group(function () {
 // FIRST STAMPING CONTROLLER
 Route::controller(StampingController::class)->group(function () {
     Route::post('/save_prod_data', 'save_prod_data')->name('save_prod_data');
-    Route::get('/view_first_stamp_prod', 'view_first_stamp_prod')->name('view_first_stamp_prod');
+    Route::get('/view_stamp_prod', 'view_stamp_prod')->name('view_stamp_prod');
     Route::get('/get_data_req_for_prod_by_po', 'get_data_req_for_prod_by_po')->name('get_data_req_for_prod_by_po');
     Route::get('/get_prod_data_view', 'get_prod_data_view')->name('get_prod_data_view');
     Route::get('/print_qr_code', 'print_qr_code')->name('print_qr_code');
@@ -292,6 +296,8 @@ Route::controller(PackingListDetailsController::class)->group(function () {
     Route::get('/get_ppc_clerk_details', 'getPpcClerk')->name('get_ppc_clerk_details');
     Route::get('/get_ppc_sr_planner', 'getPpcSrPlanner')->name('get_ppc_sr_planner');
     Route::get('/get_carbon_copy_user', 'carbonCopyUser')->name('get_carbon_copy_user');
+    Route::get('/get_packing_list_details_by_ctrl', 'getPackingListDetailsbyCtrl')->name('get_packing_list_details_by_ctrl');
+    Route::get('/get_packing_list_details', 'getPackingListDetails')->name('get_packing_list_details');
 });
 
 Route::controller(ReceivingDetailsController::class)->group(function () {
@@ -307,11 +313,12 @@ Route::controller(PackingDetailsController::class)->group(function () {
     Route::get('/view_final_packing_details_data', 'viewFinalPackingDetailsData')->name('view_final_packing_details_data');
     Route::get('/view_preliminary_packing_details', 'viewPrelimDetailsData')->name('view_preliminary_packing_details');
     Route::get('/get_oqc_details', 'getOqcDetailsForPacking')->name('get_oqc_details');
-    Route::post('/add_packing_details', 'addPackingDetails')->name('add_packing_details');
+    Route::get('/view_final_packing_details_for_validation', 'viewFinalPackingDataForValidation')->name('view_final_packing_details_for_validation');
     Route::post('/updated_validated_by', 'updatePrelimDetails')->name('updated_validated_by');
     Route::get('/generate_packing_qr', 'generatePackingDetailsQr')->name('generate_packing_qr');
     Route::get('/change_printing_status', 'changePrintingStatus')->name('change_printing_status');
     Route::post('/update_qc_details', 'updateQcDetails')->name('update_qc_details');
+    // viewFinalPackingData
 });
 
 Route::controller(PackingDetailsMoldingController::class)->group(function () {
@@ -355,6 +362,7 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::post('/save_second_molding', 'saveSecondMolding')->name('save_second_molding');
     Route::get('/view_second_molding', 'viewSecondMolding')->name('view_second_molding');
     Route::get('/get_second_molding_by_id', 'getSecondMoldingById')->name('get_second_molding_by_id');
+    Route::get('/get_material_process_station', 'getMaterialProcessStation')->name('get_material_process_station');
 });
 /* Second Molding Station Controller */
 Route::controller(SecondMoldingStationController::class)->group(function () {
@@ -365,9 +373,13 @@ Route::controller(SecondMoldingStationController::class)->group(function () {
 /* CN Assembly Controller */
 Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/get_data_from_2nd_molding', 'get_data_from_2nd_molding')->name('get_data_from_2nd_molding');
+    Route::get('/get_station_from_mat_process', 'get_station_from_mat_process')->name('get_station_from_mat_process');
     Route::get('/view_assembly_runcard', 'view_assembly_runcard')->name('view_assembly_runcard');
-    // Route::get('/view_assembly_runcard_stations', 'view_assembly_runcard_stations')->name('view_assembly_runcard_stations');
+    Route::get('/view_assembly_runcard_stations', 'view_assembly_runcard_stations')->name('view_assembly_runcard_stations');
     Route::post('/add_assembly_runcard_data', 'add_assembly_runcard_data')->name('add_assembly_runcard_data');
+    Route::post('/add_assembly_runcard_station_data', 'add_assembly_runcard_station_data')->name('add_assembly_runcard_station_data');
+    Route::get('/get_assembly_runcard_data', 'get_assembly_runcard_data')->name('get_assembly_runcard_data');
+    Route::get('/get_data_from_matrix', 'get_data_from_matrix')->name('get_data_from_matrix');
 });
 
 // MODE OF DEFECTS CONTROLLER
@@ -379,15 +391,22 @@ Route::controller(DefectsInfoController::class)->group(function () {
     // Route::get('/get_process_by_id', 'get_process_by_id');
 });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+
+Route::controller(ProductionHistoryController::class)->group(function () {
+
+    Route::post('/add_prodn_history', 'add_prodn_history')->name('add_prodn_history');
+    Route::get('/load_prodn_hitory_details', 'load_prodn_hitory_details')->name('load_prodn_hitory_details');
+});
 
 Route::view('/production_history','production_history')->name('production_history');
-=======
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
-/* Warehouse iframe */
+// <<<<<<< HEAD
+// <<<<<<< HEAD
+
+// =======
+// >>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
+// =======
+// /* Warehouse iframe */
 Route::view('/warehouse_resin','warehouse_resin')->name('warehouse_resin');
 Route::view('/production_history','production_history')->name('production_history');
 
->>>>>>> parent of e42c11b (Before merging main)
+// >>>>>>> parent of e42c11b (Before merging main)

@@ -205,10 +205,12 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
             $('#txtTtlMachOutput').val(response['total_mach_output'])
             $('#txtShipOutput').val(response['ship_output'])
 
-            // * GET VALUE OF YIELD FROM OQC INSPECTION
-            if(response['oqc_details'] != null){
-                $('#txtMatYield').val(response['oqc_details']['yield'])
-            }
+            $('#txtMatYield').val(response['mat_yield'])
+
+            // // * GET VALUE OF YIELD FROM OQC INSPECTION
+            // if(response['oqc_details'] != null){
+                // $('#txtMatYield').val(response['oqc_details']['yield'])
+            // }
 
             $('#txtProdLotView').val(response['prod_lot_no']);
             $('#txtNGCount').val(response['ng_count']);
