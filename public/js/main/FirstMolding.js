@@ -51,7 +51,6 @@
 
                 let data = response['first_molding'][0];
 
-                dt.firstMoldingStation.draw();
                 formModal.firstMolding.find('#first_molding_id').val(data.id);
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
@@ -85,13 +84,15 @@
                     $('#btnSubmitFirstMoldingStation').prop('disabled',false);
                     $('#btnRuncardDetails').removeClass('d-none',true);
                 }
+                dt.firstMoldingStation.draw();
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }
         });
     }
-
+    //first_molding_detail_mods
     const editFirstMoldingStation = function (){
+        $("#tableFirstMoldingStationMOD tbody").empty();
         let first_molding_station_id = $(this).attr('first-molding-station-id');
         // console.log(first_molding_station_id)
         // return;
@@ -102,8 +103,11 @@
             dataType: "json",
             success: function (response) {
 
-                let data = response['first_station_molding'][0];
-                console.log(data)
+                let data = response['first_molding_detail_mod'][0].belongs_to_first_molding_detail;
+                let first_molding_detail_mod = response['first_molding_detail_mod'];
+
+                // console.log(response)
+                // return;
                 formModal.firstMoldingStation.find('#first_molding_id').val(data.first_molding_id);
                 formModal.firstMoldingStation.find('#first_molding_detail_id').val(data.id);
                 formModal.firstMoldingStation.find('#date').val(data.date);
@@ -111,14 +115,72 @@
                 formModal.firstMoldingStation.find('#input').val(data.input);
                 formModal.firstMoldingStation.find('#ng_qty').val(data.ng_qty);
                 formModal.firstMoldingStation.find('#output').val(data.output);
+                formModal.firstMoldingStation.find('#station_yield').val(data.yield);
                 formModal.firstMoldingStation.find('#remarks').val(data.remarks);
 
                 setTimeout(() => {
                     formModal.firstMoldingStation.find('#station').val(data.station);
                 }, 300);
-
+                console.log(formModal.firstMolding.find("#first_molding_id").val());
                 $('#modalFirstMoldingStation').modal('show');
+
                 getStation();
+                for(let i = 0; i < first_molding_detail_mod.length; i++){
+                    // console.log(first_molding_detail_mod[i]);
+                    let defects = first_molding_detail_mod[i].defects_info.defects;
+                    let info_defects_id = first_molding_detail_mod[i].defects_info.id;
+                    let mod_quantity = first_molding_detail_mod[i].mod_quantity;
+                    let rowModeOfDefect = `
+                        <tr>
+                            <td>
+                                <select class="form-control select2 select2bs4 selectMOD" name="mod_id[]">
+                                    <option value="${info_defects_id}">${defects}</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${mod_quantity}" min="1">
+                            </td>
+                            <td>
+                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                            </td>
+                        </tr>
+                    `;
+                    $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
+                    getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'));
+                }
+
+                let totalNumberOfMOD = 0;
+                let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
+                $("#labelTotalNumberOfNG").empty();
+
+                $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                    if($(this).val() === null || $(this).val() === ""){
+                        $("#tableFirstMoldingStationMOD tbody").empty();
+                        $("#labelTotalNumberOfNG").text(parseInt(0));
+                    }
+                    totalNumberOfMOD += parseInt($(this).val());
+                });
+                getValidateTotalNgQty(ngQty,totalNumberOfMOD);
+
+                // // console.log('totalNumberOfMOD',totalNumberOfMOD);
+                // if(parseInt(ngQty) === totalNumberOfMOD){
+                //     $('#labelTotalNumberOfNG').css({color: 'green'})
+                //     $('#labelIsTally').css({color: 'green'})
+                //     $('#labelIsTally').addClass('fa-thumbs-up')
+                //     $('#labelIsTally').removeClass('fa-thumbs-down')
+                //     $('#labelIsTally').attr('title','')
+                //     $("#buttonFirstMoldingStation").prop('disabled', false);
+                //     $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', true);
+                // }else{
+                //     console.log('Mode of Defect & NG Qty not tally!');
+                //     $('#labelTotalNumberOfNG').css({color: 'red'})
+                //     $('#labelIsTally').css({color: 'red'})
+                //     $('#labelIsTally').addClass('fa-thumbs-down')
+                //     $('#labelIsTally').removeClass('fa-thumbs-up')
+                //     $('#labelIsTally').attr('title','Mode of Defect & NG Qty are not tally!')
+                //     $("#buttonFirstMoldingStation").prop('disabled', true);
+                //     $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', false);
+                // }
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }
@@ -309,5 +371,35 @@
                 }
             }
         });
+    }
+
+    const getValidateTotalNgQty = function (ngQty,totalNumberOfMOD){
+        // $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+        //     if($(this).val() === null || $(this).val() === ""){
+        //         $("#tableFirstMoldingStationMOD tbody").empty();
+        //         $("#labelTotalNumberOfNG").text(parseInt(0));
+        //     }
+        //     totalNumberOfMOD += parseInt($(this).val());
+        // });
+
+        if(parseInt(ngQty) === totalNumberOfMOD){
+            $('#labelTotalNumberOfNG').css({color: 'green'})
+            $('#labelIsTally').css({color: 'green'})
+            $('#labelIsTally').addClass('fa-thumbs-up')
+            $('#labelIsTally').removeClass('fa-thumbs-down')
+            $('#labelIsTally').attr('title','')
+            $("#buttonFirstMoldingStation").prop('disabled', false);
+            $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', true);
+        }else{
+            console.log('Mode of Defect & NG Qty not tally!');
+            $('#labelTotalNumberOfNG').css({color: 'red'})
+            $('#labelIsTally').css({color: 'red'})
+            $('#labelIsTally').addClass('fa-thumbs-down')
+            $('#labelIsTally').removeClass('fa-thumbs-up')
+            $('#labelIsTally').attr('title','Mode of Defect & NG Qty are not tally!')
+            $("#buttonFirstMoldingStation").prop('disabled', true);
+            $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', false);
+        }
+        $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
     }
 // });
