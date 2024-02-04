@@ -34,8 +34,8 @@ function AddUser(){
                 $("#selAddUserLevel").select2('val', '0');
                 $("#txtAddUserEmail").removeAttr('disabled');
                 $("#txtAddUserOQCStamp").prop('disabled', 'disabled');
-                $("#chkAddUserSendEmail").removeAttr('disabled');
-                $("#chkAddUserSendEmail").prop('checked', 'checked');
+                // $("#chkAddUserSendEmail").removeAttr('disabled');
+                // $("#chkAddUserSendEmail").prop('checked', 'checked');
                 $("#chkAddUserWithEmail").prop('checked', 'checked');
 
             	dataTableUsers.draw();

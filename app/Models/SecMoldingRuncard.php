@@ -4,12 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Device;
 
 class SecMoldingRuncard extends Model
 {
     use HasFactory;
 
-    public function cn_assembly_runcard(){
-    	return $this->hasOne(CnAssemblyRuncard::class,'sec_molding_runcard_id', 'id');
+    public function device_id(){
+    	return $this->hasOne(Device::class,'name', 'device_name');
     }
 }

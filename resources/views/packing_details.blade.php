@@ -156,12 +156,6 @@
 
 
                                         <div class="tab-pane fade show" id="finalPacking" role="tabpanel" aria-labelledby="finalPacking-tab"><br>
-                                            {{-- <div style="float: right;"> --}}
-                                                <button class="btn btn-primary" data-bs-toggle="modal"
-                                                    data-bs-target="#modalQCScanLotNumber" id="btnScanLotNumber"><i
-                                                        class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
-                                                </button><br><br>
-                                            {{-- </div> --}}
                                             <div class="table-responsive">
                                                 <table id="tblFinalPackingDetails" class="table table-sm table-bordered table-striped table-hover"
                                                 style="width: 100%;">
@@ -169,29 +163,18 @@
                                                         <tr>
                                                             <th>Action</th>
                                                             <th>Status</th>
-                                                            <th>Parts Name</th>
+                                                            <th>Packing List Ctrl #</th>
                                                             <th>PO #</th>
-                                                            <th>Quantity</th>
-                                                            <th>Drawing #</th>
+                                                            {{-- <th>Parts Name</th>
                                                             <th>Production Lot #</th>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                                                            <th>Delivery Balance</th>
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
-                                                            <th>Delivery Balance</th>
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
-                                                            {{-- <th>Delivery Balance</th> --}}
->>>>>>> parent of e42c11b (Before merging main)
-                                                            <th>No. of Cuts</th>
+                                                            <th>Quantity</th> --}}
+                                                            {{-- <th>Drawing #</th> --}}
+                                                            {{-- <th>No. of Cuts</th>
                                                             <th>Material Quality</th>
                                                             <th>Validated by</th>
                                                             <th>Validated date</th>
                                                             <th>Checked by</th>
-                                                            <th>Checked Date</th>
+                                                            <th>Checked Date</th> --}}
                                                         </tr>
                                                     </thead>
                                                     <tbody></tbody>
@@ -224,7 +207,7 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="modalEditPackingDetails" data-bs-backdrop="static">
+    {{-- <div class="modal fade" id="modalEditPackingDetails" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -275,28 +258,6 @@
                                 </div>
                             </div>
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-                            <div class="col-sm-6">
-=======
-                            {{-- <div class="col-sm-6">
->>>>>>> parent of e42c11b (Before merging main)
-                                <div class="form-group">
-                                    <label class="form-label">Delivery Balance</label>
-                                    <input type="text" class="form-control form-control-sm" name="delivery_balance" id="txtDeliveryBalance" autocomplete="off">
-                                </div>
-<<<<<<< HEAD
-                            </div>
-
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
-                            </div> --}}
-
->>>>>>> parent of e42c11b (Before merging main)
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">No. of Cuts</label>
@@ -325,7 +286,7 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal -->
+    <!-- /.modal --> --}}
 
      <!-- PRELIMINARY PACKING VALIDATION (PROD OPERATOR ID SCANNING MODAL) -->
     <div class="modal fade" id="modalScanOperatorId">
@@ -334,7 +295,7 @@
                 <form id="formScanOperatorId">
                     @csrf
                     <div class="modal-body">
-                        <input type="hidden" id="txtOqcDetailsId" name="oqc_details_id">
+                        <input type="hidden" id="txtPrelimDetailsId" name="oqc_details_id">
                         <input type="hidden" id="txtScanPONumber" name="po_no">
                         <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanProdOperatorId" name="scan_opeator_id" autocomplete="off">
                         <div class="text-center text-secondary"><span id="modalScanOperatorIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
@@ -348,66 +309,7 @@
     </div>
     <!-- /.modal -->
 
-       {{-- MODAL FOR PRINTING  --}}
-       <div class="modal fade" id="modalGeneratePackingDetailsQr">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"> Packing - QR Code</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <!-- PO 1 -->
-                        <div class="col-sm-12">
-                            <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
-                            <label id="img_barcode_PO_text"></label>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" id="btnGeneratePackingDetailsQr" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div>
 
-    <!-- MODALS -->
-    <div class="modal fade" id="modalScanQRtoReprint">
-        <div class="modal-dialog center">
-            <div class="modal-content modal-sm">
-                <div class="modal-body">
-                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserIdtoReprint" name="scan_id_to_reprint" autocomplete="off">
-                    <div class="text-center text-secondary"><span id="modalScanQRReprintText"></span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
-                </div>
-            </div>
-        <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-<!-- /.modal -->
-
-    <!-- MODALS -->
-    <div class="modal fade" id="modalQCScanLotNumber">
-        <div class="modal-dialog modal-dialog-center">
-            <div class="modal-content modal-sm">
-                <div class="modal-body">
-                    {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanLotNumber" name="scan_lot_number" autocomplete="off" value='{"po_no":"450244133600010","po_qty":"2400","mat_name":"CT 6009-VE","lot_no":"C240123-0101MZ-2","drawing_no":"B139312-001","del_bal":"2500","no_of_cuts":"1","mat_quality":"test"}'> --}}
-                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off">
-                    {{-- <input type="text" class="w-100 " id="txtQCScanLotNumber" name="scan_lot_number" autocomplete="off"> --}}
-                    <div class="text-center text-secondary"><span id="modalQCScanLotNumber">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
-                </div>
-            </div>
-        <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
-
-      <!-- MODALS -->
       <div class="modal fade" id="modalScanQCId">
         <div class="modal-dialog">
             <div class="modal-content modal-sm">
@@ -426,7 +328,6 @@
         </div>
             <!-- /.modal-dialog -->
     </div>
-    <!-- /.modal -->
 
         <!-- MODALS -->
         <div class="modal fade" id="modalPackingScanLotNumber">
@@ -443,14 +344,91 @@
         </div>
         <!-- /.modal -->
 
-          <!-- MODALS -->
-    <div class="modal fade" id="modalScanPackerIdToSave">
-        <div class="modal-dialog center">
+    <div class="modal fade" id="modalViewFinalPackingDetails" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="fa fa-plus"></i>Packing List Details</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtFinalPackingCtrlId" name="packing_details_ctrl_no">
+                        <div class="col-sm-12">
+                            <strong>Final Packing Details</strong>
+
+                            <button class="btn btn-primary" data-bs-toggle="modal" style="float: right;"
+                                data-bs-target="#modalValidateFinalPackingDetails" id="btnScanLotNumber"><i
+                                    class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
+                            </button>
+                        </div>
+                            <div class="table-responsive">
+                                <table id="tblViewFinalPackingDetails" class="table table-sm table-bordered table-striped table-hover"style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>Status</th>
+                                            <th>Material Name</th>
+                                            <th>Production Lot #</th>
+                                            <th>Qty</th>
+                                            <th>Drawing #</th>
+                                            <th>No. of Cuts</th>
+                                            <th>Material Quality</th>
+                                            <th>Validated by</th>
+                                            <th>Validated Date</th>
+                                            <th>Checked by</th>
+                                            <th>Checked date</th>
+                                        </tr>
+                                        <tbody></tbody>
+                                    </thead>
+                                </table>
+                            </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" disabled id="btnValidatePackingDetails" class="btn btn-primary"><i id="btnValidatePackingDetailsIcon"class="fa fa-check"></i> Save</button>
+                    </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    
+    <!-- MODALS -->
+    <div class="modal fade" id="modalValidateFinalPackingDetails">
+        <div class="modal-dialog modal-dialog-center">
             <div class="modal-content modal-sm">
                 <div class="modal-body">
-                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtPackerId" name="scan_packer_id" autocomplete="off">
-                    <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanLotNumber" name="scan_lot_number" autocomplete="off" value='{"po_no":"450244133600010","po_qty":"2400","mat_name":"CT 6009-VE","lot_no":"C240123-0101MZ-2","drawing_no":"B139312-001","del_bal":"2500","no_of_cuts":"1","mat_quality":"test"}'> --}}
+                    {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off"> --}}
+                    <input type="text" class="w-100 " id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off">
+                    <div class="text-center text-secondary"><span id="txtScanLotNumber">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                 </div>
+            </div>
+        <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+        <!-- MODALS -->
+        <div class="modal fade" id="modalScanPackerIdToSave">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <form id="formFinalPackingScanOperatorId">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="packing_details_id" id="txtPackingDetailsId">
+                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtPackerId" name="scan_packer_id" autocomplete="off"> --}}
+                        <input type="text" class="scanner w-100" id="txtPackerId" name="scan_packer_id" autocomplete="off">
+                        <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </form>
+
             </div>
         <!-- /.modal-content -->
         </div>
@@ -458,7 +436,47 @@
     </div>
     <!-- /.modal -->
 
-
+           {{-- MODAL FOR PRINTING  --}}
+           <div class="modal fade" id="modalGeneratePackingDetailsQr">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"> Packing - QR Code</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- PO 1 -->
+                            <div class="col-sm-12">
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <label id="img_barcode_PO_text"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="btnGeneratePackingDetailsQr" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+    
+        <!-- MODALS -->
+        <div class="modal fade" id="modalScanQRtoReprint">
+            <div class="modal-dialog center">
+                <div class="modal-content modal-sm">
+                    <div class="modal-body">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserIdtoReprint" name="scan_id_to_reprint" autocomplete="off">
+                        <div class="text-center text-secondary"><span id="modalScanQRReprintText"></span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+    <!-- /.modal -->
 
     @endsection
 
@@ -477,40 +495,10 @@
 
             $(document).ready(function(){
 
-                // SCAN PO
-
-                $('#modalScanPO').on('shown.bs.modal', function () {
-                    $('#txtScanPO').focus();
-                });
-
-                $('#txtScanPO').on('keyup', function(e){
-                        if(e.keyCode == 13){
-                            try{
-                                scannedPO = $('#txtScanPO').val();
-                                ParseScannedPo = JSON.parse(scannedPO);
-                                // console.log(ParseScannedPo);
-                                // alert('heey');
-                                $('#txtSearchPONum').val(ParseScannedPo['po']);
-                                $('#txtSearchMatName').val(ParseScannedPo['name']);
-                                $('#txtSearchPOQty').val(ParseScannedPo['qty']);
-
-                                $('#modalScanPO').modal('hide');
-                                dtFinalPackingDetails.draw();
-                                dtPrelimPackingDetails.draw();
-                            }
-                            catch (e){
-                                // alert('hehe');
-                                toastr.error('Invalid Sticker');
-                                console.log(e);
-                            }
-                                $(this).val('');
-                        }
-                });
-
                 dtPrelimPackingDetails = $("#tblPreliminaryPackingDetails").DataTable({
-                    "processing"    : false,
+                    "processing"    : true,
                     "serverSide"    : true,
-                    "destroy"       : true,
+                    "destroy"       : false,
                     "ajax" : {
                         url: "view_preliminary_packing_details",
                         data: function (param){
@@ -553,69 +541,63 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
-                        { "data" : "oqc_info.stamping_production_info.material_name"},
-                        { "data" : "po_no"},
-                        { "data" : "oqc_info.stamping_production_info.ship_output"},
-                        { "data" : "oqc_info.stamping_production_info.drawing_no"},
-                        { "data" : "oqc_info.stamping_production_info.prod_lot_no"},
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-                        { "data" : "final_packing_info.delivery_balance" },
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
-                        { "data" : "final_packing_info.delivery_balance" },
->>>>>>> parent of c94e5b5 (01/30/24 6:55pm Before merge)
-=======
-                        // { "data" : "final_packing_info.delivery_balance" },
->>>>>>> parent of e42c11b (Before merging main)
-                        { "data" : "final_packing_info.no_of_cuts"},
-                        { "data" : "final_packing_info.material_quality" },
-                        { "data" : "final_packing_info.user_validated_by_info.firstname" },
-                        { "data" : "final_packing_info.validated_date_packer" },
-                        { "data" : "final_packing_info.user_checked_by_info.firstname" },
-                        { "data" : "final_packing_info.validated_date_qc" },
+                        { "data" : "packing_ctrl_no" },
+                        { "data" : "po"},
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
                         {
-                            "targets": [1,7,8,9,10,11,12,13],
+                            "targets": [0],
                             "data": null,
                             "defaultContent": "---"
                         },
                     ],
                 });
 
+                // SCAN PO
 
-                $(document).on('click', '.btnEditPackingDetails', function(e){
-                    e.preventDefault();
-                    let oqcDetailsId =  $(this).attr('oqc-id');
+                $('#modalScanPO').on('shown.bs.modal', function () {
+                    $('#txtScanPO').focus();
+                });
 
-                    $('#txtPackingDetailsId').val(oqcDetailsId);
-                    console.log(oqcDetailsId);
+                $('#txtScanPO').on('keyup', function(e){
+                        if(e.keyCode == 13){
+                            try{
+                                scannedPO = $('#txtScanPO').val();
+                                ParseScannedPo = JSON.parse(scannedPO);
+                                // console.log(ParseScannedPo);
+                                // alert('heey');
+                                $('#txtSearchPONum').val(ParseScannedPo['po']);
+                                $('#txtSearchMatName').val(ParseScannedPo['name']);
+                                $('#txtSearchPOQty').val(ParseScannedPo['qty']);
 
-                    $('#modalEditPackingDetails').modal('show');
-
-                    getOqcDetailsbyId(oqcDetailsId);
-
+                                $('#modalScanPO').modal('hide');
+                                dtFinalPackingDetails.draw();
+                                dtPrelimPackingDetails.draw();
+                            }
+                            catch (e){
+                                // alert('hehe');
+                                toastr.error('Invalid Sticker');
+                                console.log(e);
+                            }
+                                $(this).val('');
+                        }
                 });
 
                 // PRELIMINARY PACKING VALIDATION
-
                 $(document).on('click', '.btnValidatePrelimPackingDetails', function(e){
                     e.preventDefault();
-                    let oqcDetailsId =  $(this).attr('data-id');
+                    let prelimDetailsId =  $(this).attr('data-id');
                     let poNumber =  $(this).attr('po-no');
-                    $('#txtOqcDetailsId').val(oqcDetailsId);
+                    $('#txtPrelimDetailsId').val(prelimDetailsId);
                     $('#txtScanPONumber').val(poNumber);
                     // alert(poNumber);
                     $('#modalScanOperatorId').modal('show');
                 });
 
-                // $('#modalScanOperatorId').on('shown.bs.modal', function () {
-                //     $('#txtScanProdOperatorId').focus();
-                // });
+                $('#modalScanOperatorId').on('shown.bs.modal', function () {
+                    $('#txtScanProdOperatorId').focus();
+                });
 
                 $('#formScanOperatorId').submit(function(e){
                     e.preventDefault();
@@ -624,15 +606,18 @@
                 $('#txtScanProdOperatorId').on('keyup', function(e){
                     e.preventDefault();
                     if(e.keyCode == 13){
-                        // scanEmpId = $('#txtScanProdOperatorId').val();
+                        let prelimScannedId =  $('#txtScanProdOperatorId').val();
+                        let idPrelimScanned = {
+                        'scan_packer_id' : prelimScannedId,
+                        }
                         validateUser($(this).val().toUpperCase(), [4,9], function(result){
                             if(result == true){
                                 // toastr.success('User is authorize!');
                                 e.preventDefault();
-                                let data1 = $('#formScanOperatorId').serialize();
+                                let data1 = $('#formScanOperatorId').serialize() + '&' + $.param(idPrelimScanned);
                                 $.ajax({
                                     type: "post",
-                                    url: "updated_validated_by",
+                                    url: "validate_prelim_details",
                                     data: data1,
                                     dataType: "json",
                                     success: function (response) {
@@ -645,6 +630,7 @@
                                             $("#formScanOperatorId")[0].reset();
                                             $('#modalScanOperatorId').modal('hide');
                                             dtPrelimPackingDetails.draw();
+                                            dtFinalPackingDetails.draw();
                                         }
                                     }
                                 });
@@ -653,13 +639,123 @@
                                 toastr.error('User not authorize!');
                             } 
                         });
+                        $(this).val('');
                     }
-                    // $(this).val('');
                 });
-                // FINAL PACKING, PACKER VALIDATION
-
-                $('#formEditPackingDetails').submit(function(e){
+                // FINAL PACKING VIEW PER PACKING LIST
+                let rowCount;
+                let dataStatus;
+                let finalPackingDetailsCtrlNo; 
+                $(document).on('click', '.btnViewFinalPackingDetails', function(e){
                     e.preventDefault();
+                    finalPackingDetailsCtrlNo =  $(this).attr('data-ctrl-no');
+                    dataStatus =  $(this).attr('data-status');
+
+                    if(dataStatus == 0 || dataStatus == 1){
+                        $('#btnScanLotNumber').removeAttr('disabled');
+                    }
+                    
+                    // console.log(finalPackingDetailsCtrlNo);
+                      
+                    $('#txtFinalPackingCtrlId').val(finalPackingDetailsCtrlNo);
+                    $('#modalViewFinalPackingDetails').modal('show');
+
+                    dtViewFinalPackingDetailsForValidation.draw();
+                    setTimeout(() => {
+                        rowCount = $('#tblViewFinalPackingDetails tbody tr').length;
+                        // rowCount = rowCount - 1;
+                        // console.log('rowCount', rowCount);
+                    }, 500);
+                    
+                });
+
+                let dtViewFinalPackingDetailsForValidation = $("#tblViewFinalPackingDetails").DataTable({
+                    rowId : 'id',
+                    "processing" : true,
+                    "serverSide" : true,
+                    "info"       : false,
+                    "ordering"   : false,
+                    "paging"     : false,
+                    "bFilter"     : false,
+                    "ajax" : {
+                        url: "view_final_packing_details_for_validation",
+                        data: function(param){
+                        param.final_packing_details_ctrl_no =  $("#txtFinalPackingCtrlId").val();
+                        }
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status"},
+                        { "data" : "material_name"},
+                        { "data" : "material_lot_no"},
+                        { "data" : "lot_qty"},
+                        { "data" : "drawing_no"},
+                        { "data" : "no_of_cuts"},
+                        { "data" : "material_quality"},
+                        { "data" : "user_validated_by_info.firstname"},
+                        { "data" : "validated_date_packer"},
+                        { "data" : "user_checked_by_info.firstname"},
+                        { "data" : "validated_date_qc"},
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": "_all"},
+                        {
+                            "targets": [5,6,7,8,9,10],
+                            "data": null,
+                            "defaultContent": "---"
+                        },
+                    ],
+                });
+
+                //PACKER  VALIDATION
+                $('#modalValidateFinalPackingDetails').on('shown.bs.modal', function () {
+                    $('#txtScanFinalPackingDetails').focus();
+                    // alert('here');
+                });
+
+                let idsOfFinalPackingDetails = [];
+                $('#txtScanFinalPackingDetails').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        try{
+                            // alert('haha');
+                            scannedItem = JSON.parse($(this).val());
+                            $('#tblViewFinalPackingDetails tbody tr').each(function(index, tr){
+                                
+                                let lot_no = $(tr).find('td:eq(3)').text().trim().toUpperCase();
+                                // let removeClassDNoneButton = $(this).find('td:nth-child(1)').children().children();
+                                console.log('scannedItem', scannedItem);
+                                
+                                if(scannedItem['production_lot_no'] === lot_no){
+                                    $(tr).addClass('checked-ok');
+                                    let id = $(this).attr('id');
+                                    if(!idsOfFinalPackingDetails.includes(id)){
+                                        idsOfFinalPackingDetails.push(id);
+                                    }
+                                    // console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
+                                    // removeClassDNoneButton.removeAttr('style')
+                                    $('#modalValidateFinalPackingDetails').modal('hide');
+                                }
+
+                                let scannedRow = dtViewFinalPackingDetailsForValidation.$('tr.checked-ok');
+                                // If some rows are selected
+                                if(scannedRow.length){
+                                    console.log('selectedCount', scannedRow.length);
+                                    if (scannedRow.length == rowCount) {
+                                        $('#btnValidatePackingDetails').removeAttr('disabled');
+                                    }
+                                // Otherwise, if no rows are selected
+                                }
+                            })
+                        }
+                        catch (e){
+                            toastr.error('Invalid Sticker');
+                        }
+                        $(this).val('');
+                    }
+                });
+
+                $('#btnValidatePackingDetails').on('click', function(e){
                     $('#modalScanPackerIdToSave').modal('show');
                 });
 
@@ -667,62 +763,52 @@
                     $('#txtPackerId').focus();
                 });
 
+                $('#formFinalPackingScanOperatorId').submit(function(e){
+                    e.preventDefault();
+                    console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
+                });
+                
+                let chrisPacker = [];
                 $(document).on('keypress', '#txtPackerId', function(e){
                     let toScanId =  $('#txtPackerId').val();
-                    let scanId = {
-                    'scan_packer_id' : toScanId
+                    let dataScanned = {
+                    'scan_packer_id' : toScanId,
+                    'scanned_packing_id' : idsOfFinalPackingDetails,
+                    'status_to_validate' : dataStatus,
+                    'packing_list_ctrl_no' : finalPackingDetailsCtrlNo
                     }
                     if(e.keyCode == 13){
-                        validateUser($(this).val().toUpperCase(), [4,9], function(result){
+                        if(dataStatus == 0 ){
+                            chrisPacker = [4,9];
+                        }else{
+                            chrisPacker = [2,5];
+                        }
+                        console.log('chrisPacker', chrisPacker);
+                        // return;
+                        validateUser($(this).val().toUpperCase(), chrisPacker, function(result){
                             if(result == true){
+                                // toastr.success('User is authorize!');
                                 e.preventDefault();
-                                    $.ajax({
-                                        type: "post",
-                                        url: "add_packing_details",
-                                        data: $('#formEditPackingDetails').serialize() + '&' + $.param(scanId),
-                                        dataType: "json",
-                                        success: function (response) {
-                                            if(response['validation'] == 1){
-                                                toastr.error('Saving data failed!');
-                                                if(response['error']['delivery_balance'] === undefined){
-                                                    $("#txtDeliveryBalance").removeClass('is-invalid');
-                                                    $("#txtDeliveryBalance").attr('title', '');
-                                                }
-                                                else{
-                                                    $("#txtDeliveryBalance").addClass('is-invalid');
-                                                    $("#txtDeliveryBalance").attr('title', response['error']['delivery_balance']);
-                                                }
-                                                if(response['error']['number_of_cuts'] === undefined){
-                                                    $("#txtNumberOfCuts").removeClass('is-invalid');
-                                                    $("#txtNumberOfCuts").attr('title', '');
-                                                }
-                                                else{
-                                                    $("#txtNumberOfCuts").addClass('is-invalid');
-                                                    $("#txtNumberOfCuts").attr('title', response['error']['number_of_cuts']);
-                                                }
-                                                if(response['error']['material_quality'] === undefined){
-                                                    $("#txtMaterialQuality").removeClass('is-invalid');
-                                                    $("#txtMaterialQuality").attr('title', '');
-                                                }
-                                                else{
-                                                    $("#txtMaterialQuality").addClass('is-invalid');
-                                                    $("#txtMaterialQuality").attr('title', response['error']['material_quality']);
-                                                }
-                                            }else if(response['result'] == 0){
-                                                $("#formEditPackingDetails")[0].reset();
-                                                toastr.success('Succesfully saved!');
-                                                $('#modalEditPackingDetails').modal('hide');
-                                                $('#modalScanPackerIdToSave').modal('hide');
-                                                dtFinalPackingDetails.draw();
-                                            }
-                                            $("#btnEditPackingDetailsIcon").removeClass('spinner-border spinner-border-sm');
-                                            $("#btnEditPackingDetails").removeClass('disabled');
-                                            $("#btnEditPackingDetailsIcon").addClass('fa fa-check');
-                                        },
-                                        error: function(data, xhr, status){
-                                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                                let data1 = $('#formFinalPackingScanOperatorId').serialize() + '&' + $.param(dataScanned);
+                                $.ajax({
+                                    type: "post",
+                                    url: "validate_final_packing_details",
+                                    data: data1,
+                                    dataType: "json",
+                                    success: function (response) {
+                                        // console.log('response ng kalawakan', response);
+                                        if(response['validation'] == 1){
+                                            toastr.error('Saving data failed!');
+
+                                        }else if(response['result'] == 0){
+                                            toastr.success('Validation Succesful!');
+                                            $("#formFinalPackingScanOperatorId")[0].reset();
+                                            $('#modalScanPackerIdToSave').modal('hide');
+                                            dtViewFinalPackingDetailsForValidation.draw();
+                                            dtFinalPackingDetails.draw();
                                         }
-                                    });
+                                    }
+                                });
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
@@ -732,11 +818,11 @@
                     }    
                 });
 
+
                 //printing of sticker
 
                 $(document).on('click', '.btnGeneratePackingQr', function(e){
                     e.preventDefault();
-                // $('#modalScanPackerIdToSave').modal('show');
                     printId = $(this).data('id');
                     let printCount = $(this).data('printcount');
                     console.log(`id`, printId);
@@ -848,7 +934,7 @@
                     if(e.keyCode == 13){
                         try{
                             scannedItem = JSON.parse($(this).val());
-                            console.log(scannedItem);
+                            console.log('scannedItem', scannedItem);
                             $('#tblPreliminaryPackingDetails tbody tr').each(function(index, tr){
                                 let lot_no = $(tr).find('td:eq(5)').text().trim().toUpperCase();
 
@@ -860,40 +946,6 @@
                                     $(tr).addClass('checked-ok');
                                     powerOff.removeAttr('style');
                                     $('#modalPackingScanLotNumber').modal('hide');
-                                }
-                                // console.log(lot_no);
-                            })
-                        }
-                        catch (e){
-                            toastr.error('Invalid Sticker');
-                            console.log(e);
-                        }
-                        $(this).val('');
-                    }
-                });
-
-                // QC VALIDATION
-
-                $('#modalQCScanLotNumber').on('shown.bs.modal', function () {
-                    $('#txtQCScanLotNumber').focus();
-                    // alert('here');
-                });
-
-                $('#txtQCScanLotNumber').on('keyup', function(e){
-                    if(e.keyCode == 13){
-                        try{
-                            // alert('haha');
-                            scannedItem = JSON.parse($(this).val());
-                            $('#tblFinalPackingDetails tbody tr').each(function(index, tr){
-                                console.log(scannedItem);
-                                let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
-                                let removeClassDNoneButton = $(this).find('td:nth-child(1)').children().children();
-                            
-                                if(scannedItem['lot_no'] === lot_no){
-                                    $(tr).addClass('checked-ok');
-                                    removeClassDNoneButton.removeAttr('style');
-
-                                    $('#modalQCScanLotNumber').modal('hide');
                                 }
                                 // console.log(lot_no);
                             })

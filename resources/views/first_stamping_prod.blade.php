@@ -804,7 +804,7 @@
 
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        let explodedMat = $(this).val().split(' $|| ');
+                        let explodedMat = $(this).val().split(' | ');
                         console.log(explodedMat);
                         if(explodedMat.length != 2){
                             toastr.error('Invalid Sticker');
@@ -951,7 +951,7 @@
                     else{
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
-                                $('#modalScanQRSave').modal('hide');tr
+                                $('#modalScanQRSave').modal('hide');
                                 printProdData(printId, printStampCat);
                             }
                             else{ // Error Handler

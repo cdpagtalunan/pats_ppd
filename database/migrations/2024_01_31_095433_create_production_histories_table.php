@@ -14,27 +14,30 @@ class CreateProductionHistoriesTable extends Migration
     public function up()
     {
         Schema::create('production_histories', function (Blueprint $table) {
-            $table->id();
-            $table->string('prodn_date')->nullable();
-            $table->string('machine_no')->nullable();
-            $table->string('standard_para_date')->nullable();
-            $table->string('standard_para_attachment')->nullable();
-            $table->string('opt_id')->nullable();
+            $table->bigIncrements('id');
+            $table->string('fkid_molding_devices');
+            $table->tinyInteger('status')->default(0)->comment = '0-For IPQC, 1-Done IPQC, 2-Completed';
+            $table->string('prodn_date');
+            $table->string('shift');
+            $table->string('machine_no');
+            $table->string('standard_para_date');
+            $table->string('standard_para_attach')->nullable();
+            $table->string('act_cycle_time');
+            $table->string('shot_weight');
+            $table->string('product_weight');
+            $table->string('screw_most_fwd');
+            $table->string('ccd_setting_s1');
+            $table->string('ccd_setting_s2');
+            $table->string('ccd_setting_ng');
+            $table->string('changes_para')->nullable();
+            $table->string('remarks');
+            $table->string('shots')->nullable();
             $table->string('prodn_stime')->nullable();
             $table->string('prodn_etime')->nullable();
-            $table->string('act_cycle_time')->nullable();
-            $table->string('shot_weight')->nullable();
-            $table->string('product_weight')->nullable();
-            $table->string('screw_most_fwd')->nullable();
-            $table->string('ccd_setting_s1')->nullable();
-            $table->string('ccd_setting_s2')->nullable();
-            $table->string('ccd_setting_ng')->nullable();
-            $table->string('changes_para')->nullable();
-            $table->string('remarks')->nullable();
-            $table->string('conducted_by')->nullable();
-            $table->string('conducted_date')->nullable();
-            $table->string('checked_by')->nullable();
-            $table->string('checked_date')->nullable();
+            $table->string('material_name');
+            $table->string('material_lot')->nullable();
+            $table->string('opt_id');
+            $table->string('qc_id')->nullable();
             $table->timestamps();
         });
     }

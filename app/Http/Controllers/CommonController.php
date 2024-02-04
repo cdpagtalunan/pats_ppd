@@ -34,4 +34,11 @@ class CommonController extends Controller
             return response()->json(['result' => 2]);
         }
     }
+
+    public function get_mode_of_defect_frm_defect_infos(Request $request){
+        $modeOfDefectResult = DB::connection('mysql')
+        ->select("SELECT defects_infos.* FROM defects_infos
+        ");
+        return response()->json(['data' => $modeOfDefectResult]);
+    }
 }

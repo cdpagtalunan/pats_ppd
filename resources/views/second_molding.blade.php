@@ -74,9 +74,9 @@
                         <!-- left column -->
                         <div class="col-12">
                             <!-- general form elements -->
-                            <div class="card card-dark">
+                            <div class="card card-default">
                                 <div class="card-header">
-                                    <h3 class="card-title">Production</h3>
+                                    <h3 class="card-title">Second Molding</h3>
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
@@ -152,6 +152,12 @@
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="textPMIPONumber" name="pmi_po_number" placeholder="Auto generated" readonly>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="textPONumber" name="po_number" placeholder="Auto generated" readonly>
@@ -161,6 +167,12 @@
                                             <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="textPoQuantity" name="po_quantity" placeholder="Auto generated" readonly>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="textRequiredOutput" name="required_output" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -213,7 +225,7 @@
                                             <input type="text" class="form-control form-control-sm" id="textLotNumberEight" name="lot_number_eight" readonly placeholder="CN171S-08#IN-VE - Lot #">
                                             <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" readonly placeholder="CN171S-08#IN-VE - Lot #">
                                             <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberEight" form-value="formMaterialLotNumberEight"><i class="fa fa-qrcode"></i></button>
+                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberEight" form-value="formProductionLotNumberEight"><i class="fa fa-qrcode"></i></button>
                                             </div>
                                         </div>
                                         <div class="input-group input-group-sm mb-3">
@@ -223,7 +235,7 @@
                                             <input type="text" class="form-control form-control-sm" id="textLotNumberNine" name="lot_number_nine" readonly placeholder="CN171S-08#IN-VE - Lot #">
                                             <input type="hidden" class="form-control form-control-sm" id="textLotNumberNineFirstMoldingId" name="lot_number_nine_first_molding_id" readonly placeholder="CN171S-09#IN-VE - Lot #">
                                             <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberNine" form-value="formMaterialLotNumberNine"><i class="fa fa-qrcode"></i></button>
+                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberNine" form-value="formProductionLotNumberNine"><i class="fa fa-qrcode"></i></button>
                                             </div>
                                         </div>
                                         <div class="input-group input-group-sm mb-3">
@@ -233,7 +245,7 @@
                                             <input type="text" class="form-control form-control-sm" id="textLotNumberTen" name="lot_number_ten" readonly placeholder="CN171S-08#IN-VE - Lot #">
                                             <input type="hidden" class="form-control form-control-sm" id="textLotNumberTenFirstMoldingId" name="lot_number_ten_first_molding_id" readonly placeholder="CN171S-10#IN-VE - Lot #">
                                             <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberTen" form-value="formMaterialLotNumberTen"><i class="fa fa-qrcode"></i></button>
+                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberTen" form-value="formProductionLotNumberTen"><i class="fa fa-qrcode"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -285,7 +297,6 @@
                                                 <i class="fa fa-plus" ></i> Add Station
                                             </button>
                                         </div>
-                                        
                                         <div class="table-responsive">
                                             <table class="table table-sm small table-bordered table-hover" id="tableStation" style="width: 100%;">
                                                 <thead>
@@ -351,13 +362,16 @@
                         @csrf
                         <div class="modal-body">
                             <input type="text" class="d-none" id="textSecondMoldingId" name="second_molding_id">
+                            <input type="text" class="d-none" id="textSecondMoldingStationId" name="second_molding_station_id">
                             <div class="row">
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Station</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textStation" name="station" placeholder="Station">
+                                        <select type="text" class="form-control form-control-sm" id="textStation" name="station" placeholder="Station">
+                                            {{-- <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option> --}}
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -382,7 +396,6 @@
                                         <select type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name" placeholder="Operator Name">
                                             <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option>
                                         </select>
-                                        {{-- <input type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name"> --}}
                                     </div>
                                 </div>
                             </div>
@@ -402,17 +415,6 @@
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">NG Qty</span>
-                                    </div>
-                                    <input type="number" class="form-control form-control-sm" id="textNGQuantity" name="ng_quantity" min="0" value="0">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">Output</span>
                                     </div>
                                     <input type="number" class="form-control form-control-sm" id="textOutputQuantity" name="output_quantity" min="0" value="0">
@@ -424,9 +426,43 @@
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">NG Qty</span>
+                                    </div>
+                                    <input type="number" class="form-control form-control-sm" id="textNGQuantity" name="ng_quantity" readonly min="0" value="0" oninput="this.value = Math.abs(this.value)">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
                                     </div>
-                                    <textarea type="text" class="form-control form-control-sm" rows="2" id="text_remarks" name="remarks"></textarea>
+                                    <textarea type="text" class="form-control form-control-sm" rows="2" id="textRemarks" name="remarks"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="table-responsive">
+                                        <div class="d-flex justify-content-between">
+                                            <label>Total No. of NG: <span id="labelTotalNumberOfNG" style="color: green;">0</span></label>
+                                            <button type="button" id="buttonAddModeOfDefect" disabled class="btn btn-sm btn-info" title="Add MOD"><i class="fa fa-plus"></i> Add MOD</button>
+                                        </div>
+                                        <br>
+                                        <table class="table table-sm" id="tableSecondMoldingStationMOD">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 55%;">Mode of Defect</th>
+                                                    <th style="width: 15%;">QTY</th>
+                                                    <th style="width: 10%;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
@@ -473,6 +509,7 @@
                         $('#buttonAddStation').prop('disabled', true);
                         $('#modalSecondMolding').modal('show');
                         dataTablesSecondMoldingStation.draw();
+                        getMaterialProcessStation();
                     }
                     else{
                         toastr.error('Please input PO.')
@@ -537,14 +574,14 @@
                             case 'formMaterialLotNumber':
                                 checkMaterialLotNumber(qrScannerValue);
                                 break;
-                            case 'formMaterialLotNumberEight':
-                                checkMaterialLotNumberOfFirstMolding(qrScannerValue, 'formMaterialLotNumberEight');
+                            case 'formProductionLotNumberEight':
+                                checkProductionLotNumberOfFirstMolding(qrScannerValue, 'formProductionLotNumberEight');
                                 break;
-                            case 'formMaterialLotNumberNine':
-                                checkMaterialLotNumberOfFirstMolding(qrScannerValue, 'formMaterialLotNumberNine');
+                            case 'formProductionLotNumberNine':
+                                checkProductionLotNumberOfFirstMolding(qrScannerValue, 'formProductionLotNumberNine');
                                 break;
-                            case 'formMaterialLotNumberTen':
-                                checkMaterialLotNumberOfFirstMolding(qrScannerValue, 'formMaterialLotNumberTen');
+                            case 'formProductionLotNumberTen':
+                                checkProductionLotNumberOfFirstMolding(qrScannerValue, 'formProductionLotNumberTen');
                                 break;
                             case 'formContactLotNumberOne':
                                 if(qrScannerValue != ''){
@@ -655,7 +692,6 @@
                                     dataTablesSecondMolding.draw();
                                     $('#buttonAddStation').prop('disabled', false); // remove disabled after save
                                     getSecondMoldingById(response['second_molding_id']);
-                                    // $('#modalSecondMolding').modal('hide');
                                 }else if(response['sessionError']){
                                     toastr.error('Session Expired. Please re-login again.');
                                 }else{
@@ -675,6 +711,13 @@
                                 }
                                 else{
                                     isResponseError('textPartsCode', true);
+                                }
+
+                                if(response['error']['pmi_po_number'] === undefined){
+                                    isResponseError('textPMIPONumber', false);
+                                }
+                                else{
+                                    isResponseError('textPONumber', true);
                                 }
 
                                 if(response['error']['po_number'] === undefined){
@@ -804,6 +847,7 @@
                                 // $('#textSecondMoldingId', $('#formAddStation')).val(responseData[0].id); // Id from sec_molding_runcards(table)
                                 $('#textDeviceName', $('#formSecondMolding')).val(responseData[0].device_name);
                                 $('#textPartsCode', $('#formSecondMolding')).val(responseData[0].parts_code);
+                                $('#textPMIPONumber', $('#formSecondMolding')).val(responseData[0].pmi_po_number);
                                 $('#textPONumber', $('#formSecondMolding')).val(responseData[0].po_number);
                                 $('#textPoQuantity', $('#formSecondMolding')).val(responseData[0].po_quantity);
                                 $('#textMachineNumber', $('#formSecondMolding')).val(responseData[0].machine_number);
@@ -842,11 +886,11 @@
                     console.log(`id ${id}`)
                     $('#buttonAddStation').prop('disabled', false); // remove disabled for edit
                     getSecondMoldingById(id);
-                    
+                    getMaterialProcessStation();
                 });
                 /**
                  * Edit of Second Molding to be use in Update
-                 * Start
+                 * End
                 */
 
                 /**
@@ -867,7 +911,7 @@
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "station" },
                         { "data" : "date" },
-                        { "data" : "operator_name" },
+                        { "data" : "operator_name",},
                         { "data" : "input_quantity" },
                         { "data" : "ng_quantity" },
                         { "data" : "output_quantity" },
@@ -912,7 +956,10 @@
                                     toastr.success('Successfully saved');
                                     dataTablesSecondMoldingStation.draw();
                                     $('#modalSecondMoldingStation').modal('hide');
-                                }else{
+                                }else if(response['sessionError']){
+                                    toastr.error('Session Expired. Please re-login again.');
+                                }
+                                else{
                                     toastr.error('Saving failed');
                                 }
                             }else{
@@ -930,6 +977,228 @@
                 resetFormValuesOnModalClose('modalSecondMoldingStation', 'formAddStation');
                 /**
                  * Form of Second Molding Station to be use in Insert
+                 * End
+                */
+
+                /**
+                 * Auto compute NG Quantity onkeyup
+                 * Start
+                */
+                $("#textOutputQuantity").keyup(function(){
+                    let inputQuantity = parseInt($("#textInputQuantity").val());
+                    let outputQuantity = parseInt($('#textOutputQuantity').val());
+                    let totalNGQuantity = Math.abs(inputQuantity - outputQuantity);
+                    if(isNaN(totalNGQuantity)){
+                        $("#textNGQuantity").val(inputQuantity);
+                    }else{
+                        $("#textNGQuantity").val(totalNGQuantity);
+                    }
+
+                    if(parseInt($("#textNGQuantity").val()) > 0){
+                        $("#buttonAddModeOfDefect").prop('disabled', false);
+                    }
+                    else{
+                        $("#buttonAddModeOfDefect").prop('disabled', true);
+                    }
+
+                    if(parseInt($('#textNGQuantity').val()) !== parseInt($('#labelTotalNumberOfNG').text())){
+                        $('#labelTotalNumberOfNG').css({color: 'red'})
+                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                    }else{
+                        $('#labelTotalNumberOfNG').css({color: 'green'})
+                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                    }
+                }); 
+                
+                $("#textInputQuantity").keyup(function(){
+                    let inputQuantity = parseInt($("#textInputQuantity").val());
+                    let outputQuantity = parseInt($('#textOutputQuantity').val());
+                    let totalNGQuantity = Math.abs(outputQuantity - inputQuantity);
+                    if(isNaN(totalNGQuantity)){
+                        $("#textNGQuantity").val(0);
+                    }else{
+                        $("#textNGQuantity").val(totalNGQuantity);
+                    }
+
+                    if(parseInt($("#textNGQuantity").val()) > 0){
+                        $("#buttonAddModeOfDefect").prop('disabled', false);
+                    }
+                    else{
+                        $("#buttonAddModeOfDefect").prop('disabled', true);
+                    }
+
+                    if(parseInt($('#textNGQuantity').val()) !== parseInt($('#labelTotalNumberOfNG').text())){
+                        $('#labelTotalNumberOfNG').css({color: 'red'})
+                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                    }else{
+                        $('#labelTotalNumberOfNG').css({color: 'green'})
+                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                    }
+                });
+                /**
+                 * Auto compute NG Quantity onkeyup
+                 * End
+                */
+
+                /**
+                 * Add Mode Of Defect
+                 * Start
+                */
+                $("#buttonAddModeOfDefect").click(function(){
+                    let rowModeOfDefect = `
+                        <tr>
+                            <td>
+                                <select class="form-control select2 select2bs5 selectMOD" name="mod_id[]">
+                                    <option value="0">N/A</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="1" min="1">
+                            </td>
+                            <td>
+                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                            </td>
+                        </tr>
+                    `;
+                    $("#tableSecondMoldingStationMOD tbody").append(rowModeOfDefect);
+                    $('.select2bs5').select2({
+                        theme: 'bootstrap-5'
+                    });
+                    getModeOfDefectForSecondMolding($("#tableSecondMoldingStationMOD tr:last").find('.selectMOD'));
+
+                    let totalNumberOfMOD = 0;
+                    $('#tableSecondMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() !== null || $(this).val() !== ""){
+                            totalNumberOfMOD += parseInt($(this).val());
+                        }
+                    });
+
+                    if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
+                        // toastr.warning('Mode of Defect NG Qty not tally!');
+                        $('#labelTotalNumberOfNG').css({color: 'red'})
+                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                        $("#buttonAddModeOfDefect").prop('disabled', false);
+                    }else{
+                        $('#labelTotalNumberOfNG').css({color: 'green'})
+                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                        $("#buttonAddModeOfDefect").prop('disabled', true);
+                    }
+                    $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
+                });
+
+                $("#tableSecondMoldingStationMOD").on('click', '.buttonRemoveMOD', function(){
+                    $(this).closest ('tr').remove();
+                    let totalNumberOfMOD = 0;
+
+                    $('#tableSecondMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() !== null || $(this).val() !== ""){
+                            totalNumberOfMOD += parseInt($(this).val());
+                        }
+                    });
+
+                    if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
+                        console.log('Mode of Defect NG Qty not tally!');
+                        $('#labelTotalNumberOfNG').css({color: 'red'})
+                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                        $("#buttonAddModeOfDefect").prop('disabled', false);
+                    }else{
+                        $('#labelTotalNumberOfNG').css({color: 'green'})
+                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                        $("#buttonAddModeOfDefect").prop('disabled', true);
+                    }
+                    $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
+                });
+                /**
+                 * Add Mode Of Defect
+                 * End
+                */
+
+                /**
+                 * Get Second Molding Data to be use in Edit
+                 * Start
+                */
+                function getSecondMoldingStationById(id){
+                    $.ajax({
+                        type: "get",
+                        url: "get_second_molding_station_by_id",
+                        data: {
+                            second_molding_station_id: id,
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            let responseData = response['data'];
+                            if(response['data'].length > 0){
+                                $('#textSecondMoldingStationId', $('#formAddStation')).val(responseData[0].id); // Id from sec_molding_runcards(table)
+                                $('#textSecondMoldingId', $('#formAddStation')).val(responseData[0].sec_molding_runcard_id); // Id from sec_molding_runcards(table)
+                                $('#textStation', $('#formAddStation')).val(responseData[0].station).trigger('change');
+                                $('#textDate', $('#formAddStation')).val(responseData[0].date);
+                                $('#textInputQuantity', $('#formAddStation')).val(responseData[0].input_quantity);
+                                $('#textNGQuantity', $('#formAddStation')).val(responseData[0].ng_quantity);
+                                $('#textOutputQuantity', $('#formAddStation')).val(responseData[0].output_quantity);
+                                $('#textRemarks', $('#formAddStation')).val(responseData[0].remarks);
+                                let rowModeOfDefect = '';
+                                for (let i = 0; i < response['data'].length; i++) {
+                                    rowModeOfDefect = `
+                                        <tr>
+                                            <td>
+                                                <select class="form-control select2 select2bs5 selectMOD" name="mod_id[]">
+                                                    <option value="0">N/A</option>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${response['data'][i]['mod_quantity']}" min="1">
+                                            </td>
+                                            <td>
+                                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                            </td>
+                                        </tr>
+                                    `;
+                                    $("#tableSecondMoldingStationMOD tbody").append(rowModeOfDefect);
+                                    $('.select2bs5').select2({
+                                        theme: 'bootstrap-5'
+                                    });
+                                    getModeOfDefectForSecondMoldingEdit($("#tableSecondMoldingStationMOD tr:last").find('.selectMOD'), response['data'][i]['mod_id']);
+
+                                    let totalNumberOfMOD = 0;
+                                    $('#tableSecondMoldingStationMOD .textMODQuantity').each(function() {
+                                        if($(this).val() !== null || $(this).val() !== ""){
+                                            totalNumberOfMOD += parseInt($(this).val());
+                                        }
+                                    });
+
+                                    if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
+                                        // toastr.warning('Mode of Defect NG Qty not tally!');
+                                        $('#labelTotalNumberOfNG').css({color: 'red'})
+                                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                                        $("#buttonAddModeOfDefect").prop('disabled', false);
+                                    }else{
+                                        $('#labelTotalNumberOfNG').css({color: 'green'})
+                                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                                        $("#buttonAddModeOfDefect").prop('disabled', true);
+                                    }
+                                    $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
+                                }
+                            }
+                        }
+                    });
+                }
+                /**
+                 * Get Second Molding Data to be use in Edit
+                 * End
+                */
+                
+                /**
+                 * Edit of Second Molding Station to be use in Update
+                 * Start
+                */
+                let secondMoldingStationId;
+                $("#tableStation").on('click', '.actionEditSecondMoldingStation', function(){
+                    secondMoldingStationId = $(this).attr('second-molding-station-id');
+                    getMaterialProcessStation();
+                    getSecondMoldingStationById(secondMoldingStationId);
+                });
+                /**
+                 * Edit of Second Molding Station to be use in Update
                  * End
                 */
             });

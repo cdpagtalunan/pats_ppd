@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\DB;
 use DataTables;
 use App\Models\FirstMoldingDetail;
 use App\Models\Station;
+use App\Models\FirstMoldingDetailMod;
 use App\Models\User;
 use App\Http\Requests\FirstMoldingStationRequest;
 
 class FirstMoldingStationController extends Controller
 {
-    public function loadFirstMoldingStationDetails(Request $request){
-        // return 'true';
+    public function loadFirstMoldingStationDetails(Request $request)
+    {
         $first_molding_id= isset($request->first_molding_id) ? $request->first_molding_id : 0;
         $first_molding_station_details = FirstMoldingDetail::where('first_molding_id',$first_molding_id)->get();
         return DataTables::of($first_molding_station_details)
@@ -67,9 +68,10 @@ class FirstMoldingStationController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         try{
+
             if( isset($request->first_molding_detail_id) ){
                 // return 'edit';
-                FirstMoldingDetail::where('id',$request->first_molding_detail_id)
+                $first_molding_detail_id = FirstMoldingDetail::where('id',$request->first_molding_detail_id)
                 ->update([
                     'first_molding_id' => $request->first_molding_id,
                     'station' => $request->station,
@@ -78,12 +80,14 @@ class FirstMoldingStationController extends Controller
                     'input' => $request->input,
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
+                    'yield' => $request->station_yield,
                     'remarks' => $request->remarks,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
+                $first_molding_detail_id = $request->first_molding_detail_id;
             }else{
                 // return 'add';
-                FirstMoldingDetail::insert([
+                $get_first_molding_detail_id = FirstMoldingDetail::insertGetId([
                     'first_molding_id' => $request->first_molding_id,
                     'station' => $request->station,
                     'date' => $request->date,
@@ -91,9 +95,37 @@ class FirstMoldingStationController extends Controller
                     'input' => $request->input,
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
+                    'yield' => $request->station_yield,
                     'remarks' => $request->remarks,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
+                $first_molding_detail_id = $get_first_molding_detail_id;
+            }
+            /*
+                TODO: Save Auto Prod Lot
+                TODO: Multiple Resin Lot Number Virgin at Recycle
+                TODO: Show Variance
+            */
+            if(isset($request->mod_id)){
+                FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+
+                foreach ( $request->mod_id as $key => $value_mod_id) {
+                    FirstMoldingDetailMod::insert([
+                        'first_molding_detail_id'   => $first_molding_detail_id,
+                        'defects_info_id'           => $request->mod_id[$key],
+                        'mod_quantity'              => $request->mod_quantity[$key],
+                        // 'last_updated_by'           => $request->mod_quantity[$key],
+                        'created_at'                => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }else{
+                if(FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->exists()){
+                    FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
+                        'deleted_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
             }
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
@@ -103,8 +135,10 @@ class FirstMoldingStationController extends Controller
 
     public function getFirstMoldingStationDetails(Request $request)
     {
-        $first_station_molding = FirstMoldingDetail::where('id',$request->first_molding_station_id)->get();
-        return response()->json( [ 'first_station_molding' => $first_station_molding ] );
+        $first_molding_detail_mod = FirstMoldingDetailMod::where('first_molding_detail_id',$request->first_molding_station_id)->whereNull('deleted_at')
+        ->with('belongsToFirstMoldingDetail','defectsInfo')->get();
+
+        return response()->json( [ 'first_molding_detail_mod' => $first_molding_detail_mod ] );
     }
 
 

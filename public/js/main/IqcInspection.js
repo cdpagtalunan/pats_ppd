@@ -1,4 +1,6 @@
 
+// $(document).ready(function () {
+    
     const tbl = {
         iqcInspection:'#tblIqcInspection',
         iqcWhsDetails :'#tblWhsDetails',
@@ -86,8 +88,8 @@
             { "data" : "status", orderable:false, searchable:false },
             { "data" : "date_inspected" },
             { "data" : "time_inspected" }, //
-            { "data" : "supplier" },
             { "data" : "app_ctrl_no" }, //
+            { "data": "supplier" },
             // { "data" : "classification" },//
             // { "data" : "family" },//
             // { "data" : "category" },//
@@ -540,3 +542,5 @@
             }
         });
     }
+
+// }) //end Doc Ready

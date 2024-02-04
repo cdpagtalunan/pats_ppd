@@ -72,6 +72,7 @@
                           <th>Employee ID</th>
                           <th>OQC Stamp</th>
                           <th>Position</th>
+                          <th>Section</th>
                           <th>User Level</th>
                           <th>Status</th>
                           <th>Action</th>
@@ -491,10 +492,10 @@
                         <input type="checkbox" name="with_email" id="chkAddUserWithEmail" checked="checked">
                         <label>Email</label>
                       </div>
-                      <div class="col-sm-6">
+                      {{-- <div class="col-sm-6">
                         <input type="checkbox" name="send_email" id="chkAddUserSendEmail" checked="checked">
                         <label>Send Password to Email</label>
-                      </div>
+                      </div> --}}
                     </div>
 
 
@@ -528,6 +529,16 @@
                       <option value="13">OQC Inspector</option> --}}
                     </select>
                 </div>
+
+                <div class="form-group">
+                  <label>Section</label>
+                    <select class="form-control select2bs4" name="section" style="width: 100%;" id="selAddUserSection">
+                      <option selected value="" disabled>N/A</option>
+                      <option value="0">Stamping</option>
+                      <option value="1">Molding</option>
+                    </select>
+                </div>
+                
 
 
                 <div class="form-group">
@@ -673,6 +684,23 @@
                   },
                 },
             },
+            { "data": 'section',
+                defaultContent: 'N/A',
+                name: 'section',
+                orderable: true,
+                searchable: true,
+                render: {
+                  display: function (data, type, row) {
+                    if (row.section == 0) {
+                      return "Stamping";
+                    }
+                    else if (row.section == 1) {
+                      return "Molding";
+                    }
+
+                  },
+                },
+            },
             { "data" : "user_level.name" },
             { "data" : "label1" },
             { "data" : "action1", orderable:false, searchable:false }
@@ -778,8 +806,8 @@
           $("#txtAddUserName").focus();
           $("#selAddUserLevel").select2('val', '0');
           $("#txtAddUserEmail").removeAttr('disabled');
-          $("#chkAddUserSendEmail").removeAttr('disabled');
-          $("#chkAddUserSendEmail").prop('checked', 'checked');
+          // $("#chkAddUserSendEmail").removeAttr('disabled');
+          // $("#chkAddUserSendEmail").prop('checked', 'checked');
           $("#chkAddUserWithEmail").prop('checked', 'checked');
           GetUserLevel($(".selectUserLevel"));
         });
@@ -787,14 +815,14 @@
         $("#chkAddUserWithEmail").click(function(){
           if($(this).prop('checked')) {
             $("#txtAddUserEmail").removeAttr('disabled');
-            $("#chkAddUserSendEmail").removeAttr('disabled');
-            $("#chkAddUserSendEmail").prop('checked', 'checked');
+            // $("#chkAddUserSendEmail").removeAttr('disabled');
+            // $("#chkAddUserSendEmail").prop('checked', 'checked');
           }
           else{
             $("#txtAddUserEmail").prop('disabled', 'disabled');
             $("#txtAddUserEmail").val('');
-            $("#chkAddUserSendEmail").prop('disabled', 'disabled');
-            $("#chkAddUserSendEmail").removeAttr('checked');
+            // $("#chkAddUserSendEmail").prop('disabled', 'disabled');
+            // $("#chkAddUserSendEmail").removeAttr('checked');
           }
         });
 

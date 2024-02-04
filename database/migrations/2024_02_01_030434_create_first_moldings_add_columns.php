@@ -16,7 +16,10 @@ class CreateFirstMoldingsAddColumns extends Migration
         Schema::table('first_moldings', function (Blueprint $table) {
             $table->string('production_lot_extension')->nullable()->after('production_lot');
             $table->string('machine_no')->after('status');
-            $table->float('target_shots')->nullable()->default(0)->after('machine_no');
+            $table->float('dieset_no')->nullable()->default(0)->after('machine_no');
+            $table->string('drawing_no')->nullable()->after('dieset_no');
+            $table->string('revision_no')->nullable()->after('drawing_no');
+            $table->float('target_shots')->nullable()->default(0)->after('revision_no');
             $table->float('adjustment_shots')->nullable()->default(0)->after('target_shots');
             $table->string('pmi_po_no')->nullable()->after('adjustment_shots');
             $table->string('po_no')->nullable()->after('pmi_po_no');

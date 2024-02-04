@@ -30,10 +30,10 @@ class SecondMoldingController extends Controller
     }
 
     public function checkMaterialLotNumberOfFirstMolding(Request $request){
-        return DB::select("SELECT a.contact_lot_number, a.first_molding_device_id FROM first_moldings AS a
+        return DB::select("SELECT a.production_lot, a.first_molding_device_id FROM first_moldings AS a
                 INNER JOIN first_molding_devices AS b
                     ON b.id = a.first_molding_device_id
-                WHERE contact_lot_number = '$request->material_lot_number'
+                WHERE production_lot = '$request->production_lot_number'
                 LIMIT 1
         ");
     }
@@ -88,7 +88,9 @@ class SecondMoldingController extends Controller
             $rules = [
                 'device_name' => 'required',
                 'parts_code' => 'required',
+                'pmi_po_number' => 'required',
                 'po_number' => 'required',
+                'required_output' => '',
                 'po_quantity' => 'required',
                 'machine_number' => '',
                 'material_lot_number' => 'required',
@@ -134,6 +136,8 @@ class SecondMoldingController extends Controller
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
                         'po_number' => $request->po_number,
+                        'pmi_po_number' => $request->pmi_po_number,
+                        'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
                         'machine_number' => $request->machine_number,
                         'material_lot_number' => $request->material_lot_number,
@@ -170,7 +174,9 @@ class SecondMoldingController extends Controller
                 'second_molding_id' => 'required',
                 'device_name' => 'required',
                 'parts_code' => 'required',
+                'pmi_po_number' => 'required',
                 'po_number' => 'required',
+                'required_output' => '',
                 'po_quantity' => 'required',
                 'machine_number' => '',
                 'material_lot_number' => 'required',
@@ -214,7 +220,9 @@ class SecondMoldingController extends Controller
                     SecMoldingRuncard::where('id', $request->second_molding_id)->update([
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
+                        'pmi_po_number' => $request->pmi_po_number,
                         'po_number' => $request->po_number,
+                        'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
                         'machine_number' => $request->machine_number,
                         'material_lot_number' => $request->material_lot_number,
@@ -237,7 +245,7 @@ class SecondMoldingController extends Controller
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
                     DB::commit();
-                    return response()->json(['hasError' => false]);
+                    return response()->json(['hasError' => false, 'second_molding_id' => $request->second_molding_id]);
                 } catch (\Exception $e) {
                     DB::rollback();
                     return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage(), 'sessionError' => true]);
@@ -255,5 +263,24 @@ class SecondMoldingController extends Controller
         return response()->json(['data' => $secondMoldingResult]);
     }
 
+    public function getMaterialProcessStation(Request $request){
+        $materialProcessStationResult = DB::connection('mysql')
+        ->select("SELECT material_processes.*, devices.*, material_process_stations.*, stations.id AS station_id, stations.station_name AS station_name FROM material_processes
+                    INNER JOIN devices
+                        ON devices.id = material_processes.device_id
+                    INNER JOIN material_process_stations
+                        ON material_process_stations.mat_proc_id = material_processes.id
+                    INNER JOIN stations
+                        ON stations.id = material_process_stations.station_id
+                    WHERE devices.name = '$request->device_name'
+        ");
+        return response()->json(['data' => $materialProcessStationResult]);
+    }
     
+    public function getModeOfDefectForSecondMolding(Request $request){
+        $modeOfDefectResult = DB::connection('mysql')
+        ->select("SELECT defects_infos.* FROM defects_infos
+        ");
+        return response()->json(['data' => $modeOfDefectResult]);
+    }
 }

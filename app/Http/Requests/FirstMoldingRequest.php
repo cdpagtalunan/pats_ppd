@@ -32,6 +32,7 @@ class FirstMoldingRequest extends FormRequest
             'revision_no'=>'required',
             'drawing_no'=>'required',
             'machine_no'=>'required',
+            'dieset_no'=>'required',
             'target_shots'=>'required',
             'adjustment_shots'=>'required',
             'qc_samples'=>'required',

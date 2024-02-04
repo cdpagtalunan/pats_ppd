@@ -32,6 +32,7 @@ use App\Http\Controllers\AssemblyRuncardController;
 use App\Http\Controllers\DefectsInfoController;
 use App\Http\Controllers\ProductionHistoryController;
 use App\Http\Controllers\MoldingIpqcInspectionController;
+use App\Http\Controllers\ExportTraceabilityReportController;
 
 
 /*
@@ -126,6 +127,7 @@ Route::controller(UserController::class)->group(function () {
     Route::get('/view_users', 'view_users');
     Route::post('/add_user', 'add_user');
     Route::get('/get_user_by_id', 'get_user_by_id');
+    Route::get('/get_user_by_en', 'get_user_by_en');
     Route::get('/get_user_list', 'get_user_list');
     Route::get('/get_user_by_batch', 'get_user_by_batch');
     Route::get('/get_user_by_stat', 'get_user_by_stat');
@@ -144,6 +146,7 @@ Route::get('/get_user_levels',  [UserLevelController::class, 'get_user_levels'])
 Route::controller(CommonController::class)->group(function () {
     Route::get('/get_search_po', 'get_search_po')->name('get_search_po');
     Route::get('/validate_user', 'validate_user')->name('validate_user');
+    Route::get('/get_mode_of_defect_frm_defect_infos', 'get_mode_of_defect_frm_defect_infos')->name('get_mode_of_defect_frm_defect_infos');
 });
 
 // DEVICE CONTROLLER
@@ -200,6 +203,8 @@ Route::controller(StampingController::class)->group(function () {
 
     // SECON STAMPING
     Route::get('/get_2_stamp_reqs', 'get_2_stamp_reqs')->name('get_2_stamp_reqs');
+    Route::post('/save_sublot', 'save_sublot')->name('save_sublot');
+    Route::get('/get_sublot_by_id', 'get_sublot_by_id')->name('get_sublot_by_id');
 
 });
 
@@ -307,8 +312,9 @@ Route::controller(PackingListDetailsController::class)->group(function () {
 });
 
 Route::controller(ReceivingDetailsController::class)->group(function () {
+    Route::get('/view_receiving_details_by_ctrl', 'viewReceivingListDetailsByCtrl')->name('view_receiving_details_by_ctrl');
     Route::get('/view_receiving_details', 'viewReceivingListDetails')->name('view_receiving_details');
-    Route::get('/view_receiving_details_accepted', 'viewReceivingListDetailsAccepted')->name('view_receiving_details_accepted'); // by nessa
+    // Route::get('/view_receiving_details_accepted', 'viewReceivingListDetailsAccepted')->name('view_receiving_details_accepted'); // by nessa
     Route::get('/get_receiving_details', 'getReceivingListdetails')->name('get_receiving_details');
     Route::post('/update_receiving_details', 'updateReceivingDetails')->name('update_receiving_details');
     Route::get('/print_receiving_qr_code', 'printReceivingQrCode')->name('print_receiving_qr_code');
@@ -321,10 +327,10 @@ Route::controller(PackingDetailsController::class)->group(function () {
     Route::get('/get_oqc_details', 'getOqcDetailsForPacking')->name('get_oqc_details');
     Route::get('/view_final_packing_details_for_validation', 'viewFinalPackingDataForValidation')->name('view_final_packing_details_for_validation');
     Route::post('/validate_prelim_details', 'updatePrelimDetails')->name('validate_prelim_details');
-    Route::post('/validate_final_packing_details', 'validateFinalPackingDetails')->name('validate_final_packing_details');
     Route::get('/generate_packing_qr', 'generatePackingDetailsQr')->name('generate_packing_qr');
     Route::get('/change_printing_status', 'changePrintingStatus')->name('change_printing_status');
     Route::post('/update_qc_details', 'updateQcDetails')->name('update_qc_details');
+    Route::post('/validate_final_packing_details', 'validateFinalPackingDetails')->name('validate_final_packing_details');
     // viewFinalPackingData
 });
 
@@ -363,7 +369,10 @@ Route::controller(FirstMoldingStationController::class)->group(function () {
 
 Route::controller(MoldingIpqcInspectionController::class)->group(function () {
     Route::get('/view_first_molding_ipqc_Inspection', 'viewFirstMoldingIpqcInspection')->name('view_first_molding_ipqc_Inspection');
-    Route::get('/get_molding_device_name', 'getMoldingDeviceName')->name('get_molding_device_name');
+    Route::get('/get_molding_pmi_po', 'getMoldingPmiPo')->name('get_molding_pmi_po');
+    Route::get('/get_molding_ipqc_inspection_by_id', 'getMoldingIpqcInspectionById')->name('get_molding_ipqc_inspection_by_id');
+    Route::get('/scan_user_id', 'scanUserId')->name('scan_user_id');
+    Route::post('/update_molding_ipqc_inspection', 'updateMoldingIpqcInspection')->name('update_molding_ipqc_inspection');
 });
 
 /* Second Molding Controller */
@@ -382,6 +391,7 @@ Route::controller(SecondMoldingController::class)->group(function () {
 Route::controller(SecondMoldingStationController::class)->group(function () {
     Route::get('/view_second_molding_station', 'viewSecondMoldingStation')->name('view_second_molding_station');
     Route::post('/save_second_molding_station', 'saveSecondMoldingStation')->name('save_second_molding_station');
+    Route::get('/get_second_molding_station_by_id', 'getSecondMoldingStationById')->name('get_second_molding_station_by_id');
 });
 
 /* CN Assembly Controller */
@@ -394,6 +404,7 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::post('/add_assembly_runcard_station_data', 'add_assembly_runcard_station_data')->name('add_assembly_runcard_station_data');
     Route::get('/get_assembly_runcard_data', 'get_assembly_runcard_data')->name('get_assembly_runcard_data');
     Route::get('/get_data_from_matrix', 'get_data_from_matrix')->name('get_data_from_matrix');
+    Route::get('/chk_device_prod_lot_from_first_molding', 'chk_device_prod_lot_from_first_molding')->name('chk_device_prod_lot_from_first_molding');
     Route::get('/chk_device_prod_lot_from_sec_molding', 'chk_device_prod_lot_from_sec_molding')->name('chk_device_prod_lot_from_sec_molding');
 });
 
@@ -407,9 +418,13 @@ Route::controller(DefectsInfoController::class)->group(function () {
 
 
 Route::controller(ProductionHistoryController::class)->group(function () {
-
     Route::post('/add_prodn_history', 'add_prodn_history')->name('add_prodn_history');
-    Route::get('/load_prodn_hitory_details', 'load_prodn_hitory_details')->name('load_prodn_hitory_details');
+    Route::get('/load_prodn_history_details', 'load_prodn_history_details')->name('load_prodn_history_details');
+    // Route::get('/get_optr_list', 'get_optr_list')->name('get_optr_list');
+    // Route::get('/get_material_list', 'get_material_list')->name('get_material_list');
+    // Route::get('/check_material_details', 'check_material_details')->name('check_material_details');
+    Route::get('/get_prodn_history_by_id', 'get_prodn_history_by_id')->name('get_prodn_history_by_id');
+
 });
 
 Route::view('/production_history','production_history')->name('production_history');
@@ -424,3 +439,10 @@ Route::view('/warehouse_resin','warehouse_resin')->name('warehouse_resin');
 Route::view('/production_history','production_history')->name('production_history');
 
 // >>>>>>> parent of e42c11b (Before merging main)
+
+
+//EXPORT CN171 REPORT
+Route::controller(ExportTraceabilityReportController::class)->group(function () {
+    Route::get('/export_cn171_traceability_report/{po_number}', 'exportCN171TraceabilityReport')->name('export_cn171_traceability_report');
+});
+// Route::get('/export_cn171_traceability_report/{po_number}', 'ExportTraceabilityReportController@export_cn171_traceability_report');

@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\StampingIpqc;
 use App\Models\OQCInspection;
 use App\Models\AcdcsActiveDocs;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\StampingProductionSublot;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FirstStampingProduction extends Model
 {
@@ -33,6 +34,10 @@ class FirstStampingProduction extends Model
 
     public function first_stamping_history(){
         return $this->hasMany(StampingProductionHistory::class,'stamping_production_id', 'id');
+    }
+
+    public function second_stamping_sublots(){
+        return $this->hasMany(StampingProductionSublot::class,'stamp_prod_id', 'id');
     }
 
 }

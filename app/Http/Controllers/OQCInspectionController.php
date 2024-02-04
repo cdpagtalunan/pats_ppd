@@ -15,7 +15,6 @@ use DataTables;
 use App\Models\User;
 use App\Models\ReelLot;
 use App\Models\PrintLot;
-use App\Models\ModeOfDefect;
 use App\Models\OQCInspection;
 use App\Models\DropdownOqcAql;
 use App\Models\AcdcsActiveDocs;
@@ -23,6 +22,7 @@ use App\Models\DropdownOqcFamily;
 use App\Models\FirstStampingProduction;
 use App\Models\DropdownOqcStampingLine;
 use App\Models\DropdownOqcInspectionMod;
+use App\Models\OqcInspectionModeOfDefect;
 use App\Models\DropdownOqcInspectionType;
 use App\Models\DropdownOqcInspectionLevel;
 use App\Models\DropdownOqcInspectionCustomer;
@@ -71,7 +71,8 @@ class OQCInspectionController extends Controller
             }else{
                 if(count($get_oqc_inspection_per_row) != 0){
                     $result .= '
-                        <button class="btn btn-info btn-sm text-center actionOqcInspectionView" 
+                        <button class="btn btn-info btn-sm text-center 
+                            actionOqcInspectionView" 
                             first-stamping="1" 
                             oqc_inspection-id="' . $get_oqc_inspection_per_row[0]->id . '"
                             prod-id="' . $prod_info->id . '" 
@@ -81,7 +82,7 @@ class OQCInspectionController extends Controller
                             prod-lot_no="' . $prod_info->prod_lot_no . '" 
                             prod-ship_output="' . $prod_info->ship_output . '" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#modalOqcInspectionFirstStamping" 
+                            data-bs-target="#modalOqcInspection" 
                             data-bs-keyboard="false" 
                             title="View">
                             <i class="nav-icon fa fa-eye"></i>
@@ -103,7 +104,7 @@ class OQCInspectionController extends Controller
                             first_stamping_prod-lot_no="' . $prod_info->prod_lot_no . '" 
                             first_stamping_prod-ship_output="' . $prod_info->ship_output . '" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#modalOqcInspectionFirstStamping"
+                            data-bs-target="#modalOqcInspection"
                             data-bs-keyboard="false" 
                             title="Edit">
                             <i class="nav-icon fa fa-edit"></i>
@@ -122,7 +123,7 @@ class OQCInspectionController extends Controller
                     first_stamping_prod-lot_no="' . $prod_info->prod_lot_no . '"
                     first_stamping_prod-ship_output="' . $prod_info->ship_output . '" 
                     data-bs-toggle="modal" 
-                    data-bs-target="#modalOqcInspectionFirstStamping" 
+                    data-bs-target="#modalOqcInspection" 
                     data-bs-keyboard="false" 
                     title="Edit">
                     <i class="nav-icon fa fa-edit"></i>
@@ -390,7 +391,8 @@ class OQCInspectionController extends Controller
         ->addColumn('action', function($oqc_info){
             $result = '<center>';
             $result .= '
-                <button class="btn btn-info btn-sm text-center actionOqcInspectionView" 
+                <button class="btn btn-info btn-sm text-center 
+                    actionOqcInspectionView" 
                     oqc_inspection-id="'. $oqc_info->id .'" 
                     prod-id="'. $oqc_info->stamping_production_info->id .'" 
                     prod-po="'. $oqc_info->stamping_production_info->po_num .'" 
@@ -399,7 +401,7 @@ class OQCInspectionController extends Controller
                     prod-lot_no="'. $oqc_info->stamping_production_info->prod_lot_no .'" 
                     prod-ship_output="'. $oqc_info->stamping_production_info->ship_output .'" 
                     data-bs-toggle="modal" 
-                    data-bs-target="#modalOqcInspectionFirstStamping" 
+                    data-bs-target="#modalOqcInspection" 
                     data-bs-keyboard="false" title="View">
                     <i class="nav-icon fa fa-eye"></i>
                 </button>';
@@ -500,16 +502,17 @@ class OQCInspectionController extends Controller
                 if(count($get_oqc_inspection_second_stamping_per_row) != 0){
                     $result .= '
                         <button class="btn btn-info btn-sm text-center 
-                            actionOqcInspectionViewSecondStamping" 
+                            actionOqcInspectionView" 
+                            second-stamping="2" 
                             oqc_inspection-id="' . $get_oqc_inspection_second_stamping_per_row[0]->id . '"
                             prod-id="' . $prod_second_stamping_info->id . '" 
                             prod-po="' . $prod_second_stamping_info->po_num . '" 
-                            prod-material-name="' . $prod_second_stamping_info->material_name . '" 
-                            prod-po-qty="' . $prod_second_stamping_info->po_qty . '" 
-                            prod-lot-no="' . $prod_second_stamping_info->prod_lot_no . '" 
+                            prod-material_name="' . $prod_second_stamping_info->material_name . '" 
+                            prod-po_qty="' . $prod_second_stamping_info->po_qty . '" 
+                            prod-lot_no="' . $prod_second_stamping_info->prod_lot_no . '" 
                             prod-ship_output="' . $prod_second_stamping_info->ship_output . '" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#modalOqcInspectionSecondStamping" 
+                            data-bs-target="#modalOqcInspection" 
                             data-bs-keyboard="false" 
                             title="View">
                             <i class="nav-icon fa fa-eye"></i>
@@ -531,7 +534,7 @@ class OQCInspectionController extends Controller
                             prod_second_stamping-lot_no="' . $prod_second_stamping_info->prod_lot_no . '" 
                             prod_second_stamping-ship_output="' . $prod_second_stamping_info->ship_output . '" 
                             data-bs-toggle="modal" 
-                            data-bs-target="#modalOqcInspectionSecondStamping"
+                            data-bs-target="#modalOqcInspection"
                             data-bs-keyboard="false" 
                             title="Edit">
                             <i class="nav-icon fa fa-edit"></i>
@@ -550,7 +553,7 @@ class OQCInspectionController extends Controller
                     prod_second_stamping-lot_no="' . $prod_second_stamping_info->prod_lot_no . '"
                     prod_second_stamping-ship_output="' . $prod_second_stamping_info->ship_output . '" 
                     data-bs-toggle="modal" 
-                    data-bs-target="#modalOqcInspectionSecondStamping" 
+                    data-bs-target="#modalOqcInspection" 
                     data-bs-keyboard="false" 
                     title="Edit">
                     <i class="nav-icon fa fa-edit"></i>
@@ -936,14 +939,14 @@ class OQCInspectionController extends Controller
                 }
 
                 if ($request->mod_0 != null && $request->mod_qty_0 != null) {
-                    // ModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    // OqcInspectionModeOfDefect::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                     for($mod_counter = 0; $mod_counter <= $request->mod_counter; $mod_counter++) { 
                         $add_mod['oqc_inspection_id'] = $getID;
                         $add_mod['counter']  = $mod_counter;
                         $add_mod['mod']  = $request["mod_$mod_counter"];
                         $add_mod['mod_qty'] = $request->input("mod_qty_$mod_counter");
 
-                        ModeOfDefect::insert(
+                        OqcInspectionModeOfDefect::insert(
                             $add_mod
                         );
                     }

@@ -20,7 +20,7 @@ class CreateAssemblyRuncardsTable extends Migration
             $table->string('parts_code')->nullable();
             $table->string('po_number')->nullable();
             $table->string('po_quantity')->nullable();
-            $table->string('runcard_no')->nullable();
+            $table->string('p_zero_two_prod_lot')->nullable();
 
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();

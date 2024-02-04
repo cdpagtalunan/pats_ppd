@@ -16,23 +16,23 @@ use App\Models\PackingDetailsMolding;
 class PackingDetailsMoldingController extends Controller
 {
     public function viewPackingDetailsFE(Request $request){
-        $packing_details = OQCInspection::with(['stamping_production_info', 
+
+        // return $request->po_no;
+        
+        $packing_details = OQCInspection::with([
+        'stamping_production_info', 
+        'stamping_production_info.second_stamping_sublots', 
         'packing_info', 
         'first_molding_info', 
-        'prodn_info', 
         'first_molding_info.user_validated_by_info',
         'first_molding_info.user_checked_by_info'
         ])
-        ->where('po_no', 'like', '%' . $request->po_no . '%')
+        ->where('po_no', $request->po_no)
         ->where('lot_accepted', 1)
         ->where('status', 2)
         ->get();
 
         // return $packing_details;
-
-        if(!isset($request->po_no)){
-            return [];
-        }else{
 
             return DataTables::of($packing_details)
 
@@ -90,7 +90,6 @@ class PackingDetailsMoldingController extends Controller
             ->addIndexColumn(['DT_RowIndex'])
             ->rawColumns(['action','status'])
             ->make(true);
-        }
     }
 
     public function viewPackingDetailsE(Request $request){

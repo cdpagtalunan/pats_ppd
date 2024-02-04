@@ -68,7 +68,7 @@
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
+                                                <input type="search" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -117,7 +117,7 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th>Action</th>
+                                                    <th style="width: 14%">Action</th>
                                                     <th>Status</th>
                                                     <th>PO Number</th>
                                                     <th>Production Lot No.</th>
@@ -333,6 +333,10 @@
                                                 <label class="form-label">Remarks:</label>
                                                 <textarea rows='5' name="remarks" id="txtRemarks" class="form-control form-control-sm"></textarea>
                                             </div>
+
+                                            <div class="mt-4">
+                                                <button type="button" class="btn btn-info w-100 btn-sm" id="btnViewSublot">See Sub-lots</button>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -385,7 +389,12 @@
                         <div class="row">
                             <!-- PO 1 -->
                             <div class="col-sm-12">
-                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <div class="d-none" id="hiddenPreview">
+                                    
+                                </div>
+                                <center>
+                                    <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br>
+                                </center>
                                 <label id="img_barcode_PO_text"></label>
                             </div>
                         </div>
@@ -465,6 +474,84 @@
         </div>
 
 
+        <div class="modal fade" id="modalMultipleSublot" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa-solid fa-circle-exclamation"></i> Sub-lot Input</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formSublot">
+                            @csrf
+                            <input type="hidden" id="txtSublotStampingId" name="stamping_id">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend w-25">
+                                            <span class="input-group-text w-100"><strong>PO No.:</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="txtSubLotPoNumber" name="sublot_po" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><strong>Lot No.:</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="txtSubLotLotNo" name="sublot_lotno" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><strong>Shipment Output:</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="txtSubLotShipOutput" name="sublot_shipout" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="float-end" id="buttons">
+                                        <button type="button" class="btn btn-sm btn-danger d-none" id="btnRemoveSublot">Remove</button>
+                                        <button type="button" class="btn btn-sm btn-success" id="btnAddSublot">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="txtSublotMultipleCounter" name="sublot_counter" value="1">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label class="form-label">Sub-lot #</label>
+                                        <input type="number" class="form-control form-control-sm" id="txtSublotNo_1" value="1" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label class="form-label">Sub-lot Quantity</label>
+                                        <input type="number" class="form-control form-control-sm" name="sublot_qty_1" id="txtSublotQty_1">
+                                    </div>
+                                </div>
+                            
+                            </div>
+                            <div id="divMultipleSublot">
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" id="btnSaveSublot">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     @endsection
 
     @section('js_content')
@@ -474,7 +561,7 @@
             var autogenLotNum
             var btnFunction;
 
-            // var img_barcode_PO_text_hidden;
+            var img_barcode_PO_text_hidden;
             // var multipleMatId;
             // var printId;
             // var scanningFunction;
@@ -494,7 +581,7 @@
                     "serverSide" : true,
                     "ajax" : {
                         url: "view_stamp_prod",
-                         data: function (param){
+                        data: function (param){
                             param.po = $("#txtSearchPONum").val();
                             param.stamp_cat = 2;
                         }
@@ -718,20 +805,20 @@
                     content += '</style>';
                     content += '</head>';
                     content += '<body>';
-                    // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
-                        content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                    for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                        content += '<table style="margin-left: -5px; margin-top: 10px;">';
                             content += '<tr style="width: 290px;">';
-                                content += '<td style="vertical-align: bottom;">';
-                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                content += '<td>';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[i]['img'] + '" style="min-width: 75px; max-width: 75px;">';
                                 content += '</td>';
-                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[i]['text'] + '</td>';
                             content += '</tr>';
                         content += '</table>';
                         content += '<br>';
-                        // if( i < img_barcode_PO_text_hidden.length-1 ){
-                        //     content += '<div class="pagebreak"> </div>';
-                        // }
-                    // }
+                        if( i < img_barcode_PO_text_hidden.length-1 ){
+                            content += '<div class="pagebreak"> </div>';
+                        }
+                    }
                     content += '</body>';
                     content += '</html>';
                     popup.document.write(content);
@@ -897,7 +984,107 @@
                     
                 });
 
+                $(document).on('click', '.btnAddBatch', function(e){
+                    let id = $(this).data('id');
+                    let po = $(this).data('po');
+                    let lotno = $(this).data('lotno');
+                    let shipout = $(this).data('shipout');
 
+                    $('#txtSublotStampingId', $('#formSublot')).val(id);
+                    $('input[name="sublot_po"]', $('#formSublot')).val(po)
+                    $('input[name="sublot_lotno"]', $('#formSublot')).val(lotno)
+                    $('input[name="sublot_shipout"]', $('#formSublot')).val(shipout)
+
+                    $('#modalMultipleSublot').modal('show');
+                });
+
+                $('#btnAddSublot').on('click', function(e){
+                    e.preventDefault();
+                    let newCount = Number($('#txtSublotMultipleCounter').val()) + Number(1);
+                    
+                    if(newCount > 1){
+                        $('#btnRemoveSublot').removeClass('d-none');
+                    }
+                    // <div class="col-sm-6">
+                    //             <div>
+                    //                 <label class="form-label">Sub-lot #</label>
+                    //                 <input type="number" class="form-control form-control-sm" value="1" readonly>
+                    //             </div>
+                    //         </div>
+
+                    //         <div class="col-sm-6">
+                    //             <div>
+                    //                 <label class="form-label">Quantity</label>
+                    //                 <input type="number" class="form-control form-control-sm" name="sublot_qty[]" id="txtSublotQty_1">
+                    //             </div>
+                    //         </div>
+                    $('#txtSublotMultipleCounter').val(newCount);
+                    let inputGroup = `
+                        <div class="row mt-1 subLotMultiple" id="divMultiple_${newCount}">
+                            <div class="col-sm-6">
+                                <div>
+                                    <input type="number" class="form-control form-control-sm" value="${newCount}" id="txtSublotNo_${newCount}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div>
+                                    <input type='text' class='form-control form-control-sm' name='sublot_qty_${newCount}' id='txtSublotQty_${newCount}' required>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    $('#divMultipleSublot').append(inputGroup)
+
+                });
+
+                $('#btnRemoveSublot').on('click', function(e){
+                    e.preventDefault();
+                    
+                    let counter = $('#txtSublotMultipleCounter').val();
+                    $(`#divMultiple_${counter}`).remove();
+
+                    let newCount = counter - 1;
+
+                    $('#txtSublotMultipleCounter').val(newCount);
+                    
+                    if(newCount == 1){
+                        $(this).addClass('d-none');
+                    }
+
+                })
+
+                $('#btnSaveSublot').on('click', function(e){
+                    let counter = $('#txtSublotMultipleCounter').val();
+                    let shipmentOutput = $('#txtSubLotShipOutput').val();
+                    let total = 0;
+                    console.log('counter', counter);
+                    for(let x = 1; x <= counter; x++){
+                        console.log('forloop counter', x);
+                        total = Number($(`#txtSublotQty_${x}`).val())+Number(total);
+                    }
+                    console.log(total);
+                    if(total > shipmentOutput){
+                        toastr.error('Sub-lot quantity is greater than shipment output');
+                        return;
+                    }
+                    if(shipmentOutput != total){
+                        toastr.error('Sub-lot quantity is not equal to shipment output');
+                        return;
+                    }
+                    if(shipmentOutput == total){
+                        // saveSublot();
+                        $('#modalScanQRSave').modal('show');
+                        $('#modalScanQRSaveText').html('Please Scan Employee ID.')
+                        scanningFunction = "saveSublot";
+                    }
+                });
+
+                $('#btnViewSublot').on('click', function(e){
+                    e.preventDefault();
+                    let stampingId = $('#txtProdDataId', $('#formProdDataSecondStamp')).val();
+
+                    getSublotById(stampingId);
+                });
 
             });
 
@@ -905,8 +1092,8 @@
                 
                 if(e.keyCode == 13){
                     
-                    if(scanningFunction === "prodData"){
-                        validateUser($(this).val().toUpperCase(), [0,4], function(result){
+                    if(scanningFunction === "prodData"){ // TO SAVE STAMPING
+                        validateUser($(this).val().toUpperCase(), [0,4,1,9], function(result){
                             if(result == true){
 
                                 // console.log($('#formProdDataSecondStamp').serialize())
@@ -917,7 +1104,7 @@
                             }
                         });
                     }
-                    else if(scanningFunction === "editProdData"){
+                    else if(scanningFunction === "editProdData"){ // FOR EDIT TO RESETUP
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
                                 $('#modalScanQRSave').modal('hide');
@@ -930,7 +1117,19 @@
 
                         });
                     }
-                    else{
+                    else if(scanningFunction === "saveSublot"){ // FOR SAVE SUBLOT
+                        validateUser($(this).val().toUpperCase(), [0,4,1,9], function(result){
+                            if(result == true){
+                                saveSublot();
+                                $('#modalScanQRSave').modal('hide');
+
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+                        });
+                    }
+                    else{ // * FOR REPRINTING
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
                                 $('#modalScanQRSave').modal('hide');

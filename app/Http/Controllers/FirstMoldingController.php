@@ -11,6 +11,7 @@ use App\Models\FirstMoldingDevice;
 use App\Models\FirstMoldingDetail;
 use App\Models\TblPoReceived;
 use App\Models\TblDieset;
+use App\Models\FirstMoldingMaterialList;
 use App\Http\Requests\FirstMoldingRequest;
 use App\Http\Requests\FirstMoldingStationRequest;
 
@@ -89,11 +90,12 @@ class FirstMoldingController extends Controller
 
     public function saveFirstMolding(FirstMoldingRequest $request)
     {
-        // return $request->all();
-
         date_default_timezone_set('Asia/Manila');
         try{
             $data = $request->all();
+            $virgin_material = $request->virgin_material;
+            $recycle_material = $request->recycle_material;
+
             $validation = array(
                 'production_lot' => ['required'],
                 'production_lot_extension' => ['required'],
@@ -117,6 +119,7 @@ class FirstMoldingController extends Controller
                     'remarks' => $request->remarks,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
+                $get_first_molding_id = $request->first_molding_id;
 
             }else{ //Add
                 $first_molding_id = FirstMolding::insertGetId($request->validated());
@@ -127,6 +130,28 @@ class FirstMoldingController extends Controller
                     'remarks' => $request->remarks,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
+                $get_first_molding_id = $first_molding_id;
+            }
+    
+            if(isset($virgin_material)){
+                FirstMoldingMaterialList::where('first_molding_id', $get_first_molding_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+
+                foreach ( $virgin_material as $key => $value_virgin_material) {
+                    FirstMoldingMaterialList::insert([
+                        'first_molding_id'   => $get_first_molding_id,
+                        'virgin_material'           => $virgin_material[$key],
+                        'recycle_material'              => $request->recycle_material[$key],
+                        'created_at'                => date('Y-m-d H:i:s')
+                    ]);
+                }
+            }else{
+                if(FirstMoldingMaterialList::where('first_molding_id', $get_first_molding_id)->exists()){
+                    FirstMoldingMaterialList::where('first_molding_id', $get_first_molding_id)->update([
+                        'deleted_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
             }
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
@@ -137,9 +162,18 @@ class FirstMoldingController extends Controller
     public function getMoldingDetails(Request $request)
     {
         try{
-            $first_molding = FirstMolding::with('firstMoldingDevice')
+            /*
+                TODO: Save Auto Prod Lot
+                TODO: Multiple Resin Lot Number Virgin at Recycle
+                TODO: Show Variance
+            */
+            $first_molding = FirstMolding::with('firstMoldingDevice','firstMoldingMaterialLists')
             ->where('id',$request->first_molding_id)
             ->get();
+            // $first_molding = FirstMolding::with('firstMoldingDevice')
+            // ->where('id',$request->first_molding_id)
+            // ->get();
+            
             // $first_molding = FirstMolding::
             // where('id',$request->first_molding_id)
             // ->get();

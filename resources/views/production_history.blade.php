@@ -82,11 +82,11 @@
                                                 </div>
                                                 <div class="col-sm-3">
                                                   <label>STD Cycle Time:</label>
-                                                    <input type="text" class="form-control" id="std_cycle_time" name="std_cycle_time" readonly>
+                                                    <input type="text" style="color:blue;" class="form-control" id="std_cycle_time" name="std_cycle_time" readonly>
                                                 </div>
                                                 <div class="col-sm-3">
                                                   <label>Maintenance Cycle:</label>
-                                                    <input type="text" class="form-control" id="maintenance_cycle" name="maintenance_cycle" readonly>
+                                                    <input type="text" style="color:blue;" class="form-control" id="maintenance_cycle" name="maintenance_cycle" readonly>
                                                 </div>
                                               </div>
                                             </div>
@@ -101,15 +101,31 @@
                                         <table id="tblProductionHistoryDetails" class="table table-sm table-bordered table-striped table-hover"
                                             style="width: 100%;">
                                             <thead>
+                                                <tr style="text-align: center;">
+                                                    <th rowspan="2">Action</th>
+                                                    <th rowspan="2">Status</th>
+                                                    <th rowspan="2">Production Date</th>
+                                                    <th rowspan="2">Shift</th>
+                                                    <th rowspan="2">Machine No.</th>
+                                                    <th rowspan="2">Std Parameter Date</th>
+                                                    <th rowspan="2">Shots</th>
+                                                    <th rowspan="2">Shots Accum</th>
+                                                    <th rowspan="2">Prod'n Start time</th>
+                                                    <th rowspan="2">Prod'n End time</th>
+                                                    <th rowspan="2">Act. Cycle Time</th>
+                                                    <th rowspan="2">Shot Weight</th>
+                                                    <th rowspan="2">Product Weight</th>
+                                                    <th rowspan="2">Screw Most FWD</th>
+                                                    <th colspan="3">CCD Setting</th>
+                                                    <th rowspan="2">Changes Parameter</th>
+                                                    <th rowspan="2">Remarks</th>
+                                                    <th rowspan="2">Operator Name</th>
+                                                    <th rowspan="2">Confirmed By</th>
+                                                </tr>
                                                 <tr>
-                                                    <th>Action</th>
-                                                    <th>Status</th>
-                                                    <th>Production Date</th>
-                                                    <th>Machine No.</th>
-                                                    <th>Standard Parameter Date</th>
-                                                    <th>Remarks</th>
-                                                    <th>Created By</th>
-                                                    <th>Confirm By</th>
+                                                     <th>S1</th>
+                                                     <th>S2</th>
+                                                     <th>NG</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -122,271 +138,795 @@
             </section>
         </div>
 
+        <div class="modal fade" id="modalProductionHistory" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-xl-custom">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa fa-plus"></i> Add Data</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" id="formProductionHistory" autocomplete="off">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-sm-6 border px-4">
+                                    <div class="py-3">
+                                        <span class="badge badge-secondary">1.</span> Production Details
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3 d-none">
+                                        <input class="form-control form-control-sm" type="text" id="global_device_name_id" name="global_device_name_id">
+                                        <input class="form-control form-control-sm" type="text" id="prodn_history_id" name="prodn_history_id">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="device_name" name="device_name" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">STD Cycle Time</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="stdct" name="stdct" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Maintenance Cycle</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="main_cycle" name="main_cycle" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Production Date</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="prodn_date" name="prodn_date" value="<?php echo date('Y-m-d'); ?>" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Shift</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="shift" name="shift" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Machine No.</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="machine_no" name="machine_no" required readonly>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="btnMachineNo" form-value="formMachineNo"><i class="fa fa-qrcode"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Standard Parameter Date</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="date" id="standard_para_date" name="standard_para_date" required>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Standard Parameter Attachment</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="standard_para_attach" name="standard_para_attach">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Actual Cycle Time</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="act_cycle_time" name="act_cycle_time" placeholder="s" required>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Shot Weight</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="shot_weight" name="shot_weight" placeholder="g" required>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Product Weight</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="product_weight" name="product_weight" placeholder="g" required>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Screw Most FWD</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="screw_most_fwd" name="screw_most_fwd" placeholder="mm" required>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">CCD Setting</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_s1" name="ccd_setting_s1" placeholder="S1" required>
+                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_s2" name="ccd_setting_s2" placeholder="S2" required>
+                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_ng" name="ccd_setting_ng" placeholder="NG" required>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Changes in Parameters</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="changes_para" name="changes_para" value='N/A' required>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                                                </div>
+                                                <select class="form-control form-control-sm" id="remarks" name="remarks" required>
+                                                    <option selected disabled>-- Select One --</option>
+                                                    <option value="1">Continuous Production</option>
+                                                    <option value="2">Temporary Stop</option>
+                                                    <option value="3">Maintenance Cycle</option>
+                                                    <option value="4">Die-set/Machine Repair</option>
+                                                    <option value="5">Evaluation</option>
+                                                    <option value="6">Finish PO</option>
+                                                    <option value="7">Request for overhaul</option>
+                                                </select>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="opt_name" name="opt_name" readonly>
+                                                <input class="form-control form-control-sm" type="text" id="opt_id" name="opt_id" readonly hidden>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="btnScanQrOptID" form-value="formOperatorName"><i class="fa fa-qrcode"></i></button>
+                                                </div>
+                                                {{-- <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple required>
+                                                </select> --}}
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Shots</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="shots" name="shots">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Production Start/End Time</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="time" id="prodn_stime" name="prodn_stime">
+                                                <input class="form-control form-control-sm" type="time" id="prodn_etime" name="prodn_etime">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Confirm By</span>
+                                                </div>
+                                                <input class="form-control form-control-sm" type="text" id="qc_name" name="qc_name" placeholder="QC" readonly>
+                                                <input class="form-control form-control-sm" type="text" id="qc_id" name="qc_id" readonly hidden>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="btnScanQrQCID" form-value="formQCName"><i class="fa fa-qrcode"></i></button>
+                                                </div>
+                                            </div>
 
-    @include('component.modal')
+                                           
+                                        </div>            
+                                    </div>
+                                </div>
+                                
+                                <div class="col-sm-6 border px-4">
+                                    <div class="col-sm-12">
+
+                                        <div class="py-3">
+                                            <span class="badge badge-secondary">2.</span> Materials
+                                        </div>
+
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                            </div>
+                                            <input class="form-control form-control-sm" type="text" id="material_code" name="material_code" value="101862401" readonly>
+                                            <input class="form-control form-control-sm" type="text" id="material_name" name="material_name" value="GENESTAR GN2450-1 BLK" readonly>
+                                        </div>
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text w-100" id="basic-addon1">Material Lot No.</span>
+                                            </div>
+                                            <input class="form-control form-control-sm" type="text" id="material_lotno" name="material_lotno" readonly>
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-primary" id="btnScanQrMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
+                                            </div>
+                                        </div><br>
+
+                                        <div class="py-3">
+                                            <span class="badge badge-secondary">3.</span> Parts Materials
+                                        </div>
+                                        <div class="input-group input-group-sm mb-3" id=divMaterialLotNumbers>
+                                            <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking">
+
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text w-100" id="basic-addon1"> Parts Material Name</span>
+                                            </div>
+                                            <input class="form-control form-control-sm" type="text" id="material_code" name="material_code" value="108321601" readonly>
+                                            <input class="form-control form-control-sm" type="text" id="material_name" name="material_name" value="CT 6009-VE" readonly>
+                                        </div>
+                                        <div class="input-group input-group-sm mb-3" id=divMaterialLotNumbers>
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.</span>
+                                            </div>
+                                            <input class="form-control form-control-sm" type="text" id="pmat_lot_no1" name="pmat_lot_no1" readonly>
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-primary" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
+                                            </div>
+                                            <input class="form-control form-control-sm" type="text" id="pmat_lot_no2" name="pmat_lot_no2" readonly>
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-primary" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
+                                            </div>
+                                        </div>
+                                        {{-- <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text w-100" id="basic-addon1">Parts Material Lot No.</span>
+                                            </div>
+                                            <input class="form-control form-control-sm" type="text" id="pmat_lot_no" name="pmat_lot_no" readonly>
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-primary" id="btnScanQrMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
+                                            </div>
+                                            
+                                        </div> --}}
+
+                                        {{-- <div class="col-sm-12">
+                                            <div class="col border px-4 border">
+                                                <div class="py-3">
+                                                    <div style="float: left;">
+                                                        <span class="badge badge-secondary">2.</span> Parts Material
+                                                    </div>
+                                                    <div style="float: right;">
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnAddPartsMaterial">
+                                                            <i class="fa fa-plus" ></i> Add
+                                                        </button>
+                                                    </div><br><br>
+                                                    <div class="table-responsive">
+                                                        <table class="table table-sm small table-bordered table-hover" id="tblPartsMaterial" style="width: 100%;">
+                                                            <thead>
+                                                                <tr class="bg-light">
+                                                                    <th>Code</th>
+                                                                    <th>Name</th>
+                                                                    <th>Lot No.</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div><br> --}}
+
+                                        
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="btnSubmitFirstMoldingStation" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {{-- <div class="modal fade" id="modalPartsMaterial" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-object-group text-info"></i> Parts Material</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formPartsMaterial">
+                            @csrf
+                            <input type="text" class="form-control form-control-sm" id="prodn_history_id" name="prodn_history_id">
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Parts Material</span>
+                                        </div>
+                                        <select type="text" class="form-control form-control-sm selMatName" id="pmat_name" name="pmat_name" placeholder="Material Name">
+                                        </select>
+                                        <input type="text" class="form-control form-control-sm" id="pmat_code" name="pmat_code" placeholder="Material Code"readonly>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Parts Material Lot No.</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="pmat_lot_no" name="pmat_lot_no" readonly>
+                                        <div class="input-group-append">
+                                            <button class="btn btn-info" type="button" title="Scan code" id="btnScanQrQCID" form-value="formQCName"><i class="fa fa-qrcode"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success" id="buttonFirstMoldingStation">Save</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div> --}}
+
+
+        <div class="modal fade" id="modalQrMachine" data-form-id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <input type="text" id="textQrMachine" class="hidden_scanner_input" autocomplete="off">
+                        <div class="text-center text-secondary">
+                            Please scan Machine #
+                            <br><br>
+                            <h1><i class="fa fa-qrcode fa-lg"></i></h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalQrEmp" data-form-id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <input type="text" id="textQrEmp" class="hidden_scanner_input" autocomplete="off">
+                        <div class="text-center text-secondary">
+                            Please scan your ID
+                            <br><br>
+                            <h1><i class="fa fa-qrcode fa-lg"></i></h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalAlert_notif" data-form-id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="text-center text-secondary">
+                        <div id="alert_notif"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalQrLotNo" data-form-id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <input type="text" id="textQrLotNo" class="hidden_scanner_input" class="" autocomplete="off">
+                        <div class="text-center text-secondary">
+                            Please scan the Lot #
+                            <br><br>
+                            <h1><i class="fa fa-qrcode fa-lg"></i></h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
 
     @endsection
 
     @section('js_content')
-        <script>
-            $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
+            let ProductionHistory;            
 
-                getFirstModlingDevices();
+            getFirstModlingDevices();
+            // getOperatorList($('.selOpName'));
+            // getMaterialList($('.selMatName'));
 
-                // const getPmiPoReceivedDetails = function (pmiPoNo){
-                //     $.ajax({
-                //         type: "GET",
-                //         url: "get_pmi_po_received_details",
-                //         data: {"pmi_po_no" : pmiPoNo},
-                //         dataType: "json",
-                //         success: function (response) {
-                //             if( response.result_count === 1 ){
-                //                 formModal.ProductionHistory.find('#po_no').val(response.po_no);
-                //                 formModal.ProductionHistory.find('#po_qty').val(response.order_qty);
-                //                 formModal.ProductionHistory.find('#po_target').val(response.order_qty);
-                //                 formModal.ProductionHistory.find('#po_balance').val(response.po_balance);
-                //                 formModal.ProductionHistory.find('#item_code').val(response.item_code);
-                //                 formModal.ProductionHistory.find('#item_name').val(response.item_name);
-                //             }else{
-                //                 formModal.ProductionHistory.find('#po_no').val('');
-                //                 formModal.ProductionHistory.find('#po_qty').val('');
-                //                 formModal.ProductionHistory.find('#po_balance').val('');
-                //                 formModal.ProductionHistory.find('#po_balance').val('');
-                //                 formModal.ProductionHistory.find('#item_code').val('');
-                //                 formModal.ProductionHistory.find('#item_name').val('');
+            function number_with_comma(val) {
+                if (val == null || val == NaN) {
+                    return 0;
+                }
+                while (/(\d+)(\d{3})/.test(val.toString())) {
+                    val = val.toString().replace(/(\d+)(\d{3})/, '$1' + ',' + '$2');
+                }
+                return val;
+            }
+            var formModal = {
+                ProdnHistory: $("#formProductionHistory"),
+            }
 
-                //             }
-                //         }
-                //     });
-                // }
+            $time_now = moment().format('HH:mm:ss');
+            console.log($time_now);
+            if ($time_now >= '7:30:00' || $time_now <= '19:29:00') {
+                $('#shift').val('A');
+            }else {
+                $('#shift').val('B');
+            }
 
+            $('#global_device_name').change(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "GET",
+                    url: "get_first_molding_devices_by_id",
+                    data: {"first_molding_device_id" : $(this).val()},
+                    dataType: "json",
+                    success: function (response) {
+                        let first_molding_device_id = response[0].id
+                        let std_cycle_time          = response[0].std_cycle_time
+                        let maintenance_cycle       = response[0].maintenance_cycle
+                        let device_name             = response[0].device_name
+                        let materialNameSubstring   = device_name.substring(0,9);
 
-                $('#modalProductionHistory').on('hidden.bs.modal', function() {
-                    // formModal.ProductionHistory.find('#first_molding_id').val('');
-                    // formModal.ProductionHistory.find('#contact_lot_number').val('');
-                    // formModal.ProductionHistory.find('#production_lot').val('');
-                    // formModal.ProductionHistory.find('#remarks').val('');
-                    // formModal.ProductionHistory.find('#created_at').val('');
-                    formModal.ProductionHistory.find('.form-control').removeClass('is-valid')
-                    formModal.ProductionHistory.find('.form-control').removeClass('is-invalid');
-                    formModal.ProductionHistory.find('.form-control').attr('title', '');
-                })
+                        $('#btnAddProductionHistory').prop('disabled',false);
+                        $('#std_cycle_time').val(std_cycle_time);
+                        $('#maintenance_cycle').val(number_with_comma(maintenance_cycle));
 
-                // $('#modalProductionHistoryStation').on('hidden.bs.modal', function() {
-                //     formModal.ProductionHistoryStation.find('#first_molding_detail_id').val('');
-                //     formModal.ProductionHistoryStation.find('#date').val('');
-                //     formModal.ProductionHistoryStation.find('#operator_name').val('');
-                //     formModal.ProductionHistoryStation.find('#input').val('');
-                //     formModal.ProductionHistoryStation.find('#ng_qty').val(0);
-                //     formModal.ProductionHistoryStation.find('#output').val('');
-                //     formModal.ProductionHistoryStation.find('#remarks').val('');
-                //     formModal.ProductionHistoryStation.find('.form-control').removeClass('is-valid')
-                //     formModal.ProductionHistoryStation.find('.form-control').removeClass('is-invalid');
-                //     formModal.ProductionHistoryStation.find('.form-control').attr('title', '');
-                // })
+                        $('#stdct').val(std_cycle_time);
+                        $('#main_cycle').val(maintenance_cycle);
+                        $('#device_name').val(device_name);
+                        $('#global_device_name_id').val(first_molding_device_id);
+                        
+                        formModal.ProdnHistory.find('#first_molding_device_id').html(`<option value="${first_molding_device_id}">${device_name}</option>`);
+                        formModal.ProdnHistory.find('#std_cycle_time').val(std_cycle_time);
+                        formModal.ProdnHistory.find('#maintenance_cycle').val(number_with_comma(maintenance_cycle));
 
-                // $('#mdlScanQrCodeProductionHistory').on('shown.bs.modal', function () {
-                //     $('#txtScanQrCodeProductionHistory').focus();
-                //     const mdlScanQrCode = document.querySelector("#mdlScanQrCodeProductionHistory");
-                //     const inptQrCode = document.querySelector("#txtScanQrCodeProductionHistory");
-                //     let focus = false;
+                        ProductionHistory.draw();
+                        console.log($("#global_device_name").val())
 
-                //     mdlScanQrCode.addEventListener("mouseover", () => {
-                //         if (inptQrCode === document.activeElement) {
-                //             focus = true;
-                //         } else {
-                //             focus = false;
-                //         }
-                //     });
-
-                //     mdlScanQrCode.addEventListener("click", () => {
-                //         if (focus) {
-                //             inptQrCode.focus()
-                //         }
-                //     });
-                // });
-
-                // dt.ProductionHistory = table.ProductionHistoryDetails.DataTable({
-                //     "processing" : true,
-                //     "serverSide" : true,
-                //     "ajax" : {
-                //         url: "load_first_molding_details",
-                //         data: function (param){
-                //             param.first_molding_device_id = $("#global_device_name").val();
-                //         }
-                //     },
-                //     fixedHeader: true,
-                //     "columns":[
-                //         { "data" : "action", orderable:false, searchable:false },
-                //         { "data" : "status" },
-                //         { "data" : "device_name" },
-                //         { "data" : "contact_name" },
-                //         { "data" : "contact_lot_number" },
-                //         { "data" : "production_lot" },
-                //         { "data" : "remarks" },
-                //         { "data" : "created_at" },
-                //     ]
-                // });
-
-                // dt.ProductionHistoryStation = table.ProductionHistoryStationDetails.DataTable({
-                //     "processing" : true,
-                //     "serverSide" : true,
-                //     "ajax" : {
-                //         url: "load_first_molding_station_details",
-                //         data: function (param){
-                //             param.first_molding_id = formModal.ProductionHistory.find("#first_molding_id").val();
-                //         }
-                //     },
-                //     fixedHeader: true,
-                //     "columns":[
-                //         { "data" : "action", orderable:false, searchable:false },
-                //         // { "data" : "status" },
-                //         { "data" : "stations" },
-                //         { "data" : "date" },
-                //         { "data" : "operator_names" },
-                //         { "data" : "input" },
-                //         { "data" : "ng_qty" },
-                //         { "data" : "output" },
-                //         { "data" : "remarks" },
-                //         { "data" : "created_at" },
-                //     ]
-                // });
-
-                // table.ProductionHistoryDetails.on('click','#btnEditProductionHistory', editProductionHistory);
-                // table.ProductionHistoryStationDetails.on('click','#btnEditProductionHistoryStation', editProductionHistoryStation);
-
-                $('#btnAddProductionHistory').click(function (e) {
-                    e.preventDefault();
-                    dt.ProductionHistoryStation.draw()
-                    $('#modalProductionHistory').modal('show');
-                    // $('#btnProductionHistoryStation').prop('disabled',true);
-                    // $('#btnSubmitProductionHistoryStation').prop('disabled',true);
-                    // $('#btnRuncardDetails').removeClass('d-none',true);
-                });
-
-                // $('#btnProductionHistoryStation').click(function (e) {
-                //     e.preventDefault();
-                //     getStation();
-                //     $('#modalProductionHistoryStation').modal('show');
-                //     formModal.ProductionHistoryStation.find('#first_molding_id').val( formModal.ProductionHistory.find('#first_molding_id').val() );
-                // });
-
-                // $('#btnSubmitProductionHistoryStation').click(function (e) {
-                //     e.preventDefault();
-                //     Swal.fire({
-                //         // title: "Are you sure?",
-                //         text: "Are you sure you want to submit this process",
-                //         icon: "warning",
-                //         showCancelButton: true,
-                //         confirmButtonColor: "#3085d6",
-                //         cancelButtonColor: "#d33",
-                //         confirmButtonText: "Yes"
-                //     }).then((result) => {
-                //         if (result.isConfirmed) {
-                //             $.ajax({
-                //                 type: "GET",
-                //                 url: "first_molding_update_status",
-                //                 data: {
-                //                     "first_molding_id" : formModal.ProductionHistory.find("#first_molding_id").val(),
-                //                 },
-                //                 dataType: "json",
-                //                 success: function (response) {
-                //                     if(response['result'] === 1){
-                //                         $('#modalProductionHistory').modal('hide');
-                //                         dt.ProductionHistory.draw();
-                //                         Swal.fire({
-                //                             position: "center",
-                //                             icon: "success",
-                //                             title: "Submitted Successfully !",
-                //                             showConfirmButton: false,
-                //                             timer: 1500
-                //                         });
-                //                     }
-                //                 },error: function (data, xhr, status){
-                //                     toastr.error(`Error: ${data.status}`);
-                //                 }
-                //             });
-                //         }
-                //     });
-                // });
-
-                $('#global_device_name').change(function (e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: "GET",
-                        url: "get_first_molding_devices_by_id",
-                        data: {"first_molding_device_id" : $(this).val()},
-                        dataType: "json",
-                        success: function (response) {
-                            let first_molding_device_id = response[0].id
-                            let std_cycle_time = response[0].std_cycle_time
-                            let maintenance_cycle = response[0].maintenance_cycle
-                            let device_name = response[0].device_name
-
-                            $('#btnAddProductionHistory').prop('disabled',false);
-                            $('#std_cycle_time').val(std_cycle_time);
-                            $('#maintenance_cycle').val(maintenance_cycle);
-
-                            formModal.ProductionHistory.find('#first_molding_device_id').html(`<option value="${first_molding_device_id}">${device_name}</option>`);
-                            formModal.ProductionHistory.find('#std_cycle_time').val(std_cycle_time);
-                            formModal.ProductionHistory.find('#maintenance_cycle').val(maintenance_cycle);
-
-                            dt.ProductionHistory.draw();
-                            console.log($("#global_device_name").val())
+                        if(materialNameSubstring == 'CN171S-08' || materialNameSubstring == 'CN171S-09' || materialNameSubstring == 'CN171S-10'){
+                            $('#divMaterialLotNumbers').removeClass('d-none');
+                            $('#textMaterialLotNumberChecking').val(1);
+                        }else if (materialNameSubstring == 'CN171P-02'){
+                            $('#divMaterialLotNumbers').addClass('d-none');
+                            $('#textMaterialLotNumberChecking').val(0);
                         }
-                    });
+
+                        
+                    }
                 });
-
-                // formModal.ProductionHistory.find('#pmi_po_no').on('keyup',function (e) {
-                //     e.preventDefault();
-                //     // if(e.keyCode == 13){
-                //         getPmiPoReceivedDetails( $(this).val() );
-                //     // }
-                // });
-
-
-                // $('#btnScanQrProductionHistory').click(function (e) {
-                //     $('#mdlScanQrCodeProductionHistory').modal('show');
-                //     $('#mdlScanQrCodeProductionHistory').on('shown.bs.modal');
-
-                // });
-
-                // $('#txtScanQrCodeProductionHistory').on('keyup', function(e){
-                //     if(e.keyCode == 13){
-                //         console.log(($(this).val()));
-                //         // let explodedMat = $(this).val().split(' $|| ');
-                //         // $('#txtMaterialLot_0').val(explodedMat[0]);
-                //         // $('#txtMaterialLotQty').val(explodedMat[1]);
-
-                //         // // console.log(explodedMat);
-                //         formModal.ProductionHistory.find('#contact_lot_number').val($(this).val());
-                //         $(this).val('');
-                //         $('#mdlScanQrCodeProductionHistory').modal('hide');
-                //     }
-                // });
-
-                // formModal.ProductionHistoryStation.find('#input').keyup(function (e) {
-                //     totalOutput($(this).val(),formModal.ProductionHistoryStation.find("#ng_qty").val());
-                // });
-
-                // formModal.ProductionHistoryStation.find('#ng_qty').keyup(function (e) {
-                //     totalOutput(formModal.ProductionHistoryStation.find("#input").val(),$(this).val());
-                // });
-
-                // formModal.ProductionHistory.submit(function (e) {
-                //     e.preventDefault();
-                //     saveProductionHistory();
-                // });
-
-                // formModal.ProductionHistoryStation.submit(function (e) {
-                //     e.preventDefault();
-                //     saveProductionHistoryStation();
-                // });
-
-
-
-
             });
-        </script>
+
+            $('#btnAddProductionHistory').click(function (e) {
+                e.preventDefault();
+                $('#modalProductionHistory').modal('show');
+            });
+
+            /*  Datatable */
+            ProductionHistory = $("#tblProductionHistoryDetails").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "ajax" : {
+                    url: "load_prodn_history_details",
+                    data: function (param){
+                        param.first_molding_device_id = $("#global_device_name").val();
+                    }
+                },
+                fixedHeader: true,
+                "columns":[
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status" },
+                    { "data" : "prodn_date" },
+                    { "data" : "shift" },
+                    { "data" : "machine_no" },
+                    { "data" : "standard_para_date" },
+                    { "data" : "shots" },
+                    { "data" : "shots_accum" },
+                    { "data" : "prodn_stime" },
+                    { "data" : "prodn_etime" },
+                    { "data" : "act_cycle_time" },
+                    { "data" : "shot_weight" },
+                    { "data" : "product_weight" },
+                    { "data" : "screw_most_fwd" },
+                    { "data" : "ccd_setting_s1" },
+                    { "data" : "ccd_setting_s2" },
+                    { "data" : "ccd_setting_ng" },
+                    { "data" : "changes_para" },
+                    { "data" : "remarks" },
+                    { "data" : "operator" },
+                    { "data" : "qc" },
+                ]
+            });
+
+            /* Add */
+            $('#formProductionHistory').submit(function(e){
+                e.preventDefault();
+                $.ajax({
+                    type: "post",
+                    url: "add_prodn_history",
+                    data: $('#formProductionHistory').serialize(),
+                    dataType: "json",
+                    success: function (response) {
+                        if(response['result'] == 1){
+                            ProductionHistory.draw();
+                            $('#modalProductionHistory').modal('hide');
+                        }
+                    }
+                });
+            });
+
+            /* Edit */                
+            $(document).on('click', '.btnEdit', function(e){
+                let pId = $(this).data('id');
+                $.ajax({
+                    type: "get",
+                    url: "get_prodn_history_by_id",
+                    data: {
+                        "id" : pId
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        
+                        $('#prodn_history_id').val(pId);
+                        $('#prodn_date').val(data['prodn_date']);
+                        $('#shift').val(data['shift']);
+                        $('#machine_no').val(data['machine_no']);
+                        $('#standard_para_date').val(data['standard_para_date']);
+                        $('#standard_para_attach').val(data['standard_para_attach']);
+                        $('#act_cycle_time').val(data['act_cycle_time']);
+                        $('#shot_weight').val(data['shot_weight']);
+                        $('#product_weight').val(data['product_weight']);
+                        $('#screw_most_fwd').val(data['screw_most_fwd']);
+                        $('#ccd_setting_s1').val(data['ccd_setting_s1']);
+                        $('#ccd_setting_s2').val(data['ccd_setting_s2']);
+                        $('#ccd_setting_ng').val(data['ccd_setting_ng']);
+                        $('#changes_para').val(data['changes_para']);
+                        $("#remarks").val(data['remarks']).trigger('change');
+                        $('#opt_name').val(data['operator_info']['firstname']+' '+data['operator_info']['lastname']);
+                        $('#opt_id').val(data['opt_id']);
+                        
+                        if (data['qc_info'] != null){
+                            $('#qc_name').val(data['qc_info']['firstname']+' '+data['qc_info']['lastname']);
+                        }else{
+                            $('#qc_name').val('');
+                        }
+                        $('#qc_id').val(data['qc_id']);
+
+                        $('#shots').val(data['shots']);
+                        $('#prodn_stime').val(data['prodn_stime']);
+                        $('#prodn_etime').val(data['prodn_etime']);
+                        $('#shots').val(data['shots']);
+
+                        $('#modalProductionHistory').modal('show');
+
+                    }
+                });
+            });
+
+            /* QR Code Scanner */
+            /* Machine No. */
+            $('#btnMachineNo').each(function(e){
+                $(this).on('click',function (e) {
+                    let formValue = $(this).attr('form-value');
+                    $('#modalQrMachine').attr('data-form-id', formValue).modal('show');
+                    $('#textQrMachine').val('');
+                    setTimeout(() => {
+                        $('#textQrMachine').focus();
+                    }, 500);
+                });
+            });
+            
+            $('#textQrMachine').keyup(delay(function(e){
+                    let qrScannerValue = $('#textQrMachine').val();
+                    let formId = $('#modalQrMachine').attr('data-form-id');
+                    if( e.keyCode == 13 ){
+                        $('#textQrMachine').val(''); // Clear after enter
+                        switch (formId) {
+                            case 'formMachineNo':
+                                if(qrScannerValue != ''){
+                                    $('#machine_no').val(qrScannerValue);
+                                }else{
+                                    $('#machine_no').val('N/A');
+                                    toastr.error('Please scan Machine Number.')
+                                }
+                                $('#modalQrMachine').modal('hide');
+                                break;
+                        }
+
+                    }
+                }, 100));
+
+                $('#btnMachineNo').each(function(e){
+                $(this).on('click',function (e) {
+                    let formValue = $(this).attr('form-value');
+                    $('#modalQrMachine').attr('data-form-id', formValue).modal('show');
+                    $('#textQrMachine').val('');
+                    setTimeout(() => {
+                        $('#textQrMachine').focus();
+                    }, 500);
+                });
+            });
+            
+            /*  Opt/QC Name */
+            $('#btnScanQrOptID').each(function(e){
+                $(this).on('click',function (e) {
+                    let formValue = $(this).attr('form-value');
+                    $('#modalQrEmp').attr('data-form-id', formValue).modal('show');
+                    $('#textQrEmp').val('');
+                    setTimeout(() => {
+                        $('#textQrEmp').focus();
+                    }, 500);
+                });
+            });
+
+            $('#btnScanQrQCID').each(function(e){
+                $(this).on('click',function (e) {
+                    let formValue = $(this).attr('form-value');
+                    $('#modalQrEmp').attr('data-form-id', formValue).modal('show');
+                    $('#textQrEmp').val('');
+                    setTimeout(() => {
+                        $('#textQrEmp').focus();
+                    }, 500);
+                });
+            });
+            
+            $('#textQrEmp').keyup(delay(function(e){
+                let qrScannerValue = $('#textQrEmp').val();
+                let formId = $('#modalQrEmp').attr('data-form-id');
+                if( e.keyCode == 13 ){
+                    $('#textQrEmp').val(''); // Clear after enter
+                    switch (formId) {
+                        case 'formOperatorName':
+                            $.ajax({
+                                url: "get_user_by_en",
+                                method: "get",
+                                data: {
+                                    employee_id: qrScannerValue
+                                },
+                                dataType: "json",
+                                beforeSend: function(){
+
+                                },
+                                success: function(data){
+                                    console.log(data)
+                                    if(data['users'] != null){
+                                        if(data['users']['position'] == 0 || data['users']['position'] == 4){
+                                            $('input[name="opt_name"]', $("#formProductionHistory")).val(data['users']['firstname']+' '+data['users']['lastname']);
+                                            $('input[name="opt_id"]', $("#formProductionHistory")).val(data['users']['id']);
+                                            $('#modalQrEmp').modal('hide');
+                                        }else{
+                                            $('input[name="opt_name"]', $("#formProductionHistory")).val('');
+                                            $('input[name="opt_id"]', $("#formProductionHistory")).val('');
+                                            let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> OPERATOR not found, Please check!</p>`;
+                                            $('#alert_notif').html(notif_alert);
+                                            $('#modalAlert_notif').modal('show');  
+                                            $('#modalQrEmp').modal('hide');
+                                        }
+                                    }
+                                },
+                                error: function(data, xhr, status){
+                                    toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                                }
+                            });
+                            break;
+                        case 'formQCName':
+                            $.ajax({
+                                url: "get_user_by_en",
+                                method: "get",
+                                data: {
+                                    employee_id: qrScannerValue
+                                },
+                                dataType: "json",
+                                beforeSend: function(){
+
+                                },
+                                success: function(data){
+                                    console.log(data)
+                                    if(data['users'] != null){
+                                        if(data['users']['position'] == 0 || data['users']['position'] == 2 || data['users']['position'] == 5){
+                                            $('input[name="qc_name"]', $("#formProductionHistory")).val(data['users']['firstname']+' '+data['users']['lastname']);
+                                            $('input[name="qc_id"]', $("#formProductionHistory")).val(data['users']['id']);
+                                            $('#modalQrEmp').modal('hide');
+                                        }else{
+                                            $('input[name="qc_name"]', $("#formProductionHistory")).val('');
+                                            $('input[name="qc_id"]', $("#formProductionHistory")).val('');
+                                            let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> QC not found, Please Check!</p>`;
+                                            $('#alert_notif').html(notif_alert);
+                                            $('#modalAlert_notif').modal('show');  
+                                            $('#modalQrEmp').modal('hide');
+                                        }
+                                    }
+                                },
+                                error: function(data, xhr, status){
+                                    toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                                }
+                            });
+                            break;
+                    }
+                    
+
+                }
+            }, 100));
+
+            /* Material Lot */
+            $('#btnScanQrMaterialLotNo').each(function(e){
+                $(this).on('click',function (e) {
+                    let formValue = $(this).attr('form-value');
+                    $('#modalQrLotNo').attr('data-form-id', formValue).modal('show');
+                    $('#textQrLotNo').val('');
+                    setTimeout(() => {
+                        $('#textQrLotNo').focus();
+                    }, 500);
+                });
+            });
+
+             $('#btnScanQrPMaterialLotNo').each(function(e){
+                $(this).on('click',function (e) {
+                    let formValue = $(this).attr('form-value');
+                    $('#modalQrLotNo').attr('data-form-id', formValue).modal('show');
+                    $('#textQrLotNo').val('');
+                    setTimeout(() => {
+                        $('#textQrLotNo').focus();
+                    }, 500);
+                });
+            });
+
+            $('#textQrLotNo').on('keyup', function(e){
+                if(e.keyCode == 13){
+
+                    // scannedItem = JSON.parse($(this).val());
+                    // console.log(scannedItem)
+
+                    let expMaterial = $(this).val().split(' | ');
+                    console.log(expMaterial);
+                    if(expMaterial.length != 4){
+                        toastr.error('Invalid Sticker');
+                        $(this).val('');
+                        $('#modalQrLotNo').modal('hide');
+                        return;
+                    }
+                    $material_code = $('#material_code').val();
+                    $material_name = $('#material_name').val();
+
+                    if (material_code == expMaterial[2] || $material_name == expMaterial[3]){
+                        $('#material_lotno').val(expMaterial[0]);
+                    }else{
+                        let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> Invalid Material Lot Number, Please check!</p>`;
+                        $('#alert_notif').html(notif_alert);
+                        $('#modalAlert_notif').modal('show');  
+                        $('#modalQrLotNo').modal('hide');
+                    }
+                    
+
+                    $(this).val('');
+                    $('#modalQrLotNo').modal('hide');
+
+
+
+
+                    
+                }
+            });
+     
+
+        
+        
+        
+        
+        
+        });
+    </script>
     @endsection
 @endauth

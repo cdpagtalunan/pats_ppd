@@ -173,7 +173,7 @@
         </div><!-- /.End History Modal -->        
                 
         <!-- Start OQC Inspection Modal -->
-        <div class="modal fade" id="modalOqcInspectionSecondStamping" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalOqcInspection" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -189,8 +189,9 @@
                         <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
+                        <input type="hidden" class="form-control form-control-sm" id="txtCheckButton" name="check_button">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
-                        
+
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend w-25">
@@ -498,7 +499,13 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot Accepted</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        <select class="form-select form-control-sm" id="slctOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted">
+                                            <option selected disabled>-- Select --</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+
+                                        {{-- <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted" onkeypress="return event.charCode >= 48 && event.charCode <= 57"> --}}
                                         {{-- <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>1st Press Yield</strong></span>
                                         </div>
@@ -717,6 +724,8 @@
                     getInfoForSecondStamping    = $(this).attr('second-stamping')
                     
                     $('#txtStatus').val(getInfoForSecondStamping)
+                    $('#txtCheckButton').val('update')
+
                     setTimeout(() => {     
                         $time_now = moment().format('HH:mm:ss');
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
@@ -742,17 +751,20 @@
                     $('.viewDrawingFirst').removeClass('slct')
                 })
 
-                $(document).on('click', '.actionOqcInspectionViewSecondStamping', function(e){
+                $(document).on('click', '.actionOqcInspectionView', function(e){
                     e.preventDefault()
                     getPo                       = $(this).attr('prod-po')
-                    getPoQty                    = $(this).attr('prod-po-qty')
+                    modal                       = $(this).attr('data-bs-target')
+                    getPoQty                    = $(this).attr('prod-po_qty')
                     getOqcId                    = $(this).attr('oqc_inspection-id')
                     getProdId                   = $(this).attr('prod-id')
-                    getProdLotNo                = $(this).attr('prod-lot-no')
-                    getMaterialName             = $(this).attr('prod-material-name')
+                    getProdLotNo                = $(this).attr('prod-lot_no')
+                    getMaterialName             = $(this).attr('prod-material_name')
                     getProdShipOutput           = $(this).attr('prod-ship_output')
                     getInfoForSecondStamping    = $(this).attr('second-stamping')
+                    console.log('modal',modal)
                     $('#txtStatus').val(getInfoForSecondStamping)
+                    $('#txtCheckButton').val('view')
 
                     GetOqcInspectionById(
                         getPo,
@@ -858,7 +870,7 @@
                     }
                 })
 
-                $('#modalOqcInspectionSecondStamping').on('hide.bs.modal', function() {
+                $('#modalOqcInspection').on('hide.bs.modal', function() {
                     console.log('Hide OQC Inspection modal: hide scan fields')
                     $('#txtScanUserId').addClass('d-none')
                     $('#txtScanQrCode').addClass('d-none')
@@ -1002,10 +1014,10 @@
                     }
                 })
 
-                $('#txtOqcInspectionLotAccepted').on('keyup', function () {
-                    if($('#txtOqcInspectionLotAccepted').val() == '1' || $('#txtOqcInspectionLotAccepted').val() == ''){
+                $('#slctOqcInspectionLotAccepted').on('change', function () {
+                    if($('#slctOqcInspectionLotAccepted').val() == '1' || $('#slctOqcInspectionLotAccepted').val() == ''){
                         $('.mod-class').addClass('d-none')
-                        if($('#txtOqcInspectionLotAccepted').val() != ''){
+                        if($('#slctOqcInspectionLotAccepted').val() != ''){
                             $('#txtOqcInspectionJudgement').val('Accept')
                             $('.selectEmpty').empty();
                             $('.defectCounts').val('')

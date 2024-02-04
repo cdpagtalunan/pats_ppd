@@ -5,15 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+// use App\Models\WbsOqcInspection;
 use App\Models\User;
 use App\Models\ReelLot;
 use App\Models\PrintLot;
-use App\Models\ModeOfDefect;
-// use App\Models\WbsOqcInspection;
-use App\Models\FirstStampingProduction;
 use App\Models\PackingDetails;
 use App\Models\PreliminaryPacking;
 use App\Models\PackingDetailsMolding;
+use App\Models\FirstStampingProduction;
+use App\Models\OqcInspectionModeOfDefect;
 
 class OQCInspection extends Model
 {
@@ -33,7 +33,7 @@ class OQCInspection extends Model
     }
 
     public function mod_oqc_inspection_info(){
-        return $this->hasMany(ModeOfDefect::class, 'oqc_inspection_id','id');
+        return $this->hasMany(OqcInspectionModeOfDefect::class, 'oqc_inspection_id','id');
     }
 
     public function stamping_production_info(){

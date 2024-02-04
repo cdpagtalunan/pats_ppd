@@ -14,6 +14,10 @@
         FirstMoldingStationDetails: $("#tblFirstMoldingStationDetails"),
     }
 
+    var arr = {
+        Ctr : 0,
+    }
+
     const getFirstModlingDevices = function (){
 
         $.ajax({
@@ -92,7 +96,6 @@
     }
     //first_molding_detail_mods
     const editFirstMoldingStation = function (){
-        $("#tableFirstMoldingStationMOD tbody").empty();
         let first_molding_station_id = $(this).attr('first-molding-station-id');
         // console.log(first_molding_station_id)
         // return;
@@ -106,8 +109,6 @@
                 let data = response['first_molding_detail_mod'][0].belongs_to_first_molding_detail;
                 let first_molding_detail_mod = response['first_molding_detail_mod'];
 
-                // console.log(response)
-                // return;
                 formModal.firstMoldingStation.find('#first_molding_id').val(data.first_molding_id);
                 formModal.firstMoldingStation.find('#first_molding_detail_id').val(data.id);
                 formModal.firstMoldingStation.find('#date').val(data.date);
@@ -160,27 +161,8 @@
                     }
                     totalNumberOfMOD += parseInt($(this).val());
                 });
-                getValidateTotalNgQty(ngQty,totalNumberOfMOD);
 
-                // // console.log('totalNumberOfMOD',totalNumberOfMOD);
-                // if(parseInt(ngQty) === totalNumberOfMOD){
-                //     $('#labelTotalNumberOfNG').css({color: 'green'})
-                //     $('#labelIsTally').css({color: 'green'})
-                //     $('#labelIsTally').addClass('fa-thumbs-up')
-                //     $('#labelIsTally').removeClass('fa-thumbs-down')
-                //     $('#labelIsTally').attr('title','')
-                //     $("#buttonFirstMoldingStation").prop('disabled', false);
-                //     $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', true);
-                // }else{
-                //     console.log('Mode of Defect & NG Qty not tally!');
-                //     $('#labelTotalNumberOfNG').css({color: 'red'})
-                //     $('#labelIsTally').css({color: 'red'})
-                //     $('#labelIsTally').addClass('fa-thumbs-down')
-                //     $('#labelIsTally').removeClass('fa-thumbs-up')
-                //     $('#labelIsTally').attr('title','Mode of Defect & NG Qty are not tally!')
-                //     $("#buttonFirstMoldingStation").prop('disabled', true);
-                //     $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', false);
-                // }
+                getValidateTotalNgQty(ngQty,totalNumberOfMOD);
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }
@@ -215,6 +197,7 @@
                     errorHandler( errors.production_lot,formModal.firstMolding.find('#production_lot') );
                     errorHandler( errors.production_lot_extension,formModal.firstMolding.find('#production_lot_extension') );
                     errorHandler( errors.machine_no,formModal.firstMolding.find('#machine_no') );
+                    errorHandler( errors.dieset_no,formModal.firstMolding.find('#dieset_no') );
                     errorHandler( errors.drawing_no,formModal.firstMolding.find('#drawing_no') );
                     errorHandler( errors.revision_no,formModal.firstMolding.find('#revision_no') );
                     errorHandler( errors.target_shots,formModal.firstMolding.find('#target_shots') );
@@ -305,7 +288,11 @@
 
     const totalOutput = function (input_qty,ng_qty){
         let totalOutputQty = input_qty - ng_qty;
-        if(input_qty == "" || ng_qty == "" || totalOutputQty < 0 ){
+        if(input_qty == "" || ng_qty == "" || totalOutputQty <= 0){
+            formModal.firstMoldingStation.find('#input').val(0);
+            formModal.firstMoldingStation.find('#output').val(0);
+            formModal.firstMoldingStation.find('#ng_qty').val(0);
+            formModal.firstMoldingStation.find("#station_yield").val('0%');
             Swal.fire({
                 position: "center",
                 icon: "error",
@@ -313,10 +300,6 @@
                 showConfirmButton: false,
                 timer: 1500
             });
-            formModal.firstMoldingStation.find('#input').val(0);
-            formModal.firstMoldingStation.find('#output').val(0);
-            formModal.firstMoldingStation.find('#ng_qty').val(0);
-            formModal.firstMoldingStation.find("#station_yield").val('0%');
             return;
         }
         formModal.firstMoldingStation.find('#output').val(totalOutputQty);
@@ -374,14 +357,6 @@
     }
 
     const getValidateTotalNgQty = function (ngQty,totalNumberOfMOD){
-        // $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
-        //     if($(this).val() === null || $(this).val() === ""){
-        //         $("#tableFirstMoldingStationMOD tbody").empty();
-        //         $("#labelTotalNumberOfNG").text(parseInt(0));
-        //     }
-        //     totalNumberOfMOD += parseInt($(this).val());
-        // });
-
         if(parseInt(ngQty) === totalNumberOfMOD){
             $('#labelTotalNumberOfNG').css({color: 'green'})
             $('#labelIsTally').css({color: 'green'})
@@ -402,4 +377,13 @@
         }
         $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
     }
-// });
+
+    const resetTotalNgQty = function() {
+        let totalNumberOfMOD = 0;
+        $('#labelTotalNumberOfNG').css({color: 'red'})
+        $('#labelIsTally').css({color: 'red'})
+        $('#labelIsTally').addClass('fa-thumbs-down')
+        $('#labelIsTally').removeClass('fa-thumbs-up')
+        $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
+    }
+// })

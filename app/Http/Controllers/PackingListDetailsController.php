@@ -18,6 +18,7 @@ use App\Models\OQCInspection;
 use App\Models\ReceivingDetails;
 use App\Models\User;
 use App\Models\PreliminaryPacking;
+use App\Models\PackingDetails;
 
 class PackingListDetailsController extends Controller
 {
@@ -86,26 +87,43 @@ class PackingListDetailsController extends Controller
     }
 
     public function viewPackingListData(Request $request){
-        $packing_list_data = PackingListDetails::
-        where('shipment_status', 1)
-        ->get();
+        // $packing_list_data = PackingListDetails::
+        // where('shipment_status', 1)
+        // ->select('control_no', 'any_value(`po_no`) AS po')
+        // ->groupBy('control_no')
+        // ->get();
+
+        $packing_list_data = DB::connection('mysql')
+        ->select("SELECT `control_no`, any_value(`po_no`) AS po FROM `packing_list_details` WHERE `shipment_status` = 1 GROUP BY `control_no`");
+
+        // return $packing_list_data;
 
         return DataTables::of($packing_list_data)
+        ->addColumn('action', function($packing_list_data){
+            $result = "";
+            $result .= "<center>";
+
+            $result .= "<button class='btn btn-primary btn-sm btnEditPackingListDetails' data-ctrl-no='$packing_list_data->control_no'><i class='fa-solid fa-eye'></i></button>&nbsp";
+
+
+            $result .= "</center>";
+            return $result;
+        })
             ->addColumn('status', function($packing_list_data){
                 $result = "";
                 $result .= "<center>";
 
-                if($packing_list_data->shipment_status == 1){
+                // if($packing_list_data->shipment_status == 1){
                     $result .= '<span class="badge bg-success">Completed</span>';
-                }
-                else{
-                    $result .= '<span class="badge bg-danger">Cancelled</span>';
-                }
+                // }
+                // else{
+                    // $result .= '<span class="badge bg-danger">Cancelled</span>';
+                // }
                 $result .= "</center>";
                 return $result;
             })
             // ->addIndexColumn(['DT_RowIndex'])
-            ->rawColumns(['status'])
+            ->rawColumns(['action','status'])
             ->make(true);
     }
 
@@ -116,16 +134,12 @@ class PackingListDetailsController extends Controller
         // ->get();
 
         $prelim_packing_data = PreliminaryPacking::with(['oqc_info.stamping_production_info'])
-        ->where('po_no', 'like', '%' . $request->search_data . '%')
+        ->where('po_no', $request->search_data)
         ->where('status', 1)
         ->get();
 
         // return $prelim_packing_data;
-
-        if(!isset($request->search_data)){
-            return [];
-        }else{
-            
+    
             return DataTables::of($prelim_packing_data)
             ->addColumn('action', function($prelim_packing_data){
                 $result = "";
@@ -139,13 +153,6 @@ class PackingListDetailsController extends Controller
             ->addColumn('status', function($prelim_packing_data){
                 $result = "";
                 $result .= "<center>";
-        
-                // if($test == 2){
-                //     $result .= '<span class="badge bg-success">Active</span>';
-                // }
-                // else{
-                //     $result .= '<span class="badge bg-danger">Disabled</span>';
-                // }
 
                 $result .= "</center>";
                 return $result;
@@ -154,7 +161,6 @@ class PackingListDetailsController extends Controller
             ->rawColumns(['action','status'])
             // ->rawColumns(['action','status','test'])
             ->make(true);
-        }
     }
 
     public function getDataFromProduction(Request $request){
@@ -171,6 +177,7 @@ class PackingListDetailsController extends Controller
     public function addPackingListData(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
+        
 
         $prod_id = [
             "prod_id" => [],
@@ -200,6 +207,8 @@ class PackingListDetailsController extends Controller
         $prod_id = "";
         $imploded_cc = implode($request->carbon_copy, ',');
 
+        // return $prod_data;
+
         $rules = [
             // 'control_no'                 => 'required',
             // // 'company_contact_no'      => 'required',
@@ -216,7 +225,10 @@ class PackingListDetailsController extends Controller
                     $part_code = $prod_data[$i]->stamping_production_info->part_code;
                     $material_name = $prod_data[$i]->stamping_production_info->material_name;
                     $prod_lot_no = $prod_data[$i]->stamping_production_info->prod_lot_no;
+                    $drawing_no = $prod_data[$i]->stamping_production_info->drawing_no;
+                    $no_of_cuts = $prod_data[$i]->stamping_production_info->no_of_cuts;
                     $qty = $prod_data[$i]->stamping_production_info->ship_output;
+                    $po_qty = $prod_data[$i]->stamping_production_info->po_qty;
             
                         $array = [
                             'control_no'            => $request->ctrl_num,
@@ -236,32 +248,37 @@ class PackingListDetailsController extends Controller
                             'prepared_by'           => $request->prepared_by,
                             'checked_by'            => $request->checked_by,
                             'cc_personnel'          => $imploded_cc,
-                            'shipment_status'       => 1,
+                            'shipment_status'       => 0,
                             'created_at'            => date('Y-m-d H:i:s'),
                         ];
-                        $array_for_receiving = [
+
+                        $array_for_final_packing = [
+                            'oqc_id'                => $oqc_id,
+                            'packing_ctrl_no'       => $request->ctrl_num,
                             'po_no'                 => $po_no,
-                            'control_no'            => $request->ctrl_num,
-                            'part_code'             => $part_code,
-                            'prod_id'               => $prod_id,
-                            'mat_name'              => $material_name,
-                            'lot_no'                => $prod_lot_no,
-                            'quantity'              => $qty,
-                            'status'                => 0,
-                            'created_at'            => date('Y-m-d H:i:s'),
+                            'lot_qty'               => $qty,
+                            'shipment_qty'          => $po_qty,
+                            'material_name'         => $material_name,
+                            'material_lot_no'       => $prod_lot_no,
+                            'drawing_no'            => $drawing_no,
+                            'no_of_cuts'            => $no_of_cuts,
+                            'print_count'           => 0,
                         ];
+                        
+                        
                         $array_for_preliminary = [
                             'status' => 2,
                         ];
-
+                        
                         // return $oqc_id;
-
+                        
                         PackingListDetails::insert($array);
-                        ReceivingDetails::insert($array_for_receiving);
-
+                        PackingDetails::insert($array_for_final_packing); // FINAL PACKING DETAILS
+                        
                         PreliminaryPacking::where('oqc_id', $oqc_id)
                         ->update($array_for_preliminary);
-        
+                        
+                        // ReceivingDetails::insert($array_for_final_packing);
                 
             }
             return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
@@ -271,5 +288,41 @@ class PackingListDetailsController extends Controller
         }
 
         
+    }
+
+    public function getPackingListDetailsbyCtrl(Request $request){
+        $packing_list_data_by_ctrl = PackingListDetails::
+        where('control_no', $request->packing_list_ctrl_no)
+        ->get();
+        
+        return DataTables::of($packing_list_data_by_ctrl)
+            ->addColumn('action', function($packing_list_data_by_ctrl){
+                $result = "";
+                $result .= "<center>";
+
+                $result .= "</center>";
+                return $result;
+            })
+            ->addColumn('status', function($packing_list_data_by_ctrl){
+                $result = "";
+                $result .= "<center>";
+        
+                $result .= '<span class="badge bg-success">Completed</span>';
+
+                $result .= "</center>";
+                return $result;
+            })
+            ->addIndexColumn(['DT_RowIndex'])
+            ->rawColumns(['action','status'])
+            // ->rawColumns(['action','status','test'])
+            ->make(true);
+    }
+
+    public function getPackingListDetails(Request $request){
+        $packing_list_details = PackingListDetails::
+        where('control_no', $request->packing_list_ctrl_no)
+        ->get();
+
+        return response()->json(['packingListDetails' => $packing_list_details]);
     }
 }

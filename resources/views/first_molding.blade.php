@@ -164,7 +164,6 @@
 
                 $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
                     formModal.firstMoldingStation.find('#first_molding_detail_id').val('');
-                    formModal.firstMoldingStation.find('#date').val('');
                     formModal.firstMoldingStation.find('#operator_name').val('');
                     formModal.firstMoldingStation.find('#remarks').val('');
                     formModal.firstMoldingStation.find('[type="number"]').val(0);
@@ -172,6 +171,7 @@
                     formModal.firstMoldingStation.find('.form-control').removeClass('is-invalid');
                     formModal.firstMoldingStation.find('.form-control').attr('title', '');
                     resetTotalNgQty();
+                    $("#tableFirstMoldingStationMOD tbody").empty();
                 })
 
                 $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal', function () {
@@ -318,6 +318,7 @@
                         }
                     });
                 }
+
                 $('#global_device_name').change(function (e) {
                     e.preventDefault();
                     $.ajax({
@@ -342,6 +343,20 @@
                     });
                 });
 
+                $('#tableFirstMoldingStationMOD').on('keyup','.textMODQuantity', function (e) {
+                    let totalNumberOfMOD = 0;
+                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
+
+                    $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() === null || $(this).val() === ""){
+                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            $("#labelTotalNumberOfNG").text(parseInt(0));
+                        }
+                        totalNumberOfMOD += parseInt($(this).val());
+                    });
+                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
+                });
+
                 formModal.firstMolding.find('#pmi_po_no').on('keyup',function (e) {
                     e.preventDefault();
                         getPmiPoReceivedDetails( $(this).val() );
@@ -351,6 +366,58 @@
                     $('#mdlScanQrCodeFirstMolding').modal('show');
                     $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal');
 
+                });
+
+                /**
+                 * Add Mode Of Defect
+                 * Start
+                */
+                $("#buttonAddFirstMoldingModeOfDefect").click(function(){
+                    let totalNumberOfMOD = 0;
+                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
+                    let rowModeOfDefect = `
+                        <tr>
+                            <td>
+                                <select class="form-control select2 select2bs4 selectMOD" name="mod_id[]">
+                                    <option value="0">N/A</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="1" min="1">
+                            </td>
+                            <td>
+                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                            </td>
+                        </tr>
+                    `;
+                    $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
+                    getModeOfDefectForSecondMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
+                
+                    $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() === null || $(this).val() === ""){
+                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            $("#labelTotalNumberOfNG").text(parseInt(0));
+                        }
+                        totalNumberOfMOD += parseInt($(this).val());
+                    });
+                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
+
+                });
+
+                $("#tableFirstMoldingStationMOD").on('click', '.buttonRemoveMOD', function(){
+                    let totalNumberOfMOD = 0;
+                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
+
+                    $(this).closest ('tr').remove();
+                    
+                    $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() === null || $(this).val() === ""){
+                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            $("#labelTotalNumberOfNG").text(parseInt(0));
+                        }
+                        totalNumberOfMOD += parseInt($(this).val());
+                    });
+                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
 
                 $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
@@ -366,20 +433,11 @@
                         $('#mdlScanQrCodeFirstMolding').modal('hide');
                     }
                 });
-
+                
                 formModal.firstMoldingStation.find('#input').keyup(function (e) {
                     totalOutput($(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
                     totalStationYield($(this).val(),formModal.firstMoldingStation.find("#output").val());
                 });
-
-                const resetTotalNgQty = function() {
-                    let totalNumberOfMOD = 0;
-                    $('#labelTotalNumberOfNG').css({color: 'red'})
-                    $('#labelIsTally').css({color: 'red'})
-                    $('#labelIsTally').addClass('fa-thumbs-down')
-                    $('#labelIsTally').removeClass('fa-thumbs-up')
-                    $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
-                }
 
                 formModal.firstMoldingStation.find('#ng_qty').keyup(function (e) {
                     let ngQty = $(this).val();
@@ -460,50 +518,39 @@
                     savefirstMoldingStation();
                 });
 
-                /**
-                 * Add Mode Of Defect
-                 * Start
-                */
-                $("#buttonAddFirstMoldingModeOfDefect").click(function(){
-                    let totalNumberOfMOD = 0;
-                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
-                    let rowModeOfDefect = `
+                $('#btnAddFirstMoldingMaterial').click(function (e) { 
+                    e.preventDefault();
+                    arr.Ctr ++;
+                    let rowFirstMoldingMaterial = `
                         <tr>
                             <td>
-                                <select class="form-control select2 select2bs4 selectMOD" name="mod_id[]">
-                                    <option value="0">N/A</option>
-                                </select>
+                                <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]">
+                                </div>
                             </td>
                             <td>
-                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="1" min="1">
+                                <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="recycle_material" name="recycle_material[]">
+                                </div>
                             </td>
                             <td>
-                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                <center><button class="btn btn-xs btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
                             </td>
                         </tr>
                     `;
-                    $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
-                    // $('.select2bs5').select2({
-                    //     theme: 'bootstrap-5'
-                    // });
-                    getModeOfDefectForSecondMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
-                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
-
+                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
                 });
 
-                $("#tableFirstMoldingStationMOD").on('click', '.buttonRemoveMOD', function(){
-                    let totalNumberOfMOD = 0;
-                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
-
+                $("#tblFirstMoldingMaterial").on('click', '.buttonRemoveMaterial', function(){
                     $(this).closest ('tr').remove();
-                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
-                $(document).on('keyup','.textMODQuantity', function (e) {
-                    let totalNumberOfMOD = 0;
-                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
-
-                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
-                });
+                
             });
         </script>
     @endsection

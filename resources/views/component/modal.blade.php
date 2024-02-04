@@ -398,7 +398,6 @@
                                 </div>
                                 </div>
                             </div>
-
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
@@ -435,6 +434,24 @@
                                             <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Machine No.: </span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="machine_no" name="machine_no">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Dieset No.: </span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="dieset_no" name="dieset_no">
                                     </div>
                                 </div>
                             </div>
@@ -546,8 +563,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
@@ -584,9 +599,8 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-sm-16">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
@@ -597,34 +611,42 @@
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Machine No.: </span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="machine_no" name="machine_no">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Created At</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="created_at" name="created_at" readonly="true" placeholder="Auto generated">
                                     </div>
                                 </div>
-                                <div class="col-sm-6">
-
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="table-responsive">
+                                        <div class="d-flex justify-content-end">
+                                            <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button>
+                                        </div>
+                                        <br>
+                                        <table class="table table-sm" id="tblFirstMoldingMaterial">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 45%;">New Material</th>
+                                                    <th style="width: 45%;">Recycled Material</th>
+                                                    <th style="width: 10%;">Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-6">
-                                    <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
+                                <div class="col-sm-12">
+                                    <div class="d-flex justify-content-end">
                                         <button class="btn btn-sm btn-success" type="submit" id="btnRuncardDetails">
                                             <i class="fa-solid fa-floppy-disk"></i> Save
                                         </button>
+                                        {{-- <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button> --}}
                                     </div>
-                                </div>
-                                <div class="col-sm-6">
+                                    <br>
                                 </div>
                             </div>
                         </div>
@@ -796,10 +818,40 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="table-responsive">
+                                <div class="d-flex justify-content-between">
+
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <label>Total No. of NG: <span id="labelTotalNumberOfNG" style="color: red;">0</span>
+                                        <label>
+                                            &nbsp;<li class="fa-solid fa-thumbs-down" id="labelIsTally" style="color: red;"></li>
+                                        </label>
+                                    </label>
+                                    <button type="button" id="buttonAddFirstMoldingModeOfDefect" class="btn btn-sm btn-info" title="Add MOD"><i class="fa fa-plus"></i> Add MOD</button>
+                                </div>
+                                <br>
+                                <table class="table table-sm" id="tableFirstMoldingStationMOD">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 55%;">Mode of Defect</th>
+                                            <th style="width: 15%;">QTY</th>
+                                            <th style="width: 10%;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Save</button>
+                <button type="submit" class="btn btn-success" id="buttonFirstMoldingStation">Save</button>
             </div>
         </form>
         </div>

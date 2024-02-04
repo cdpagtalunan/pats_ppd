@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateModeOfDefectsTable extends Migration
+class CreateOqcInspectionModeOfDefectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateModeOfDefectsTable extends Migration
      */
     public function up()
     {
-        Schema::create('mode_of_defects', function (Blueprint $table) {
+        Schema::create('oqc_inspection_mode_of_defects', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('oqc_inspection_id');
             $table->unsignedTinyInteger('counter')->default(0);
@@ -33,6 +33,6 @@ class CreateModeOfDefectsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mode_of_defects');
+        Schema::dropIfExists('oqc_inspection_mode_of_defects');
     }
 }

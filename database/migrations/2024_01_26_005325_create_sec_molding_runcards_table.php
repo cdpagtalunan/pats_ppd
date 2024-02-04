@@ -17,8 +17,10 @@ class CreateSecMoldingRuncardsTable extends Migration
             $table->bigIncrements('id');
             $table->string('device_name')->nullable();
             $table->string('parts_code')->nullable();
+            $table->string('pmi_po_number')->nullable();
             $table->string('po_number')->nullable();
             $table->string('po_quantity')->nullable();
+            $table->string('required_output')->nullable();
             $table->string('machine_number')->nullable();
             $table->string('material_lot_number')->nullable();
             $table->string('material_name')->nullable();

@@ -102,6 +102,12 @@
                                         <p>IPQC 2nd Stamping</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('first_molding_ipqc_inspection') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>IPQC 1st Molding</p>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -363,6 +369,28 @@
                             </li>
                         </ul>
                     </li>
+                @endif
+
+                @if (in_array(Auth::user()->position, [0,8,9,10]))
+                    <li class="nav-header mt-3"><strong>TRACEABILITY REPORT</strong></li>
+                    <li class="nav-item">
+                        <a href="{{ route('cn171_traceability_report') }}" class="nav-link">
+                            {{-- <i class="fas fa-map-marked-alt"> </i> --}}
+                            {{-- <i class="fas fa-cog"> </i> --}}
+                            <i class="far fa-circle nav-icon ml-2">  </i>
+                            <p> Export CN171 Traceability Report</p>
+                        </a>
+                    </li>
+                    {{-- <li class="nav-item has-treeview">
+                        <a href="#" class="nav-link">
+                            <i class="fas fa-shipping-fast"> </i>
+                            <p> CN171 Traceability Report</p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"> </i>
+                        </a>
+
+                        <ul class="nav nav-treeview">
+                           
+                        </ul>
+                    </li> --}}
                 @endif
                 @endauth
 
