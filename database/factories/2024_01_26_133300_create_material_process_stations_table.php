@@ -13,7 +13,7 @@ class CreateMaterialProcessStationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('material_process_stations', function (Blueprint $table) {
+        Schema::create('', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('mat_proc_id');
             $table->unsignedInteger('station_id');
