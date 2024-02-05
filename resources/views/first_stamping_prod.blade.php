@@ -800,7 +800,8 @@
 
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        let explodedMat = $(this).val().split(' $|| ');
+                        let explodedMat = $(this).val().split(' | ');
+
                         console.log(explodedMat);
                         if(explodedMat.length != 2){
                             toastr.error('Invalid Sticker');

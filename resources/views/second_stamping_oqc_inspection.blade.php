@@ -498,7 +498,13 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Lot Accepted</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        <select class="form-select form-control-sm" id="slctOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted">
+                                            <option selected disabled>-- Select --</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+
+                                        {{-- <input type="text" class="form-control form-control-sm" id="txtOqcInspectionLotAccepted" name="oqc_inspection_lot_accepted" onkeypress="return event.charCode >= 48 && event.charCode <= 57"> --}}
                                         {{-- <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100"><strong>1st Press Yield</strong></span>
                                         </div>
@@ -1002,10 +1008,10 @@
                     }
                 })
 
-                $('#txtOqcInspectionLotAccepted').on('keyup', function () {
-                    if($('#txtOqcInspectionLotAccepted').val() == '1' || $('#txtOqcInspectionLotAccepted').val() == ''){
+                $('#slctOqcInspectionLotAccepted').on('change', function () {
+                    if($('#slctOqcInspectionLotAccepted').val() == '1' || $('#slctOqcInspectionLotAccepted').val() == ''){
                         $('.mod-class').addClass('d-none')
-                        if($('#txtOqcInspectionLotAccepted').val() != ''){
+                        if($('#slctOqcInspectionLotAccepted').val() != ''){
                             $('#txtOqcInspectionJudgement').val('Accept')
                             $('.selectEmpty').empty();
                             $('.defectCounts').val('')
@@ -1036,7 +1042,7 @@
                             dataType: "json",
                             success: function (response) {
                                 let userDetails = response['userDetails']
-                                if(userDetails != null && userDetails.position == 0 || userDetails.position == 2 || userDetails.position == 5){
+                                if(userDetails != null){
                                     $('#txtEmployeeNo').val(userDetails.employee_id)
                                     UpdateOqcInspection()
                                 }else{
@@ -1048,6 +1054,17 @@
                         $('#mdlScanQrCode').modal('hide')
                     }
                 })
+
+                if("<?php echo Auth::user()->position; ?>" == 0 || "<?php echo Auth::user()->position; ?>" == 2){
+                    $('#txtPoNumber').attr('readonly', false)
+                    $('#txtPoNumber').on('keypress',function(e){
+                        if( e.keyCode == 13 ){
+                            getPoNo =  $('#txtPoNumber').val();
+                            dataTableOQCInspectionSecondStamping.draw()
+                        }
+                    })
+                }
+
             })
 
         </script>

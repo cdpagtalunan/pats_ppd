@@ -482,7 +482,7 @@ function GetOqcInspectionById(getPo,
                 $('#slctOqcInspectionCocRequirement').val(getOqcInspectionData[0].coc_req)
                 $('#txtOqcInspectionJudgement').val(getOqcInspectionData[0].judgement)
                 $('#txtOqcInspectionLotInspected').val(getOqcInspectionData[0].lot_inspected)
-                $('#txtOqcInspectionLotAccepted').val(getOqcInspectionData[0].lot_accepted)
+                $('#slctOqcInspectionLotAccepted').val(getOqcInspectionData[0].lot_accepted)
                 $('#txtOqcInspectionRemarks').val(getOqcInspectionData[0].remarks)
 
                 if(getOqcInspectionData[0].lot_accepted == '0'){

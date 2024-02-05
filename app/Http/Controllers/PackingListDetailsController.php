@@ -257,13 +257,13 @@ class PackingListDetailsController extends Controller
                             'created_at'            => date('Y-m-d H:i:s'),
                         ];
                         $array_for_receiving = [
-                            'po_no'                 => $po_no,
-                            'control_no'            => $request->ctrl_num,
+                            'po_no'                 => $po_no, // okay
+                            'control_no'            => $request->ctrl_num, // okay
                             'part_code'             => $part_code,
-                            'prod_id'               => $prod_id,
-                            'mat_name'              => $material_name,
-                            'lot_no'                => $prod_lot_no,
-                            'quantity'              => $qty,
+                            'prod_id'               => $prod_id, 
+                            'mat_name'              => $material_name, // okay
+                            'lot_no'                => $prod_lot_no, // okay
+                            'quantity'              => $qty, // okay
                             'status'                => 0,
                             'created_at'            => date('Y-m-d H:i:s'),
                         ];

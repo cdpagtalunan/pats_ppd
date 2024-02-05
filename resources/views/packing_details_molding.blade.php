@@ -314,8 +314,8 @@
                     <div class="modal-body">
                         <input type="hidden" id="txtPackingMoldingDetailsId" name="molding_packing_details_id">
                         {{-- <input type="hidden" id="txtScanPONumber" name="po_no"> --}}
-                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQcId" name="scan_id" autocomplete="off"> --}}
-                        <input type="text" class="scanner w-100 " id="txtScanQcId" name="qc_scan_id" autocomplete="off">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQcId" name="scan_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtScanQcId" name="qc_scan_id" autocomplete="off"> --}}
                         <div class="text-center text-secondary"><span id="modalScanQCIdText">Please scan QC ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </form>
@@ -352,7 +352,7 @@
                             ParseScannedPo = JSON.parse(scannedPO);
                             console.log(ParseScannedPo['cat']);
                             if(ParseScannedPo['cat'] != 1){
-                                alert('heey');
+                                // alert('heey');
                                 $('#txtSearchPONum').val(ParseScannedPo['po']);
                                 $('#txtSearchMatName').val(ParseScannedPo['name']);
                                 $('#txtSearchPOQty').val(ParseScannedPo['qty']);
@@ -388,8 +388,8 @@
                         { "data" : "plating_lot_no"},
                         { "data" : "stamping_production_info.prod_lot_no"},
                         { "data" : "stamping_production_info.ship_output"},
-                        { "data" : "first_molding_info.user_checked_by_info.firstname" },
                         { "data" : "first_molding_info.user_validated_by_info.firstname"},
+                        { "data" : "first_molding_info.user_checked_by_info.firstname" },
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
@@ -560,7 +560,7 @@
                     'qc_scan_id' : toScanQcId
                     }
                         if(e.keyCode == 13){
-                            validateUser($(this).val().toUpperCase(), [4,9], function(result){    
+                            validateUser($(this).val().toUpperCase(), [2,5], function(result){    
                             if(result == true){
                                     let data1 = $('#formScanQCId').serialize()+ '&' + $.param(scannedQcId);
                                     $.ajax({
