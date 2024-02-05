@@ -14,35 +14,96 @@ use Illuminate\Support\Facades\Validator;
 
 class ReceivingDetailsController extends Controller
 {
+    public function viewReceivingListDetailsByCtrl(Request $request){
+        // $sanno_receiving_data = ReceivingDetails::where('status', 0)
+        // ->orWhere('status', 1)
+        // ->groupBy('control_no')
+        // ->get();
+        $sanno_receiving_data = DB::connection('mysql')
+        ->select("SELECT 
+        `control_no`, 
+        any_value(`po_no`) AS po, 
+        MIN(`status`) as stat,
+        MIN(`printing_status`) as print_stat
+        FROM `receiving_details`
+        WHERE `status` <= 2
+        GROUP BY `control_no`
+        ORDER BY `stat` ASC");
+
+        // return $sanno_receiving_data;
+
+        return DataTables::of($sanno_receiving_data)
+        ->addColumn('action', function($sanno_receiving_data){
+            $result = "";
+            $result .= "<center>";
+            if($sanno_receiving_data->stat != 2){
+                $result .= "<button class='btn btn-primary btn-sm btnViewReceivingDetails' data-ctrl-no='$sanno_receiving_data->control_no'><i class='fa-solid fa-edit'></i></button>&nbsp";
+            }else{
+                $result .= "<button class='btn btn-primary btn-sm btnViewReceivingDetails' data-ctrl-no='$sanno_receiving_data->control_no'><i class='fa-solid fa-eye'></i></button>&nbsp";  
+            }
+            $result .= "</center>";
+            return $result;
+        })
+        ->addColumn('status', function($sanno_receiving_data){
+            $result = "";
+            $result .= "<center>";
+
+            if($sanno_receiving_data->stat == 0){
+                $result .= '<span class="badge bg-primary">For WHSE Receive</span>';
+            }
+            else if($sanno_receiving_data->stat == 1){
+                $result .= '<span class="badge bg-info">For IQC Inspection</span>';
+                $result .= '<br>';
+                if($sanno_receiving_data->print_stat == 0) {
+                    $result .= '<span class="badge bg-primary">For Printing</span>';
+                }else{
+                    $result .= '<span class="badge bg-primary">Reprinting</span>';
+                }
+            }else{
+                $result .= '<span class="badge bg-success">Accepted</span>';
+            }
+
+            $result .= "</center>";
+            return $result;
+        })
+        // ->addIndexColumn(['DT_RowIndex'])
+        ->rawColumns(['action','status'])
+        // ->rawColumns(['action','status','test'])
+        ->make(true);
+    }
+
     public function viewReceivingListDetails(Request $request){
-        $sanno_receiving_data = ReceivingDetails::where('status', 0)
-        ->orWhere('status', 1)
-        ->get();
 
-        return DataTables::of($sanno_receiving_data)
-        ->addColumn('action', function($sanno_receiving_data){
+        // return $request->receving_details_ctrl_no;
+
+        $receiving_details_data = ReceivingDetails::
+        where('status', '!=', 3)
+        ->where('control_no', $request->receving_details_ctrl_no)
+        ->get();
+        
+        return DataTables::of($receiving_details_data)
+        ->addColumn('action', function($receiving_details_data){
             $result = "";
             $result .= "<center>";
-            if($sanno_receiving_data->status == 0){
-                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
-            }else if($sanno_receiving_data->status == 1){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-print'></i></button>";
-
+            if($receiving_details_data->status == 0){
+                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$receiving_details_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+            }else if($receiving_details_data->status == 1){
+                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
             }
             $result .= "</center>";
             return $result;
         })
-        ->addColumn('status', function($sanno_receiving_data){
+        ->addColumn('status', function($receiving_details_data){
             $result = "";
             $result .= "<center>";
 
-            if($sanno_receiving_data->status == 0){
+            if($receiving_details_data->status == 0){
                 $result .= '<span class="badge bg-primary">For WHSE Receive</span>';
             }
-            else if($sanno_receiving_data->status == 1){
+            else if($receiving_details_data->status == 1){
                 $result .= '<span class="badge bg-info">For IQC Inspection</span>';
                 $result .= '<br>';
-                if($sanno_receiving_data->printing_status == 0) {
+                if($receiving_details_data->printing_status == 0) {
                     $result .= '<span class="badge bg-primary">For Printing</span>';
                 }else{
                     $result .= '<span class="badge bg-primary">Reprinting</span>';
@@ -54,56 +115,56 @@ class ReceivingDetailsController extends Controller
             $result .= "</center>";
             return $result;
         })
-        // ->addIndexColumn(['DT_RowIndex'])
+        ->addIndexColumn(['DT_RowIndex'])
         ->rawColumns(['action','status'])
         // ->rawColumns(['action','status','test'])
         ->make(true);
     }
 
-    public function viewReceivingListDetailsAccepted(Request $request){
-        $sanno_receiving_data = ReceivingDetails::where('status', 2)
-        ->get();
+    // public function viewReceivingListDetailsAccepted(Request $request){
+    //     $sanno_receiving_data = ReceivingDetails::where('status', 2)
+    //     ->get();
 
-        return DataTables::of($sanno_receiving_data)
-        ->addColumn('action', function($sanno_receiving_data){
-            $result = "";
-            $result .= "<center>";
-            if($sanno_receiving_data->status == 0){
-                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
-            }else if($sanno_receiving_data->status == 1){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
+    //     return DataTables::of($sanno_receiving_data)
+    //     ->addColumn('action', function($sanno_receiving_data){
+    //         $result = "";
+    //         $result .= "<center>";
+    //         if($sanno_receiving_data->status == 0){
+    //             $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$sanno_receiving_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+    //         }else if($sanno_receiving_data->status == 1){
+    //             $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$sanno_receiving_data->id' data-printcount='$sanno_receiving_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
 
-            }
-            $result .= "</center>";
-            return $result;
-        })
-        ->addColumn('status', function($sanno_receiving_data){
-            $result = "";
-            $result .= "<center>";
+    //         }
+    //         $result .= "</center>";
+    //         return $result;
+    //     })
+    //     ->addColumn('status', function($sanno_receiving_data){
+    //         $result = "";
+    //         $result .= "<center>";
 
-            if($sanno_receiving_data->status == 0){
-                $result .= '<span class="badge bg-primary">For WHSE Receive</span>';
-            }
-            else if($sanno_receiving_data->status == 1){
-                $result .= '<span class="badge bg-info">For IQC Inspection</span>';
-                $result .= '<br>';
-                if($sanno_receiving_data->printing_status == 0) {
-                    $result .= '<span class="badge bg-primary">For Printing</span>';
-                }else{
-                    $result .= '<span class="badge bg-primary">Reprinting</span>';
-                }
-            }else{
-                $result .= '<span class="badge bg-success">Accepted</span>';
-            }
+    //         if($sanno_receiving_data->status == 0){
+    //             $result .= '<span class="badge bg-primary">For WHSE Receive</span>';
+    //         }
+    //         else if($sanno_receiving_data->status == 1){
+    //             $result .= '<span class="badge bg-info">For IQC Inspection</span>';
+    //             $result .= '<br>';
+    //             if($sanno_receiving_data->printing_status == 0) {
+    //                 $result .= '<span class="badge bg-primary">For Printing</span>';
+    //             }else{
+    //                 $result .= '<span class="badge bg-primary">Reprinting</span>';
+    //             }
+    //         }else{
+    //             $result .= '<span class="badge bg-success">Accepted</span>';
+    //         }
 
-            $result .= "</center>";
-            return $result;
-        })
-        // ->addIndexColumn(['DT_RowIndex'])
-        ->rawColumns(['action','status'])
-        // ->rawColumns(['action','status','test'])
-        ->make(true);
-    }
+    //         $result .= "</center>";
+    //         return $result;
+    //     })
+    //     // ->addIndexColumn(['DT_RowIndex'])
+    //     ->rawColumns(['action','status'])
+    //     // ->rawColumns(['action','status','test'])
+    //     ->make(true);
+    // }
 
     public function getReceivingListdetails(Request $request){
         $receiving_details = ReceivingDetails::

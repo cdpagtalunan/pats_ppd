@@ -76,6 +76,20 @@ $("#modalAddProcess").on('hidden.bs.modal', function () {
     resetFormProcessValues();
 });
 
+function resetFormSublot() {
+    // Reset values
+    $("#formSublot")[0].reset();
+    $('#btnSaveSublot').show();
+    $('#buttons').show();
+    $('.subLotMultiple').remove();
+    $('#txtSublotMultipleCounter').val(1)
+}
+
+$("#modalMultipleSublot").on('hidden.bs.modal', function () {
+    console.log('hidden.bs.modal');
+    resetFormSublot();
+});
+
 function resetFormProdValues() {
     // Reset values
     $("#formProdData")[0].reset();

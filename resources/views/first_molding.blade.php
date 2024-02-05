@@ -126,6 +126,32 @@
             </section>
         </div>
 
+        {{-- MODAL FOR PRINTING  --}}
+        <div class="modal fade" id="modalFirstMoldingPrintQr">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"> Production - QR Code</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- PO 1 -->
+                            <div class="col-sm-12">
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <label id="img_barcode_PO_text"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="btnFirstMoldingPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
 
     @include('component.modal')
     <!--- Go to component/modal.blade.php -->
@@ -142,27 +168,38 @@
                 getFirstModlingDevices();
 
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
-                    formModal.firstMolding.find('#first_molding_id').val('');
+                    // formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMolding.find('#contact_lot_number').val('');
-                    formModal.firstMolding.find('#production_lot').val('');
+                    // formModal.firstMolding.find('#production_lot').val('');
+
                     formModal.firstMolding.find('#remarks').val('');
-                    formModal.firstMolding.find('#created_at').val('');
+                    formModal.firstMolding.find('#dieset_no').val('');
+                    formModal.firstMolding.find('#production_lot_extension').val('');
+                    formModal.firstMolding.find('#pmi_po_no').val('');
+                    formModal.firstMolding.find('#machine_no').val('');
+                    formModal.firstMolding.find('#pmi_po_no').val('');
+                    formModal.firstMolding.find('#po_no').val('');
+                    formModal.firstMolding.find('#item_code').val('');
+                    formModal.firstMolding.find('#item_name').val('');
+                    formModal.firstMolding.find('#po_qty').val('');
+                    formModal.firstMolding.find('#material_yield').val('');
+                    formModal.firstMolding.find('[type="number"]').val(0)
                     formModal.firstMolding.find('.form-control').removeClass('is-valid')
                     formModal.firstMolding.find('.form-control').removeClass('is-invalid');
                     formModal.firstMolding.find('.form-control').attr('title', '');
+                    $("#tblFirstMoldingMaterial tbody").empty();
                 })
 
                 $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
                     formModal.firstMoldingStation.find('#first_molding_detail_id').val('');
-                    formModal.firstMoldingStation.find('#date').val('');
                     formModal.firstMoldingStation.find('#operator_name').val('');
-                    formModal.firstMoldingStation.find('#input').val('');
-                    formModal.firstMoldingStation.find('#ng_qty').val(0);
-                    formModal.firstMoldingStation.find('#output').val('');
                     formModal.firstMoldingStation.find('#remarks').val('');
+                    formModal.firstMoldingStation.find('[type="number"]').val(0);
                     formModal.firstMoldingStation.find('.form-control').removeClass('is-valid')
                     formModal.firstMoldingStation.find('.form-control').removeClass('is-invalid');
                     formModal.firstMoldingStation.find('.form-control').attr('title', '');
+                    resetTotalNgQty();
+                    $("#tableFirstMoldingStationMOD tbody").empty();
                 })
 
                 $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal', function () {
@@ -235,13 +272,87 @@
                 table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
                 table.FirstMoldingStationDetails.on('click','#btnEditFirstMoldingStation', editFirstMoldingStation);
 
+                table.FirstMoldingDetails.on('click', '#btnPrintFirstMolding', function(e){
+                    e.preventDefault();
+                    let firstMoldingId = $(this).attr('first-molding-id');
+                    $.ajax({
+                        type: "get",
+                        url: "get_first_molding_qr_code",
+                        data: {"first_molding_id" : firstMoldingId},
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                            // response['label_hidden'][0]['id'] = id;
+                            // console.log(response['label_hidden']);
+                            // for(let x = 0; x < response['label_hidden'].length; x++){
+                            //     let dataToAppend = `
+                            //     <img src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
+                            //     `;
+                            //     $('#hiddenPreview').append(dataToAppend)
+                            // }
+                        
+
+                            $("#img_barcode_PO").attr('src', response['qr_code']);
+                            $("#img_barcode_PO_text").html(response['label']);
+                            img_barcode_PO_text_hidden = response['label_hidden'];
+                            $('#modalFirstMoldingPrintQr').modal('show');
+                        }
+                    });
+
+                });
+                $('#btnFirstMoldingPrintQrCode').on('click', function(){
+                    popup = window.open();
+                    let content = '';
+
+                    content += '<html>';
+                    content += '<head>';
+                    content += '<title></title>';
+                    content += '<style type="text/css">';
+                    content += '@media print { .pagebreak { page-break-before: always; } }';
+                    content += '</style>';
+                    content += '</head>';
+                    content += '<body>';
+                    // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                        content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                            content += '<tr style="width: 290px;">';
+                                content += '<td style="vertical-align: bottom;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                content += '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                            content += '</tr>';
+                        content += '</table>';
+                        content += '<br>';
+                        // if( i < img_barcode_PO_text_hidden.length-1 ){
+                        //     content += '<div class="pagebreak"> </div>';
+                        // }
+                    // }
+                    content += '</body>';
+                    content += '</html>';
+                    popup.document.write(content);
+
+                    popup.focus(); //required for IE
+                    popup.print();
+
+                    /*
+                        * this event will trigger after closing the tab of printing
+                    */
+                    popup.addEventListener("beforeunload", function (e) {
+                        changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                    });
+
+                    popup.close();
+
+                    });
+
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
+                    // return;
                     dt.firstMoldingStation.draw()
                     $('#modalFirstMolding').modal('show');
                     $('#btnFirstMoldingStation').prop('disabled',true);
                     $('#btnSubmitFirstMoldingStation').prop('disabled',true);
                     $('#btnRuncardDetails').removeClass('d-none',true);
+                    formModal.firstMolding.find('[type="number"]').val(0)
                 });
 
                 $('#btnFirstMoldingStation').click(function (e) {
@@ -249,6 +360,7 @@
                     getStation();
                     $('#modalFirstMoldingStation').modal('show');
                     formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
+                    formModal.firstMoldingStation.find('[type="number"]').val(0)
                 });
 
                 $('#btnSubmitFirstMoldingStation').click(function (e) {
@@ -290,6 +402,22 @@
                     });
                 });
 
+                const getDiesetDetailsByDeviceName = function (deviceName){
+                    $.ajax({
+                        type: "GET",
+                        url: "get_dieset_details_by_device_name",
+                        data: {"device_name" : deviceName},
+                        dataType: "json",
+                        success: function (response) {
+                            let diesetNo = response['dieset_no'];
+                            let drawingNo = response['drawing_no'];
+                            let revNo = response['rev_no'];
+                            formModal.firstMolding.find('#drawing_no').val(drawingNo);
+                            formModal.firstMolding.find('#revision_no').val(revNo);
+                        }
+                    });
+                }
+
                 $('#global_device_name').change(function (e) {
                     e.preventDefault();
                     $.ajax({
@@ -308,33 +436,89 @@
                             formModal.firstMolding.find('#contact_name').val(contact_name);
 
                             dt.firstMolding.draw();
-                            console.log($("#global_device_name").val())
+                            getDiesetDetailsByDeviceName(device_name);
+                            //nmodify
                         }
                     });
                 });
-                const totalOutput = function (input_qty,ng_qty){
-                    let totalOutputQty = input_qty - ng_qty;
-                    if(totalOutputQty < 0 ){
-                        Swal.fire({
-                            position: "center",
-                            icon: "error",
-                            title: "Output qty. cannot be negative value!",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-                        formModal.firstMoldingStation.find('#input').val('');
-                        formModal.firstMoldingStation.find('#output').val('');
-                        formModal.firstMoldingStation.find('#ng_qty').val('');
-                        return;
-                    }
-                    formModal.firstMoldingStation.find('#output').val(totalOutputQty);
-                }
+
+                $('#tableFirstMoldingStationMOD').on('keyup','.textMODQuantity', function (e) {
+                    let totalNumberOfMOD = 0;
+                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
+
+                    $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() === null || $(this).val() === ""){
+                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            $("#labelTotalNumberOfNG").text(parseInt(0));
+                        }
+                        totalNumberOfMOD += parseInt($(this).val());
+                    });
+                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
+                });
+
+                formModal.firstMolding.find('#pmi_po_no').on('keyup',function (e) {
+                    e.preventDefault();
+                        getPmiPoReceivedDetails( $(this).val() );
+                });
 
                 $('#btnScanQrFirstMolding').click(function (e) {
                     $('#mdlScanQrCodeFirstMolding').modal('show');
                     $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal');
 
                 });
+
+                /**
+                 * Add Mode Of Defect
+                 * Start
+                */
+                $("#buttonAddFirstMoldingModeOfDefect").click(function(){
+                    let totalNumberOfMOD = 0;
+                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
+                    let rowModeOfDefect = `
+                        <tr>
+                            <td>
+                                <select class="form-control select2 select2bs4 selectMOD" name="mod_id[]">
+                                    <option value="0">N/A</option>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="1" min="1">
+                            </td>
+                            <td>
+                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                            </td>
+                        </tr>
+                    `;
+                    $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
+                    getModeOfDefectForFirstMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
+
+                    $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() === null || $(this).val() === ""){
+                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            $("#labelTotalNumberOfNG").text(parseInt(0));
+                        }
+                        totalNumberOfMOD += parseInt($(this).val());
+                    });
+                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
+
+                });
+
+                $("#tableFirstMoldingStationMOD").on('click', '.buttonRemoveMOD', function(){
+                    let totalNumberOfMOD = 0;
+                    let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
+
+                    $(this).closest ('tr').remove();
+
+                    $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() === null || $(this).val() === ""){
+                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            $("#labelTotalNumberOfNG").text(parseInt(0));
+                        }
+                        totalNumberOfMOD += parseInt($(this).val());
+                    });
+                    getValidateTotalNgQty (ngQty,totalNumberOfMOD);
+                });
+
 
                 $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
                     if(e.keyCode == 13){
@@ -350,12 +534,78 @@
                     }
                 });
 
-                $('#input').keyup(function (e) {
-                    totalOutput(formModal.firstMoldingStation.find(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
+                formModal.firstMoldingStation.find('#input').keyup(function (e) {
+                    totalOutput($(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
+                    totalStationYield($(this).val(),formModal.firstMoldingStation.find("#output").val());
                 });
 
-                $('#ng_qty').keyup(function (e) {
-                    totalOutput(formModal.firstMoldingStation.find("#input").val(),formModal.firstMoldingStation.find(this).val());
+                formModal.firstMoldingStation.find('#ng_qty').keyup(function (e) {
+                    let ngQty = $(this).val();
+                    let totalNumberOfMOD = 0;
+                    let totalShipmentOutput = formModal.firstMolding.find('#total_machine_output').val();
+                    totalOutput(formModal.firstMoldingStation.find("#input").val(),ngQty);
+                    totalStationYield(formModal.firstMoldingStation.find("#input").val(),formModal.firstMoldingStation.find("#output").val());
+
+                    if(parseInt(ngQty) > 0){
+                        $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', false);
+                    }
+                    else{
+                        $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', true);
+                    }
+
+                    if(parseInt(ngQty) === parseInt($('#labelTotalNumberOfNG').text())){
+                        $('#labelTotalNumberOfNG').css({color: 'green'})
+                        $('#labelIsTally').css({color: 'green'})
+                        $('#labelIsTally').addClass('fa-thumbs-up')
+                        $('#labelIsTally').removeClass('fa-thumbs-down')
+                        $("#buttonFirstMoldingStation").prop('disabled', false);
+                        $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', true);
+                    }else{
+                        $('#labelTotalNumberOfNG').css({color: 'red'})
+                        $('#labelIsTally').css({color: 'red'})
+                        $('#labelIsTally').addClass('fa-thumbs-down')
+                        $('#labelIsTally').removeClass('fa-thumbs-up')
+                        $("#buttonFirstMoldingStation").prop('disabled', true);
+                        $("#buttonAddFirstMoldingModeOfDefect").prop('disabled', false);
+                    }
+
+                });
+
+                formModal.firstMolding.find('.sumTotalShipmentOutput').keyup(function (e) {
+                    let arr = document.getElementsByClassName('sumTotalShipmentOutput');
+                    let inputTotalMachineOuput = formModal.firstMolding.find('#total_machine_output').val();
+
+                    total=0;
+                    for(let i=0;i<arr.length;i++){
+                        if(parseFloat(arr[i].value))
+                            total += parseFloat(arr[i].value);
+                    }
+                    let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
+
+                    if( inputTotalMachineOuput === '' | inputTotalMachineOuput < 0 ){
+                        formModal.firstMolding.find('#shipment_output').val(0);
+                        return;
+                    }
+                    formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
+                    calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#shipment_output').val());
+
+                });
+
+                formModal.firstMolding.find('#total_machine_output').keyup(function (e) {
+                    let inputTotalMachineOuput = $(this).val();
+                    console.log(inputTotalMachineOuput);
+                    let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
+                    let ngCount = formModal.firstMolding.find("#ng_count").val();
+
+
+                    if( inputTotalMachineOuput == '' | inputTotalMachineOuput < 0 ){
+                        formModal.firstMolding.find('#shipment_output').val(0);
+                        formModal.firstMolding.find("#material_yield").val('0%');
+                        return;
+                    }
+
+                    formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
+                    calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#shipment_output').val());
                 });
 
                 formModal.firstMolding.submit(function (e) {
@@ -368,8 +618,38 @@
                     savefirstMoldingStation();
                 });
 
+                $('#btnAddFirstMoldingMaterial').click(function (e) {
+                    e.preventDefault();
+                    arr.Ctr ++;
+                    let rowFirstMoldingMaterial = `
+                        <tr>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <center><button class="btn btn-xs btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                            </td>
+                        </tr>
+                    `;
+                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
+                });
 
-
+                $("#tblFirstMoldingMaterial").on('click', '.buttonRemoveMaterial', function(){
+                    $(this).closest ('tr').remove();
+                });
 
             });
         </script>

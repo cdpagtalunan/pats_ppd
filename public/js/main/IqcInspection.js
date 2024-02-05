@@ -1,4 +1,6 @@
 
+// $(document).ready(function () {
+
     const tbl = {
         iqcInspection:'#tblIqcInspection',
         iqcWhsDetails :'#tblWhsDetails',
@@ -86,8 +88,8 @@
             { "data" : "status", orderable:false, searchable:false },
             { "data" : "date_inspected" },
             { "data" : "time_inspected" }, //
-            { "data" : "supplier" },
             { "data" : "app_ctrl_no" }, //
+            { "data": "supplier" },
             // { "data" : "classification" },//
             // { "data" : "family" },//
             // { "data" : "category" },//
@@ -101,8 +103,6 @@
             { "data" : "updated_at" },
         ],
     });
-
-
 
     const getFamily = function () {
         $.ajax({
@@ -358,6 +358,7 @@
                     }
                 }
                 /*Mode of Defects Modal*/
+
                 $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 for (let i = 0; i < response.length; i++) {
@@ -540,3 +541,5 @@
             }
         });
     }
+
+// }) //end Doc Ready

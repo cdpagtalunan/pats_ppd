@@ -173,7 +173,7 @@
         </div><!-- /.End History Modal -->        
                 
         <!-- Start OQC Inspection Modal -->
-        <div class="modal fade" id="modalOqcInspectionSecondStamping" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalOqcInspection" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -189,8 +189,9 @@
                         <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
                         <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
+                        <input type="hidden" class="form-control form-control-sm" id="txtCheckButton" name="check_button">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
-                        
+
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend w-25">
@@ -723,6 +724,8 @@
                     getInfoForSecondStamping    = $(this).attr('second-stamping')
                     
                     $('#txtStatus').val(getInfoForSecondStamping)
+                    $('#txtCheckButton').val('update')
+
                     setTimeout(() => {     
                         $time_now = moment().format('HH:mm:ss');
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
@@ -748,17 +751,20 @@
                     $('.viewDrawingFirst').removeClass('slct')
                 })
 
-                $(document).on('click', '.actionOqcInspectionViewSecondStamping', function(e){
+                $(document).on('click', '.actionOqcInspectionView', function(e){
                     e.preventDefault()
                     getPo                       = $(this).attr('prod-po')
-                    getPoQty                    = $(this).attr('prod-po-qty')
+                    modal                       = $(this).attr('data-bs-target')
+                    getPoQty                    = $(this).attr('prod-po_qty')
                     getOqcId                    = $(this).attr('oqc_inspection-id')
                     getProdId                   = $(this).attr('prod-id')
-                    getProdLotNo                = $(this).attr('prod-lot-no')
-                    getMaterialName             = $(this).attr('prod-material-name')
+                    getProdLotNo                = $(this).attr('prod-lot_no')
+                    getMaterialName             = $(this).attr('prod-material_name')
                     getProdShipOutput           = $(this).attr('prod-ship_output')
                     getInfoForSecondStamping    = $(this).attr('second-stamping')
+                    console.log('modal',modal)
                     $('#txtStatus').val(getInfoForSecondStamping)
+                    $('#txtCheckButton').val('view')
 
                     GetOqcInspectionById(
                         getPo,
@@ -864,7 +870,7 @@
                     }
                 })
 
-                $('#modalOqcInspectionSecondStamping').on('hide.bs.modal', function() {
+                $('#modalOqcInspection').on('hide.bs.modal', function() {
                     console.log('Hide OQC Inspection modal: hide scan fields')
                     $('#txtScanUserId').addClass('d-none')
                     $('#txtScanQrCode').addClass('d-none')

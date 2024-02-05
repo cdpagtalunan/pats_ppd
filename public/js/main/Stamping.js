@@ -205,10 +205,12 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
             $('#txtTtlMachOutput').val(response['total_mach_output'])
             $('#txtShipOutput').val(response['ship_output'])
 
-            // * GET VALUE OF YIELD FROM OQC INSPECTION
-            if(response['oqc_details'] != null){
-                $('#txtMatYield').val(response['oqc_details']['yield'])
-            }
+            $('#txtMatYield').val(response['mat_yield'])
+
+            // // * GET VALUE OF YIELD FROM OQC INSPECTION
+            // if(response['oqc_details'] != null){
+                // $('#txtMatYield').val(response['oqc_details']['yield'])
+            // }
 
             $('#txtProdLotView').val(response['prod_lot_no']);
             $('#txtNGCount').val(response['ng_count']);
@@ -342,11 +344,19 @@ const printProdData = async (id, stampCat) => {
         dataType: "json",
         success: function (response) {
             response['label_hidden'][0]['id'] = id;
+            console.log(response['label_hidden']);
+            for(let x = 0; x < response['label_hidden'].length; x++){
+                let dataToAppend = `
+                <img class='hiddnQr' src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
+                `;
+                $('#hiddenPreview').append(dataToAppend)
+            }
+          
+            // <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"></img>
             $("#img_barcode_PO").attr('src', response['qrCode']);
             $("#img_barcode_PO_text").html(response['label']);
             img_barcode_PO_text_hidden = response['label_hidden'];
             $('#modalPrintQr').modal('show');
-            console.log(response);
         }
     });
 }
@@ -493,3 +503,61 @@ const getSecondStampReq = (params) => {
 //     //     }
 //     // });
 // }
+
+const saveSublot = () => {
+    $.ajax({
+        type: "post",
+        url: "save_sublot",
+        data: $('#formSublot').serialize(),
+        dataType: "json",
+        success: function (response) {
+            if(response['result'] == 1){
+                toastr.success('Successfully Updated!');
+                $('#modalMultipleSublot').modal('hide');
+                dtDatatableProdSecondStamp.draw();
+            }
+        },
+        error: function(data, xhr, status){
+            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}
+
+const getSublotById = (id) => {
+    $.ajax({
+        type: "get",
+        url: "get_sublot_by_id",
+        data: {
+            'id' : id
+        },
+        dataType: "json",
+        beforeSend: function(){
+            $('#btnSaveSublot').hide();
+            $('#buttons').hide();
+        },
+        success: function (response) {
+            for(let x = 0; x < response['stampSubLot']['second_stamping_sublots'].length; x++){
+                let counter = x + 1;
+                console.log('counter',counter);
+                console.log('x',x);
+                if($('#txtSublotMultipleCounter').val() != counter){
+
+                    $('#btnAddSublot').click();
+                }
+                $(`#txtSublotNo_${counter}`).val(response['stampSubLot']['second_stamping_sublots'][x]['counter'])
+                $(`#txtSublotQty_${counter}`).val(response['stampSubLot']['second_stamping_sublots'][x]['batch_qty'])
+
+                
+            }
+
+            $('#txtSubLotPoNumber', $('#formSublot')).val(response['stampSubLot']['po_num'])
+            $('#txtSubLotLotNo', $('#formSublot')).val(response['stampSubLot']['prod_lot_no'])
+            $('#txtSubLotShipOutput', $('#formSublot')).val(response['stampSubLot']['ship_output'])
+            $('#modalMultipleSublot').modal('show');
+
+        },
+        error: function(data, xhr, status){
+            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}

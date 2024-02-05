@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\IqcInspectionsMod;
+use App\Models\User;
 use App\Models\TblWarehouseTransaction;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,5 +55,9 @@ class IqcInspection extends Model
 
     public function IqcInspectionsMods(){
         return $this->hasMany(IqcInspectionsMod::class)->whereNull('deleted_at');
+    }
+
+    public function user_iqc(){
+        return $this->hasOne(User::class, 'id', 'inspector');
     }
 }

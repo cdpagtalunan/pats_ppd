@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'First Stamping')
 
     @section('content_page')
 
@@ -59,18 +59,9 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-12">
-                            {{-- <div class="card"> --}}
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        {{-- <div class="col-sm-2">
-                                            <label class="form-label">PO Number</label>
-                                            <div class="input-group mb-3">
-                                                <button hidden class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button>
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Press Enter Key to Search PO Number"></i>
-                                                <input type="text" class="form-control" placeholder="Search PO Number" aria-label="Username" name="po_number" id="txtSelectPONo">
-                                            </div>
-                                        </div> --}}
                                         <div class="col-sm-2">
                                                 <label class="form-label">PO Number:</label>
                                             <div class="input-group mb-3">
@@ -140,46 +131,25 @@
                                     <div class="tab-content" id="myTabContent">
                                         {{-- Pending Tab --}}
                                         <div class="tab-pane fade show active" id="Pending" role="tabpanel" aria-labelledby="Pending-tab">
-                                            {{-- <div class="card-body"> --}}
-                                                <div style="float: right;" class="mb-1">
-                                                    {{-- ##CLARK NOTE##
-                                                    <button class="btn btn-primary" data-bs-toggle="modal"
-                                                        data-bs-target="#modalIpqcInspection" id="btnAddProdData">
-                                                        <i class="fa-solid fa-plus"></i> Add IPQC Inspection</button> --}}
-                                                    {{-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalExport">Generate Excel Report</button> --}}
-                                                    {{-- <div id="btnExportPDF"></div> --}}
-                                                    {{-- <button class="btn btn-primary" id="btnExportPackingList">
-                                                            <i class="fa-solid fa-file-export"></i> Export Packing List (PDF) --}}
-                                                        {{-- </a> --}}
-                                                    {{-- </button> --}}
+                                            <div class="table-responsive">
+                                                <table id="tbl1stStampingIpqcInspectionPending" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>IPQC Status</th>
+                                                            <th>Created At</th>
+                                                            <th>PO Number</th>
+                                                            <th>Production Lot#</th>
+                                                            <th>Judgement</th>
+                                                            <th>QC Sample</th>
+                                                            {{-- <th>Document No</th> --}}
+                                                            <th>Inspected At</th>
 
-                                                    {{-- <button class="btn btn-success" data-bs-toggle="modal"
-                                                        data-bs-target="#modalExportPackingList" id="btnExportPackingList">
-                                                            <i class="fa-solid fa-file-export"></i> Export Packing List
-                                                    </button> --}}
-                                                </div>
-
-                                                <div class="table-responsive">
-                                                    <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                    <table id="tbl1stStampingIpqcInspectionPending" class="table table-sm table-bordered table-striped table-hover text-center"
-                                                        style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Action</th>
-                                                                <th>IPQC Status</th>
-                                                                <th>Created At</th>
-                                                                <th>PO Number</th>
-                                                                <th>Production Lot#</th>
-                                                                <th>Judgement</th>
-                                                                <th>QC Sample</th>
-                                                                {{-- <th>Document No</th> --}}
-                                                                <th>Inspected At</th>
-
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
-                                            {{-- </div> --}}
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
                                         </div>
                                         {{-- Completed Tab --}}
                                         <div class="tab-pane fade" id="Completed" role="tabpanel" aria-labelledby="Completed-tab">
@@ -245,35 +215,6 @@
             <!-- /.content -->
         </div>
         <!-- /.content-wrapper -->
-
-        {{-- <div class="modal fade" id="modalExportPackingList">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-dark">
-                        <h4 class="modal-title">Generate Packing List</h4>
-                        <button type="button" style="color: #fff;" class="close" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="formGeneratePackingList">
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label>Select Control # for Export</label>
-                                        <select class="form-control selectControlNumber" name="ctrl_no" id="txtCtrlNo" style="width: 100%;"></select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button id="btnExportFile" class="btn btn-primary"><i id="iBtnDownloadPackingList" class="fas fa-file-download" ></i> Download</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div> --}}
 
         <!-- CONFIRM SUBMIT MODAL START -->
         <div class="modal fade" id="modalConfirmSubmitIPQCInspection">
@@ -476,6 +417,16 @@
                 // $('.select2bs4').select2({
                 //     theme: 'bootstrap4'
                 // });
+
+                $("#modalIpqcInspection").on('hidden.bs.modal', function () {
+                    // Reset form values
+                    $("#formIPQCInspectionData")[0].reset();
+
+                    // Remove invalid & title validation
+                    $('div').find('input').removeClass('is-invalid');
+                    $("div").find('input').attr('title', '');
+                });
+
                 $( '.select2bs5' ).select2( {
                     theme: 'bootstrap-5'
                 } );
@@ -793,6 +744,16 @@
                     console.log('sihehe');
                 });
 
+                $('input[name="keep_sample"]').click('click', function(e){
+                    if($('#txtKeepSample1').prop('checked')){
+                        $('input[name="keep_sample"]').prop('required', false);
+                    }else if($('#txtKeepSample2').prop('checked')){
+                        $('input[name="keep_sample"]').prop('required', false);
+                    }else{
+                        $('input[name="keep_sample"]').prop('required', true);
+                    }
+                });
+
                 // btnViewIPQCData
                 $(document).on('click', '.btnViewIPQCData',function(e){
                     console.log('view');
@@ -809,9 +770,6 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
-                            // $('#formIPQCInspectionData').find('input').val('');
-                            // $('#formIPQCInspectionData').find('select').val('');
-                            $('#formIPQCInspectionData')[0].reset();
                         },
                         success: function(response){
                             $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
@@ -851,15 +809,9 @@
                             // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
                             // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
-                            $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
-                            $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
-                            $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
-
-                            // $("#btnReuploadTriggerDiv").removeClass('d-none');
-                            // $("#btnReuploadTrigger").removeClass('d-none');
-                            // $("#btnReuploadTrigger").prop('checked', false);
-                            // $("#btnReuploadTriggerLabel").removeClass('d-none');
-                            // }
+                            $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                            $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']) .trigger('change');
+                            $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
 
                             //disabled and readonly
                             $("#frmSaveBtn").prop('hidden', true);
@@ -910,9 +862,6 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
-                            // $('#formIPQCInspectionData').find('input').val('');
-                            // $('#formIPQCInspectionData').find('select').val('');
-                            $('#formIPQCInspectionData')[0].reset();
                         },
                         success: function(response){
                             // let _token = "{{ csrf_token() }}";
@@ -970,7 +919,7 @@
 
                                 if($('#txtKeepSample1').prop('checked')){
                                     $('input[name="keep_sample"]').prop('required', false);
-                                }else if($('#txtKeepSample1').prop('checked')){
+                                }else if($('#txtKeepSample2').prop('checked')){
                                     $('input[name="keep_sample"]').prop('required', false);
                                 }else{
                                     $('input[name="keep_sample"]').prop('required', true);
@@ -1008,9 +957,9 @@
                                 // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
                                 // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
-                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
-                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
-                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
+                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
+                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
 
                                 $('input[name="keep_sample"]').attr('disabled', false);
                                 $("#btnReuploadTriggerDiv").removeClass('d-none');

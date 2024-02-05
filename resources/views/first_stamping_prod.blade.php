@@ -52,6 +52,7 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
+
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <div class="container-fluid">
@@ -148,6 +149,7 @@
                                                     <th>PO Quantity</th>
                                                     <th>Shipment Output</th>
                                                     <th>Material Lot #</th>
+                                                    <th>Overall Yield</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -318,7 +320,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Yield:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="This data is from OQC Inspection"></i>
+                                                {{-- <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="This data is from OQC Inspection"></i> --}}
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) Percent"></i>
                                                 <input type="text" class="form-control form-control-sm" placeholder="---" name="mat_yield" id="txtMatYield" readonly>
                                             </div>
                                             {{-- <div class="form-group">
@@ -481,7 +484,7 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_first_stamp_prod",
+                        url: "view_stamp_prod",
                          data: function (param){
                             param.po = $("#txtSearchPONum").val();
                             param.stamp_cat = 1;
@@ -499,6 +502,7 @@
                         { "data" : "po_qty" },
                         { "data" : "ship_output" },
                         { "data" : "material" },
+                        { "data" : "overall_yield" },
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
@@ -564,22 +568,22 @@
                     $('#txtPlannedLoss').val(planLoss.toFixed(2));
                 });
 
-                $('#txtTtlMachOutput').on('keyup', function(e){
+                $('#txtTtlMachOutput, #txtProdSamp, #txtNGCount').on('keyup', function(e){
                     // * computation for Shipment Output and Material Yield
                     let sum = Number($('#txtSetupPin').val()) + Number($('#txtAdjPin').val()) + Number($('#txtQcSamp').val()) + Number($('#txtProdSamp').val()) + Number($('#txtNGCount').val());
-                    let ttlMachOutput = $(this).val();
+                    let ttlMachOutput = $('#txtTtlMachOutput').val();
 
                     let shipmentOutput = ttlMachOutput - sum;
-                    // let matYieldComp = shipmentOutput/ttlMachOutput;
-                    // let matYield =  matYieldComp * 100;
-                    // if(Number.isFinite(matYield)){
+                    let matYieldComp = shipmentOutput/ttlMachOutput;
+                    let matYield =  matYieldComp * 100;
+                    if(Number.isFinite(matYield)){
                         $('#txtShipOutput').val(shipmentOutput);
-                        // $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
-                    // }
-                    // else{
-                    //     $('#txtShipOutput').val('');
-                    //     $('#txtMatYield').val('');
-                    // }
+                        $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
+                    }
+                    else{
+                        $('#txtShipOutput').val('');
+                        $('#txtMatYield').val('');
+                    }
                 });
 
                 $(document).on('keypress', '#txtSearchPONum', function(e){
@@ -801,7 +805,6 @@
                 $('#txtScanQrCode').on('keyup', function(e){
                     if(e.keyCode == 13){
                         let explodedMat = $(this).val().split(' | ');
-
                         console.log(explodedMat);
                         if(explodedMat.length != 2){
                             toastr.error('Invalid Sticker');
@@ -948,7 +951,7 @@
                     else{
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
-                                $('#modalScanQRSave').modal('hide');tr
+                                $('#modalScanQRSave').modal('hide');
                                 printProdData(printId, printStampCat);
                             }
                             else{ // Error Handler

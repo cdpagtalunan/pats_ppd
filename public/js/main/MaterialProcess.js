@@ -17,9 +17,9 @@ function getMaterialProcessForInputs(id){
                 materialOption += `<option value="${response.material_details[x]['code']} || ${response.material_details[x]['name']}">${response.material_details[x]['name']} (${response.material_details[x]['code']})</option>`;
             }
 
-            machineOption += `<option value="" selected disabled>--Select Process--</option>`
+            // machineOption += `<option value="" selected disabled>--Select Process--</option>`
             for(let y = 0; y < response.machine_details.length; y++){
-                machineOption += `<option value="${response.machine_details[y]['machine_code_number']}">${response.machine_details[y]['machine_code_number']} (${response.machine_details[y]['machine_name']})</option>`;
+                machineOption += `<option value="${response.machine_details[y]['machine_code_number']} || ${response.machine_details[y]['machine_name']}">${response.machine_details[y]['machine_code_number']} (${response.machine_details[y]['machine_name']})</option>`;
             }
 
             processOption += `<option value="" selected disabled>--Select Process--</option>`
@@ -214,10 +214,15 @@ const GetMatProcByIdToEdit = (id, selectedDeviceName) => {
             for(let y = 0; y < response['matDetails']['station_details'].length; y++){
                 stationArrayId.push(`${response['matDetails']['station_details'][y]['station_id']}`);
             }
-            console.log(stationArrayId);
             $('select[name="station[]"]').val(stationArrayId).trigger('change')
 
-
+            console.log(response['matDetails']['machine_details']);
+            let machineArrayId = [];
+            for(let z = 0; z < response['matDetails']['machine_details'].length; z++){
+                // stationArrayId.push(`${response['matDetails']['station_details'][y]['station_id']}`);
+                machineArrayId.push(`${response['matDetails']['machine_details'][z]['machine_code']} || ${response['matDetails']['machine_details'][z]['machine_name']}`);
+            }
+            $('select[name="machine[]"]').val(machineArrayId).trigger('change')
         }
     });
 }

@@ -53,7 +53,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Receiving</h1>
+                            <h1>Receiving from SANNO</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -90,73 +90,60 @@
                                             data-bs-target="#modalAddPackingList" id="btnShowAddPackingList"><i
                                                 class="fas fa-clipboard-list"></i> Add Packing List
                                         </button> --}}
-                                    </div> <br><br>
+                                    </div>
 
                                      <ul class="nav nav-tabs" id="myTab" role="tablist"> {{-- by nessa --}}
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">For Receive</a>
+                                            <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">Receiving From SANNO</a>
                                         </li>
-                                        <li class="nav-item">
-                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Accepted</a>
-                                        </li>
+                                        {{-- <li class="nav-item">
+                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Received/Accepted</a>
+                                        </li> --}}
                                     </ul>
 
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab"><br>
                                             <div class="table-responsive">
                                                 {{-- <!-- style="max-height: 600px; overflow-y: auto;" --> --}}
-                                                <table id="tblReceivingDetails" class="table table-sm table-bordered table-striped table-hover"
+                                                <table id="tblReceivingDetailsByCtrl" class="table table-sm table-bordered table-striped table-hover"
                                                     style="width: 100%;">
                                                     <thead>
-                                                        <tr>
-                                                            <th rowspan="2" class="text-center pl-5 pr-5">Action</th>
-                                                            <th rowspan="2" class="text-center pl-5 pr-5">Status</th>
-                                                            <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
-                                                            <th colspan="4" style="text-align: center;">PMI Details</th>
-                                                            <th colspan="3" style="text-align: center;">Supplier Details</th>
-                                                        </tr>
-
-                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>Status</th>
                                                             <th>Packing List Ctrl #</th>
-                                                            <th>Material name</th>
-                                                            <th>Production Lot #</th>
-                                                            <th>Shipment Qty</th>
+                                                            <th>PO #</th>
+                                                        {{-- control_no --}}
 
-                                                            <th>Name</th>
-                                                            <th>Lot #</th>
-                                                            <th>Qty</th>
-                                                        </tr>
                                                     </thead>
                                                 </table>
                                             </div>
                                         </div>
-                                        <div class="tab-pane fade show" id="menu2" role="tabpanel" aria-labelledby="menu2-tab"><br>
+                                        {{-- <div class="tab-pane fade show" id="menu2" role="tabpanel" aria-labelledby="menu2-tab"><br>
                                             <div class="table-responsive">
-                                                {{-- <!-- style="max-height: 600px; overflow-y: auto;" --> --}}
                                                 <table id="tblReceivingDetailsAccepted" class="table table-sm table-bordered table-striped table-hover"
                                                     style="width: 100%;">
                                                     <thead>
                                                         <tr>
 
-                                                            <th rowspan="2" class="text-center pl-5 pr-5">New Lot #</th>
-                                                            <th colspan="4" style="text-align: center;">PMI Details</th>
-                                                            <th colspan="3" style="text-align: center;">Supplier Details</th>
+                                                            <th rowspan="2" class="text-center pl-5 pr-5" style="text-align: center; background-color:#ABEBC6">New Lot #</th>
+                                                            <th colspan="4" style="text-align: center; background-color:#AED6F1">PMI Details</th>
+                                                            <th colspan="3" style="text-align: center; background-color:#FAD7A0">Supplier Details</th>
                                                         </tr>
 
                                                         <tr>
-                                                            <th>Packing List Ctrl #</th>
-                                                            <th>Material name</th>
-                                                            <th>Production Lot #</th>
-                                                            <th>Shipment Qty</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Packing List Ctrl #</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Material name</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Production Lot #</th>
+                                                            <th style="text-align: center; background-color:#AED6F1">Shipment Qty</th>
 
-                                                            <th>Name</th>
-                                                            <th>Lot #</th>
-                                                            <th>Qty</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Name</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Lot #</th>
+                                                            <th style="text-align: center; background-color:#FAD7A0">Qty</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
 
@@ -165,6 +152,57 @@
                     </div>
                 </div>
             </section>
+        </div>
+
+        <div class="modal fade" id="modalViewReceivingDetails" data-bs-backdrop="static">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa fa-eye"></i> Receiving Details</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                        @csrf
+                        <div class="modal-body">
+                            <input type="hidden" id="txtReceivingDetailsCtrlId" name="receiving_details_ctrl_id">
+                            <div class="col-sm-12">
+                                {{-- <strong>Receiving Details</strong> --}}
+                            </div>
+                                <div class="table-responsive">
+                                    <table id="tblReceivingDetails" class="table table-sm table-bordered table-striped table-hover"style="width: 100%;">
+                                        <thead>
+                                                <tr>
+                                                    <th rowspan="2" class="text-center pl-5 pr-5">Action</th>
+                                                    <th rowspan="2" class="text-center pl-5 pr-5">Status</th>
+                                                    <th rowspan="2" class="text-center pl-5 pr-5" style="text-align: center; background-color:#ABEBC6">New Lot #</th>
+                                                    <th colspan="4" style="text-align: center; background-color:#AED6F1">PMI Details</th>
+                                                    <th colspan="3" style="text-align: center; background-color:#FAD7A0">Supplier Details</th>
+                                                </tr>
+
+                                                <tr>
+                                                    <th style="text-align: center; background-color:#AED6F1">Packing List Ctrl #</th>
+                                                    <th style="text-align: center; background-color:#AED6F1">Material name</th>
+                                                    <th style="text-align: center; background-color:#AED6F1">Production Lot #</th>
+                                                    <th style="text-align: center; background-color:#AED6F1">Shipment Qty</th>
+
+                                                    <th style="text-align: center; background-color:#FAD7A0">Name</th>
+                                                    <th style="text-align: center; background-color:#FAD7A0">Lot #</th>
+                                                    <th style="text-align: center; background-color:#FAD7A0">Qty</th>
+                                                </tr>
+                                            <tbody></tbody>
+                                        </thead>
+                                    </table>
+                                </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            {{-- <button type="submit" disabled id="btnSaveRecevingDetails" class="btn btn-primary"><i id="btnSaveRecevingDetailsIcon"class="fa fa-check"></i> Save</button> --}}
+                        </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
         </div>
 
 
@@ -242,18 +280,6 @@
                                 </div>
                             </div>
 
-
-
-
-
-
-
-                            {{-- <div hidden class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">PO #</label>
-                                    <input type="text" class="form-control form-control-sm" name="po_no" id="txtPmiPo" readonly>
-                                </div>
-                            </div> --}}
 
                         </div>
                     </div>
@@ -334,71 +360,114 @@
         <script type="text/javascript">
 
         $(document).ready(function(){
-                dtReceivingDetails = $("#tblReceivingDetails").DataTable({
+                dtReceivingDetailsByCtrl = $("#tblReceivingDetailsByCtrl").DataTable({
                 "processing" : true,
                 "serverSide" : true,
                 "ajax" : {
-                    url: "view_receiving_details",
+                    url: "view_receiving_details_by_ctrl",
                 },
                 fixedHeader: true,
                 "columns":[
                     { "data" : "action", orderable:false, searchable:false },
                     { "data" : "status"},
-                    { "data" : "supplier_pmi_lot_no"},
                     { "data" : "control_no"},
-                    { "data" : "mat_name"},
-                    { "data" : "lot_no"},
-                    { "data" : "quantity"},
-                    { "data" : "supplier_name"},
-                    { "data" : "supplier_lot_no"},
-                    { "data" : "supplier_quantity"},
+                    { "data" : "po"},
                 ],
                 "columnDefs": [
                     {"className": "dt-center", "targets": "_all"},
                     {
-                        "targets": [2,7,8,9],
+                        "targets": [1],
                         "data": null,
                         "defaultContent": "---"
                     },
                 ],
             });
 
-            dtReceivingDetailsAccepted = $("#tblReceivingDetailsAccepted").DataTable({ // by nessa
-                "processing" : true,
-                "serverSide" : true,
-                "ajax" : {
-                    url: "view_receiving_details_accepted",
-                },
-                fixedHeader: true,
-                "columns":[
-                    { "data" : "supplier_pmi_lot_no"},
-                    { "data" : "control_no"},
-                    { "data" : "mat_name"},
-                    { "data" : "lot_no"},
-                    { "data" : "quantity"},
-                    { "data" : "supplier_name"},
-                    { "data" : "supplier_lot_no"},
-                    { "data" : "supplier_quantity"},
-                ],
-                "columnDefs": [
-                    {"className": "dt-center", "targets": "_all"},
-                    {
-                        "targets": [2,5,6,7],
-                        "data": null,
-                        "defaultContent": "---"
-                    },
-                ],
+            // dtReceivingDetailsAccepted = $("#tblReceivingDetailsAccepted").DataTable({ // by nessa
+            //     "processing" : true,
+            //     "serverSide" : true,
+            //     "ajax" : {
+            //         url: "view_receiving_details_accepted",
+            //     },
+            //     fixedHeader: true,
+            //     "columns":[
+            //         { "data" : "supplier_pmi_lot_no"},
+            //         { "data" : "control_no"},
+            //         { "data" : "mat_name"},
+            //         { "data" : "lot_no"},
+            //         { "data" : "quantity"},
+            //         { "data" : "supplier_name"},
+            //         { "data" : "supplier_lot_no"},
+            //         { "data" : "supplier_quantity"},
+            //     ],
+            //     "columnDefs": [
+            //         {"className": "dt-center", "targets": "_all"},
+            //         {
+            //             "targets": [2,5,6,7],
+            //             "data": null,
+            //             "defaultContent": "---"
+            //         },
+            //     ],
+            // });
+
+            $(document).on('click', '.btnViewReceivingDetails', function(e){
+                // $('#modalEditReceivingDetails').modal('show');
+                let dataCtrlNo = $(this).attr('data-ctrl-no');
+                $('#txtReceivingDetailsCtrlId').val(dataCtrlNo);
+                console.log(dataCtrlNo);
+                $('#modalViewReceivingDetails').modal('show');
+
+                dtViewReceivingDetails.draw();
+
+                // getReceivingDetailsId(receivingDetailsId);
             });
 
             $(document).on('click', '.btnEditReceivingDetails', function(e){
-                // alert('pumasok na dito');
-                $('#modalEditReceivingDetails').modal('show');
+                // $('#modalEditReceivingDetails').modal('show');
                 let receivingDetailsId = $(this).attr('data-id');
                 $('#txtReceivingDetailsId').val(receivingDetailsId);
                 console.log(receivingDetailsId);
+                $('#modalEditReceivingDetails').modal('show');
 
                 getReceivingDetailsId(receivingDetailsId);
             });
+
+            let dtViewReceivingDetails = $("#tblReceivingDetails").DataTable({
+                    rowId : 'id',
+                    "processing" : true,
+                    "serverSide" : true,
+                    "info"       : false,
+                    "ordering"   : false,
+                    "paging"     : false,
+                    "bFilter"     : false,
+                    "ajax" : {
+                        url: "view_receiving_details",
+                        data: function(param){
+                        param.receving_details_ctrl_no =  $("#txtReceivingDetailsCtrlId").val();
+                        }
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status"},
+                        { "data" : "supplier_pmi_lot_no"},
+                        { "data" : "control_no"},
+                        { "data" : "mat_name"},
+                        { "data" : "lot_no"},
+                        { "data" : "quantity"},
+                        { "data" : "supplier_name"},
+                        { "data" : "supplier_lot_no"},
+                        { "data" : "supplier_quantity"},
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": "_all"},
+                        {
+                            "targets": [2,7,8,9],
+                            "data": null,
+                            "defaultContent": "---"
+                        },
+                    ],
+                });
 
             $('#formAddReceivingDetails').submit(function(e){
                 e.preventDefault();
@@ -453,7 +522,7 @@
                                 toastr.success('Receiving Details Updated!');
                                 $('#modalEditReceivingDetails').modal('hide');
                                 $('#modalScanQRtoSave').modal('hide');
-                                dtReceivingDetails.draw();
+                                dtViewReceivingDetails.draw();
                             }
                         }
                     });
@@ -462,7 +531,7 @@
 
             $("#modalEditReceivingDetails").on('hide.bs.modal', function(){
                 $("#formAddReceivingDetails").trigger("reset");
-                dtReceivingDetails.draw();
+                dtViewReceivingDetails.draw();
             });
 
             $(document).on('click', '.btnPrintReceivingData', function(e){

@@ -69,16 +69,7 @@ class UserController extends Controller
 
                     $_SESSION["rapidx_user_accesses"] = $arr_user_accesses;
 
-                    // return $_SESSION;
-                    /**
-                     * Add session for specific systems
-                     * - this is useful for a system with different user roles
-                     * -JD
-                     */
-                    // $userData = ShuttleAllocation::where('rapidx_user_id', $user_info->id)->get();
-                    // if(count($userData) > 0){
-                    //     $_SESSION["shuttle_allocation_user_role_id"] = $userData[0]->user_role_id;
-                    // }
+                  
 
                     return response()->json([
                         'result' => "1",
@@ -406,13 +397,13 @@ class UserController extends Controller
                     ]);
                 }
 
-                if(isset($request->send_email)){
-                    $subject = 'PATS User Registration';
-                    $email = $request->email;
-                    $message = 'This is a notification from PATS. Your PATS user account was successfully registered.';
+                // if(isset($request->send_email)){
+                //     $subject = 'PATS User Registration';
+                //     $email = $request->email;
+                //     $message = 'This is a notification from PATS. Your PATS user account was successfully registered.';
 
-                    // dispatch(new SendUserPasswordJob($subject, $message, $request->username, $password, $email));
-                }
+                //     // dispatch(new SendUserPasswordJob($subject, $message, $request->username, $password, $email));
+                // }
 
                 DB::commit();
 
@@ -444,6 +435,12 @@ class UserController extends Controller
 
     public function get_user_list(Request $request){
         $users = User::all();
+
+        return response()->json(['users' => $users]);
+    }
+
+    public function get_user_by_en(Request $request){
+        $users = User::where('employee_id', $request->employee_id)->first();
 
         return response()->json(['users' => $users]);
     }

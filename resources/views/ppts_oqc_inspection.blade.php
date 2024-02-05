@@ -4,7 +4,7 @@
 @auth
   @extends($layout)
 
-@section('title', 'D Label Printing')
+@section('title', 'OQC Inspection')
 
 @section('content_page')
 <!-- <link href="{{ URL::asset('public/template/plugins/jquery-ui/jquery-ui.min.css') }}" rel="stylesheet" media="all"> -->
@@ -23,20 +23,22 @@
  <div class="content-wrapper">
  	<!-- Content Header (Page header) -->
  	<section class="content-header">
- 		<div class="container-fluid">
- 			<div class="row mb-2">
- 				<div class="col-sm-6">
- 					<h1>WEB EDI Printing</h1>
- 				</div>
- 				<div class="col-sm-6">
- 					<ol class="breadcrumb float-sm-right">
- 						<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
- 						<li class="breadcrumb-item active">CN PPTS</li>
- 					</ol>
- 				</div>
- 			</div>
- 		</div><!-- /.container-fluid -->
- 	</section>
+		<div class="container-fluid">
+			<div class="row mb-2">
+				<div class="col-sm-6">
+					<h1>Molding Packing</h1>
+				</div>
+				<div class="col-sm-6">
+					<ol class="breadcrumb float-sm-right">
+						<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
+						</li>
+						<li class="breadcrumb-item active">OQC Inspection</li>
+					</ol>
+				</div>
+			</div>
+		</div><!-- /.container-fluid -->
+	</section>
+
 
  	<!-- Main content -->
  	<section class="content">
@@ -46,7 +48,7 @@
  				<div class="col-12">
  					<!-- general form elements -->
  					<div>
-						<iframe id="iframe_d_label_printing" src="http://rapidx/cn_ppts/"></iframe>
+						<iframe  src="http://rapidx/cn_ppts/iframe_request?username={{ Auth::user()->username }}&emp_id={{ Auth::user()->employee_id }}&iframe=oqc" style="border: none;" no-border height="850" width="100%">></iframe>
  					</div>
 				</div>
 			</div>
@@ -61,6 +63,7 @@
 
 @section('js_content')
 <script type="text/javascript">
+	
 </script>
 @endsection
 @endauth

@@ -19,6 +19,7 @@ class CreateReceivingDetailsTable extends Migration
             $table->string('po_no')->nullable();
             $table->string('part_code')->nullable();
             $table->string('control_no')->nullable();
+            $table->string('invoice_no')->nullable();
             $table->string('mat_name')->nullable();
             $table->string('lot_no')->nullable();
             $table->string('quantity')->nullable();
