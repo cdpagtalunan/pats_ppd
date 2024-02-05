@@ -14,7 +14,7 @@ class CreateAssemblyRuncardAddColumns extends Migration
     public function up()
     {
         Schema::table('assembly_runcards', function (Blueprint $table) {
-            $table->unsignedBigInteger('p_zero_two_device_id')->after('runcard_no');
+            $table->unsignedBigInteger('p_zero_two_device_id')->after('p_zero_two_prod_lot');
             $table->string('s_zero_seven_prod_lot')->nullable()->after('p_zero_two_device_id');
             $table->unsignedBigInteger('s_zero_seven_device_id')->after('s_zero_seven_prod_lot');
             $table->string('s_zero_two_prod_lot')->nullable()->after('s_zero_seven_device_id');
