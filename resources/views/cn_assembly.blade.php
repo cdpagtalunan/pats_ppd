@@ -689,7 +689,7 @@
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
 
-                const getModeOfDefect = (elementId) => {
+                const getModeOfDefect = (elementId, modeOfDefectId = null) => {
                     let result = `<option value="0" selected> N/A </option>`;
                     $.ajax({
                         url: 'get_mode_of_defect_frm_defect_infos',
@@ -711,6 +711,9 @@
                                 result = `<option value="0" selected disabled> - No data found - </option>`;
                             }
                             elementId.html(result);
+                            if(modeOfDefectId != null){
+                                elementId.val(modeOfDefectId).trigger('change');
+                            }
                         },
                         error: function(data, xhr, status){
                             result = `<option value="0" selected disabled> - Reload Again - </option>`;
@@ -1216,6 +1219,7 @@
                                     <tr>
                                         <td>
                                             <select class="form-control select2bs5 selectMOD" name="mod_id[${mode_of_defect_data[index].mod_id}]" id="a">
+                                                <option value="${mode_of_defect_data[index].mod_id}">${mode_of_defect_data[index].mode_of_defect[0].defects}</option>
                                             </select>
                                         </td>
                                         <td id=textMODQuantity>
@@ -1231,7 +1235,7 @@
 
                                 //CLARK KULANG KAPA DITO
 
-                                getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'));
+                                getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'), mode_of_defect_data[index].mod_id);
                                 // console.log('test log',$('#tableAssemblyStationMOD .selectMOD option[value="'+mode_of_defect_data[index].mod_id+'"]]').attr('selected'));
                                 // $('#tableAssemblyStationMOD .selectMOD select[name="mod_id[2]"]').find('option').val(mode_of_defect_data[index].mod_id);
                                 // $('#tableAssemblyStationMOD tbody .selectMOD #a').val(3);

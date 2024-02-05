@@ -21,9 +21,15 @@ class SecondMoldingStationController extends Controller
         $secMoldingRuncardId = isset($request->sec_molding_runcard_id) ? $request->sec_molding_runcard_id : 0;
         // return $secMoldingRuncardId;
         $secondMoldingResult = DB::connection('mysql')
-            ->select("SELECT sec_molding_runcard_stations.*, CONCAT(users.firstname, ' ', users.lastname) AS operator_name FROM sec_molding_runcard_stations
+            ->select("SELECT 
+                        sec_molding_runcard_stations.*, 
+                        CONCAT(users.firstname, ' ', users.lastname) AS operator_name, 
+                        stations.station_name AS station_name  
+                    FROM sec_molding_runcard_stations
                     INNER JOIN users
                         ON users.id = sec_molding_runcard_stations.operator_name
+                    INNER JOIN stations
+                        ON stations.id = sec_molding_runcard_stations.station
                     WHERE sec_molding_runcard_stations.sec_molding_runcard_id = '$request->sec_molding_runcard_id'
         ");
 
@@ -57,6 +63,7 @@ class SecondMoldingStationController extends Controller
                 'input_quantity' => 'required',
                 'ng_quantity' => 'required',
                 'output_quantity' => 'required',
+                'station_yield' => 'required',
                 'remarks' => '',
             ];
             $validator = Validator::make($data, $rules);
@@ -74,6 +81,7 @@ class SecondMoldingStationController extends Controller
                         'input_quantity' => $request->input_quantity,
                         'ng_quantity' => $request->ng_quantity,
                         'output_quantity' => $request->output_quantity,
+                        'station_yield' => $request->station_yield,
                         'remarks' => $request->remarks,
     
                         // 'status' => 1,
@@ -114,6 +122,7 @@ class SecondMoldingStationController extends Controller
                 'input_quantity' => 'required',
                 'ng_quantity' => 'required',
                 'output_quantity' => 'required',
+                'station_yield' => 'required',
                 'remarks' => '',
             ];
             $validator = Validator::make($data, $rules);
@@ -131,6 +140,7 @@ class SecondMoldingStationController extends Controller
                         'input_quantity' => $request->input_quantity,
                         'ng_quantity' => $request->ng_quantity,
                         'output_quantity' => $request->output_quantity,
+                        'station_yield' => $request->station_yield,
                         'remarks' => $request->remarks,
     
                         'last_updated_by' => $_SESSION['user_id'],
@@ -165,7 +175,12 @@ class SecondMoldingStationController extends Controller
 
     public function getSecondMoldingStationById(Request $request){
         $secondMoldingStationResult = DB::connection('mysql')
-        ->select("SELECT * FROM sec_molding_runcard_stations
+        ->select("SELECT 
+                        sec_molding_runcard_stations.*,
+                        sec_molding_runcard_station_mods.id AS sec_molding_runcard_station_mod_id,
+                        sec_molding_runcard_station_mods.mod_id AS mod_id,
+                        sec_molding_runcard_station_mods.mod_quantity AS mod_quantity
+                    FROM sec_molding_runcard_stations
                     INNER JOIN sec_molding_runcard_station_mods
                         ON sec_molding_runcard_station_mods.sec_molding_runcard_station_id = sec_molding_runcard_stations.id
                     WHERE sec_molding_runcard_stations.id = '$request->second_molding_station_id'

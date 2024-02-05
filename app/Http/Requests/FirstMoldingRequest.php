@@ -26,8 +26,8 @@ class FirstMoldingRequest extends FormRequest
         return [
             'first_molding_device_id'=>'required',
             'contact_lot_number'=>'required',
-            // 'production_lot'=>'required',
-            // 'production_lot_extension'=>'required',
+            'production_lot'=>'required',
+            'production_lot_extension'=>'required',
             // 'contact_name'=>'required',
             'revision_no'=>'required',
             'drawing_no'=>'required',
@@ -47,6 +47,7 @@ class FirstMoldingRequest extends FormRequest
             "po_qty" => 'required',
             "material_yield" =>'required',
             "required_output" => 'required',
+            // "recycle_material" => 'required',
             // "po_target" => 'required',
             // "po_balance" => 'required',
         ];

@@ -152,13 +152,13 @@
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="textPMIPONumber" name="pmi_po_number" placeholder="Auto generated" readonly>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="textPONumber" name="po_number" placeholder="Auto generated" readonly>
                                     </div>
@@ -170,7 +170,7 @@
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
+                                            <span class="input-group-text w-100" id="basic-addon1">Required Output</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="textRequiredOutput" name="required_output" placeholder="Auto generated" readonly>
                                     </div>
@@ -178,7 +178,10 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Machine #</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="textMachineNumber" name="machine_number" placeholder="Machine #">
+                                        {{-- ADDED Chris For Multiple Machine--}}
+                                        {{-- <input type="text" class="form-control form-control-sm" id="textMachineNumber" name="machine_number" placeholder="Machine #"> --}}
+                                        <select type="text" class="form-control form-control-sm select2bs4" id="selMachineNumber" name="machine_number[]" placeholder="Machine #" multiple>
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -321,6 +324,7 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" disabled id="buttonSubmitSecondMolding">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -437,6 +441,17 @@
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Yield</span>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm" id="textStationYield" placeholder="0%" readonly name="station_yield">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
                                     </div>
                                     <textarea type="text" class="form-control form-control-sm" rows="2" id="textRemarks" name="remarks"></textarea>
@@ -469,7 +484,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success" id="buttonSecondMoldingStation"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                            <button type="submit" class="btn btn-success" id="buttonSaveSecondMoldingStation"><i class="fa-solid fa-floppy-disk"></i> Save</button>
                         </div>
                     </form>
                 </div>
@@ -498,6 +513,7 @@
                     let materialNameSubstring = materialName.substring(0,6);
                     
                     if(poNumber != "" && materialName != ""){
+                        getMachineDropdown($('#selMachineNumber'), materialName); // Added Chris to get Data on matrix machine
                         getPOReceivedByPONumber(poNumber);
                         if(materialNameSubstring == 'CN171S'){
                             $('#divMaterialLotNumbers').removeClass('d-none');
@@ -733,6 +749,12 @@
                                 else{
                                     isResponseError('textPoQuantity', true);
                                 }
+                                if(response['error']['required_output'] === undefined){
+                                    isResponseError('textRequiredOutput', false);
+                                }
+                                else{
+                                    isResponseError('textRequiredOutput', true);
+                                }
 
                                 if(response['error']['machine_number'] === undefined){
                                     isResponseError('textMachineNumber', false);
@@ -843,6 +865,8 @@
                         success: function (response) {
                             let responseData = response['data'];
                             if(response['data'].length > 0){
+                                let machineArray = responseData[0].machine_number.split(" , "); // ADDED Chris
+
                                 $('#textSecondMoldingId', $('#formSecondMolding')).val(responseData[0].id);
                                 // $('#textSecondMoldingId', $('#formAddStation')).val(responseData[0].id); // Id from sec_molding_runcards(table)
                                 $('#textDeviceName', $('#formSecondMolding')).val(responseData[0].device_name);
@@ -850,7 +874,13 @@
                                 $('#textPMIPONumber', $('#formSecondMolding')).val(responseData[0].pmi_po_number);
                                 $('#textPONumber', $('#formSecondMolding')).val(responseData[0].po_number);
                                 $('#textPoQuantity', $('#formSecondMolding')).val(responseData[0].po_quantity);
-                                $('#textMachineNumber', $('#formSecondMolding')).val(responseData[0].machine_number);
+                                $('#textRequiredOutput', $('#formSecondMolding')).val(responseData[0].required_output);
+
+                                // ADDED Chris
+                                // $('#textMachineNumber', $('#formSecondMolding')).val(responseData[0].machine_number);
+                                $('select[name="machine_number[]"]').val(machineArray).trigger('change') 
+                                // !
+
                                 $('#textMaterialLotNumber', $('#formSecondMolding')).val(responseData[0].material_lot_number);
                                 $('#textMaterialName', $('#formSecondMolding')).val(responseData[0].material_name);
                                 $('#textDrawingNumber', $('#formSecondMolding')).val(responseData[0].drawing_number);
@@ -883,8 +913,10 @@
                 let id;
                 $("#tableSecondMolding").on('click', '.actionEditSecondMolding', function(){
                     id = $(this).attr('second-molding-id');
+                    let materialName = $('#textSearchMaterialName').val();
                     console.log(`id ${id}`)
                     $('#buttonAddStation').prop('disabled', false); // remove disabled for edit
+                    getMachineDropdown($('#selMachineNumber'), materialName);
                     getSecondMoldingById(id);
                     getMaterialProcessStation();
                 });
@@ -909,7 +941,7 @@
                     fixedHeader: true,
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "station" },
+                        { "data" : "station_name" },
                         { "data" : "date" },
                         { "data" : "operator_name",},
                         { "data" : "input_quantity" },
@@ -929,8 +961,11 @@
                  * Start
                 */
                 $('#buttonAddStation').click(function(){
+                    console.log('buttonAddStation');
                     let secondMoldingId = $('#textSecondMoldingId', $('#formSecondMolding')).val();
                     $('#textSecondMoldingId', $('#formAddStation')).val(secondMoldingId);
+                    $('#labelTotalNumberOfNG', $('#formAddStation')).text(0);
+                    $('#labelTotalNumberOfNG', $('#formAddStation')).val(0);
                 });
                 /**
                  * Get Id of Second Molding after click 
@@ -988,12 +1023,14 @@
                     let inputQuantity = parseInt($("#textInputQuantity").val());
                     let outputQuantity = parseInt($('#textOutputQuantity').val());
                     let totalNGQuantity = Math.abs(inputQuantity - outputQuantity);
+                    /* Set NG Quantity */
                     if(isNaN(totalNGQuantity)){
                         $("#textNGQuantity").val(inputQuantity);
                     }else{
                         $("#textNGQuantity").val(totalNGQuantity);
                     }
 
+                    /* Enable/Disable of Add MOD(button) */
                     if(parseInt($("#textNGQuantity").val()) > 0){
                         $("#buttonAddModeOfDefect").prop('disabled', false);
                     }
@@ -1001,12 +1038,24 @@
                         $("#buttonAddModeOfDefect").prop('disabled', true);
                     }
 
+                    /**
+                     * Set label for Total No. of NG and
+                     * Enable/Disable of Save(button) for Second Molding Station
+                    */
                     if(parseInt($('#textNGQuantity').val()) !== parseInt($('#labelTotalNumberOfNG').text())){
                         $('#labelTotalNumberOfNG').css({color: 'red'})
-                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', true);
                     }else{
                         $('#labelTotalNumberOfNG').css({color: 'green'})
-                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', false);
+                    }
+
+                    /* Computation of Station Yield */
+                    let stationYieldPercentage = parseFloat(outputQuantity / inputQuantity * 100);
+                    if(isNaN(stationYieldPercentage)){
+                        $("#textStationYield").val(`${0}%`);
+                    }else{
+                        $("#textStationYield").val(`${stationYieldPercentage.toFixed(2)}%`);
                     }
                 }); 
                 
@@ -1014,12 +1063,14 @@
                     let inputQuantity = parseInt($("#textInputQuantity").val());
                     let outputQuantity = parseInt($('#textOutputQuantity').val());
                     let totalNGQuantity = Math.abs(outputQuantity - inputQuantity);
+                    /* Set NG Quantity */
                     if(isNaN(totalNGQuantity)){
                         $("#textNGQuantity").val(0);
                     }else{
                         $("#textNGQuantity").val(totalNGQuantity);
                     }
 
+                    /* Enable/Disable of Add MOD(button) */
                     if(parseInt($("#textNGQuantity").val()) > 0){
                         $("#buttonAddModeOfDefect").prop('disabled', false);
                     }
@@ -1027,13 +1078,54 @@
                         $("#buttonAddModeOfDefect").prop('disabled', true);
                     }
 
+                    /**
+                     * Set label for Total No. of NG and
+                     * Enable/Disable of Save(button) for Second Molding Station
+                    */
                     if(parseInt($('#textNGQuantity').val()) !== parseInt($('#labelTotalNumberOfNG').text())){
                         $('#labelTotalNumberOfNG').css({color: 'red'})
-                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', true);
                     }else{
                         $('#labelTotalNumberOfNG').css({color: 'green'})
-                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', false);
                     }
+
+                    /* Computation of Station Yield */
+                    let stationYieldPercentage = parseFloat(outputQuantity / inputQuantity * 100);
+                    if(isNaN(stationYieldPercentage)){
+                        $("#textStationYield").val(`${0}%`);
+                    }else{
+                        $("#textStationYield").val(`${stationYieldPercentage.toFixed(2)}%`);
+                    }
+                });
+
+                $("#tableSecondMoldingStationMOD").each(function(){
+                    $(this).on('keyup', '.textMODQuantity', function(){
+                        let totalNumberOfMOD = 0;
+                        if($(this).val() == null || $(this).val() == ''){
+                            $("#labelTotalNumberOfNG").css({color: 'red'});
+                            $("#buttonSaveSecondMoldingStation").prop('disabled', true);
+                            // $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
+                        }else{
+                            $('#tableSecondMoldingStationMOD .textMODQuantity').each(function() {
+                                if($(this).val() != null || $(this).val() != ""){
+                                    totalNumberOfMOD += parseFloat($(this).val());
+                                }
+                            });
+
+                            if($("#textNGQuantity").val() != totalNumberOfMOD){
+                                toastr.warning('Quantity of NG defect not tally!');
+                                $("#labelTotalNumberOfNG").css({color: 'red'});
+                                $("#buttonSaveSecondMoldingStation").prop('disabled', true);
+                            }
+                            else{
+                                $("#labelTotalNumberOfNG").css({color: 'green'});
+                                $("#buttonSaveSecondMoldingStation").prop('disabled', false);
+                            }
+                        }
+                        $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
+                    })
+                    
                 });
                 /**
                  * Auto compute NG Quantity onkeyup
@@ -1076,11 +1168,11 @@
                     if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
                         // toastr.warning('Mode of Defect NG Qty not tally!');
                         $('#labelTotalNumberOfNG').css({color: 'red'})
-                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', true);
                         $("#buttonAddModeOfDefect").prop('disabled', false);
                     }else{
                         $('#labelTotalNumberOfNG').css({color: 'green'})
-                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', false);
                         $("#buttonAddModeOfDefect").prop('disabled', true);
                     }
                     $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
@@ -1099,11 +1191,11 @@
                     if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
                         console.log('Mode of Defect NG Qty not tally!');
                         $('#labelTotalNumberOfNG').css({color: 'red'})
-                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', true);
                         $("#buttonAddModeOfDefect").prop('disabled', false);
                     }else{
                         $('#labelTotalNumberOfNG').css({color: 'green'})
-                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                        $("#buttonSaveSecondMoldingStation").prop('disabled', false);
                         $("#buttonAddModeOfDefect").prop('disabled', true);
                     }
                     $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
@@ -1133,8 +1225,9 @@
                                 $('#textStation', $('#formAddStation')).val(responseData[0].station).trigger('change');
                                 $('#textDate', $('#formAddStation')).val(responseData[0].date);
                                 $('#textInputQuantity', $('#formAddStation')).val(responseData[0].input_quantity);
-                                $('#textNGQuantity', $('#formAddStation')).val(responseData[0].ng_quantity);
                                 $('#textOutputQuantity', $('#formAddStation')).val(responseData[0].output_quantity);
+                                $('#textNGQuantity', $('#formAddStation')).val(responseData[0].ng_quantity);
+                                $('#textStationYield', $('#formAddStation')).val(responseData[0].station_yield);
                                 $('#textRemarks', $('#formAddStation')).val(responseData[0].remarks);
                                 let rowModeOfDefect = '';
                                 for (let i = 0; i < response['data'].length; i++) {
@@ -1157,7 +1250,7 @@
                                     $('.select2bs5').select2({
                                         theme: 'bootstrap-5'
                                     });
-                                    getModeOfDefectForSecondMoldingEdit($("#tableSecondMoldingStationMOD tr:last").find('.selectMOD'), response['data'][i]['mod_id']);
+                                    getModeOfDefectForSecondMolding($("#tableSecondMoldingStationMOD tr:last").find('.selectMOD'), response['data'][i]['mod_id']);
 
                                     let totalNumberOfMOD = 0;
                                     $('#tableSecondMoldingStationMOD .textMODQuantity').each(function() {
@@ -1169,11 +1262,11 @@
                                     if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
                                         // toastr.warning('Mode of Defect NG Qty not tally!');
                                         $('#labelTotalNumberOfNG').css({color: 'red'})
-                                        $("#buttonSecondMoldingStation").prop('disabled', true);
+                                        $("#buttonSaveSecondMoldingStation").prop('disabled', true);
                                         $("#buttonAddModeOfDefect").prop('disabled', false);
                                     }else{
                                         $('#labelTotalNumberOfNG').css({color: 'green'})
-                                        $("#buttonSecondMoldingStation").prop('disabled', false);
+                                        $("#buttonSaveSecondMoldingStation").prop('disabled', false);
                                         $("#buttonAddModeOfDefect").prop('disabled', true);
                                     }
                                     $("#labelTotalNumberOfNG").text(totalNumberOfMOD);

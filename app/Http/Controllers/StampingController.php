@@ -416,7 +416,7 @@ class StampingController extends Controller
             $data = [];
             for ($x=0; $x < count($sublot); $x++) {
                 $prod_data['sublot_qty'] = $sublot[$x]->batch_qty;
-                $prod_data['sublot_counter'] = $sublot[$x]->counter;
+                $prod_data['sublot_counter'] = $sublot[$x]->counter."/".count($sublot);
 
                 $qrcode = QrCode::format('png')
                 ->size(250)->errorCorrection('H')

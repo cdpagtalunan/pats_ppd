@@ -1,6 +1,6 @@
 
 // $(document).ready(function () {
-    
+
     const tbl = {
         iqcInspection:'#tblIqcInspection',
         iqcWhsDetails :'#tblWhsDetails',
@@ -103,8 +103,6 @@
             { "data" : "updated_at" },
         ],
     });
-
-
 
     const getFamily = function () {
         $.ajax({
@@ -360,6 +358,7 @@
                     }
                 }
                 /*Mode of Defects Modal*/
+
                 $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 for (let i = 0; i < response.length; i++) {

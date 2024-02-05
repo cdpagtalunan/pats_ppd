@@ -103,9 +103,21 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('first_molding_ipqc_inspection') }}" class="nav-link">
+                                    <a href="{{ route('ipqc_inspection_1st_molding') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>IPQC 1st Molding</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('ipqc_inspection_2nd_molding') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>IPQC 2nd Molding</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('ipqc_inspection_assembly') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>IPQC Assembly</p>
                                     </a>
                                 </li>
                             </ul>

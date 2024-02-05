@@ -41,4 +41,10 @@ class CommonController extends Controller
         ");
         return response()->json(['data' => $modeOfDefectResult]);
     }
+
+    public function get_data_from_acdcs(Request $request){
+        $acdcs_data = DB::connection('mysql_rapid_acdcs')
+        ->select("SELECT `doc_no`,`doc_type` FROM tbl_active_docs WHERE `doc_type` = '".$request->doc_type."' AND `doc_title` LIKE '%".$request->doc_title."%'");
+        return response()->json(['acdcs_data' => $acdcs_data]);
+    }
 }

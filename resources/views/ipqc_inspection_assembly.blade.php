@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Assembly')
 
     @section('content_page')
 
@@ -41,12 +41,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>In-Process Quality Control (First Stamping)</h1>
+                            <h1>In-Process Quality Control (Assembly)</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item">First Stamping</li>
+                                <li class="breadcrumb-item">Assembly</li>
                                 <li class="breadcrumb-item active">In-Process Quality Control</li>
                             </ol>
                         </div>
@@ -63,22 +63,16 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                                <label class="form-label">PO Number:</label>
+                                                <label class="form-label">Series Name:</label>
                                             <div class="input-group mb-3">
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select PO Number"></i>
-                                                <select class="form-control select2bs5" id="txtSelectPONo" name="po_number" placeholder="Select PO Number"></select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Part Code</label>
-                                            <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Product Code" aria-label="Partcode" id="txtSearchPartCode" readonly>
+                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Series Name"></i>
+                                                <select class="form-control select2bs5" id="txtSelectAssemblySeries" name="sel_series_name" placeholder="Select Series Name"></select>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Material Name" aria-label="Materialname" id="txtSearchMatName" readonly>
+                                                <input type="text" class="form-control" placeholder="Material Name" aria-label="Materialname" id="txtSearchMaterialName" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -86,23 +80,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Start Scan QR Modal -->
-                    <div class="modal fade" id="mdlScanQrCode" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-                        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header border-bottom-0 pb-0">
-                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                </div>
-                                <div class="modal-body pt-0">
-                                    {{-- hidden_scanner_input --}}
-                                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
-                                    <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.End Scan QR Modal -->
 
                     <div class="row">
                         <!-- left column -->
@@ -132,7 +109,7 @@
                                         {{-- Pending Tab --}}
                                         <div class="tab-pane fade show active" id="Pending" role="tabpanel" aria-labelledby="Pending-tab">
                                             <div class="table-responsive">
-                                                <table id="tbl1stStampingIpqcInspectionPending" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                <table id="tblAssemblyIpqcInspPending" class="table table-sm table-bordered table-striped table-hover text-center"
                                                     style="width: 100%;">
                                                     <thead>
                                                         <tr>
@@ -143,9 +120,7 @@
                                                             <th>Production Lot#</th>
                                                             <th>Judgement</th>
                                                             <th>QC Sample</th>
-                                                            {{-- <th>Document No</th> --}}
                                                             <th>Inspected At</th>
-
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -153,10 +128,8 @@
                                         </div>
                                         {{-- Completed Tab --}}
                                         <div class="tab-pane fade" id="Completed" role="tabpanel" aria-labelledby="Completed-tab">
-                                            {{-- <div class="card-body"> --}}
                                                 <div class="table-responsive">
-                                                    <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                    <table id="tbl1stStampingIpqcInspectionCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    <table id="tblAssemblyIpqcInspCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
                                                         style="width: 100%;">
                                                         <thead>
                                                             <tr>
@@ -167,21 +140,16 @@
                                                                 <th>Production Lot#</th>
                                                                 <th>Judgement</th>
                                                                 <th>QC Sample</th>
-                                                                {{-- <th>Document No</th> --}}
                                                                 <th>Inspected At</th>
-
                                                             </tr>
                                                         </thead>
                                                     </table>
                                                 </div>
-                                            {{-- </div> --}}
                                         </div>
                                         {{-- For Re-Setup Tab --}}
                                         <div class="tab-pane fade" id="Resetup" role="tabpanel" aria-labelledby="Resetup-tab">
-                                            {{-- <div class="card-body"> --}}
                                                 <div class="table-responsive">
-                                                    <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                    <table id="tbl1stStampingIpqcInspectionResetup" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    <table id="tblAssemblyIpqcInspResetup" class="table table-sm table-bordered table-striped table-hover text-center"
                                                         style="width: 100%;">
                                                         <thead>
                                                             <tr>
@@ -192,13 +160,11 @@
                                                                 <th>Production Lot#</th>
                                                                 <th>Judgement</th>
                                                                 <th>QC Sample</th>
-                                                                {{-- <th>Document No</th> --}}
                                                                 <th>Inspected At</th>
                                                             </tr>
                                                         </thead>
                                                     </table>
                                                 </div>
-                                            {{-- </div> --}}
                                         </div>
                                     </div>
                                     {{-- TABS END --}}
@@ -232,9 +198,9 @@
                         <div class="modal-body">
                             <div class="row d-flex justify-content-center">
                                 <label class="text-secondary mt-2">Are you sure you want to proceed?</label>
-                                <input type="hidden" class="form-control" name="fs_productions_id" id="txtFsProductionsId">
-                                <input type="hidden" class="form-control" name="stamping_ipqc_id" id="txtStampingIPQCId">
-                                <input type="hidden" class="form-control" name="stamping_ipqc_status" id="txtStampingIPQCStatus">
+                                <input type="hidden" class="form-control" name="cnfrm_first_molding_id" id="cnfrmtxtFirstMoldingId">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_id" id="cnfrmtxtIPQCId">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_status" id="cnfrmtxtIPQCStatus">
                             </div>
                         </div>
                         <div class="modal-footer justify-content-between">
@@ -262,9 +228,9 @@
                     <form method="post" id="formIPQCInspectionData" autocomplete="off">
                         @csrf
                         <div class="modal-body">
-                            <input type="hidden" id="txtStampingIpqcId" name="stamping_ipqc_id">
-                            <input type="hidden" id="txtFirstStampingProdId" name="first_stamping_prod_id">
-                            <input type="hidden" id="txtStampingCategory" name="stamping_category">
+                            <input type="hidden" id="txtIpqcId" name="ipqc_id">
+                            <input type="hidden" id="txtFirstMoldingId" name="first_molding_id">
+                            <input type="hidden" id="txtProcessCategory" name="process_category">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="card">
@@ -293,7 +259,7 @@
                                             <div class="form-group">
                                                 <label class="form-label">OK:</label>
                                                 <input type="text" class="form-control form-control-sm" name="output" id="txtOutput"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" required>
+                                                            onkeypress="return event.charCode >= 48 && event.charCode <= 57" required>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">NG:</label>
@@ -413,35 +379,113 @@
         <script type="text/javascript">
             var prodData;
             $(document).ready(function(){
+                let frmIPQCInspectionData = $('#formIPQCInspectionData');
 
-                // $('.select2bs4').select2({
-                //     theme: 'bootstrap4'
-                // });
                 $( '.select2bs5' ).select2( {
                     theme: 'bootstrap-5'
                 } );
 
-                GetPOFromFirstStampingProd($("#txtSelectPONo"));
+                // NEW CODE CLARK 02042024
+                GetSeriesNameFromAssembly($("#txtSelectAssemblySeries"));
 
-                function GetPOFromFirstStampingProd(cboElement){
-                    let result = '<option value="" disabled selected>-- Select PO No. --</option>';
+                let dtAssemblyIpqcInspPending = $("#tblAssemblyIpqcInspPending").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_assembly_ipqc_data",
+                        data: function(param){
+                        param.device_id =  $("#txtSelectAssemblySeries").val();
+                        param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
+                        param.second_molding_status = [0]; //First Molding Status : For IPQC
+                        param.process_category = 2; //Process Category : Second Molding
+                        }
+                    },
+                    fixedHeader: true,
+                    "order":[[7, 'asc']],
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "ipqc_status" },
+                        { "data" : "first_molding_created_at" },
+                        { "data" : "pmi_po_no" },
+                        { "data" : "production_lot" },
+                        { "data" : "ipqc_judgement" },
+                        { "data" : "qc_samples" },
+                        { "data" : "ipqc_inspected_date" },
+                    ],
+                });
+
+                let dtAssemblyIpqcInspCompleted = $("#tblAssemblyIpqcInspCompleted").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_assembly_ipqc_data",
+                        data: function(param){
+                        param.device_id =  $("#txtSelectAssemblySeries").val();
+                        param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
+                        param.second_molding_status = [0]; //First Molding Status : For IPQC
+                        param.process_category = 2; //Process Category : Second Molding
+                        }
+                    },
+                    fixedHeader: true,
+                    "order":[[7, 'desc']],
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "ipqc_status" },
+                        { "data" : "first_molding_created_at" },
+                        { "data" : "pmi_po_no" },
+                        { "data" : "production_lot" },
+                        { "data" : "ipqc_judgement" },
+                        { "data" : "qc_samples" },
+                        { "data" : "ipqc_inspected_date" },
+                    ],
+                });
+
+                let dtAssemblyIpqcInspResetup = $("#tblAssemblyIpqcInspResetup").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_assembly_ipqc_data",
+                        data: function(param){
+                        param.device_id =  $("#txtSelectAssemblySeries").val();
+                        param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
+                        param.second_molding_status = [0]; //First Molding Status : For IPQC
+                        param.process_category = 2; //Process Category : Second Molding
+                        }
+                    },
+                    fixedHeader: true,
+                    "order":[[7, 'desc']],
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "ipqc_status" },
+                        { "data" : "first_molding_created_at" },
+                        { "data" : "pmi_po_no" },
+                        { "data" : "production_lot" },
+                        { "data" : "ipqc_judgement" },
+                        { "data" : "qc_samples" },
+                        { "data" : "ipqc_inspected_date" },
+                    ],
+                });
+
+                function GetSeriesNameFromAssembly(cboElement){
+                    let result = '<option value="" disabled selected>-- Select Device Name --</option>';
 
                     $.ajax({
                             type: "get",
-                            url: "get_po_from_fs_production",
-                            data: {
-                                "stamping_cat" : 1
-                            },
+                            url: "get_series_from_assembly",
+                            // data: {
+                            //     "stamping_cat" : 1
+                            // },
                             dataType: "json",
                             beforeSend: function() {
                                 result = '<option value="0" disabled selected> -- Loading -- </option>';
                                 cboElement.html(result);
                             },
                             success: function(response) {
-                                if (response['fs_production_po'].length > 0) {
-                                        result = '<option value="" disabled selected>-- Select PO No. --</option>';
-                                    for (let index = 0; index < response['fs_production_po'].length; index++) {
-                                        result += '<option value="' + response['fs_production_po'][index].po_num + '">' + response['fs_production_po'][index].po_num + '</option>';
+                                let fMoldingDevice = response['first_molding_devices'];
+                                if (fMoldingDevice.length > 0) {
+                                        result = '<option value="" disabled selected>-- Select Device Name --</option>';
+                                    for (let index = 0; index < fMoldingDevice.length; index++) {
+                                        result += '<option value="' + fMoldingDevice[index].first_molding_device_id + '">'+fMoldingDevice[index].first_molding_device.device_name+'</option>';
                                     }
                                 } else {
                                     result = '<option value="0" selected disabled> -- No record found -- </option>';
@@ -453,12 +497,182 @@
                                 cboElement.html(result);
                                 console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
                             }
-                        });
+                    });
                 }
 
-                console.log('b drawing', $('#txtSelectDocNoBDrawing').val());
-                console.log('ins', $('#txtSelectDocNoInspStandard').val());
-                console.log('ud', $('#txtSelectDocNoUD').val());
+                $('#txtSelectAssemblySeries').on('change', function(e){
+                        let searchDeviceIdFrmFirstMolding = $('#txtSelectAssemblySeries').val();
+                        $.ajax({
+                            type: "get",
+                            url: "get_assembly_data",
+                            data: {
+                                "device_id" : searchDeviceIdFrmFirstMolding
+                            },
+                            dataType: "json",
+                            success: function (response) {
+                                let fMoldingData = response['first_molding_data'];
+                                $('#txtSelectAssemblySeries').val(fMoldingData[0].first_molding_device_id);
+                                $('#txtSearchMaterialName').val(fMoldingData[0].first_molding_device.contact_name);
+
+                                let mat_name = fMoldingData[0].first_molding_device.device_name;
+                                mat_name = mat_name.replace(/ /g,'');
+
+                                GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+
+                                dtAssemblyIpqcInspPending.draw();
+                                dtAssemblyIpqcInspCompleted.draw();
+                                dtAssemblyIpqcInspResetup.draw();
+                            }
+                        });
+                    // }
+                });
+
+                $('input[name="keep_sample"]').click('click', function(e){
+                    if(frmIPQCInspectionData.find('#txtKeepSample1').prop('checked')){
+                        frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', false);
+                    }else if(frmIPQCInspectionData.find('#txtKeepSample2').prop('checked')){
+                        frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', false);
+                    }else{
+                        frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', true);
+                    }
+                });
+
+                $(document).on('click', '.btnUpdateIPQCData',function(e){
+                    // console.log('view');
+                    e.preventDefault();
+                    let ipqc_id = $(this).attr('ipqc_data-id');
+                    let first_molding_id = $(this).attr('first_molding_data-id');
+
+                    $.ajax({
+                        url: "get_assembly_data",
+                        type: "get",
+                        data: {
+                            ipqc_id: ipqc_id,
+                            first_molding_id: first_molding_id
+                        },
+                        dataType: "json",
+                        beforeSend: function(){
+                            $('#formIPQCInspectionData')[0].reset();
+                        },
+                        success: function(response){
+                            $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
+                            let first_molding_data = response['first_molding_data'];
+
+                            frmIPQCInspectionData.find('#txtIpqcId').val(ipqc_id);
+                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(first_molding_id);
+
+                            frmIPQCInspectionData.find('#txtProcessCategory').val(1);// First Molding : STATIC VALUE
+
+                            frmIPQCInspectionData.find('#txtPoNumber').val(first_molding_data[0]['pmi_po_no']);
+                            frmIPQCInspectionData.find('#txtPartCode').val(first_molding_data[0]['item_code']);
+                            frmIPQCInspectionData.find('#txtMaterialName').val(first_molding_data[0].first_molding_device.contact_name);
+                            frmIPQCInspectionData.find('#txtProductionLot').val(first_molding_data[0]['production_lot']);
+                            frmIPQCInspectionData.find('#txtInput').val(first_molding_data[0]['qc_samples']);
+
+                            //disabled and readonly
+                            frmIPQCInspectionData.find("#frmSaveBtn").prop('hidden', false);
+                            frmIPQCInspectionData.find("#txtOutput").prop('disabled', false);
+                            frmIPQCInspectionData.find("#txtJudgement").prop('disabled', false);
+                            frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop({hidden:false, disabled:false});
+                            frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop({hidden:false, disabled:false});
+                            frmIPQCInspectionData.find("#txtSelectDocNoUD").prop({hidden:false, disabled:false});
+                            frmIPQCInspectionData.find("#btnilqcmlink").prop('disabled', false);
+                            frmIPQCInspectionData.find('input[name="keep_sample"]').prop('hidden', false);
+
+                            // frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('disabled', false);
+                            // frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('disabled', false);
+                            // frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('disabled', false);
+
+                            frmIPQCInspectionData.find("#btnViewBDrawings").prop('disabled', true);
+                            frmIPQCInspectionData.find("#btnViewInspStdDrawings").prop('disabled', true);
+                            frmIPQCInspectionData.find("#btnViewUdDrawings").prop('disabled', true);
+
+                            if(first_molding_data[0]['ipqc_data'] == 0){ //when first_molding_id && ipqc_id is not existing in MoldingAssyIpqc Table //For Insert to MoldingAssyIpqc Table
+
+                                frmIPQCInspectionData.find("#txtInspectorID").val(first_molding_data[0]['ipqc_inspector_id']);
+                                frmIPQCInspectionData.find("#txtInspectorName").val(first_molding_data[0]['ipqc_inspector_name']);
+                                frmIPQCInspectionData.find("#btnReuploadTriggerDiv").addClass("d-none");
+                                frmIPQCInspectionData.find("#btnPartsDrawingAddRow").addClass("d-none");
+
+                                frmIPQCInspectionData.find("#txtAddFile").removeClass('d-none');
+                                frmIPQCInspectionData.find("#txtAddFile").attr('required', true);
+                                frmIPQCInspectionData.find("#txtEditUploadedFile").addClass('d-none');
+                                frmIPQCInspectionData.find("#download_file").addClass('d-none');
+
+                                frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('required', true);
+                                frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('required', true);
+                                frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('required', true);
+
+                                if(frmIPQCInspectionData.find('#txtKeepSample1').prop('checked')){
+                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', false);
+                                }else if(frmIPQCInspectionData.find('#txtKeepSample2').prop('checked')){
+                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', false);
+                                }else{
+                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', true);
+                                }
+
+                            }else{//For Update to MoldingAssyIpqc Table
+                                let ipqc_data = first_molding_data[0]['first_molding_ipqc'];
+                                console.log('edit ipqc',ipqc_data);
+
+                                frmIPQCInspectionData.find('#txtOutput').val(ipqc_data['output']);
+                                frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
+                                frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
+
+                                if(ipqc_data['keep_sample'] == 1){
+                                    frmIPQCInspectionData.find('#txtKeepSample1').prop('checked', true);
+                                }else if(ipqc_data['keep_sample'] == 2){
+                                    frmIPQCInspectionData.find('#txtKeepSample2').prop('checked', true);
+                                }else{
+                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('checked', false);
+                                }
+
+                                frmIPQCInspectionData.find('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
+
+                                let ng_value = frmIPQCInspectionData.find('#txtInput').val() - frmIPQCInspectionData.find('#txtOutput').val();
+                                frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
+
+                                frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                                frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
+                                frmIPQCInspectionData.find("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
+
+                                frmIPQCInspectionData.find('input[name="keep_sample"]').attr('disabled', false);
+                                frmIPQCInspectionData.find("#btnReuploadTriggerDiv").removeClass('d-none');
+                                frmIPQCInspectionData.find("#btnReuploadTrigger").removeClass('d-none');
+                                frmIPQCInspectionData.find("#btnReuploadTrigger").prop('checked', false);
+                                frmIPQCInspectionData.find("#btnReuploadTriggerLabel").removeClass('d-none');
+                                // }
+                                frmIPQCInspectionData.find("#txtEditUploadedFile").removeClass('d-none');
+                                frmIPQCInspectionData.find("#txtAddFile").addClass('d-none');
+                                frmIPQCInspectionData.find("#txtAddFile").removeAttr('required');
+                                frmIPQCInspectionData.find("#txtSelectDocumentNo").removeAttr('required');
+                                frmIPQCInspectionData.find("#txtEditUploadedFile").removeAttr('required');
+                                frmIPQCInspectionData.find('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
+
+                                frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('required', false);
+                                frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('required', false);
+                                frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('required', false);
+
+                                let download ='<a href="assembly_download_file/'+ipqc_data['id']+'">';
+                                    download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
+                                    download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
+                                    download +=         '&nbsp;';
+                                    download +=         'See Attachment';
+                                    download +='</button>';
+                                    download +='</a>';
+
+                                frmIPQCInspectionData.find('#AttachmentDiv').append(download);
+                                frmIPQCInspectionData.find("#download_file").removeClass('d-none');
+                            }
+                            $('#modalIpqcInspection').modal('show');
+                        },
+                        error: function(data, xhr, status){
+                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+                    });
+                });
 
                 $('#txtSelectDocNoBDrawing').on('change', function() {
                     if($('#txtSelectDocNoBDrawing').val() === null || $('#txtSelectDocNoBDrawing').val() === undefined){
@@ -494,6 +708,18 @@
                 ViewDocument($('#txtSelectDocNoInspStandard').val(), $('#InspStandardDiv'), 'btnViewInspStdDrawings');
                 ViewDocument($('#txtSelectDocNoUD').val(), $('#UDDiv'), 'btnViewUdDrawings');
 
+                function GetBDrawingFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
+                };
+
+                function GetInspStandardFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
+                };
+
+                function GetUDFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
+                };
+
                 $('#btnViewBDrawings').on('click', function(){
                     redirect_to_drawing($('#txtSelectDocNoBDrawing').val());
                 });
@@ -505,12 +731,9 @@
                 });
 
                 function ViewDocument(document_no, div_id, btn_id){
-                    // let doc_no ='<a href="download_file/'+document_no+'">';
                     let doc_no ='<button type="button" id="'+btn_id+'" class="btn btn-primary">';
                         doc_no +=     '<i class="fa fa-file" data-bs-toggle="tooltip" data-bs-html="true" title="See Document in ACDCS"></i>';
                         doc_no +='</button>';
-                        // doc_no +='</a>';
-                        // <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
                     div_id.append(doc_no);
                 }
 
@@ -523,485 +746,6 @@
                         window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
                     }
                 }
-
-                let dt1stStampingIpqcInspectionPending = $("#tbl1stStampingIpqcInspectionPending").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_stamping_ipqc_data",
-                        data: function(param){
-                        param.po_number =  $("#txtSelectPONo").val();
-                        param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
-                        param.fs_prod_status = [0]; // Stamping productions Status : For IPQC
-                        param.fs_prod_stamping_cat = 1; // Stamping productions Stamping Category: 1
-                        }
-                    },
-                    fixedHeader: true,
-                    // bAutoWidth: false,
-                    "order":[[7, 'asc']],
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "ipqc_status" },
-                        { "data" : "fs_prod_created_at" },
-                        { "data" : "po_num" },
-                        { "data" : "prod_lot_no" },
-                        { "data" : "ipqc_judgement" },
-                        { "data" : "qc_samp" },
-                        // { "data" : "ipqc_document_no" },
-                        { "data" : "ipqc_inspected_date" },
-                    ],
-                    // "rowCallback" : function(row, data, index){
-                        // if(data.stamping_ipqc != null){
-                        //     if (data.stamping_ipqc.status == 3 && data.status == 1){
-                        //         $("td",row).css("background-color","#80ffbf");
-                        //     }else if(data.stamping_ipqc.status == 4 && data.stamping_ipqc.judgement == "Rejected"){
-                        //         $("td",row).css("background-color","#ff6666");
-                        //         $("td",row).css("color","#ffffff");
-                        //     }
-                        // }
-
-                    // }
-                });
-
-                let dt1stStampingIpqcInspectionCompleted = $("#tbl1stStampingIpqcInspectionCompleted").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_stamping_ipqc_data",
-                        data: function(param){
-                        param.po_number =  $("#txtSelectPONo").val();
-                        // param.status = [3];
-                        param.ipqc_status = [3]; //Status 3 = Submitted: Judgement - Accepted
-                        param.fs_prod_status = [1,2]; //Stamping productions Status : For Mass Prod, Done
-                        param.fs_prod_stamping_cat = 1; // Stamping productions Stamping Category: 1
-                        }
-                    },
-                    fixedHeader: true,
-                    // bAutoWidth: false,
-                    "order":[[7, 'desc']],
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "ipqc_status" },
-                        { "data" : "fs_prod_created_at" },
-                        { "data" : "po_num" },
-                        { "data" : "prod_lot_no" },
-                        { "data" : "ipqc_judgement" },
-                        { "data" : "qc_samp" },
-                        // { "data" : "ipqc_document_no" },
-                        { "data" : "ipqc_inspected_date" },
-                    ],
-                    // "rowCallback" : function(row, data, index){
-                    //     if(data.stamping_ipqc != null){
-                    //         if (data.stamping_ipqc.status == 3 && data.status == 1){
-                    //             $("td",row).css("background-color","#80ffbf");
-                    //         }else if(data.stamping_ipqc.status == 4 && data.stamping_ipqc.judgement == "Rejected"){
-                    //             $("td",row).css("background-color","#ff6666");
-                    //             $("td",row).css("color","#ffffff");
-                    //         }
-                    //     }
-                    // }
-                });
-
-                let dt1stStampingIpqcInspectionResetup = $("#tbl1stStampingIpqcInspectionResetup").DataTable({
-                    // GetDataTableData()
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_stamping_ipqc_data",
-                        data: function(param){
-                        param.po_number =  $("#txtSelectPONo").val();
-                        param.ipqc_status = [4]; //Status 4 = Submitted: Judgement - Rejected
-                        param.fs_prod_status = [3]; //Stamping productions Status : For Resetup
-                        param.fs_prod_stamping_cat = 1; // Stamping productions Stamping Category: 1
-                        }
-                    },
-                    fixedHeader: true,
-                    // bAutoWidth: false,
-                    "order":[[7, 'desc']],
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "ipqc_status" },
-                        { "data" : "fs_prod_created_at" },
-                        { "data" : "po_num" },
-                        { "data" : "prod_lot_no" },
-                        { "data" : "ipqc_judgement" },
-                        { "data" : "qc_samp" },
-                        // { "data" : "ipqc_document_no" },
-                        { "data" : "ipqc_inspected_date" },
-                    ],
-                    // "rowCallback" : function(row, data, index){
-                    //     if(data.stamping_ipqc != null){
-                    //         if (data.stamping_ipqc.status == 3 && data.status == 1){
-                    //             $("td",row).css("background-color","#80ffbf");
-                    //         }else if(data.stamping_ipqc.status == 4 && data.stamping_ipqc.judgement == "Rejected"){
-                    //             $("td",row).css("background-color","#ff6666");
-                    //             $("td",row).css("color","#ffffff");
-                    //         }
-                    //     }
-                    // }
-                });
-
-                $('#btnScanPo').on('click', function(e){
-                    e.preventDefault();
-                    // $('#mdlScanQrCode').modal('show');
-                    $('#mdlScanQrCode').on('shown.bs.modal', function () {
-                        $('#txtScanQrCode').focus();
-                        const mdlScanQrCode = document.querySelector("#mdlScanQrCode");
-                        const inptQrCode = document.querySelector("#txtScanQrCode");
-                        let focus = false;
-
-                        mdlScanQrCode.addEventListener("mouseover", () => {
-                            if (inptQrCode === document.activeElement) {
-                                focus = true;
-                            } else {
-                                focus = false;
-                            }
-                        });
-
-                        mdlScanQrCode.addEventListener("click", () => {
-                            if (focus) {
-                                inptQrCode.focus()
-                            }
-                        });
-                    });
-                });
-
-                $('#txtSelectPONo').on('change', function(e){
-                    // if(e.keyCode == 13){
-                        let search_po_number_val = $('#txtSelectPONo').val();
-                        // console.log('log1', $('#txtScanQrCode').val());
-                        // let ScanQrCodeVal = jQuery.parseJSON($('#txtScanQrCode').val());
-                        // console.log('log2', ScanQrCodeVal);
-                        $.ajax({
-                            type: "get",
-                            url: "get_data_from_fs_production",
-                            data: {
-                                // "po_number" : ScanQrCodeVal.po
-                                "po_number" : search_po_number_val
-                            },
-                            dataType: "json",
-                            beforeSend: function(){
-                                // prodData = {};
-                            },
-                            success: function (response) {
-                                let fs_prod_data = response['fs_production_data'];
-                                // console.log('log data', fs_prod_data);
-                                if(fs_prod_data[0] == undefined){
-                                    toastr.error('PO does not exists')
-                                }else{
-                                        $('#txtSelectPONo').val(fs_prod_data[0]['po_num']);
-                                        $('#txtSearchPartCode').val(fs_prod_data[0]['part_code']);
-                                        $('#txtSearchMatName').val(fs_prod_data[0]['material_name']);
-                                        $('#txtScanQrCode').val('');
-                                        $('#mdlScanQrCode').modal('hide');
-
-                                        let mat_name = fs_prod_data[0]['material_name'];
-                                        mat_name = mat_name.replace(/ /g,'');
-                                        // console.log(mat_name);
-
-                                        GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
-                                        GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
-                                        GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
-
-                                        dt1stStampingIpqcInspectionPending.draw();
-                                        dt1stStampingIpqcInspectionCompleted.draw();
-                                        dt1stStampingIpqcInspectionResetup.draw();
-                                }
-                            }
-                        });
-                    // }
-                });
-
-                $('#txtOutput').keyup(function(e){
-                    // console.log('keyiup');
-                    // let input_value = $('#txtInput').val();
-                    // let output_value = $('#txtOutput').val();
-                    let ng_value = $('#txtInput').val() - $('#txtOutput').val();
-                    $('#txtNGQty').val(ng_value);
-                });
-
-                // UPDATE STATUS OF DIESET REQUEST
-                $(document).on('click', '.btnSubmitIPQCData', function(e){
-                    // e.preventDefault();
-                    // console.log('sihehe');
-                    let stamping_ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_stamping_prod_id = $(this).attr('fs_prod_data-id');
-                    let stamping_ipqc_status = $(this).attr('ipqc_data-status');
-                    $("#txtFsProductionsId").val(first_stamping_prod_id);
-                    $("#txtStampingIPQCId").val(stamping_ipqc_id);
-                    $("#txtStampingIPQCStatus").val(stamping_ipqc_status);
-                    $("#modalConfirmSubmitIPQCInspection").modal('show');
-                    console.log('sihehe');
-                });
-
-                // btnViewIPQCData
-                $(document).on('click', '.btnViewIPQCData',function(e){
-                    console.log('view');
-                    e.preventDefault();
-                    let stamping_ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_stamping_prod_id = $(this).attr('fs_prod_data-id');
-
-                    $.ajax({
-                        url: "get_data_from_fs_production",
-                        type: "get",
-                        data: {
-                            stamping_ipqc_id: stamping_ipqc_id,
-                            fs_prod_id: first_stamping_prod_id
-                        },
-                        dataType: "json",
-                        beforeSend: function(){
-                            // $('#formIPQCInspectionData').find('input').val('');
-                            // $('#formIPQCInspectionData').find('select').val('');
-                            $('#formIPQCInspectionData')[0].reset();
-                        },
-                        success: function(response){
-                            $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
-                            let fs_prod_data = response['fs_production_data'];
-
-                            $('#txtStampingIpqcId').val(stamping_ipqc_id);
-                            $('#txtFirstStampingProdId').val(first_stamping_prod_id);
-                            $('#txtPoNumber').val(fs_prod_data[0]['po_num']);
-                            $('#txtPartCode').val(fs_prod_data[0]['part_code']);
-                            $('#txtMaterialName').val(fs_prod_data[0]['material_name']);
-                            $('#txtProductionLot').val(fs_prod_data[0]['prod_lot_no']);
-                            $('#txtInput').val(fs_prod_data[0]['qc_samp']);
-
-                            let ipqc_data = response['fs_production_data'][0]['stamping_ipqc'];
-
-                            $('#txtOutput').val(ipqc_data['output']);
-                            $('#txtJudgement').val(ipqc_data['judgement']);
-                            $('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
-                            $('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
-
-                            if(ipqc_data['keep_sample'] == 1){
-                                $('#txtKeepSample1').prop('checked', true);
-                            }else if(ipqc_data['keep_sample'] == 2){
-                                $('#txtKeepSample2').prop('checked', true);
-                            }else{
-                                $('input[name="keep_sample"]').prop('checked', false);
-                            }
-
-                            let ng_value = $('#txtInput').val() - $('#txtOutput').val();
-                            $('#txtNGQty').val(ng_value);
-
-                            let mat_name = fs_prod_data[0]['material_name'];
-                                mat_name = mat_name.replace(/ /g,'');
-                            // console.log(mat_name);
-
-                            // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
-                            // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
-                            // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
-
-                            $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
-                            $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
-                            $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
-
-                            // $("#btnReuploadTriggerDiv").removeClass('d-none');
-                            // $("#btnReuploadTrigger").removeClass('d-none');
-                            // $("#btnReuploadTrigger").prop('checked', false);
-                            // $("#btnReuploadTriggerLabel").removeClass('d-none');
-                            // }
-
-                            //disabled and readonly
-                            $("#frmSaveBtn").prop('hidden', true);
-                            $("#txtOutput").prop('disabled', true);
-                            $("#txtJudgement").prop('disabled', true);
-                            $("#txtSelectDocNoBDrawing").prop('disabled', true);
-                            $("#txtSelectDocNoInspStandard").prop('disabled', true);
-                            $("#txtSelectDocNoUD").prop('disabled', true);
-                            $("#btnilqcmlink").prop('disabled', true);
-                            $('input[name="keep_sample"]').attr('disabled', true);
-
-                            $("#txtEditUploadedFile").removeClass('d-none');
-                            $("#txtAddFile").addClass('d-none');
-                            $("#txtAddFile").removeAttr('required');
-                            $('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
-
-                            let download ='<a href="download_file/'+ipqc_data['id']+'">';
-                                download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
-                                download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
-                                download +=         '&nbsp;';
-                                download +=         'See Attachment';
-                                download +='</button>';
-                                download +='</a>';
-
-                            $('#AttachmentDiv').append(download);
-                            $("#download_file").removeClass('d-none');
-                            $('#modalIpqcInspection').modal('show');
-                        },
-                        error: function(data, xhr, status){
-                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                        }
-
-                    });
-                });
-
-                $(document).on('click', '.btnUpdateIPQCData',function(e){
-                    console.log('view');
-                    e.preventDefault();
-                    let stamping_ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_stamping_prod_id = $(this).attr('fs_prod_data-id');
-
-                    $.ajax({
-                        url: "get_data_from_fs_production",
-                        type: "get",
-                        data: {
-                            stamping_ipqc_id: stamping_ipqc_id,
-                            fs_prod_id: first_stamping_prod_id
-                        },
-                        dataType: "json",
-                        beforeSend: function(){
-                            // $('#formIPQCInspectionData').find('input').val('');
-                            // $('#formIPQCInspectionData').find('select').val('');
-                            $('#formIPQCInspectionData')[0].reset();
-                        },
-                        success: function(response){
-                            // let _token = "{{ csrf_token() }}";
-                            $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
-                            // console.log('token value', $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}'));
-                            let fs_prod_data = response['fs_production_data'];
-
-                            $('#txtStampingIpqcId').val(stamping_ipqc_id);
-                            $('#txtFirstStampingProdId').val(first_stamping_prod_id);
-                            $('#txtStampingCategory').val(fs_prod_data[0]['stamping_cat']);
-                            $('#txtPoNumber').val(fs_prod_data[0]['po_num']);
-                            $('#txtPartCode').val(fs_prod_data[0]['part_code']);
-                            $('#txtMaterialName').val(fs_prod_data[0]['material_name']);
-                            $('#txtProductionLot').val(fs_prod_data[0]['prod_lot_no']);
-                            $('#txtInput').val(fs_prod_data[0]['qc_samp']);
-
-                            //disabled and readonly
-                            $("#frmSaveBtn").prop('hidden', false);
-                            $("#txtOutput").prop('disabled', false);
-                            $("#txtJudgement").prop('disabled', false);
-                            $("#txtSelectDocNoBDrawing").prop('disabled', false);
-                            $("#txtSelectDocNoInspStandard").prop('disabled', false);
-                            $("#txtSelectDocNoUD").prop('disabled', false);
-                            $("#btnilqcmlink").prop('disabled', false);
-                            $('input[name="keep_sample"]').attr('disabled', false);
-
-                            $("#btnViewBDrawings").prop('disabled', true);
-                            $("#btnViewInspStdDrawings").prop('disabled', true);
-                            $("#btnViewUdDrawings").prop('disabled', true);
-
-                            if(fs_prod_data[0]['stamping_ipqc_data'] == 0){ //when fs_prod_id && stamping_ipqc_id is not existing in StampingIpqc Table //For Insert to StampingIpqc Table
-
-                                // let mat_name = fs_prod_data[0]['material_name'];
-                                // mat_name = mat_name.replace(/ /g,'');
-                                // console.log(mat_name);
-
-                                // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
-                                // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
-                                // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
-
-                                $('#txtInspectorID').val(fs_prod_data[0]['ipqc_inspector_id']);
-                                // $('#txtInspectorName').val(fs_prod_data[0]['ipqc_inspector_name'] +' '+'(Auto Generate)');
-                                $('#txtInspectorName').val(fs_prod_data[0]['ipqc_inspector_name']);
-                                $("#btnReuploadTriggerDiv").addClass("d-none");
-                                $("#btnPartsDrawingAddRow").addClass("d-none");
-
-                                $("#txtAddFile").removeClass('d-none');
-                                $("#txtAddFile").attr('required', true);
-                                $("#txtEditUploadedFile").addClass('d-none');
-                                $("#download_file").addClass('d-none');
-
-                                $("#txtSelectDocNoBDrawing").prop('required', true);
-                                $("#txtSelectDocNoInspStandard").prop('required', true);
-                                $("#txtSelectDocNoUD").prop('required', true);
-
-                                if($('#txtKeepSample1').prop('checked')){
-                                    $('input[name="keep_sample"]').prop('required', false);
-                                }else if($('#txtKeepSample1').prop('checked')){
-                                    $('input[name="keep_sample"]').prop('required', false);
-                                }else{
-                                    $('input[name="keep_sample"]').prop('required', true);
-                                }
-
-                            }else{//For Update to StampingIpqc Table
-                                let ipqc_data = response['fs_production_data'][0]['stamping_ipqc'];
-
-                                // console.log('agaaagagaa', fs_prod_data);
-                                $('#txtOutput').val(ipqc_data['output']);
-                                $('#txtJudgement').val(ipqc_data['judgement']);
-                                $('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
-                                // $('#txtKeepSample').val(ipqc_data['ipqc_insp_name']['id']);
-
-                                if(ipqc_data['keep_sample'] == 1){
-                                    $('#txtKeepSample1').prop('checked', true);
-                                }else if(ipqc_data['keep_sample'] == 2){
-                                    $('#txtKeepSample2').prop('checked', true);
-                                }else{
-                                    $('input[name="keep_sample"]').prop('checked', false);
-                                }
-
-                                $('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
-
-                                let ng_value = $('#txtInput').val() - $('#txtOutput').val();
-                                $('#txtNGQty').val(ng_value);
-                                // GetDocumentNoFromACDCS('CN171', 'Urgent Direction', $("#txtSelectDocumentNo"), ipqc_data['document_no']);
-
-                                // CLARKKKKK
-                                // let mat_name = fs_prod_data[0]['material_name'];
-                                // mat_name = mat_name.replace(/ /g,'');
-                                // // console.log(mat_name);
-
-                                // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
-                                // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
-                                // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
-
-                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
-                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
-                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
-
-                                $('input[name="keep_sample"]').attr('disabled', false);
-                                $("#btnReuploadTriggerDiv").removeClass('d-none');
-                                $("#btnReuploadTrigger").removeClass('d-none');
-                                $("#btnReuploadTrigger").prop('checked', false);
-                                $("#btnReuploadTriggerLabel").removeClass('d-none');
-                                // }
-                                $("#txtEditUploadedFile").removeClass('d-none');
-                                $("#txtAddFile").addClass('d-none');
-                                $("#txtAddFile").removeAttr('required');
-                                $("#txtSelectDocumentNo").removeAttr('required');
-                                $("#txtEditUploadedFile").removeAttr('required');
-                                $('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
-
-                                $("#txtSelectDocNoBDrawing").prop('required', false);
-                                $("#txtSelectDocNoInspStandard").prop('required', false);
-                                $("#txtSelectDocNoUD").prop('required', false);
-
-                                let download ='<a href="download_file/'+ipqc_data['id']+'">';
-                                    download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
-                                    download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
-                                    download +=         '&nbsp;';
-                                    download +=         'See Attachment';
-                                    download +='</button>';
-                                    download +='</a>';
-
-                                $('#AttachmentDiv').append(download);
-                                $("#download_file").removeClass('d-none');
-                            }
-                            $('#modalIpqcInspection').modal('show');
-                            $('#txtScanQrCode').val('');
-                            $('#mdlScanQrCode').modal('hide');
-                        },
-                        error: function(data, xhr, status){
-                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                        }
-                    });
-                });
-
-                function GetBDrawingFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
-                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
-                };
-
-                function GetInspStandardFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
-                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
-                };
-
-                function GetUDFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
-                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
-                };
 
                 function GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
                     let result = '<option value="" disabled selected>--Select Document No.--</option>';
@@ -1020,18 +764,16 @@
                         },
                         success: function(response) {
                             if (response['acdcs_data'].length > 0) {
-
                                     result = '<option value="" disabled selected>--Select Document No.--</option>';
                                 if(response['acdcs_data'][0].doc_type != 'B Drawing'){
                                     result += '<option value="N/A"> N/A </option>';
                                 }
-
-                                // result = '<option value="" selected>-- N/A --</option>';
                                 for (let index = 0; index < response['acdcs_data'].length; index++) {
                                     result += '<option value="' + response['acdcs_data'][index].doc_no + '">' + response['acdcs_data'][index].doc_no + '</option>';
                                 }
                             } else {
-                                result = '<option value="0" selected disabled> -- No record found -- </option>';
+                                result = '<option value="N/A"> N/A </option>';
+                                result += '<option value="0" selected disabled> -- No record found -- </option>';
                             }
                             cboElement.html(result);
                         },
@@ -1043,37 +785,36 @@
                     });
                 }
 
-                // ================================= RE-UPLOAD FILE =================================
-                $('#btnReuploadTrigger').on('click', function() {
-                    $('#btnReuploadTrigger').attr('checked', 'checked');
-                    if($(this).is(":checked")){
-                        $("#txtAddFile").removeClass('d-none');
-                        $("#txtAddFile").attr('required', true);
-                        $("#txtEditUploadedFile").addClass('d-none');
-                        $("#download_file").addClass('d-none');
-                    }
-                    else{
-                        $("#txtAddFile").addClass('d-none');
-                        $("#txtAddFile").removeAttr('required');
-                        $("#txtAddFile").val('');
-                        $("#txtEditUploadedFile").removeClass('d-none');
-                        $("#download_file").removeClass('d-none');
-                    }
+                $('#txtOutput').keyup(function(e){
+                    let ng_value = $('#txtInput').val() - $('#txtOutput').val();
+                    $('#txtNGQty').val(ng_value);
+                });
+
+                // UPDATE STATUS OF DIESET REQUEST
+                $(document).on('click', '.btnSubmitIPQCData', function(e){
+                    let ipqc_id = $(this).attr('ipqc_data-id');
+                    let first_molding_id = $(this).attr('first_molding_data-id');
+                    let stamping_ipqc_status = $(this).attr('ipqc_data-status');
+
+                    $("#cnfrmtxtFirstMoldingId").val(first_molding_id);
+                    $("#cnfrmtxtIPQCId").val(ipqc_id);
+                    $("#cnfrmtxtIPQCStatus").val(stamping_ipqc_status);
+                    $("#modalConfirmSubmitIPQCInspection").modal('show');
                 });
 
                 $("#FrmConfirmSubmitIPQCInspection").submit(function(event) {
                     event.preventDefault();
                     $.ajax({
-                        url: "update_status_of_ipqc_inspection",
+                        url: "update_assembly_ipqc_inspection_status",
                         method: "post",
                         data: $('#FrmConfirmSubmitIPQCInspection').serialize(),
                         dataType: "json",
                         success: function (response) {
                             let result = response['result'];
                             if (result == 'Successful') {
-                                dt1stStampingIpqcInspectionPending.draw();
-                                dt1stStampingIpqcInspectionCompleted.draw();
-                                dt1stStampingIpqcInspectionResetup.draw();
+                                dtAssemblyIpqcInspPending.draw();
+                                dtAssemblyIpqcInspCompleted.draw();
+                                dtAssemblyIpqcInspResetup.draw();
                                 toastr.success('Successful!');
                                 $("#modalConfirmSubmitIPQCInspection").modal('hide');
                             }else{
@@ -1088,7 +829,6 @@
                     $('#modalScanQRSave').modal('show');
                 });
 
-                // $('#txtScanUserId').on('keyup', function(e){
                 $(document).on('keyup','#txtScanUserId', function(e){
                     if(e.keyCode == 13){
                         validateUser($(this).val(), [0, 2, 5], function(result){
@@ -1107,7 +847,7 @@
                     let formData = new FormData($('#formIPQCInspectionData')[0]);
                     console.log('formdata', formData);
                     $.ajax({
-                        url: "add_ipqc_inspection",
+                        url: "add_assembly_ipqc_inspection",
                         method: "post",
                         data: formData,
                         processData: false,
@@ -1121,9 +861,9 @@
                                 toastr.success('Successful!');
                                 $('#modalIpqcInspection').modal('hide');
                                 $('#modalScanQRSave').modal('hide');
-                                dt1stStampingIpqcInspectionPending.draw();
-                                dt1stStampingIpqcInspectionCompleted.draw();
-                                dt1stStampingIpqcInspectionResetup.draw();
+                                dtAssemblyIpqcInspPending.draw();
+                                dtAssemblyIpqcInspCompleted.draw();
+                                dtAssemblyIpqcInspResetup.draw();
                             }
                             else if(result == 'Duplicate'){
                                 toastr.error('Request Already Submitted!');
@@ -1139,48 +879,112 @@
                         }
                     });
                 };
+                // NEW CODE CLARK 02042024 END
 
-                // $('#btnExportPackingList').click( function(e){
-                //     $('#modalExportPackingList').modal('show');
-                //     GetPackingListControlNo($(".selectControlNumber"));
-                // });
+                // btnViewIPQCData
+                $(document).on('click', '.btnViewIPQCData',function(e){
+                    e.preventDefault();
+                    let ipqc_id = $(this).attr('ipqc_data-id');
+                    let first_molding_id = $(this).attr('first_molding_data-id');
+                    // frmIPQCInspectionData
+                    $.ajax({
+                        url: "get_assembly_data",
+                        type: "get",
+                        data: {
+                            ipqc_id: ipqc_id,
+                            first_molding_id: first_molding_id
+                        },
+                        dataType: "json",
+                        beforeSend: function(){
+                            $('#formIPQCInspectionData')[0].reset();
+                        },
+                        success: function(response){
+                            $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
+                            let first_molding_data = response['first_molding_data'];
+                            let ipqc_data = response['first_molding_data'][0]['first_molding_ipqc'];
 
-                // function GetPackingListControlNo(cboElement){
-                //     let result = '<option value="" disabled selected>--Select Control No.--</option>';
-                //         $.ajax({
-                //             url: 'get_packing_list_data',
-                //             method: 'get',
-                //             dataType: 'json',
-                //             beforeSend: function() {
-                //                     result = '<option value="0" disabled selected>--Loading--</option>';
-                //                     cboElement.html(result);
-                //             },
-                //             success: function(response) {
-                //                 if (response['packing_list_data'].length > 0) {
-                //                         result = '<option value="" disabled selected>--Select Control No.--</option>';
-                //                     for (let index = 0; index < response['packing_list_data'].length; index++) {
-                //                         result += '<option value="' + response['packing_list_data'][index].control_no + '">' + response['packing_list_data'][index].control_no + '</option>';
-                //                     }
-                //                 } else {
-                //                     result = '<option value="0" selected disabled> -- No record found -- </option>';
-                //                 }
-                //                 cboElement.html(result);
-                //                 cboElement.select2();
-                //             },
-                //             error: function(data, xhr, status) {
-                //                 result = '<option value="0" selected disabled> -- Reload Again -- </option>';
-                //                 cboElement.html(result);
-                //                 console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                //             }
-                //         });
-                //     }
+                            frmIPQCInspectionData.find('#txtIpqcId').val(ipqc_id);
+                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(first_molding_id);
+                            frmIPQCInspectionData.find('#txtPoNumber').val(first_molding_data[0]['pmi_po_no']);
+                            frmIPQCInspectionData.find('#txtPartCode').val(first_molding_data[0]['item_code']);
+                            frmIPQCInspectionData.find('#txtMaterialName').val(first_molding_data[0].first_molding_device.contact_name);
+                            frmIPQCInspectionData.find('#txtProductionLot').val(first_molding_data[0]['production_lot']);
+                            frmIPQCInspectionData.find('#txtInput').val(first_molding_data[0]['qc_samples']);
 
-                // $('#formGeneratePackingList').submit(function (e){
-                //     e.preventDefault();
-                //     let CtrlNo = $('#txtCtrlNo').val();
-                //     window.location.href = "view_pdf/"+CtrlNo;
-                //     $('#modalExportPackingList').modal('hide');
-                // });
+                            frmIPQCInspectionData.find('#txtOutput').val(ipqc_data['output']);
+                            frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
+                            frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
+                            frmIPQCInspectionData.find('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
+
+                            if(ipqc_data['keep_sample'] == 1){
+                                frmIPQCInspectionData.find('#txtKeepSample1').prop('checked', true);
+                            }else if(ipqc_data['keep_sample'] == 2){
+                                frmIPQCInspectionData.find('#txtKeepSample2').prop('checked', true);
+                            }else{
+                                frmIPQCInspectionData.find('input[name="keep_sample"]').prop('checked', false);
+                            }
+
+                            let ng_value = frmIPQCInspectionData.find('#txtInput').val() - frmIPQCInspectionData.find('#txtOutput').val();
+                            frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
+
+                            let mat_name = first_molding_data[0].first_molding_device.contact_name;
+                                mat_name = mat_name.replace(/ /g,'');
+
+                            frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                            frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
+                            frmIPQCInspectionData.find("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
+
+                            //disabled and readonly
+                            frmIPQCInspectionData.find("#frmSaveBtn").prop('hidden', true);
+                            frmIPQCInspectionData.find("#txtOutput").prop('disabled', true);
+                            frmIPQCInspectionData.find("#txtJudgement").prop('disabled', true);
+                            frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('disabled', true);
+                            frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('disabled', true);
+                            frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('disabled', true);
+                            frmIPQCInspectionData.find("#btnilqcmlink").prop('disabled', true);
+                            frmIPQCInspectionData.find('input[name="keep_sample"]').attr('disabled', true);
+
+                            frmIPQCInspectionData.find("#txtEditUploadedFile").removeClass('d-none');
+                            frmIPQCInspectionData.find("#txtAddFile").addClass('d-none');
+                            frmIPQCInspectionData.find("#txtAddFile").removeAttr('required');
+                            frmIPQCInspectionData.find('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
+
+                            let download ='<a href="assembly_download_file/'+ipqc_data['id']+'">';
+                                download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
+                                download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
+                                download +=         '&nbsp;';
+                                download +=         'See Attachment';
+                                download +='</button>';
+                                download +='</a>';
+
+                            frmIPQCInspectionData.find('#AttachmentDiv').append(download);
+                            frmIPQCInspectionData.find("#download_file").removeClass('d-none');
+                            $('#modalIpqcInspection').modal('show');
+                        },
+                        error: function(data, xhr, status){
+                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+
+                    });
+                });
+
+                // ================================= RE-UPLOAD FILE =================================
+                $('#btnReuploadTrigger').on('click', function() {
+                    $('#btnReuploadTrigger').attr('checked', 'checked');
+                    if($(this).is(":checked")){
+                        $("#txtAddFile").removeClass('d-none');
+                        $("#txtAddFile").attr('required', true);
+                        $("#txtEditUploadedFile").addClass('d-none');
+                        $("#download_file").addClass('d-none');
+                    }
+                    else{
+                        $("#txtAddFile").addClass('d-none');
+                        $("#txtAddFile").removeAttr('required');
+                        $("#txtAddFile").val('');
+                        $("#txtEditUploadedFile").removeClass('d-none');
+                        $("#download_file").removeClass('d-none');
+                    }
+                });
             });
         </script>
     @endsection

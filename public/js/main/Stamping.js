@@ -347,7 +347,7 @@ const printProdData = async (id, stampCat) => {
             console.log(response['label_hidden']);
             for(let x = 0; x < response['label_hidden'].length; x++){
                 let dataToAppend = `
-                <img src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
+                <img class='hiddnQr' src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
                 `;
                 $('#hiddenPreview').append(dataToAppend)
             }

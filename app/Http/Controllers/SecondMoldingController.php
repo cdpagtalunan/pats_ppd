@@ -132,6 +132,8 @@ class SecondMoldingController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
+                    $imploded_machine = implode($request->machine_number, ' , '); // chris
+
                     $secondMoldingId = SecMoldingRuncard::insertGetId([
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
@@ -139,7 +141,8 @@ class SecondMoldingController extends Controller
                         'pmi_po_number' => $request->pmi_po_number,
                         'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
-                        'machine_number' => $request->machine_number,
+                        // 'machine_number' => $request->machine_number,
+                        'machine_number' => $imploded_machine,  // chris
                         'material_lot_number' => $request->material_lot_number,
                         'material_name' => $request->material_name,
                         'drawing_number' => $request->drawing_number,
@@ -217,6 +220,8 @@ class SecondMoldingController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
+                    $imploded_machine = implode($request->machine_number, ' , '); // Chris
+
                     SecMoldingRuncard::where('id', $request->second_molding_id)->update([
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
@@ -224,7 +229,8 @@ class SecondMoldingController extends Controller
                         'po_number' => $request->po_number,
                         'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
-                        'machine_number' => $request->machine_number,
+                        // 'machine_number' => $request->machine_number,
+                        'machine_number' => $imploded_machine, // chris
                         'material_lot_number' => $request->material_lot_number,
                         'material_name' => $request->material_name,
                         'drawing_number' => $request->drawing_number,
@@ -282,5 +288,19 @@ class SecondMoldingController extends Controller
         ->select("SELECT defects_infos.* FROM defects_infos
         ");
         return response()->json(['data' => $modeOfDefectResult]);
+    }
+
+    public function getMachine(Request $request){ // Added Chris to get machine on matrix
+        $machine = DB::connection('mysql')
+        ->select("
+            SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machines.* FROM material_processes
+            INNER JOIN devices
+                ON devices.id = material_processes.device_id
+            INNER JOIN material_process_machines
+                ON material_process_machines.mat_proc_id = material_processes.id
+            WHERE devices.name = '$request->material_name'
+        ");
+
+        return response()->json(['machine' => $machine]);
     }
 }

@@ -18,6 +18,7 @@ class CreateStampingProductionSublotsTable extends Migration
             $table->unsignedBigInteger('stamp_prod_id')->comment = "From stamping_productions table";
             $table->bigInteger('counter');
             $table->integer('batch_qty');
+            $table->integer('packing_status')->default(0)->comment = '0- For Packing, 1-For QC, 2-Completed';
             $table->timestamps();
 
             $table->foreign('stamp_prod_id')->references('id')->on('stamping_productions');

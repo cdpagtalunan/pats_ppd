@@ -26,4 +26,8 @@ class MaterialProcess extends Model
     public function station_details(){
         return $this->hasMany(MaterialProcessStation::class, 'mat_proc_id', 'id');
     }
+
+    public function machine_details(){
+        return $this->hasMany(MaterialProcessMachine::class, 'mat_proc_id', 'id');
+    }
 }

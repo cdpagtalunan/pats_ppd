@@ -12,6 +12,7 @@ use App\Models\FirstStampingProduction;
 use App\Models\OQCInspection;
 use App\Models\User;
 use App\Models\PackingDetailsMolding;
+use App\Models\StampingProductionSublot;
 
 class PackingDetailsMoldingController extends Controller
 {
@@ -40,13 +41,17 @@ class PackingDetailsMoldingController extends Controller
                 $result = "";
 
                 if( $packing_details->first_molding_info != null){
+                    $status = $packing_details->first_molding_info->status;
+                    $id = $packing_details->first_molding_info->id;
                     if($packing_details->first_molding_info->status == 0){
-                        $result .= "<button class='btn btn-warning btn-sm btnQCScanMoldingID' style='display: none;' data-id='".$packing_details->first_molding_info->id."'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
-                    }else{
-                        // $result .= '<span class="badge bg-success">Received</span>';
+                        // $result .= "<button class='btn btn-warning btn-sm btnQCScanMoldingID' style='display: none;' data-id='".$packing_details->first_molding_info->id."'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
+                    }else if($packing_details->first_molding_info->status == 1){
+                        $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
                     }
                 }else{
-                    $result .= "<button class='btn btn-primary btn-sm btnPackingScanPackingID' style='display: none;' data-id='$packing_details->id' po-no='$packing_details->po_no'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                    $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
+
                 }
                 return $result;
             })
@@ -91,6 +96,19 @@ class PackingDetailsMoldingController extends Controller
             ->rawColumns(['action','status'])
             ->make(true);
     }
+    
+    public function viewSublotDetails(Request $request){
+        $sublot_details = StampingProductionSublot::with(['stamping_info'])
+            ->where('stamp_prod_id', $request->stamping_details_id)
+            ->get();
+
+        // return $sublot_details;
+
+        return DataTables::of($sublot_details)
+        ->make(true);
+
+    }
+
 
     public function viewPackingDetailsE(Request $request){
         $packing_details = PackingDetailsMolding::with(['oqc_info'])
@@ -127,29 +145,19 @@ class PackingDetailsMoldingController extends Controller
 
         // return $data;
 
-        $rules = [
-            // 'control_no'                 => 'required',
+        $array = [
+            'oqc_id'               => $request->oqc_details_id,
+            'po_no'                => $request->po_no,
+            'countedby'            => $request->scanned_emp_id,
+            'date_counted'         => date('Y-m-d H:i:s'),
+            'status'               => 0,
+            'created_at'           => date('Y-m-d H:i:s'),
         ];
 
-        $validator = Validator::make($data, $rules);
-        if($validator->passes()){
-                        $array = [
-                            'oqc_id'               => $request->oqc_details_id,
-                            'po_no'                => $request->po_no,
-                            'countedby'            => $request->packer_scan_id,
-                            'date_counted'         => date('Y-m-d H:i:s'),
-                            'status'               => 0,
-                            'created_at'           => date('Y-m-d H:i:s'),
-                        ];
+        PackingDetailsMolding::insert($array);
 
-                        PackingDetailsMolding::insert($array);
-
-            return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
-        }
-        else{
-            return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
-        }
-
+        return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+        
     }
 
     //UPDATE QC CHECKING
@@ -161,13 +169,13 @@ class PackingDetailsMoldingController extends Controller
 
         // return $data;
 
-                        $array = [
-                            'checkedby'             => $request->qc_scan_id,
-                            'date_checked'          => date('Y-m-d H:i:s'),
-                            'status'                => 1,
-                        ];
+        $array = [
+            'checkedby'             => $request->scanned_emp_id,
+            'date_checked'          => date('Y-m-d H:i:s'),
+            'status'                => 1,
+        ];
 
-                    PackingDetailsMolding::where('id', $request->molding_packing_details_id)->update($array);
+        PackingDetailsMolding::where('id', $request->molding_id)->update($array);
 
         return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
     }

@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Second Stamping')
 
     @section('content_page')
 
@@ -743,6 +743,16 @@
                     console.log('sihehe');
                 });
 
+                $('input[name="keep_sample"]').click('click', function(e){
+                    if($('#txtKeepSample1').prop('checked')){
+                        $('input[name="keep_sample"]').prop('required', false);
+                    }else if($('#txtKeepSample2').prop('checked')){
+                        $('input[name="keep_sample"]').prop('required', false);
+                    }else{
+                        $('input[name="keep_sample"]').prop('required', true);
+                    }
+                });
+
                 // btnViewIPQCData
                 $(document).on('click', '.btnViewIPQCData',function(e){
                     console.log('view');
@@ -807,6 +817,24 @@
                             $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
                             $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
                             $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
+
+                            if(ipqc_data['doc_no_b_drawing'] != null){
+                                $("#btnViewBDrawings").prop('disabled', false);
+                            }else{
+                                $("#btnViewBDrawings").prop('disabled', true);
+                            }
+
+                            if(ipqc_data['doc_no_insp_standard'] != null){
+                                $("#btnViewInspStdDrawings").prop('disabled', false);
+                            }else{
+                                $("#btnViewInspStdDrawings").prop('disabled', true);
+                            }
+
+                            if(ipqc_data['doc_no_urgent_direction'] != null){
+                                $("#btnViewUdDrawings").prop('disabled', false);
+                            }else{
+                                $("#btnViewUdDrawings").prop('disabled', true);
+                            }
 
                             // $("#btnReuploadTriggerDiv").removeClass('d-none');
                             // $("#btnReuploadTrigger").removeClass('d-none');
@@ -966,6 +994,24 @@
                                 $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
                                 $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
 
+                                if(ipqc_data['doc_no_b_drawing'] != null){
+                                    $("#btnViewBDrawings").prop('disabled', false);
+                                }else{
+                                    $("#btnViewBDrawings").prop('disabled', true);
+                                }
+
+                                if(ipqc_data['doc_no_insp_standard'] != null){
+                                    $("#btnViewInspStdDrawings").prop('disabled', false);
+                                }else{
+                                    $("#btnViewInspStdDrawings").prop('disabled', true);
+                                }
+
+                                if(ipqc_data['doc_no_urgent_direction'] != null){
+                                    $("#btnViewUdDrawings").prop('disabled', false);
+                                }else{
+                                    $("#btnViewUdDrawings").prop('disabled', true);
+                                }
+                                
                                 $('input[name="keep_sample"]').attr('disabled', false);
                                 $("#btnReuploadTriggerDiv").removeClass('d-none');
                                 $("#btnReuploadTrigger").removeClass('d-none');

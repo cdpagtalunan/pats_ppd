@@ -395,7 +395,7 @@
                               </div>
                               <div class="form-group">
                                 <label>Machine</label>
-                                <select class="form-control select2bs4" id="selAddMatProcMachine" name="machine">
+                                <select class="form-control select2bs4" id="selAddMatProcMachine" name="machine[]" multiple>
 
                                 </select>
                               </div>
@@ -900,7 +900,7 @@
             { "data" : "step" },
             { "data" : "process_details.process_name"},
             { "data" : "mat_details"},
-            { "data" : "machine_code" },
+            { "data" : "mach_details" },
             { "data" : "stat_details" },
           ],
           "columnDefs": [

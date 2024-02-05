@@ -4,7 +4,7 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         $(`#${formId}`)[0].reset();
         console.log(`modalId ${modalId}`);
         console.log(`formId ${formId}`);
-
+        $(`#${formId}`).find('select').val(0).trigger('change');  // chris to reset the select machine
         // Remove invalid & title validation
         $('div').find('input').removeClass('is-invalid');
         $("div").find('input').attr('title', '');
@@ -57,10 +57,10 @@ const getPOReceivedByPONumber = (poNumber) => {
                 $('#textPONumber', $('#formSecondMolding')).val(response[0]['OrderNo']);
                 $('#textPMIPONumber', $('#formSecondMolding')).val(response[0]['ProductPONo']);
                 $('#textPoQuantity', $('#formSecondMolding')).val(response[0]['OrderQty']);
-                let poQuantity = parseInt(response[0]['OrderQty']);
-                let poQuantityPercentage =  poQuantity * 5 * 0.05;
-                let sumOfPoPercentagePoQty = poQuantity + poQuantityPercentage;
-                $('#textRequiredOutput', $('#formSecondMolding')).val(sumOfPoPercentagePoQty);
+                let poQuantity = parseFloat(response[0]['OrderQty']);
+                let poQuantityPercentage = parseFloat(poQuantity * 5 * 0.05);
+                let requiredOutput = (poQuantity * 5) + poQuantityPercentage;
+                $('#textRequiredOutput', $('#formSecondMolding')).val(requiredOutput.toFixed(2));
             }
             else{
                 toastr.error('No PO Found')
@@ -160,7 +160,7 @@ const getMaterialProcessStation = () => {
     });
 }
 
-const getModeOfDefectForSecondMolding = (elementId) => {
+const getModeOfDefectForSecondMolding = (elementId, modeOfDefectId = null) => {
     let result = `<option value="0" selected> N/A </option>`;
     $.ajax({
         url: 'get_mode_of_defect_for_second_molding',
@@ -181,6 +181,9 @@ const getModeOfDefectForSecondMolding = (elementId) => {
                 result = `<option value="0" selected disabled> - No data found - </option>`;
             }
             elementId.html(result);
+            if(modeOfDefectId != null){
+                elementId.val(modeOfDefectId).trigger('change');
+            }
         },
         error: function(data, xhr, status){
             result = `<option value="0" selected disabled> - Reload Again - </option>`;
@@ -190,33 +193,25 @@ const getModeOfDefectForSecondMolding = (elementId) => {
     });
 }
 
-const getModeOfDefectForSecondMoldingEdit = (elementId, modeOfDefectId) => {
-    let result = `<option value="0" selected> N/A </option>`;
+const getMachineDropdown = (cboElement, materialName) => {  // chris
     $.ajax({
-        url: 'get_mode_of_defect_for_second_molding',
-        method: 'get',
-        dataType: 'json',
-        beforeSend: function(){
-            result = `<option value="0" selected disabled> - Loading - </option>`;
-            elementId.html(result);
+        type: "get",
+        url: "get_machine",
+        data: {
+            "material_name" : materialName
         },
-        success: function(response){
-            result = '';
-            if(response['data'].length > 0){
-                for(let index = 0; index < response['data'].length; index++){
-                    result += `<option value="${response['data'][index].id}">${response['data'][index].defects}</option>`;
+        dataType: "json",
+        success: function (response) {
+            let result = '';
+            console.log(response['machine']);
+            if(response['machine'].length > 0){
+                for(let index = 0; index < response['machine'].length; index++){
+                    result += `<option value="${response['machine'][index].machine_name}">${response['machine'][index].machine_name}</option>`;
                 }
             }
-            else{
-                result = `<option value="0" selected disabled> - No data found - </option>`;
-            }
-            elementId.html(result);
-            elementId.val(modeOfDefectId).trigger('change');
-        },
-        error: function(data, xhr, status){
-            result = `<option value="0" selected disabled> - Reload Again - </option>`;
-            elementId.html(result);
-            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+
+            cboElement.html(result);
+
         }
     });
 }

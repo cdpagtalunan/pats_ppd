@@ -367,10 +367,24 @@
             <form id="formFirstMolding" autocomplete="off">
                 @csrf
                 <div class="modal-body">
+                    
+
                     <div class="row">
                         <div class="col-sm-6 border px-4">
                             <div class="py-3">
                                 <span class="badge badge-secondary">1.</span> Runcard Details
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="status" id="radioIQC" value="0" disabled>
+                                <label class="form-check-label" for="radioIQC">For Quali</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="status" id="radioMassProd" value="1" disabled>
+                                <label class="form-check-label" for="radioMassProd">For Mass Production</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="status" id="radioResetup" value="2" disabled>
+                                <label class="form-check-label" for="radioResetup">For Re-quali</label>
                             </div>
                             <div class="input-group input-group-sm mb-3 d-none">
                                 <div class="input-group-prepend w-50">
@@ -393,7 +407,7 @@
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
                                         </div>
-                                        <input value="2E240130-" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot" readonly>
+                                        <input value="2E240130-" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot">
                                         <input value="M-7:30-11:30" type="text" class="form-control form-control-sm" id="production_lot_extension" name="production_lot_extension">
                                 </div>
                                 </div>
@@ -590,7 +604,7 @@
                                         <input type="number" class="form-control form-control-sm" id="po_target" name="po_target" min="0" step="0.01" readonly>
                                     </div>
                                 </div>
-                                <div class="col-sm-6 d-none">
+                                <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Variance</span>
@@ -600,7 +614,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-16">
+                                <div class="col-sm-12">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
@@ -627,7 +641,7 @@
                                         <table class="table table-sm" id="tblFirstMoldingMaterial">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 45%;">New Material</th>
+                                                    <th style="width: 45%;">Virgin Material</th>
                                                     <th style="width: 45%;">Recycled Material</th>
                                                     <th style="width: 10%;">Action</th>
                                                 </tr>

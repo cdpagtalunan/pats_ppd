@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'First Stamping')
 
     @section('content_page')
 
@@ -417,6 +417,16 @@
                 // $('.select2bs4').select2({
                 //     theme: 'bootstrap4'
                 // });
+
+                $("#modalIpqcInspection").on('hidden.bs.modal', function () {
+                    // Reset form values
+                    $("#formIPQCInspectionData")[0].reset();
+
+                    // Remove invalid & title validation
+                    $('div').find('input').removeClass('is-invalid');
+                    $("div").find('input').attr('title', '');
+                });
+
                 $( '.select2bs5' ).select2( {
                     theme: 'bootstrap-5'
                 } );
@@ -734,6 +744,16 @@
                     console.log('sihehe');
                 });
 
+                $('input[name="keep_sample"]').click('click', function(e){
+                    if($('#txtKeepSample1').prop('checked')){
+                        $('input[name="keep_sample"]').prop('required', false);
+                    }else if($('#txtKeepSample2').prop('checked')){
+                        $('input[name="keep_sample"]').prop('required', false);
+                    }else{
+                        $('input[name="keep_sample"]').prop('required', true);
+                    }
+                });
+
                 // btnViewIPQCData
                 $(document).on('click', '.btnViewIPQCData',function(e){
                     console.log('view');
@@ -750,9 +770,6 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
-                            // $('#formIPQCInspectionData').find('input').val('');
-                            // $('#formIPQCInspectionData').find('select').val('');
-                            $('#formIPQCInspectionData')[0].reset();
                         },
                         success: function(response){
                             $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
@@ -792,15 +809,9 @@
                             // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
                             // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
-                            $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
-                            $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
-                            $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
-
-                            // $("#btnReuploadTriggerDiv").removeClass('d-none');
-                            // $("#btnReuploadTrigger").removeClass('d-none');
-                            // $("#btnReuploadTrigger").prop('checked', false);
-                            // $("#btnReuploadTriggerLabel").removeClass('d-none');
-                            // }
+                            $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                            $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']) .trigger('change');
+                            $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
 
                             //disabled and readonly
                             $("#frmSaveBtn").prop('hidden', true);
@@ -851,9 +862,6 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
-                            // $('#formIPQCInspectionData').find('input').val('');
-                            // $('#formIPQCInspectionData').find('select').val('');
-                            $('#formIPQCInspectionData')[0].reset();
                         },
                         success: function(response){
                             // let _token = "{{ csrf_token() }}";
@@ -911,7 +919,7 @@
 
                                 if($('#txtKeepSample1').prop('checked')){
                                     $('input[name="keep_sample"]').prop('required', false);
-                                }else if($('#txtKeepSample1').prop('checked')){
+                                }else if($('#txtKeepSample2').prop('checked')){
                                     $('input[name="keep_sample"]').prop('required', false);
                                 }else{
                                     $('input[name="keep_sample"]').prop('required', true);
@@ -949,9 +957,9 @@
                                 // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
                                 // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
-                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
-                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
-                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
+                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
+                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
 
                                 $('input[name="keep_sample"]').attr('disabled', false);
                                 $("#btnReuploadTriggerDiv").removeClass('d-none');

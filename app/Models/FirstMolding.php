@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\FirstMoldingDevice;
-use App\Models\MoldingIpqcInspection;
+use App\Models\MoldingAssyIpqcInspection;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\FirstMoldingMaterialList;
@@ -23,8 +23,12 @@ class FirstMolding extends Model
         return $this->hasOne(FirstMoldingDevice::class,'id','first_molding_device_id')->whereNull('deleted_at');
     }
 
-    public function molding_ipqc_inspection_info(){
-        return $this->hasOne(MoldingIpqcInspection::class,'id','fk_molding_id ');
+    // public function molding_ipqc_inspection_info(){
+    //     return $this->hasOne(MoldingIpqcInspection::class,'id','fk_molding_id ');
+    // }
+
+    public function first_molding_ipqc(){
+    	return $this->hasOne(MoldingAssyIpqcInspection::class, 'fk_molding_assy_id', 'id');
     }
 
     /**

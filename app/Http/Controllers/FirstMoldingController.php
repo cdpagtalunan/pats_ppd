@@ -1,18 +1,19 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 use DataTables;
 use App\Models\Station;
-use App\Models\FirstMolding;
-use App\Models\FirstMoldingDevice;
-use App\Models\FirstMoldingDetail;
-use App\Models\TblPoReceived;
 use App\Models\TblDieset;
+use App\Models\FirstMolding;
+use Illuminate\Http\Request;
+use App\Models\TblPoReceived;
+use App\Models\FirstMoldingDetail;
+use App\Models\FirstMoldingDevice;
+use Illuminate\Support\Facades\DB;
 use App\Models\FirstMoldingMaterialList;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\FirstMoldingRequest;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\FirstMoldingStationRequest;
 
 
@@ -59,6 +60,12 @@ class FirstMoldingController extends Controller
                 case 1:
                     $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
                     break;
+                case 2:
+                    $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    break;
+                case 3:
+                    $result .= "";
+                    break;
                 default:
                     $result .= "";
                     break;
@@ -75,10 +82,16 @@ class FirstMoldingController extends Controller
                     $result .= '<span class="badge rounded-pill bg-primary"> On-going </span>';
                     break;
                 case 1:
+                    $result .= '<span class="badge rounded-pill bg-info"> For Mass Prod </span>';
+                    break;
+                case 2:
+                    $result .= '<span class="badge rounded-pill bg-warning"> Re set-up </span>';
+                    break;
+                case 3:
                     $result .= '<span class="badge rounded-pill bg-success"> Done </span>';
                     break;
                 default:
-                    $result .= '<span class="badge rounded-pill bg-success"> Unknown Status </span>';
+                    $result .= '<span class="badge rounded-pill bg-secondary"> Unknown Status </span>';
                     break;
             }
             $result .= '</center>';
@@ -97,10 +110,12 @@ class FirstMoldingController extends Controller
             $recycle_material = $request->recycle_material;
 
             $validation = array(
-                'production_lot' => ['required'],
-                'production_lot_extension' => ['required'],
+                // 'production_lot' => ['required'],
+                // 'production_lot_extension' => ['required'],
                 'contact_name' => ['required'],
                 'contact_lot_number' => ['required'],
+                // 'recycle_material' => ['required'],
+                // 'virgin_material' => ['required'],
             );
 
             $validator = Validator::make($data, $validation);
@@ -114,8 +129,8 @@ class FirstMoldingController extends Controller
                 FirstMolding::where('id',$request->first_molding_id)
                 ->update([
                     'first_molding_device_id' => $request->first_molding_device_id,
-                    'contact_lot_number' => $request->contact_lot_number,
-                    'production_lot' => $request->production_lot . $request->production_lot_extension ,
+                    // 'contact_lot_number' => $request->contact_lot_number,
+                    // 'production_lot_extension' => $request->production_lot_extension,
                     'remarks' => $request->remarks,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
@@ -126,13 +141,14 @@ class FirstMoldingController extends Controller
                 FirstMolding::where('id',$first_molding_id)
                 ->update([
                     'first_molding_device_id' => $request->first_molding_device_id,
-                    'production_lot' => $request->production_lot . $request->production_lot_extension ,
+                    // 'production_lot' => $request->production_lot,
+                    // 'production_lot_extension' => $request->production_lot_extension,
                     'remarks' => $request->remarks,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
                 $get_first_molding_id = $first_molding_id;
             }
-    
+
             if(isset($virgin_material)){
                 FirstMoldingMaterialList::where('first_molding_id', $get_first_molding_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
@@ -170,13 +186,6 @@ class FirstMoldingController extends Controller
             $first_molding = FirstMolding::with('firstMoldingDevice','firstMoldingMaterialLists')
             ->where('id',$request->first_molding_id)
             ->get();
-            // $first_molding = FirstMolding::with('firstMoldingDevice')
-            // ->where('id',$request->first_molding_id)
-            // ->get();
-            
-            // $first_molding = FirstMolding::
-            // where('id',$request->first_molding_id)
-            // ->get();
             return response()->json( [ 'first_molding' => $first_molding ] );
 
         } catch (\Throwable $th) {
@@ -229,7 +238,65 @@ class FirstMoldingController extends Controller
         ] );
 
     }
+    public function getFirstMoldingQrCode (Request $request){
+        // return $request->all();
+        return $first_molding = FirstMolding::with('firstMoldingDevice')
+        ->where('id',$request->first_molding_id)
+        // ->get(['first_molding_device']);
+        ->first([
+            'po_no AS po','item_code AS code','item_name AS name',
+            'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
+            'po_qty AS qty','shipment_output AS output_qty'
+        ]);
 
+        $qrcode = QrCode::format('png')
+        ->size(250)->errorCorrection('H')
+        ->generate($first_molding);
+
+        $qr_code = "data:image/png;base64," . base64_encode($qrcode);
+    
+        $data[] = array(
+            'img' => $qr_code, 
+            'text' =>  "<strong>$first_molding->po</strong><br>
+            <strong>$first_molding->code</strong><br>
+            <strong>$first_molding->name</strong><br>
+            <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
+            <strong>$first_molding->qty</strong><br>
+            <strong>$first_molding->output_qty</strong><br>
+            "
+        );
+        $label = "
+            <table class='table table-sm table-borderless' style='width: 100%;'> 
+                <tr>
+                    <td>PO No.:</td>
+                    <td>$first_molding->po</td>
+                </tr>
+                <tr>
+                    <td>Material Code:</td>
+                    <td>$first_molding->code</td>
+                </tr>
+                <tr>
+                    <td>Material Name:</td>
+                    <td>$first_molding->name</td>
+                </tr>
+                <tr>
+                    <td>Production Lot #:</td>
+                    <td>".$first_molding->lot_no."".$first_molding->lot_no_ext."</td>
+                </tr>
+                <tr>
+                    <td>Shipment Output:</td>
+                    <td>$first_molding->output_qty</td>
+                </tr>
+                <tr>
+                    <td>PO Quantity:</td>
+                    <td>$first_molding->qty</td>
+                </tr>
+            </table>
+        ";
+
+        return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'first_molding_data' => $first_molding]);
+    }
+    
 
 
 

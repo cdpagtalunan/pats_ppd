@@ -126,6 +126,32 @@
             </section>
         </div>
 
+        {{-- MODAL FOR PRINTING  --}}
+        <div class="modal fade" id="modalFirstMoldingPrintQr">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"> Production - QR Code</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- PO 1 -->
+                            <div class="col-sm-12">
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <label id="img_barcode_PO_text"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="btnFirstMoldingPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
 
     @include('component.modal')
     <!--- Go to component/modal.blade.php -->
@@ -144,9 +170,10 @@
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
                     // formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMolding.find('#contact_lot_number').val('');
-                    formModal.firstMolding.find('#production_lot').val('');
-                    formModal.firstMolding.find('#remarks').val('');
+                    // formModal.firstMolding.find('#production_lot').val('');
 
+                    formModal.firstMolding.find('#remarks').val('');
+                    formModal.firstMolding.find('#dieset_no').val('');
                     formModal.firstMolding.find('#production_lot_extension').val('');
                     formModal.firstMolding.find('#pmi_po_no').val('');
                     formModal.firstMolding.find('#machine_no').val('');
@@ -160,6 +187,7 @@
                     formModal.firstMolding.find('.form-control').removeClass('is-valid')
                     formModal.firstMolding.find('.form-control').removeClass('is-invalid');
                     formModal.firstMolding.find('.form-control').attr('title', '');
+                    $("#tblFirstMoldingMaterial tbody").empty();
                 })
 
                 $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
@@ -244,6 +272,78 @@
                 table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
                 table.FirstMoldingStationDetails.on('click','#btnEditFirstMoldingStation', editFirstMoldingStation);
 
+                table.FirstMoldingDetails.on('click', '#btnPrintFirstMolding', function(e){
+                    e.preventDefault();
+                    let firstMoldingId = $(this).attr('first-molding-id');
+                    $.ajax({
+                        type: "get",
+                        url: "get_first_molding_qr_code",
+                        data: {"first_molding_id" : firstMoldingId},
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                            // response['label_hidden'][0]['id'] = id;
+                            // console.log(response['label_hidden']);
+                            // for(let x = 0; x < response['label_hidden'].length; x++){
+                            //     let dataToAppend = `
+                            //     <img src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
+                            //     `;
+                            //     $('#hiddenPreview').append(dataToAppend)
+                            // }
+                        
+
+                            $("#img_barcode_PO").attr('src', response['qr_code']);
+                            $("#img_barcode_PO_text").html(response['label']);
+                            img_barcode_PO_text_hidden = response['label_hidden'];
+                            $('#modalFirstMoldingPrintQr').modal('show');
+                        }
+                    });
+
+                });
+                $('#btnFirstMoldingPrintQrCode').on('click', function(){
+                    popup = window.open();
+                    let content = '';
+
+                    content += '<html>';
+                    content += '<head>';
+                    content += '<title></title>';
+                    content += '<style type="text/css">';
+                    content += '@media print { .pagebreak { page-break-before: always; } }';
+                    content += '</style>';
+                    content += '</head>';
+                    content += '<body>';
+                    // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                        content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                            content += '<tr style="width: 290px;">';
+                                content += '<td style="vertical-align: bottom;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                content += '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                            content += '</tr>';
+                        content += '</table>';
+                        content += '<br>';
+                        // if( i < img_barcode_PO_text_hidden.length-1 ){
+                        //     content += '<div class="pagebreak"> </div>';
+                        // }
+                    // }
+                    content += '</body>';
+                    content += '</html>';
+                    popup.document.write(content);
+
+                    popup.focus(); //required for IE
+                    popup.print();
+
+                    /*
+                        * this event will trigger after closing the tab of printing
+                    */
+                    popup.addEventListener("beforeunload", function (e) {
+                        changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                    });
+
+                    popup.close();
+
+                    });
+
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
                     // return;
@@ -261,7 +361,6 @@
                     $('#modalFirstMoldingStation').modal('show');
                     formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
                     formModal.firstMoldingStation.find('[type="number"]').val(0)
-
                 });
 
                 $('#btnSubmitFirstMoldingStation').click(function (e) {
@@ -391,8 +490,8 @@
                         </tr>
                     `;
                     $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
-                    getModeOfDefectForSecondMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
-                
+                    getModeOfDefectForFirstMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
+
                     $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
                         if($(this).val() === null || $(this).val() === ""){
                             $("#tableFirstMoldingStationMOD tbody").empty();
@@ -409,7 +508,7 @@
                     let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
 
                     $(this).closest ('tr').remove();
-                    
+
                     $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
                         if($(this).val() === null || $(this).val() === ""){
                             $("#tableFirstMoldingStationMOD tbody").empty();
@@ -419,6 +518,7 @@
                     });
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
+
 
                 $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
                     if(e.keyCode == 13){
@@ -433,7 +533,7 @@
                         $('#mdlScanQrCodeFirstMolding').modal('hide');
                     }
                 });
-                
+
                 formModal.firstMoldingStation.find('#input').keyup(function (e) {
                     totalOutput($(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
                     totalStationYield($(this).val(),formModal.firstMoldingStation.find("#output").val());
@@ -518,7 +618,7 @@
                     savefirstMoldingStation();
                 });
 
-                $('#btnAddFirstMoldingMaterial').click(function (e) { 
+                $('#btnAddFirstMoldingMaterial').click(function (e) {
                     e.preventDefault();
                     arr.Ctr ++;
                     let rowFirstMoldingMaterial = `
@@ -528,7 +628,7 @@
                                         <div class="input-group-prepend">
                                             <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]">
+                                        <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
                                 </div>
                             </td>
                             <td>
@@ -536,7 +636,7 @@
                                         <div class="input-group-prepend">
                                             <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="recycle_material" name="recycle_material[]">
+                                        <input type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
                                 </div>
                             </td>
                             <td>
@@ -550,7 +650,7 @@
                 $("#tblFirstMoldingMaterial").on('click', '.buttonRemoveMaterial', function(){
                     $(this).closest ('tr').remove();
                 });
-                
+
             });
         </script>
     @endsection

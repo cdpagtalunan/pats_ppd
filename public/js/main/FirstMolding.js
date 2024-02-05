@@ -54,11 +54,44 @@
             success: function (response) {
 
                 let data = response['first_molding'][0];
+                let first_molding_material_list = data.first_molding_material_lists;
+
+                for (let i = 0; i < first_molding_material_list.length; i++) {
+                    console.log(first_molding_material_list[i].virgin_material);
+                    // value="${first_molding_material_list[i].virgin_material}"
+                    let rowFirstMoldingMaterial = `
+                        <tr>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input value="${first_molding_material_list[i].virgin_material}" type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input value="${first_molding_material_list[i].recycle_material}" type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <center><button class="btn btn-xs btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                            </td>
+                        </tr>
+                    `;
+                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
+                }
+
 
                 formModal.firstMolding.find('#first_molding_id').val(data.id);
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
+                formModal.firstMolding.find('#production_lot_extension').val(data.production_lot_extension);
                 formModal.firstMolding.find('#machine_no').val(data.machine_no);
+                formModal.firstMolding.find('#dieset_no').val(data.dieset_no);
                 formModal.firstMolding.find('#drawing_no').val(data.drawing_no);
                 formModal.firstMolding.find('#revision_no').val(data.revision_no);
                 formModal.firstMolding.find('#target_shots').val(data.target_shots);
@@ -77,7 +110,6 @@
                 formModal.firstMolding.find('#required_output').val(data.required_output);
                 formModal.firstMolding.find('#created_at').val(data.created_at);
                 formModal.firstMolding.find('#remarks').val(data.remarks);
-                $('#modalFirstMolding').modal('show');
                 if(data.status === 1){
                     $('#btnFirstMoldingStation').prop('disabled',true);
                     $('#btnSubmitFirstMoldingStation').prop('disabled',true);
@@ -89,16 +121,52 @@
                     $('#btnRuncardDetails').removeClass('d-none',true);
                 }
                 dt.firstMoldingStation.draw();
+                $('#modalFirstMolding').modal('show');
+
+                // tblFirstMoldingMaterial
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }
         });
     }
-    //first_molding_detail_mods
+
+    const getModeOfDefectForFirstMolding = (elementId, modeOfDefectId = null) => {
+        let result = `<option value="0" selected> N/A </option>`;
+        $.ajax({
+            url: 'get_mode_of_defect_for_second_molding',
+            method: 'get',
+            dataType: 'json',
+            beforeSend: function(){
+                result = `<option value="0" selected disabled> - Loading - </option>`;
+                elementId.html(result);
+            },
+            success: function(response){
+                result = '';
+                if(response['data'].length > 0){
+                    for(let index = 0; index < response['data'].length; index++){
+
+                        result += `<option value="${response['data'][index].id}">${response['data'][index].defects}</option>`;
+                    }
+                }
+                else{
+                    result = `<option value="0" selected disabled> - No data found - </option>`;
+                }
+                elementId.append(result);
+                if(modeOfDefectId != null){
+                    console.log(modeOfDefectId)
+                    elementId.val(modeOfDefectId).trigger('change');
+                }
+            },
+            error: function(data, xhr, status){
+                result = `<option value="0" selected disabled> - Reload Again - </option>`;
+                elementId.html(result);
+                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            }
+        });
+    }
+
     const editFirstMoldingStation = function (){
         let first_molding_station_id = $(this).attr('first-molding-station-id');
-        // console.log(first_molding_station_id)
-        // return;
         $.ajax({
             type: "GET",
             url: "get_first_molding_station_details",
@@ -128,6 +196,7 @@
                 getStation();
                 for(let i = 0; i < first_molding_detail_mod.length; i++){
                     // console.log(first_molding_detail_mod[i]);
+
                     let defects = first_molding_detail_mod[i].defects_info.defects;
                     let info_defects_id = first_molding_detail_mod[i].defects_info.id;
                     let mod_quantity = first_molding_detail_mod[i].mod_quantity;
@@ -146,8 +215,9 @@
                             </td>
                         </tr>
                     `;
+                    console.log('dsad',info_defects_id);
+                    // getModeOfDefectForFirstMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
                     $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
-                    getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'));
                 }
 
                 let totalNumberOfMOD = 0;

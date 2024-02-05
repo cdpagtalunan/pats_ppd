@@ -1149,6 +1149,11 @@
                     }, 500);
                 }
             });
+
+            $("#modalPrintQr").on('hidden.bs.modal', function () {
+                console.log('hidden.bs.modal');
+                $('.hiddnQr').remove();
+            });
         </script>
 
         @if (in_array(Auth::user()->position, [0,1,9]))

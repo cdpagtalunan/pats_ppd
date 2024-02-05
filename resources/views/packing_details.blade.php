@@ -768,7 +768,7 @@
                     console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
                 });
                 
-                let chrisPacker = [];
+                let validateUser = [];
                 $(document).on('keypress', '#txtPackerId', function(e){
                     let toScanId =  $('#txtPackerId').val();
                     let dataScanned = {
@@ -779,13 +779,13 @@
                     }
                     if(e.keyCode == 13){
                         if(dataStatus == 0 ){
-                            chrisPacker = [4,9];
+                            validateUser = [4,9];
                         }else{
-                            chrisPacker = [2,5];
+                            validateUser = [2,5];
                         }
-                        console.log('chrisPacker', chrisPacker);
+                        console.log('validateUser', validateUser);
                         // return;
-                        validateUser($(this).val().toUpperCase(), chrisPacker, function(result){
+                        validateUser($(this).val().toUpperCase(), validateUser, function(result){
                             if(result == true){
                                 // toastr.success('User is authorize!');
                                 e.preventDefault();

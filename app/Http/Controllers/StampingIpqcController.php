@@ -325,17 +325,6 @@ class StampingIpqcController extends Controller
         return response()->json(['result' => 'Successful']);
     }
 
-    public function get_data_from_acdcs(Request $request){
-        $acdcs_data = DB::connection('mysql_rapid_acdcs')
-        // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` = '".$request->doc_type."'");
-        // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` = '".$request->doc_type."' AND `originator_code` = 'PPS'");
-        ->select("SELECT `doc_no`,`doc_type` FROM tbl_active_docs WHERE `doc_type` = '".$request->doc_type."' AND `doc_title` LIKE '%".$request->doc_title."%'");
-        // ->select("SELECT * FROM tbl_active_docs WHERE `model` LIKE '%".$request->model."%' AND `doc_type` IN ('B Drawing', 'Inspection Standard', 'Urgent Direction') AND `originator_code` = 'PPS'");
-        // doc_no
-        // return $acdcs_data;
-        return response()->json(['acdcs_data' => $acdcs_data]);
-    }
-
     //====================================== DOWNLOAD FILE ======================================
     public function download_file(Request $request, $id){
         $ipqc_data_for_download = StampingIpqc::where('id', $id)->first();
