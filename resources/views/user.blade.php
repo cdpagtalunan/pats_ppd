@@ -55,10 +55,9 @@
                   <div style="float: right;">
                     <button class="btn btn-dark" data-keyboard="false" id="btnShowModalPrintBatchUser" disabled><i class="fa fa-print"></i> Print Batch QR Code (<span id="lblNoOfPrintBatchSelUser">0</span>)</button>
 
-                    @if(Auth::user()->user_level_id == 1)
+                    {{-- @if(Auth::user()->user_level_id == 1)
                       <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalImportUser" id="btnShowImport" title="Import User"><i class="fa fa-file-excel"></i> Import</button>
-                    @endif
-
+                    @endif --}}
                     <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalAddUser" id="btnShowAddUserModal"><i class="fa fa-user-plus"></i> Add User</button>
                   </div> <br><br>
                   <div class="table-responsive">
@@ -73,6 +72,7 @@
                           <th>Employee ID</th>
                           <th>OQC Stamp</th>
                           <th>Position</th>
+                          <th>Section</th>
                           <th>User Level</th>
                           <th>Status</th>
                           <th>Action</th>
@@ -95,7 +95,7 @@
   <!-- /.content-wrapper -->
 
   <!-- MODALS -->
-  <div class="modal fade" id="modalAddUser">
+  {{-- <div class="modal fade" id="modalAddUser">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -130,7 +130,7 @@
                         <label>Send Password to Email</label>
                       </div>
                     </div>
-                    
+
                     <input type="text" class="form-control" name="email" id="txtAddUserEmail">
                 </div>
 
@@ -164,7 +164,7 @@
 
                 <div class="form-group">
                         <input type="checkbox" name="with_oqc_stamp" id="chkAddUserWithOQCStamp">
-                        <label>OQC Stamp</label>                  
+                        <label>OQC Stamp</label>
                     <input type="text" class="form-control" name="oqc_stamp" id="txtAddUserOQCStamp" disabled="disabled">
                 </div>
 
@@ -197,7 +197,7 @@
       <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-  </div>
+  </div> --}}
   <!-- /.modal -->
 
   <div class="modal fade" id="modalEditUser">
@@ -216,8 +216,29 @@
               <div class="col-sm-12">
                 <input type="hidden" class="form-control" name="user_id" id="txtEditUserId">
                 <div class="form-group">
-                  <label>Name</label>
-                    <input type="text" class="form-control" name="name" id="txtEditUserName">
+                  <label>Employee ID</label>
+                  <input type="text" class="form-control" name="employee_id" id="txtEditUserEmpId" oninput="this.value = this.value.toUpperCase()" readonly>
+                </div>
+
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Firstname</label>
+                        <input type="text" class="form-control" name="fname" id="txtEditfirstName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Middlename</label>
+                        <input type="text" class="form-control" name="mname" id="txtEditMiddleName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Lastname</label>
+                      <input type="text" class="form-control" name="lname" id="txtEditLastName" readonly>
+                    </div>
+                  </div>
                 </div>
 
                 <div class="form-group">
@@ -242,27 +263,27 @@
                 <div class="form-group">
                   <label>Position</label>
                     <select class="form-control select2bs4" name="position" style="width: 100%;" id="selEditUserPosition">
-                      <option selected value="0">N/A</option>
+                      <option selected value="" disabled>N/A</option>
+                      <option value="0">ISS</option>
                       <option value="1">Prod'n Supervisor</option>
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
-                      <option value="4">Operator</option>
-                      <option value="5">Inspector</option>
+                      <option value="4">Production Operator</option>
+                      <option value="5">QC Inspector</option>
                       <option value="6">Warehouse</option>
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
+                      <option value="10">PPC - Clerk</option>
+                      <option value="11">Technician</option>
+                      {{-- <option value="12">IPQC Inspector</option>
+                      <option value="13">OQC Inspector</option> --}}
                     </select>
                 </div>
 
                 <div class="form-group">
-                  <label>Employee ID</label>
-                    <input type="text" class="form-control" name="employee_id" id="txtEditUserEmpId">
-                </div>
-
-                <div class="form-group">
                     <input type="checkbox" name="with_oqc_stamp" id="chkEditUserWithOQCStamp">
-                        <label>OQC Stamp</label>                  
+                        <label>OQC Stamp</label>
                     <input type="text" class="form-control" name="oqc_stamp" id="txtEditUserOQCStamp" disabled="disabled">
                 </div>
 
@@ -416,6 +437,147 @@
   </div>
   <!-- /.modal -->
 
+  <!-- MODALS -->
+  <div class="modal fade" id="modalAddUser">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><i class="fa fa-user-plus"></i> Add User</h4>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form method="post" id="formAddUser">
+          @csrf
+          <div class="modal-body">
+            <div class="form-group">
+              <label>Employee ID</label>
+              <input type="text" class="form-control" name="employee_id" id="txtAddUserEmpId" oninput="this.value = this.value.toUpperCase()">
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                {{-- <div class="form-group">
+                  <label>Name</label>
+                    <input type="text" class="form-control" name="name" id="txtAddUserName">
+                </div> --}}
+
+                <div class="row">
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Firstname</label>
+                        <input type="text" class="form-control" name="fname" id="txtAddfirstName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Middlename</label>
+                        <input type="text" class="form-control" name="mname" id="txtAddMiddleName" readonly>
+                    </div>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label>Lastname</label>
+                      <input type="text" class="form-control" name="lname" id="txtAddLastName" readonly>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Username</label>
+                    <input type="text" class="form-control" name="username" id="txtAddUserUserName">
+                </div>
+
+                <div class="form-group">
+                    <div class="row">
+                      <div class="col-sm-6">
+                        <input type="checkbox" name="with_email" id="chkAddUserWithEmail" checked="checked">
+                        <label>Email</label>
+                      </div>
+                      {{-- <div class="col-sm-6">
+                        <input type="checkbox" name="send_email" id="chkAddUserSendEmail" checked="checked">
+                        <label>Send Password to Email</label>
+                      </div> --}}
+                    </div>
+
+
+                    <input type="text" class="form-control" name="email" id="txtAddUserEmail">
+                </div>
+
+                <div class="form-group">
+                  <label>User Level</label>
+                    <select class="form-control select2bs4 selectUserLevel" name="user_level_id" id="selAddUserLevel" style="width: 100%;">
+                      <!-- Code generated -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Position</label>
+                    <select class="form-control select2bs4" name="position" style="width: 100%;" id="selAddUserPosition">
+                      <option selected value="" disabled>N/A</option>
+                      <option value="0">ISS</option>
+                      <option value="1">Prod'n Supervisor</option>
+                      <option value="2">QC Supervisor</option>
+                      <option value="3">Material Handler</option>
+                      <option value="4">Production Operator</option>
+                      <option value="5">QC Inspector</option>
+                      <option value="6">Warehouse</option>
+                      <option value="7">PPC - Planner</option>
+                      <option value="8">PPC - Sr. Planner</option>
+                      <option value="9">Engineer</option>
+                      <option value="10">PPC - Clerk</option>
+                      <option value="11">Technician</option>
+                      {{-- <option value="12">IPQC Inspector</option>
+                      <option value="13">OQC Inspector</option> --}}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                  <label>Section</label>
+                    <select class="form-control select2bs4" name="section" style="width: 100%;" id="selAddUserSection">
+                      <option selected value="" disabled>N/A</option>
+                      <option value="0">Stamping</option>
+                      <option value="1">Molding</option>
+                    </select>
+                </div>
+                
+
+
+                <div class="form-group">
+                        <input type="checkbox" name="with_oqc_stamp" id="chkAddUserWithOQCStamp">
+                        <label>OQC Stamp</label>
+                    <input type="text" class="form-control" name="oqc_stamp" id="txtAddUserOQCStamp" disabled="disabled">
+                </div>
+
+                <!-- <div class="form-group">
+                  <label>Employee ID</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control" name="employee_id" id="txtAddUserEmpId">
+                      <div class="input-group-append">
+                        <button class="btn btn-primary" type="button" id="btnAddUserGenBarcode" title="Generate"><i class="fas fa-qrcode"></i></button>
+                      </div>
+                    </div>
+                    <div>
+                      <center>
+                        <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')
+                          ->size(150)->errorCorrection('H')
+                          ->generate('0')) !!}" id="imgAddUserBarcode" style="max-width: 200px;"> <br>
+                          <label id="lblAddUserQRCodeVal">0</label>
+                      </center>
+                    </div>
+                </div> -->
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer justify-content-between">
+            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+            <button type="button" id="btnAddUser" class="btn btn-dark"><i id="iBtnAddUserIcon" class="fa fa-check"></i> Save</button>
+          </div>
+        </form>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
+  <!-- /.modal -->
   @endsection
 
   @section('js_content')
@@ -425,21 +587,14 @@
     let imgResultUserQrCode = '';
     let qrCodeName = '';
     let arrSelectedUsers = [];
+
     $(document).ready(function () {
-      //Initialize Select2 Elements
-      $('.select2').select2();
-
-      //Initialize Select2 Elements
-      $('.select2bs4').select2({
-        theme: 'bootstrap-5'
-      });
-
       $(document).on('click','#tblUsers tbody tr',function(e){
         $(this).closest('tbody').find('tr').removeClass('table-active');
         $(this).closest('tr').addClass('table-active');
       });
 
-      GetUserLevel($(".selectUserLevel"));
+      // GetUserLevel($(".selectUserLevel"));
 
       dataTableUsers = $("#tblUsers").DataTable({
         "processing" : false,
@@ -450,11 +605,11 @@
             //     param.status = $("#selEmpStat").val();
             // }
           },
-          
+
           "columns":[
             { "data" : "checkbox", searchable: false, orderable: false },
             { "data" : "id" },
-            { "data" : "name" },
+            { "data" : "fullname"},
             { "data" : "username" },
             { "data" : "email" },
             { "data" : "employee_id" },
@@ -491,7 +646,7 @@
                   display: function (data, type, row) {
                     if (row.position == 0) {
                       return "N/A";
-                    } 
+                    }
                     else if (row.position == 1) {
                       return "Prod'n Supervisor";
                     }
@@ -502,10 +657,10 @@
                       return "Material Handler";
                     }
                     else if (row.position == 4) {
-                      return "Operator";
+                      return "Production Operator";
                     }
                     else if (row.position == 5) {
-                      return "Inspector";
+                      return "QC Inspector";
                     }
                     else if (row.position == 6) {
                       return "Warehouse";
@@ -519,6 +674,30 @@
                     else if (row.position == 9) {
                       return "Engineer";
                     }
+                    else if (row.position == 10) {
+                      return "PPC - Clerk";
+                    }
+                    else if (row.position == 11) {
+                      return "Technician";
+                    }
+
+                  },
+                },
+            },
+            { "data": 'section',
+                defaultContent: 'N/A',
+                name: 'section',
+                orderable: true,
+                searchable: true,
+                render: {
+                  display: function (data, type, row) {
+                    if (row.section == 0) {
+                      return "Stamping";
+                    }
+                    else if (row.section == 1) {
+                      return "Molding";
+                    }
+
                   },
                 },
             },
@@ -527,7 +706,7 @@
             { "data" : "action1", orderable:false, searchable:false }
           ],
 
-          "columnDefs": [ 
+          "columnDefs": [
             {
               "targets": [3, 5],
               "data": null,
@@ -561,7 +740,7 @@
                     arrSelectedUsers.push(userId);
                 }
             }
-            else{  
+            else{
                 // Unchecked
                 let index = arrSelectedUsers.indexOf(userId);
                 arrSelectedUsers.splice(index, 1);
@@ -606,8 +785,9 @@
           }
         });
 
-        // Add User 
-        $("#formAddUser").submit(function(event){
+
+        // Add User
+        $("#btnAddUser").on('click', function(event){
           event.preventDefault();
           AddUser();
         });
@@ -626,22 +806,23 @@
           $("#txtAddUserName").focus();
           $("#selAddUserLevel").select2('val', '0');
           $("#txtAddUserEmail").removeAttr('disabled');
-          $("#chkAddUserSendEmail").removeAttr('disabled');
-          $("#chkAddUserSendEmail").prop('checked', 'checked');
+          // $("#chkAddUserSendEmail").removeAttr('disabled');
+          // $("#chkAddUserSendEmail").prop('checked', 'checked');
           $("#chkAddUserWithEmail").prop('checked', 'checked');
+          GetUserLevel($(".selectUserLevel"));
         });
 
         $("#chkAddUserWithEmail").click(function(){
           if($(this).prop('checked')) {
             $("#txtAddUserEmail").removeAttr('disabled');
-            $("#chkAddUserSendEmail").removeAttr('disabled');
-            $("#chkAddUserSendEmail").prop('checked', 'checked');
+            // $("#chkAddUserSendEmail").removeAttr('disabled');
+            // $("#chkAddUserSendEmail").prop('checked', 'checked');
           }
           else{
             $("#txtAddUserEmail").prop('disabled', 'disabled');
             $("#txtAddUserEmail").val('');
-            $("#chkAddUserSendEmail").prop('disabled', 'disabled');
-            $("#chkAddUserSendEmail").removeAttr('checked');
+            // $("#chkAddUserSendEmail").prop('disabled', 'disabled');
+            // $("#chkAddUserSendEmail").removeAttr('checked');
           }
         });
 
@@ -674,6 +855,8 @@
         $(document).on('click', '.aEditUser', function(){
           let userId = $(this).attr('user-id');
           $("#txtEditUserId").val(userId);
+          GetUserLevel($(".selectUserLevel"));
+
           GetUserByIdToEdit(userId);
           $("#txtEditUserName").removeClass('is-invalid');
           $("#txtEditUserName").attr('title', '');
@@ -719,7 +902,7 @@
           $("#txtChangeUserStatUserStat").val(userStat);
 
           if(userStat == 1){
-            $("#lblChangeUserStatLabel").text('Are you sure to activate?'); 
+            $("#lblChangeUserStatLabel").text('Are you sure to activate?');
             $("#h4ChangeUserTitle").html('<i class="fa fa-user"></i> Activate User');
           }
           else{
@@ -755,20 +938,20 @@
                 },
                 // dataType: "json",
                 beforeSend: function(){
-                    
+
                 },
                 success: function(JsonObject){
               if(JsonObject['result'] == 1){
                 $("#imgGenUserBarcode").attr("src", JsonObject['qrcode']);
                 imgResultUserQrCode = JsonObject['qrcode'];
-                qrCodeName = JsonObject['user'][0].name;
+                qrCodeName = JsonObject['user'][0].firstname +" "+JsonObject['user'][0].lastname;
                 genUserqrcode = JsonObject['user'][0].employee_id;
               }
               $("#lblGenUserBarcodeVal").text(employeeId);
                 },
                 error: function(data, xhr, status){
                     alert('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                    
+
                 }
             });
         });
@@ -848,6 +1031,13 @@
           popup.focus(); //required for IE
           popup.print();
           popup.close();
+        });
+
+        $('#txtAddUserEmpId').on('keyup', function(e){
+          if(e.keyCode == 13){
+            e.preventDefault();
+            getEmpIdData($(this).val());
+          }
         });
       });
   </script>

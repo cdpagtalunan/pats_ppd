@@ -28,5 +28,8 @@
 
 <link rel="stylesheet" href="{{ asset('public/template/sweetalert/css/sweetalert2.min.css') }}">
 
+<link href="{{ asset('public/css/smart_wizard.min.css') }}" rel="stylesheet" type="text/css" />
+<link href="{{ asset('public/css/smart_wizard_arrows.min.css') }}" rel="stylesheet" type="text/css" />
+
 <!-- Custom CSS -->
 <link rel="stylesheet" href="{{ asset('public/css/custom.css') }}">

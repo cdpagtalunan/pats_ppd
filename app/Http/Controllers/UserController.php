@@ -2,23 +2,89 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Model\OQCStamp;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use DataTables;
-use Mail;
-// use App\Jobs\SendUserPasswordJob;
 use Auth;
+use Mail;
 use QrCode;
-use Maatwebsite\Excel\Facades\Excel;
+use DataTables;
+use App\Models\User;
+use App\Models\RapidxUser;
+use App\Models\RapidXUserAccess;
+use App\Model\OQCStamp;
+use App\Models\HRISDetails;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+// use App\Jobs\SendUserPasswordJob;
 use App\Imports\CSVUserImport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 
 class UserController extends Controller
 {
+    public function rapidx_sign_in_admin(Request $request)
+    {
+        // $user_data = array(
+        //     'username' => $request->get('username'),
+        //     // 'password' => $request->get('password'),
+        //     'user_stat' => "1"
+        // );
+        $user_data = $request->all();
+            // return $user_data;
+
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            // 'password' => 'required'
+        ]);
+
+        if ($validator->passes()) {
+            // if ($request->password == 'rapidx_admin') {
+
+                $user_info = RapidxUser::where('username', $request->username)->first();
+                // return $user_info;
+                if ($user_info != null) {
+                    session_start();
+                    $_SESSION["rapidx_user_id"] = $user_info->id;
+                    $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
+                    // $_SESSION["rapidx_username"] = $user_info->username;
+                    $_SESSION["rapidx_name"] = $user_info->name;
+                    $_SESSION["rapidx_email"] = $user_info->email;
+                    $_SESSION["rapidx_department_id"] = $user_info->department_id;
+                    $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
+
+                    $user_accesses = RapidXUserAccess::on('rapidx')->where('user_id', $user_info->id)
+                        ->where('user_access_stat', 1)
+                        ->get();
+
+                    $arr_user_accesses = [];
+                    for ($index = 0; $index < count($user_accesses); $index++) {
+                        // $arr_user_accesses['module_id'] = $user_accesses[$index]->module_id;
+                        // $arr_user_accesses['user_level_id'] = $user_accesses[$index]->user_level_id;
+                        array_push($arr_user_accesses, array(
+                            'module_id' => $user_accesses[$index]->module_id,
+                            'user_level_id' => $user_accesses[$index]->user_level_id
+                        ));
+                    }
+
+                    $_SESSION["rapidx_user_accesses"] = $arr_user_accesses;
+
+                  
+
+                    return response()->json([
+                        'result' => "1",
+                    ]);
+                } else {
+                    return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+                }
+            // } else {
+            //     return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+            // }
+        } else {
+            return response()->json(['result' => "0", 'error' => $validator->messages()]);
+        }
+    }
+
     // Sign In
     public function sign_in(Request $request){
         // return "qwe";
@@ -27,19 +93,33 @@ class UserController extends Controller
             'password' => $request->get('password'),
             'status' => "1"
         );
-        // return $request->all();
+        // return $user_data['username'];
         $validator = Validator::make($user_data, [
             'username' => 'required',
             // 'password' => 'required|alphaNum|min:8'
             'password' => 'required|alphaNum|min:6'
         ]);
         if($validator->passes()){
+
             if(Auth::attempt($user_data)){
+                session_start();
+                $_SESSION["user_id"] = Auth::user()->id;
+                $_SESSION["user_level_id"] = Auth::user()->user_level_id;
+                $_SESSION["username"] = Auth::user()->username;
+                $_SESSION["email"] = Auth::user()->email;
+                $_SESSION["position"] = Auth::user()->position;
+                $_SESSION["employee_id"] =  Auth::user()->employee_id;
+
                 if(Auth::user()->is_password_changed == 0){
+                   
+
                     return response()->json(['result' => "2"]);
+
                 }
                 else{
-                    return response()->json(['result' => "1"]);
+
+
+                    return response()->json(['result' => "1", 'username' => $user_data['username']]);
                 }
             }
             else{
@@ -59,7 +139,7 @@ class UserController extends Controller
     }
 
     // Change Password
-    public function change_pass(Request $request){        
+    public function change_pass(Request $request){
         date_default_timezone_set('Asia/Manila');
         $user_data = array(
             'username' => $request->username,
@@ -82,7 +162,7 @@ class UserController extends Controller
             if(Auth::attempt($user_data)){
                 try{
                     User::where('id', Auth::user()->id)
-                        ->increment('update_version', 1, 
+                        ->increment('update_version', 1,
                             [
                                 'is_password_changed' => 1,
                                 'password' => Hash::make($request->new_password),
@@ -97,8 +177,8 @@ class UserController extends Controller
                     DB::rollback();
                     // throw $e;
                     return response()->json(['result' => "0"]);
-                }  
-                
+                }
+
                 return response()->json(['result' => 1]);
             }
             else{
@@ -111,9 +191,8 @@ class UserController extends Controller
     }
 
     // Change User Status
-    public function change_user_stat(Request $request){        
+    public function change_user_stat(Request $request){
         date_default_timezone_set('Asia/Manila');
-
         $data = $request->all();
 
         $validator = Validator::make($data, [
@@ -124,7 +203,7 @@ class UserController extends Controller
         if($validator->passes()){
             try{
                 User::where('id', $request->user_id)
-                    ->increment('update_version', 1, 
+                    ->increment('update_version', 1,
                         [
                             'status' => $request->status,
                             'last_updated_by' => Auth::user()->id,
@@ -138,8 +217,8 @@ class UserController extends Controller
                 DB::rollback();
                 // throw $e;
                 return response()->json(['result' => "0"]);
-            }  
-            
+            }
+
             return response()->json(['result' => 1]);
         }
         else{
@@ -148,7 +227,7 @@ class UserController extends Controller
     }
 
     // Reset Password
-    public function reset_password(Request $request){        
+    public function reset_password(Request $request){
         date_default_timezone_set('Asia/Manila');
 
         // $password = 'pmi1234' . Str::random(10);
@@ -156,7 +235,7 @@ class UserController extends Controller
 
         try{
             User::where('id', $request->user_id)
-                ->increment('update_version', 1, 
+                ->increment('update_version', 1,
                     [
                         'is_password_changed' => 0,
                         'password' => Hash::make($password),
@@ -184,16 +263,16 @@ class UserController extends Controller
             DB::rollback();
             // throw $e;
             return response()->json(['result' => "0"]);
-        } 
+        }
     }
 
     //View Users
 	public function view_users(){
     	$users = User::with([
-                    'user_level', 
+                    'user_level',
                     // 'oqc_stamps' => function($query) {
                     //     $query->where('status', 1);
-                    //     $query->orderBy('id', 'desc');    
+                    //     $query->orderBy('id', 'desc');
                     // }
                 ])
                 ->get();
@@ -214,7 +293,7 @@ class UserController extends Controller
             ->addColumn('action1', function($user){
                 $result = '<center><div class="btn-group">
                           <button type="button" class="btn btn-dark dropdown-toggle btn-xs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Action">
-                            <i class="fa fa-cog"></i> 
+                            <i class="fa fa-cog"></i>
                           </button>
                           <div class="dropdown-menu dropdown-menu-right">';
                 if($user->status == 1){
@@ -229,7 +308,7 @@ class UserController extends Controller
                 else{
                     $result .= '<button class="dropdown-item aChangeUserStat" type="button" style="padding: 1px 1px; text-align: center;" user-id="' . $user->id . '" status="1" data-bs-toggle="modal" data-bs-target="#modalChangeUserStat" data-bs-keyboard="false">Activate</button>';
                 }
-                            
+
                 $result .= '</div>
                         </div></center>';
 
@@ -238,7 +317,13 @@ class UserController extends Controller
             ->addColumn('checkbox', function($user){
                 return '<center><input type="checkbox" class="chkUser" user-id="' . $user->id . '"></center>';
             })
-            ->rawColumns(['label1', 'action1', 'checkbox'])
+            ->addColumn('fullname', function($user){
+                $result = "";
+
+                $result = "$user->firstname $user->middlename $user->lastname";
+                return $result;
+            })
+            ->rawColumns(['label1', 'action1', 'checkbox', 'fullname'])
             ->make(true);
     }
 
@@ -254,7 +339,7 @@ class UserController extends Controller
         $password = 'pmi12345';
 
         $rules = [
-            'name' => 'required|string|max:255',
+            // 'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'employee_id' => 'required|string|max:255|unique:users',
             'user_level_id' => 'required|string|max:255',
@@ -281,7 +366,10 @@ class UserController extends Controller
 
             try{
                 $user_id = User::insertGetId([
-                    'name' => $request->name,
+                    // 'name' => $request->name,
+                    'firstname' => $request->fname,
+                    'middlename' => $request->mname,
+                    'lastname' => $request->lname,
                     'username' => $request->username,
                     'email' => $request->email,
                     'employee_id' => $request->employee_id,
@@ -295,7 +383,7 @@ class UserController extends Controller
                     'update_version' => 1,
                     'updated_at' => date('Y-m-d H:i:s'),
                     'created_at' => date('Y-m-d H:i:s')
-                ]); 
+                ]);
 
                 if(isset($request->oqc_stamp)){
                     OQCStamp::insert([
@@ -309,13 +397,13 @@ class UserController extends Controller
                     ]);
                 }
 
-                if(isset($request->send_email)){
-                    $subject = 'PATS User Registration';
-                    $email = $request->email;
-                    $message = 'This is a notification from PATS. Your PATS user account was successfully registered.';
+                // if(isset($request->send_email)){
+                //     $subject = 'PATS User Registration';
+                //     $email = $request->email;
+                //     $message = 'This is a notification from PATS. Your PATS user account was successfully registered.';
 
-                    // dispatch(new SendUserPasswordJob($subject, $message, $request->username, $password, $email));
-                }
+                //     // dispatch(new SendUserPasswordJob($subject, $message, $request->username, $password, $email));
+                // }
 
                 DB::commit();
 
@@ -334,10 +422,10 @@ class UserController extends Controller
         $user = User::with([
                             // 'oqc_stamps' => function($query) {
                             //     $query->where('status', 1);
-                            //     $query->orderBy('id', 'desc');    
+                            //     $query->orderBy('id', 'desc');
                             // }
                         ])->where('id', $request->user_id)->get();
-        
+
         $qrcode = QrCode::format('png')
                             ->size(200)->errorCorrection('H')
                             ->generate($user[0]->employee_id);
@@ -347,6 +435,12 @@ class UserController extends Controller
 
     public function get_user_list(Request $request){
         $users = User::all();
+
+        return response()->json(['users' => $users]);
+    }
+
+    public function get_user_by_en(Request $request){
+        $users = User::where('employee_id', $request->employee_id)->first();
 
         return response()->json(['users' => $users]);
     }
@@ -391,7 +485,7 @@ class UserController extends Controller
 
         if(isset($request->with_email)){
             $validator = Validator::make($data, [
-                'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
+                // 'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
                 'username' => 'required|string|max:255|unique:users,username,'. $request->user_id,
                 'employee_id' => 'required|string|max:255|unique:users,employee_id,'. $request->user_id,
                 'email' => 'required|string|max:255|unique:users,email,'. $request->user_id,
@@ -401,7 +495,7 @@ class UserController extends Controller
         }
         else{
             $validator = Validator::make($data, [
-                'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
+                // 'name' => 'required|string|max:255|unique:users,name,'. $request->user_id,
                 'username' => 'required|string|max:255|unique:users,username,'. $request->user_id,
                 'employee_id' => 'required|string|max:255|unique:users,employee_id,'. $request->user_id,
                 'user_level_id' => 'required|string|max:255|',
@@ -417,7 +511,7 @@ class UserController extends Controller
 
             try{
                 $edit_array = array(
-                    'name' => $request->name,
+                    // 'name' => $request->name,
                     'username' => $request->username,
                     'email' => $request->email,
                     'employee_id' => $request->employee_id,
@@ -486,7 +580,7 @@ class UserController extends Controller
             }
             catch(\Exception $e) {
                 DB::rollback();
-                // throw $e;
+                throw $e;
                 return response()->json(['result' => "0"]);
             }
         }
@@ -494,7 +588,7 @@ class UserController extends Controller
 
     public function generate_user_qrcode(Request $request){
         // action: 1-Add, 2-Edit, 3-Generate Only
-        
+
         // $user = [];
         // if($request->action == "1" || $request->action == "3"){
         //     $user = User::where('employee_id', $request->qrcode)->get();
@@ -502,7 +596,7 @@ class UserController extends Controller
         // else if($request->action == "2"){
         //     $user = User::where('employee_id', $request->qrcode)
         //                 ->where('id', '!=', $request->user_id)
-        //                 ->get();   
+        //                 ->get();
         // }
 
         // $user = User::where('id', $request->user_id)->get();
@@ -600,10 +694,28 @@ class UserController extends Controller
             DB::commit();
 
             return response()->json(['result' => "1"]);
-        }    
+        }
         catch(\Exception $e) {
             DB::rollback();
             return response()->json(['result' => $e]);
         }
+    }
+
+    public function get_emp_details_by_id(Request $request){
+
+        $hris_data = DB::connection('mysql_systemone_hris')
+        ->select("SELECT * FROM tbl_EmployeeInfo WHERE EmpNo = '$request->empId'");
+
+        if(count($hris_data) > 0){
+            return response()->json(['empInfo' => $hris_data]);
+        }
+        else{
+            $subcon_data = DB::connection('mysql_systemone_subcon')
+            ->select("SELECT * FROM tbl_EmployeeInfo WHERE EmpNo = '$request->empId'");
+
+            return response()->json(['empInfo' => $subcon_data]);
+
+        }
+
     }
 }

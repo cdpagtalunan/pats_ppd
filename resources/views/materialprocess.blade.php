@@ -92,7 +92,7 @@
                                               <th>Device Code</th>
                                               <th>Device Name</th>
                                               <th>Process</th>
-                                              
+
                                           </tr>
                                       </thead>
                                   </table>
@@ -113,14 +113,14 @@
                               <button class="btn btn-sm btn-secondary float-right ml-3 py-0 px-1 " title="Minimize"
                                   id="btnMinimizeColMatProc" style="display: none;"><i
                                       class="fas fa-arrows-alt-h"></i></button>
-                              <h3 class="card-title">Material Process</h3>
+                              <h3 class="card-title">Process</h3>
                           </div>
 
                           <!-- Start Page Content -->
                           <div class="card-body">
                               <div style="float: right;">
                                   <button class="btn btn-dark" id="btnShowAddMatProcModal"><i
-                                          class="fa fa-initial-icon"></i> Add Material Process</button>
+                                          class="fa fa-initial-icon"></i> Add Process</button>
                               </div>
                               <div style="float: left;">
                                   <label>Device: <u id="uSelectedDeviceName">No Selected Device</u></label>
@@ -152,6 +152,7 @@
                                               <th>Process</th>
                                               <th>Material</th>
                                               <th>Machine</th>
+                                              <th>Station</th>
                                           </tr>
                                       </thead>
                                   </table>
@@ -359,7 +360,7 @@
       <div class="modal-dialog modal-lg">
           <div class="modal-content">
               <div class="modal-header">
-                  <h4 class="modal-title"><i class="fa fa-initial-icon"></i> Material Process</h4>
+                  <h4 class="modal-title"><i class="fa fa-initial-icon"></i> Process</h4>
                   <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                   </button>
@@ -392,19 +393,24 @@
 
                                   </select>
                               </div>
+                              <div class="form-group">
+                                <label>Machine</label>
+                                <select class="form-control select2bs4" id="selAddMatProcMachine" name="machine[]" multiple>
 
+                                </select>
+                              </div>
+                              <div class="form-group">
+                                <label>Station</label>
+                                <select class="form-control select2bs4" id="selAddMatStation" name="station[]" multiple>
+                                </select>
+                              </div>
                               <div class="form-group">
                                 <label>Material Name</label>
                                 <select class="form-control select2bs4" id="selAddMatProcMatName" name="material_name[]" multiple>
 
                                 </select>
                               </div>
-                              <div class="form-group">
-                                <label>Machine</label>
-                                <select class="form-control select2bs4" id="selAddMatProcMachine" name="machine">
-
-                                </select>
-                              </div>
+                             
                           </div>
                       </div>
                   </div>
@@ -695,21 +701,14 @@
   <script type="text/javascript">
     // Device
     let dataTableDevices;
-    
+
     // Material Process
     let dataTableMatProcess;
     let selectedDeviceId = 0;
     let selectedDeviceName = '';
 
     $(document).ready(function () {
-      //Initialize Select2 Elements
-      $('.select2').select2();
 
-      //Initialize Select2 Elements
-      $('.select2bs4').select2({
-        theme: 'bootstrap-5'
-      });
-      getMaterialProcessForInputs();
 
       // GetUserList($(".selUser"));
 
@@ -717,7 +716,7 @@
 
       // GetMaterialKittingList($(".selWBSMatKitItem"));
       // GetSakidashiList($(".selWBSSakIssuItem"));
-      // GetEmbossList($(".selWBSEmbossIssuItem")); 
+      // GetEmbossList($(".selWBSEmbossIssuItem"));
 
       $(document).on('click','#tblDevices tbody tr',function(e){
         $(this).closest('tbody').find('tr').removeClass('table-active');
@@ -728,6 +727,7 @@
         $("#uSelectedDeviceName").text(selectedDeviceName);
         $("#txtAddSubDeviceDeviceId").val(selectedDeviceId);
         $("#txtAddSubDeviceDeviceName").val(selectedDeviceName);
+        getMaterialProcessForInputs();
 
         dataTableMatProcess.draw();
       });
@@ -746,7 +746,7 @@
           // $("#selAddMatProcMatKitItem").prop('disabled', false);
           // $("#selAddMatProcSakIssuItem").prop('disabled', false);
           // alert('uncheck');
-          $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', true); 
+          $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', true);
           $("#chkAddMatProcReqOQCBeforeEmboss").prop('checked', false);
         }
       });
@@ -791,7 +791,7 @@
           },
           fixedHeader: true,
           "columns":[
-          
+
             { "data" : "action", orderable:false, searchable:false },
             { "data" : "label" },
             { "data" : "code" },
@@ -805,7 +805,7 @@
           // "scrollCollapse": true,
         });//end of dataTableDevices
 
-        // Add Device 
+        // Add Device
         $("#formAddDevice").submit(function(event){
           event.preventDefault();
           AddDevice();
@@ -861,7 +861,7 @@
           $("#txtChangeDeviceStatDeviceStat").val(deviceStat);
 
           if(deviceStat == 1){
-            $("#lblChangeDeviceStatLabel").text('Are you sure to activate?'); 
+            $("#lblChangeDeviceStatLabel").text('Are you sure to activate?');
             $("#h4ChangeDeviceTitle").html('<i class="fa fa-user"></i> Activate Device');
           }
           else{
@@ -893,14 +893,15 @@
                 param.status = $("#selFilterMatProcStat").val();
             }
           },
-          
+
           "columns":[
             { "data" : "action" },
             // { "data" : "mat_status" },
             { "data" : "step" },
             { "data" : "process_details.process_name"},
-            { "data" : "material_details"},
-            { "data" : "machine_code" },
+            { "data" : "mat_details"},
+            { "data" : "mach_details" },
+            { "data" : "stat_details" },
           ],
           "columnDefs": [
               {
@@ -929,7 +930,7 @@
         });
 
         $("#btnShowAddMatProcModal").click(function(){
-          
+
           toastr.options = {
             "closeButton": false,
             "debug": false,
@@ -947,7 +948,7 @@
             "showMethod": "fadeIn",
             "hideMethod": "fadeOut",
           };
-          
+
           if(selectedDeviceId != 0){
             $("#txtAddMatProcDevId").val(selectedDeviceId);
             $("#txtAddMatProcDeviceName").val(selectedDeviceName);
@@ -970,7 +971,7 @@
 
         $(document).on('click', '.aEditMatProc', function(){
           let matProcId = $(this).data('id');
-          
+
           if(selectedDeviceId != 0){
             $("#txtEditMatProcId").val(matProcId);
             // $("#modalEditMatProc").modal('show');
@@ -989,13 +990,14 @@
           }
         });
 
-        // Add Material Process 
+        // Add Material Process
         $("#formAddMatProc").submit(function(event){
           event.preventDefault();
+          // console.log($(this).serialize());
           AddMaterialProcess();
         });
 
-        // Edit Material Process 
+        // Edit Material Process
         $("#formEditMatProc").submit(function(event){
           event.preventDefault();
           EditMaterialProcess();
@@ -1015,7 +1017,7 @@
           $("#txtChangeMatProcStatMatProcStat").val(matProcStat);
 
           if(matProcStat == 0){
-            $("#lblChangeMatProcStatLabel").text('Are you sure to activate?'); 
+            $("#lblChangeMatProcStatLabel").text('Are you sure to activate?');
             $("#h4ChangeMatProcTitle").html('<i class="fa fa-default"></i> Activate Material Process');
           }
           else{
@@ -1053,7 +1055,7 @@
                       let trFailedResults = '';
 
                       for(let index = 0; index < JsonObject['failed_barcode'].length; index++){
-                        trFailedResults += '<tr><td colspan="2" style="color: red;"><center>' + JsonObject['failed_barcode'][index] + '</center></td></tr>';                 
+                        trFailedResults += '<tr><td colspan="2" style="color: red;"><center>' + JsonObject['failed_barcode'][index] + '</center></td></tr>';
                       }
 
                       $("#tblImportResult tbody").html(trFailedResults);
@@ -1068,62 +1070,62 @@
             });
         });
 
-        $(document).on('keypress',function(e){
-          if( ($("#mdl_qrcode_scanner").data('bs.modal') || {})._isShown ){
-            $('#txt_qrcode_scanner').focus();
-            if( e.keyCode == 13 ){
-              $('#mdl_qrcode_scanner').modal('hide');
-              // alert($("#txt_qrcode_scanner").val());
-              var formid = $("#mdl_qrcode_scanner").attr('data-formid');
+        // $(document).on('keypress',function(e){
+        //   if( ($("#mdl_qrcode_scanner").data('bs.modal') || {})._isShown ){
+        //     $('#txt_qrcode_scanner').focus();
+        //     if( e.keyCode == 13 ){
+        //       $('#mdl_qrcode_scanner').modal('hide');
+        //       // alert($("#txt_qrcode_scanner").val());
+        //       var formid = $("#mdl_qrcode_scanner").attr('data-formid');
 
-              if ( ( formid ).indexOf('#') > -1){
-                $( formid ).submit();
-              }
-              else{
-                switch( formid ){
-                  case 'fn_scan_machine_code':
-                    var val = $('#txt_qrcode_scanner').val();
-                    if ($('#selAddMatProcMachine').find("option[data-code='" + val + "']").length) {
-                      $('#selAddMatProcMachine option[data-code="'+val+'"]').prop('selected', true).trigger('change');
-                    }
-                    else{
-                      $('#selAddMatProcMachine').val("").trigger('change');
-                      toastr.warning('Invalid Machine!');
-                    }
-                    $('#txt_qrcode_scanner').val("");
-                  break;
+        //       if ( ( formid ).indexOf('#') > -1){
+        //         $( formid ).submit();
+        //       }
+        //       else{
+        //         switch( formid ){
+        //           case 'fn_scan_machine_code':
+        //             var val = $('#txt_qrcode_scanner').val();
+        //             if ($('#selAddMatProcMachine').find("option[data-code='" + val + "']").length) {
+        //               $('#selAddMatProcMachine option[data-code="'+val+'"]').prop('selected', true).trigger('change');
+        //             }
+        //             else{
+        //               $('#selAddMatProcMachine').val("").trigger('change');
+        //               toastr.warning('Invalid Machine!');
+        //             }
+        //             $('#txt_qrcode_scanner').val("");
+        //           break;
 
-                  case 'fn_scan_a_shift_user_code':
-                    var val = $('#txt_qrcode_scanner').val();
+        //           case 'fn_scan_a_shift_user_code':
+        //             var val = $('#txt_qrcode_scanner').val();
 
-                    if ($('#selAddMatProcAShiftManpower').find("option[data-code='" + val + "']").length) {
-                      $("#selAddMatProcAShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
-                    }
-                    else{
-                      toastr.warning('Invalid User!');
-                    }
-                    $('#txt_qrcode_scanner').val("0");
-                  break;
+        //             if ($('#selAddMatProcAShiftManpower').find("option[data-code='" + val + "']").length) {
+        //               $("#selAddMatProcAShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
+        //             }
+        //             else{
+        //               toastr.warning('Invalid User!');
+        //             }
+        //             $('#txt_qrcode_scanner').val("0");
+        //           break;
 
-                  case 'fn_scan_b_shift_user_code':
-                    var val = $('#txt_qrcode_scanner').val();
+        //           case 'fn_scan_b_shift_user_code':
+        //             var val = $('#txt_qrcode_scanner').val();
 
-                    if ($('#selAddMatProcBShiftManpower').find("option[data-code='" + val + "']").length) {
-                      $("#selAddMatProcBShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
-                    }
-                    else{
-                      toastr.warning('Invalid User!');
-                    }
-                    $('#txt_qrcode_scanner').val("0");
-                  break;
+        //             if ($('#selAddMatProcBShiftManpower').find("option[data-code='" + val + "']").length) {
+        //               $("#selAddMatProcBShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
+        //             }
+        //             else{
+        //               toastr.warning('Invalid User!');
+        //             }
+        //             $('#txt_qrcode_scanner').val("0");
+        //           break;
 
-                  default:
-                  break;
-                }
-              }            
-            }//key
-          }
-        });
+        //           default:
+        //           break;
+        //         }
+        //       }
+        //     }//key
+        //   }
+        // });
 
         $(document).on('click','#btnAddMatProcScanMachineCode',function(e){
           $('#txt_qrcode_scanner').val('');
@@ -1154,7 +1156,7 @@
           $("#btnMaximizeColMatProc").css({display: 'block'});
         });
 
-        
+
 
       });
   </script>

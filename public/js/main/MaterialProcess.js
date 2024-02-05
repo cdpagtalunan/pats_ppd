@@ -11,24 +11,30 @@ function getMaterialProcessForInputs(id){
             let materialOption;
             let machineOption;
             let processOption;
+            let stationOption;
             // $('#txtAddMatProcStep').val(response.count);
-
             for(let x = 0; x < response.material_details.length; x++){
-                materialOption += `<option value="${response.material_details[x]['id']}">${response.material_details[x]['MaterialType']}</option>`;
+                materialOption += `<option value="${response.material_details[x]['code']} || ${response.material_details[x]['name']}">${response.material_details[x]['name']} (${response.material_details[x]['code']})</option>`;
             }
 
-            machineOption += `<option value="" selected disabled>--Select Process--</option>`
+            // machineOption += `<option value="" selected disabled>--Select Process--</option>`
             for(let y = 0; y < response.machine_details.length; y++){
-                machineOption += `<option value="${response.machine_details[y]['machine_code_number']}">${response.machine_details[y]['machine_code_number']} (${response.machine_details[y]['machine_name']})</option>`;
+                machineOption += `<option value="${response.machine_details[y]['machine_code_number']} || ${response.machine_details[y]['machine_name']}">${response.machine_details[y]['machine_code_number']} (${response.machine_details[y]['machine_name']})</option>`;
             }
+
             processOption += `<option value="" selected disabled>--Select Process--</option>`
             for(let z = 0; z < response.process.length; z++){
                 processOption += `<option value="${response.process[z]['id']}">${response.process[z]['process_name']}</option>`;
+            }
+
+            for(let w = 0; w < response.stations.length; w++){
+                stationOption += `<option value="${response.stations[w]['id']}">${response.stations[w]['station_name']}</option>`;
             }
             
             $('#selAddMatProcMatName').html(materialOption);
             $('#selAddMatProcMachine').html(machineOption);
             $('#selAddMatProcProcess').html(processOption);
+            $('#selAddMatStation').html(stationOption);
 
             // $('#modalAddMatProc').modal('show');
         }
@@ -188,7 +194,6 @@ const GetMatProcByIdToEdit = (id, selectedDeviceName) => {
         },
         dataType: "json",
         success: function (response) {
-            console.log(response);
             $('#txtAddMatProcId').val(response['matDetails']['id'])
             $('#txtAddMatProcStep').val(response['matDetails']['step']);
             $('#txtAddMatProcStep').prop('readonly', false);
@@ -196,14 +201,28 @@ const GetMatProcByIdToEdit = (id, selectedDeviceName) => {
             $('#selAddMatProcMachine').val(response['matDetails']['machine_code']).trigger('change');
             $('#selAddMatProcProcess').val(response['matDetails']['process']).trigger('change');
 
+            let matArrayId = [];
             for(let x = 0; x < response['matDetails']['material_details'].length; x++){
-
-                let material = `<option selected value="${response['matDetails']['material_details'][x]['id']}">${response['matDetails']['material_details'][x]['material_type']}</option>`
-                $('select[name="material_name[]"]').append(material);
-                // let recipientToInfo = '<option selected value="' +emailRecipients[i]['email_recipient_id'] + '">' + emailRecipients[i]['email_recipient_info']['name'] + '</option>';
-                // $('select[name="email_recipient_attention[]"]', formAddCustomerClaim).append(recipientToInfo);  
+                matArrayId.push(`${response['matDetails']['material_details'][x]['material_code']} || ${response['matDetails']['material_details'][x]['material_type']}`);
             }
+            $('select[name="material_name[]"]').val(matArrayId).trigger('change')
 
+
+            
+            console.log(response['matDetails']['station_details']);
+            let stationArrayId = [];
+            for(let y = 0; y < response['matDetails']['station_details'].length; y++){
+                stationArrayId.push(`${response['matDetails']['station_details'][y]['station_id']}`);
+            }
+            $('select[name="station[]"]').val(stationArrayId).trigger('change')
+
+            console.log(response['matDetails']['machine_details']);
+            let machineArrayId = [];
+            for(let z = 0; z < response['matDetails']['machine_details'].length; z++){
+                // stationArrayId.push(`${response['matDetails']['station_details'][y]['station_id']}`);
+                machineArrayId.push(`${response['matDetails']['machine_details'][z]['machine_code']} || ${response['matDetails']['machine_details'][z]['machine_name']}`);
+            }
+            $('select[name="machine[]"]').val(machineArrayId).trigger('change')
         }
     });
 }

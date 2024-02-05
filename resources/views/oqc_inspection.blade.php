@@ -82,7 +82,7 @@
                                             <input type="text" class="form-control" id="txtDeviceName" placeholder="---------------" readonly>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-2">
                                         <div class="input-group input-group">
                                             <div class="input-group-prepend">
@@ -93,7 +93,7 @@
                                     </div>
                                 </div>
                                 <!-- End Search PO No. -->
-                                
+
                                 <div class="card-body"><!-- Start Page Content -->
                                     <div style="float: right;">
                                     </div>
@@ -189,7 +189,7 @@
                         $('#mdlScanQrCode').modal('hide');
 
                         // ======================= START DLABEL DATA TABLE =======================
-                        dataTableOQCInspection = $("#tblOqcInspection").DataTable({ 
+                        dataTableOQCInspection = $("#tblOqcInspection").DataTable({
                             "processing"    : false,
                             "serverSide"    : true,
                             "destroy"       : true,

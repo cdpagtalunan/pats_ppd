@@ -15,9 +15,10 @@ class CreateMaterialProcessMaterialsTable extends Migration
     {
         Schema::create('material_process_materials', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('mat_proc_id')->comment = "material_processes";
-            $table->string('material_id')->comment = "db_pps tbl_Warehouse";
-            $table->string('material_type')->comment = "db_pps tbl_Warehouse";
+            $table->unsignedBigInteger('mat_proc_id')->nullable()->comment = "material_processes";
+            $table->string('material_id')->nullable()->comment = "db_pps tbl_Warehouse";
+            $table->string('material_type');
+            $table->string('material_code');
             $table->string('status')->default(0);
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('last_updated_by')->nullable();

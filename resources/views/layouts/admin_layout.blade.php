@@ -21,17 +21,18 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>PATS | @yield('title')</title>
+  <title>PATS - PPD | @yield('title')</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="shortcut icon" type="image/png" href="{{ asset('public/images/favicon.ico') }}">
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js" ></script> --}}
+
   @include('shared.css_links.css_links')
 
 </head>
 <body class="hold-transition sidebar-mini ">
 <div class="wrapper">
-  <input type="hidden" id="globalSessionName" value="<?php echo Auth::user()->name; ?>">
   @include('shared.pages.header')
 
   @include('shared.pages.admin_nav')

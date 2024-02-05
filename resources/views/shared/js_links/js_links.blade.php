@@ -20,6 +20,14 @@
 
 <script src="{{ asset('public/template/sweetalert/js/sweetalert2.min.js') }}"></script>
 
+<!-- Datepicker -->
+<script src="{{ asset('public/js/bootstrap-datepicker.min.js') }}"></script>
+
+<!-- smartWizard -->
+<script src="{{ asset('public/js/jquery.smartWizard.min.js') }}"></script>
+
+<script src="{{ asset('public/template/moment/moment.min.js') }}"></script>
+
 <!-- Custom JS -->
 <script>
     toastr.options = {
@@ -42,9 +50,33 @@
     };
 </script>
 
-<script src="{{ asset('public/js/main/Common.js?n=3') }}"></script>
-<script src="{{ asset('public/js/main/User.js?n=3') }}"></script>
-<script src="{{ asset('public/js/main/UserLevel.js?n=1') }}"></script>
-<script src="{{ asset('public/js/main/Device.js?n=3') }}"></script>
-<script src="{{ asset('public/js/main/MaterialProcess.js?n=6') }}"></script>
-<script src="{{ asset('public/js/main/FirstStamping.js?n=5') }}"></script>
+<script src="{{ asset('public/js/main/Common.js?') }}" async></script>
+<script src="{{ asset('public/js/main/User.js?') }}" async></script>
+
+<script src="{{ asset('public/js/main/UserLevel.js?') }}" async></script>
+<script src="{{ asset('public/js/main/Device.js?') }}" async></script>
+<script src="{{ asset('public/js/main/MaterialProcess.js?') }}" async></script>
+<script src="{{ asset('public/js/main/OqcInspection.js?') }}" async></script>
+
+
+<script src="{{ asset('public/js/main/Stamping.js?') }}" async></script>
+
+<!-- PACKING LIST JS -->
+<script src="{{ asset('public/js/main/CustomerDetails.js?') }}" async></script>
+<script src="{{ asset('public/js/main/CarrierDetails.js?') }}" async></script>
+<script src="{{ asset('public/js/main/LoadingPortDetails.js?') }}" async></script>
+<script src="{{ asset('public/js/main/DestinationPortDetails.js?') }}" async></script>
+<script src="{{ asset('public/js/main/PackingList.js?') }}" async></script>
+<script src="{{ asset('public/js/main/ReceivingDetails.js?') }}" async></script>
+<script src="{{ asset('public/js/main/PackingDetails.js?') }}" async></script>
+
+{{-- IQC --}}
+<script src="{{ asset('public/js/main/IqcInspection.js?') }}"></script>
+
+{{-- MOLDING --}}
+<script src="@php echo asset("public/js/main/FirstMolding.js?".date("YmdHis")) @endphp"></script>
+<script src="@php echo asset("public/js/main/MoldingIpqcInspection.js?".date("YmdHis")) @endphp"></script>
+
+{{-- Second Molding --}}
+<script src="@php echo asset("public/js/main/SecondMolding.js?".date("YmdHis")) @endphp"></script>
+

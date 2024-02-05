@@ -34,8 +34,8 @@ function AddUser(){
                 $("#selAddUserLevel").select2('val', '0');
                 $("#txtAddUserEmail").removeAttr('disabled');
                 $("#txtAddUserOQCStamp").prop('disabled', 'disabled');
-                $("#chkAddUserSendEmail").removeAttr('disabled');
-                $("#chkAddUserSendEmail").prop('checked', 'checked');
+                // $("#chkAddUserSendEmail").removeAttr('disabled');
+                // $("#chkAddUserSendEmail").prop('checked', 'checked');
                 $("#chkAddUserWithEmail").prop('checked', 'checked');
 
             	dataTableUsers.draw();
@@ -153,13 +153,16 @@ function GetUserByIdToEdit(userId){
         },
         dataType: "json",
         beforeSend: function(){
-            
+
         },
         success: function(JsonObject){
             let user = JsonObject['user'];
             let qrcode = JsonObject['qrcode'];
             if(user.length > 0){
-                $("#txtEditUserName").val(user[0].name);
+                // $("#txtEditUserName").val(user[0].name);
+                $("#txtEditfirstName").val(user[0].firstname);
+                $("#txtEditMiddleName").val(user[0].middlename);
+                $("#txtEditLastName").val(user[0].lastname);
                 $("#txtEditUserUserName").val(user[0].username);
                 $("#txtEditUserEmail").val(user[0].email);
                 $("#txtEditUserCurrEmail").val(user[0].email);
@@ -180,7 +183,7 @@ function GetUserByIdToEdit(userId){
                     // $("#chkEditUserSendEmail").prop('checked', 'checked');
                     // $("#chkEditUserSendEmail").removeAttr('disabled');
                 }
-                
+
                 if(user[0].oqc_stamp == null){
                     $("#chkEditUserWithOQCStamp").removeAttr('checked');
                     $("#txtEditUserOQCStamp").prop('disabled', 'disabled');
@@ -400,7 +403,7 @@ function PrintBatchUser(selectedUsers){
                                     content += '<td>';
                                       content += '<label style="text-align: left; font-weight: bold; font-family: Arial; font-size: 18px;">' + JsonObject['users'][index - 1].employee_id + '</label>';
                                       content += '<br>';
-                                      content += '<label style="text-align: left; font-family: Arial Narrow; font-size: 18px;">' + JsonObject['users'][index - 1].name + '</label>';
+                                      content += '<label style="text-align: left; font-family: Arial Narrow; font-size: 18px;">' + JsonObject['users'][index - 1].firstname +' '+ JsonObject['users'][index - 1].lastname + '</label>';
                                     content += '</td>';
                                   content += '</tr>';
                                 content += '</table>';
@@ -436,77 +439,6 @@ function PrintBatchUser(selectedUsers){
             // $("#iBtnEditUserIcon").removeClass('fa fa-spinner fa-pulse');
             // $("#btnEditUser").removeAttr('disabled');
             // $("#iBtnEditUserIcon").addClass('fa fa-check');
-        }
-    });
-}
-
-// Sign In
-function SignIn(){
-    toastr.options = {
-      "closeButton": false,
-      "debug": false,
-      "newestOnTop": true,
-      "progressBar": true,
-      "positionClass": "toast-top-right",
-      "preventDuplicates": false,
-      "onclick": null,
-      "showDuration": "300",
-      "hideDuration": "3000",
-      "timeOut": "3000",
-      "extendedTimeOut": "3000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut",
-    };
-
-    $.ajax({
-        url: "sign_in",
-        method: "post",
-        data: $('#formSignIn').serialize(),
-        dataType: "json",
-        beforeSend: function(){
-            $("#iBtnSignInIcon").addClass('fa fa-spinner fa-pulse');
-            $("#btnSignIn").prop('disabled', 'disabled');
-        },
-        success: function(JsonObject){
-            if(JsonObject['result'] == 1){
-                window.location = "dashboard";
-            }
-            else if(JsonObject['result'] == 2){
-                window.location = "change_pass_view";
-            }
-            else{
-                toastr.error('Login Failed!');
-
-                if(JsonObject['error']['username'] === undefined){
-                    $("#txtSignInUsername").removeClass('is-invalid');
-                    $("#txtSignInUsername").attr('title', '');
-                }
-                else{
-                    $("#txtSignInUsername").addClass('is-invalid');
-                    $("#txtSignInUsername").attr('title', JsonObject['error']['username']);
-                }
-
-                if(JsonObject['error']['password'] === undefined){
-                    $("#txtSignInPass").removeClass('is-invalid');
-                    $("#txtSignInPass").attr('title', '');
-                }
-                else{
-                    $("#txtSignInPass").addClass('is-invalid');
-                    $("#txtSignInPass").attr('title', JsonObject['error']['password']);
-                }
-            }
-
-            $("#iBtnSignInIcon").removeClass('fa fa-spinner fa-pulse');
-            $("#btnSignIn").removeAttr('disabled');
-            $("#iBtnSignInIcon").addClass('fa fa-check');
-        },
-        error: function(data, xhr, status){
-            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-            $("#iBtnSignInIcon").removeClass('fa fa-spinner fa-pulse');
-            $("#btnSignIn").removeAttr('disabled');
-            $("#iBtnSignInIcon").addClass('fa fa-check');
         }
     });
 }
@@ -860,7 +792,7 @@ function CountUserByStatForDashboard(status){
         },
         dataType: "json",
         beforeSend: function(){
-            
+
         },
         success: function(JsonObject){
             if(JsonObject['user'].length > 0){
@@ -907,7 +839,7 @@ function GenerateUserQRCode(qrcode, action, userId){
       },
       dataType: "json",
       beforeSend: function(){
-          
+
       },
       success: function(JsonObject){
         if(action == 1){
@@ -1034,6 +966,31 @@ function GetUserList(cboElement){
             result = '<option value=""> -- Reload Again -- </option>';
             cboElement.html(result);
             console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}
+
+const getEmpIdData = (id) => {
+    $.ajax({
+        type: "get",
+        url: "get_emp_details_by_id",
+        data: {
+            "empId" : id
+        },
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            let middlename = "";
+            $('#txtAddfirstName').val(response['empInfo'][0]['FirstName']);
+            $('#txtAddMiddleName').val(response['empInfo'][0]['MiddleName']);
+            $('#txtAddLastName').val(response['empInfo'][0]['LastName']);
+
+		    // $username = strtolower(substr($fname, 0, 1).substr($mname, 0,1).$lname);
+            if(/^[a-zA-Z0-9]*$/.test(response['empInfo'][0]['MiddleName'].substring(0,1)) == true) {
+                middlename = response['empInfo'][0]['MiddleName'].substring(0,1);
+            }
+            let username = response['empInfo'][0]['FirstName'].substring(0,1)+middlename+response['empInfo'][0]['LastName'];
+            $('#txtAddUserUserName').val(username.toLowerCase())
         }
     });
 }
