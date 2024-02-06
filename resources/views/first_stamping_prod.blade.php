@@ -232,11 +232,20 @@
                                                 <input type="text" class="form-control form-control-sm" name="drawing_rev" id="txtDrawingRev" readonly>
                                             </div>
                                             <div class="form-group">
+                                                
                                                 <label class="form-label">Operator Name:</label>
-                                                {{-- <input type="hidden" class="form-control form-control-sm" name="opt_id" id="txtOptID" readonly value="@php echo Auth::user()->id; @endphp"> --}}
                                                 {{-- <input type="text" class="form-control form-control-sm select2bs4" name="opt_name[]" id="txtOptName" readonly> --}}
-                                                <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple>
+                                                {{-- <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple> --}}
+                                                    {{-- <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly>
+                                                    <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                                 </select>
+                                            </div> --}}
+                                            {{-- <div class="input-group"> --}}
+                                                <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" disabled multiple>
+                                                </select>
+                                                <button class="btn btn-primary btn-sm w-100" type="button" id="btnScanOperator" title="Scan Operator Name">
+                                                    <i class="fa-solid fa-qrcode"></i>
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shift:</label>
@@ -344,7 +353,7 @@
                                             <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
                                                 <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly>
-                                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2" title="Scan Material Lot #"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
                                             <input type="hidden" class="form-control form-control-sm" name="material_no_qty" id="txtMaterialLotQty">
 
@@ -418,7 +427,7 @@
             </div><!-- /.modal-dialog -->
         </div>
 
-
+        {{-- MODAL FOR SCANNING MATERIAL LOT # --}}
         <div class="modal fade" id="modalScanQr" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-sm modal-dialog-top" role="document">
                 <div class="modal-content">
@@ -433,6 +442,7 @@
             </div>
         </div>
 
+        {{-- MODAL FOR NG HISTORY --}}
         <div class="modal fade" id="modalHistory" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -464,6 +474,21 @@
             </div>
         </div>
 
+        {{-- MODAL FOR SCANNING MATERIAL LOT # --}}
+        <div class="modal fade" id="modalScanSelOp" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        {{-- <input type="text" class="w-100 hidden_scanner_input" id="txtScanOpId" name="" autocomplete="off"> --}}
+                        <input type="text" class="w-100" id="txtScanOpId" name="" autocomplete="off">
+                        <div class="text-center text-secondary">Please scan operator ID.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     @endsection
 
@@ -914,10 +939,29 @@
                             scanningFunction = "editProdData";
                         }
                     });
-
                 });
 
+                // let operatorArray = [];
+                // $('#btnScanOperator').on('click', function(){
+                //     $('#modalScanSelOp').modal('show');
+                //     operatorArray = [];
+                //     $('#selOperator').val(operatorArray).trigger('change');
 
+                // });
+
+                // $('#modalScanSelOp').on('shown.bs.modal', function () {
+                //     $('#txtScanOpId').focus();
+                // });
+
+                // $('#txtScanOpId').on('keyup', function(e){
+                //     if(e.keyCode == 13){
+                //         operatorArray.push($(this).val());
+                //         console.log(operatorArray);
+                //         $('#selOperator').val(operatorArray).trigger('change');
+
+                //         $(this).val('');
+                //     }
+                // });
             });
 
             $(document).on('keyup','#txtScanUserId', function(e){

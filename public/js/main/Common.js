@@ -107,13 +107,12 @@ function resetFormProdValues() {
     $('#txtProdDate').prop('readonly', false);
     $('#txtNGCount').prop('readonly', true);
 
-    $('#selOperator').prop('disabled', false);
+    $('#selOperator').prop('disabled', true);
     $('#txtOptShift').prop('readonly', true);
     $('#txtInptCoilWeight').prop('readonly', false);
     $('#txtSetupPin').prop('readonly', false);
     $('#txtAdjPin').prop('readonly', false);
     $('#txtQcSamp').prop('readonly', false);
-    $('#selOperator').prop('readonly', false);
     $('#txtTargetOutput').prop('readonly', false);
     $('#prodLotNoExt1').prop('readonly', false);
     $('#prodLotNoExt2').prop('readonly', false);
@@ -122,6 +121,7 @@ function resetFormProdValues() {
     $('#radioCutPointWithout').prop('checked', true);
 
     $('#button-addon2').prop('disabled', false);
+    $('#btnScanOperator').prop('disabled', false);
 
     // $('#radioIQC').attr('checked', false);
     // $('#radioMassProd').attr('checked', false);
@@ -143,7 +143,7 @@ function resetFormProdSecondValues(){
     $('#txtTtlMachOutput').prop('readonly', false);
     $('#txtProdDate').prop('readonly', false);
     $('#txtNGCount').prop('readonly', true);
-    $('#selOperator').prop('disabled', false);
+    $('#selOperator').prop('disabled', true);
     $('#txtOptShift').prop('readonly', true);
     $('#txtSetupPin').prop('readonly', false);
     $('#txtAdjPin').prop('readonly', false);
@@ -153,6 +153,7 @@ function resetFormProdSecondValues(){
     $('#txtInptPins').prop('readonly', false);
     $('#txtActQty').prop('readonly', false);
     $('#button-addon2').prop('disabled', false);
+    $('#btnScanOperator').prop('disabled', false);
 
 }
 $("#modalProdSecondStamp").on('hidden.bs.modal', function () {
