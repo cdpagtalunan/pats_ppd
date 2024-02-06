@@ -89,6 +89,9 @@ class ReceivingDetailsController extends Controller
                 $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$receiving_details_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
             }else if($receiving_details_data->status == 1){
                 $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
+            }else{
+                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
+
             }
             $result .= "</center>";
             return $result;

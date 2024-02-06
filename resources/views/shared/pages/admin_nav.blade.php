@@ -144,7 +144,7 @@
                             </ul>
                         </li>
                     @endif
-                    @if (in_array(Auth::user()->position, [0,1,4,11]))
+                    @if (in_array(Auth::user()->position, [0,1,4,9,11]))
                         <li class="nav-header mt-3"><strong>PRODUCTION</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">

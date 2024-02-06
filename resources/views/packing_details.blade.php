@@ -734,7 +734,6 @@
                                     }
                                     // console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
                                     // removeClassDNoneButton.removeAttr('style')
-                                    $('#modalValidateFinalPackingDetails').modal('hide');
                                 }
 
                                 let scannedRow = dtViewFinalPackingDetailsForValidation.$('tr.checked-ok');
@@ -743,6 +742,8 @@
                                     console.log('selectedCount', scannedRow.length);
                                     if (scannedRow.length == rowCount) {
                                         $('#btnValidatePackingDetails').removeAttr('disabled');
+                                        $('#modalValidateFinalPackingDetails').modal('hide');
+
                                     }
                                 // Otherwise, if no rows are selected
                                 }

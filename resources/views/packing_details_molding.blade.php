@@ -368,7 +368,7 @@
                             <div class="text-center text-secondary"><span id="modalScanEmpIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                         </div>
                     </form>
-    
+
                 </div>
             <!-- /.modal-content -->
             </div>
@@ -394,7 +394,7 @@
                     $('#txtScanPO').focus();
                     $('#txtScanPO').on('keyup', function(e){
                         if(e.keyCode == 13){
-                           
+
                             scannedPO = $('#txtScanPO').val();
                             ParseScannedPo = JSON.parse(scannedPO);
                             // console.log(ParseScannedPo['cat']);
@@ -407,7 +407,7 @@
                                 $('#modalScanPO').modal('hide');
                                 dtPackingDetailsFE.draw()
                             }else{
-                                
+
                                 toastr.error('Invalid Sticker');
                             }
 
@@ -553,14 +553,13 @@
                                     // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
 
                                     let powerOff = $(this).find('td:nth-child(1)').children();
-                                
+
                                     if(scannedItem['sublot_counter'].substring(0,1) == second_stamping_sub_lot){
                                         $(tr).addClass('checked-ok');
                                         let id = $(this).attr('id');
                                         if(!idsOfSubLotDetails.includes(id)){
                                             idsOfSubLotDetails.push(id);
                                         }
-                                        $('#modalVerifyData').modal('hide');
                                     }
 
                                     let scannedRow = dtViewSublotDetails.$('tr.checked-ok');
@@ -569,6 +568,8 @@
                                         // console.log('selectedCount', scannedRow.length);
                                         if (scannedRow.length == rowCount) {
                                             $('#btnSaveSubLotDetails').removeAttr('disabled');
+                                            $('#modalVerifyData').modal('hide');
+
                                         }
                                     // Otherwise, if no rows are selected
                                     }
@@ -579,7 +580,6 @@
                             }else{
                                 toastr.error('Invalid Sticker');
                             }
-                            
                         }
                         catch (e){
                             toastr.error('Invalid Sticker');
@@ -593,7 +593,7 @@
                     $('#modalScanEmpId').modal('show');
                     // alert('hehe');
                 });
-                
+
                 $('#modalScanEmpId').on('shown.bs.modal', function () {
                     $('#txtScanPackerId').focus();
                 });
@@ -611,7 +611,7 @@
                     }
                     if(e.keyCode == 13){
                         if(moldingId != null){
-                            validateUser($(this).val().toUpperCase(), [2,5], function(result){    
+                            validateUser($(this).val().toUpperCase(), [2,5], function(result){
                                 if(result == true){
                                     let data2 = $('#formOqcDetails').serialize()+ '&' + $.param(scannedEmpId);
                                     // console.log(data2);
@@ -636,11 +636,11 @@
                                 }
                                 else{ // Error Handler
                                     toastr.error('User not authorize!');
-                                } 
+                                }
 
                             });
                         }else{
-                            validateUser($(this).val().toUpperCase(), [4,9], function(result){    
+                            validateUser($(this).val().toUpperCase(), [4,9], function(result){
                             if(result == true){
                                     e.preventDefault();
                                     let data1 = $('#formOqcDetails').serialize() + '&' + $.param(scannedEmpId);
@@ -664,69 +664,11 @@
                                 }
                                 else{ // Error Handler
                                     toastr.error('User not authorize!');
-                                } 
-
-                            });
-<<<<<<< HEAD
-                            $(this).val('');
-                    }
-                });
-
-                /* Receiving */
-                $(document).on('click', '.btnQCScanMoldingID', function(e){
-                    e.preventDefault();
-                    PackingMoldingId =  $(this).attr('data-id');
-                    // console.log(`button click id`, PackingMoldingId)
-                    $('#txtPackingMoldingDetailsId').val(PackingMoldingId);
-                    $('#modalScanQCId').modal('show');
-
-                });
-
-                $('#modalScanQCId').on('shown.bs.modal', function () {
-                    $('#txtScanQcId').focus();
-                });
-
-                $('#formScanQCId').submit(function(e){
-                    e.preventDefault();
-                })
-
-                $('#txtScanQcId').on('keyup', function(e){
-                    let toScanQcId =  $('#txtScanQcId').val();
-                    let scannedQcId = {
-                    'qc_scan_id' : toScanQcId
-                    }
-                        if(e.keyCode == 13){
-                            validateUser($(this).val().toUpperCase(), [2,5], function(result){    
-                            if(result == true){
-                                    let data1 = $('#formScanQCId').serialize()+ '&' + $.param(scannedQcId);
-                                    $.ajax({
-                                        type: "post",
-                                        url: "update_checked_by",
-                                        data: data1,
-                                        dataType: "json",
-                                        success: function (response) {
-                                            if(response['validation'] == 1){
-                                                toastr.error('Saving data failed!');
-
-                                            }else if(response['result'] == 0){
-                                                toastr.success('Validation Succesful!');
-                                                $("#formOqcDetails")[0].reset();
-                                                $('#modalScanQCId').modal('hide');
-                                                dtPackingDetailsFE.draw();
-                                            }
-                                        }
-                                    });
                                 }
-                                else{ // Error Handler
-                                    toastr.error('User not authorize!');
-                                } 
 
                             });
-                            $(this).val('');
-=======
->>>>>>> migz_v1
                         }
-                       
+
                         $(this).val('');
                     }
                 });
@@ -737,7 +679,7 @@
                 //     'qc_scan_id' : toScanQcId
                 //     }
                 //         if(e.keyCode == 13){
-                           
+
                 //             $(this).val('');
                 //         }
                 // });
