@@ -107,7 +107,7 @@ Route::view('/ipqc_inspection_2nd_molding','ipqc_inspection_2nd_molding')->name(
 Route::view('/ipqc_inspection_assembly','ipqc_inspection_assembly')->name('ipqc_inspection_assembly');
 
 /* CN ASSEMBLY */
-Route::view('/cn_assembly','cn_assembly')->name('cn_assembly');
+Route::view('/assembly','assembly')->name('assembly');
 
 /* * PPTS VIEW */
 Route::view('/ppts_oqc_inspection','ppts_oqc_inspection')->name('ppts_oqc_inspection');
@@ -254,7 +254,7 @@ Route::controller(IpqcSecondMoldingController::class)->group(function () {
 Route::controller(IpqcAssemblyController::class)->group(function () {
     // ASSEMBLY
     Route::get('/view_assembly_ipqc_data', 'view_assembly_ipqc_data')->name('view_assembly_ipqc_data');
-    Route::get('/get_series_from_assembly', 'get_series_from_assembly')->name('get_series_from_assembly');
+    Route::get('/get_devices_from_assembly', 'get_devices_from_assembly')->name('get_devices_from_assembly');
     Route::get('/get_assembly_data', 'get_assembly_data')->name('get_assembly_data');
     Route::post('/add_assembly_ipqc_inspection', 'add_assembly_ipqc_inspection')->name('add_assembly_ipqc_inspection');
     Route::post('/update_assembly_ipqc_inspection_status', 'update_assembly_ipqc_inspection_status')->name('update_assembly_ipqc_inspection_status');
@@ -378,8 +378,6 @@ Route::controller(PackingDetailsMoldingController::class)->group(function () {
     Route::post('/updated_counted_by', 'updatePackingDetailsMolding')->name('updated_counted_by');
     Route::post('/update_checked_by', 'updateCheckByDetailsMolding')->name('update_checked_by');
     Route::get('/view_sublot_details', 'viewSublotDetails')->name('view_sublot_details');
-
-
 });
 
 

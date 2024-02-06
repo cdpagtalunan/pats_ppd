@@ -20,9 +20,9 @@ class ReceivingDetailsController extends Controller
         // ->groupBy('control_no')
         // ->get();
         $sanno_receiving_data = DB::connection('mysql')
-        ->select("SELECT 
-        `control_no`, 
-        any_value(`po_no`) AS po, 
+        ->select("SELECT
+        `control_no`,
+        any_value(`po_no`) AS po,
         MIN(`status`) as stat,
         MIN(`printing_status`) as print_stat
         FROM `receiving_details`
@@ -39,7 +39,7 @@ class ReceivingDetailsController extends Controller
             if($sanno_receiving_data->stat != 2){
                 $result .= "<button class='btn btn-primary btn-sm btnViewReceivingDetails' data-ctrl-no='$sanno_receiving_data->control_no'><i class='fa-solid fa-edit'></i></button>&nbsp";
             }else{
-                $result .= "<button class='btn btn-primary btn-sm btnViewReceivingDetails' data-ctrl-no='$sanno_receiving_data->control_no'><i class='fa-solid fa-eye'></i></button>&nbsp";  
+                $result .= "<button class='btn btn-primary btn-sm btnViewReceivingDetails' data-ctrl-no='$sanno_receiving_data->control_no'><i class='fa-solid fa-eye'></i></button>&nbsp";
             }
             $result .= "</center>";
             return $result;
@@ -80,7 +80,7 @@ class ReceivingDetailsController extends Controller
         where('status', '!=', 3)
         ->where('control_no', $request->receving_details_ctrl_no)
         ->get();
-        
+
         return DataTables::of($receiving_details_data)
         ->addColumn('action', function($receiving_details_data){
             $result = "";
@@ -91,7 +91,6 @@ class ReceivingDetailsController extends Controller
                 $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
             }else{
                 $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
-
             }
             $result .= "</center>";
             return $result;
@@ -217,7 +216,7 @@ class ReceivingDetailsController extends Controller
 
     public function printReceivingQrCode(Request $request){
         $receiving_data = ReceivingDetails::where('id', $request->id)
-        ->first(['po_no AS po_no','supplier_pmi_lot_no AS new_lot_no']);
+        ->first(['po_no AS po_no','supplier_pmi_lot_no AS new_lot_no', 'supplier_quantity AS qty']);
 
 
         $qrcode = QrCode::format('png')
@@ -229,7 +228,8 @@ class ReceivingDetailsController extends Controller
         $data[] = array(
             'img' => $QrCode,
             'text' =>  "<strong>$receiving_data->po_no</strong><br>
-            <strong>$receiving_data->new_lot_no</strong><br>"
+            <strong>$receiving_data->new_lot_no</strong><br>
+            <strong>$receiving_data->qty</strong><br>"
         );
 
         $label = "
@@ -242,6 +242,11 @@ class ReceivingDetailsController extends Controller
                 <tr>
                     <td>Lot #:</td>
                     <td>$receiving_data->new_lot_no</td>
+                </tr>
+
+                <tr>
+                    <td>Qty:</td>
+                    <td>$receiving_data->qty</td>
                 </tr>
             </table>
         ";

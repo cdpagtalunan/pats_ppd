@@ -46,6 +46,7 @@
 
     const editFirstMolding = function (){
         let first_molding_id = $(this).attr('first-molding-id');
+        let view_data = $(this).attr('view-data');
         $.ajax({
             type: "GET",
             url: "get_molding_details",
@@ -71,10 +72,20 @@
                             </td>
                             <td>
                                 <div class="input-group input-group-sm mb-3">
+                                    <input value="${first_molding_material_list[i].virgin_qty}" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_qty[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend">
                                             <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
                                         </div>
                                         <input value="${first_molding_material_list[i].recycle_material}" type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                    <input value="${first_molding_material_list[i].recycle_qty}" type="number" class="form-control form-control-sm" id="recycle_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_qty[]" required>
                                 </div>
                             </td>
                             <td>
@@ -104,22 +115,45 @@
                 formModal.firstMolding.find('#item_code').val(data.item_code);
                 formModal.firstMolding.find('#total_machine_output').val(data.total_machine_output);
                 formModal.firstMolding.find('#item_name').val(data.item_name);
-                formModal.firstMolding.find('#shipment_output').val(data.shipment_output);
                 formModal.firstMolding.find('#po_qty').val(data.po_qty);
-                formModal.firstMolding.find('#material_yield').val(data.material_yield);
                 formModal.firstMolding.find('#required_output').val(data.required_output);
                 formModal.firstMolding.find('#created_at').val(data.created_at);
                 formModal.firstMolding.find('#remarks').val(data.remarks);
-                if(data.status === 1){
+                console.log(data.status)
+                console.log(view_data);
+
+                if(data.status === 0 || data.status === 3){
                     $('#btnFirstMoldingStation').prop('disabled',true);
                     $('#btnSubmitFirstMoldingStation').prop('disabled',true);
-                    $('#btnSubmitFirstMoldingStation').prop('disabled',true);
                     $('#btnRuncardDetails').addClass('d-none',true);
+                    $('#btnAddFirstMoldingMaterial').addClass('d-none',true);
                 }else{
                     $('#btnFirstMoldingStation').prop('disabled',false);
                     $('#btnSubmitFirstMoldingStation').prop('disabled',false);
                     $('#btnRuncardDetails').removeClass('d-none',true);
+                    $('#btnAddFirstMoldingMaterial').removeClass('d-none',true);
                 }
+
+                if(data.status === 1 || data.status === 3){
+                    formModal.firstMolding.find('#shipment_output').val(data.shipment_output);
+                    formModal.firstMolding.find('#material_yield').val(data.material_yield);
+                }else{
+                    formModal.firstMolding.find('#shipment_output').val(0);
+                    formModal.firstMolding.find('#material_yield').val('0%');
+                }
+
+                if(view_data != undefined){
+                    $('#btnFirstMoldingStation').prop('disabled',true);
+                    $('#btnSubmitFirstMoldingStation').prop('disabled',true);
+                    $('#btnRuncardDetails').addClass('d-none',true);
+                    $('#btnAddFirstMoldingMaterial').addClass('d-none',true);
+                }else{
+                    $('#btnFirstMoldingStation').prop('disabled',false);
+                    $('#btnSubmitFirstMoldingStation').prop('disabled',false);
+                    $('#btnRuncardDetails').removeClass('d-none',true);
+                    $('#btnAddFirstMoldingMaterial').removeClass('d-none',true);
+                }
+
                 dt.firstMoldingStation.draw();
                 $('#modalFirstMolding').modal('show');
 

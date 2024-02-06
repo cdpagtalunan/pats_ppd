@@ -788,7 +788,6 @@
                         // return;
                         validateUser($(this).val().toUpperCase(), validateUser, function(result){
                             if(result == true){
-                                // toastr.success('User is authorize!');
                                 e.preventDefault();
                                 let data1 = $('#formFinalPackingScanOperatorId').serialize() + '&' + $.param(dataScanned);
                                 $.ajax({
@@ -797,7 +796,6 @@
                                     data: data1,
                                     dataType: "json",
                                     success: function (response) {
-                                        // console.log('response ng kalawakan', response);
                                         if(response['validation'] == 1){
                                             toastr.error('Saving data failed!');
 
@@ -818,7 +816,6 @@
                         $(this).val('');
                     }
                 });
-
 
                 //printing of sticker
 

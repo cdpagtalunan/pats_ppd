@@ -15,4 +15,9 @@ yarn-error.log
 /.idea
 /.vscode
 composer.lock
+<<<<<<< HEAD
 /database/migrations
+=======
+database/migrations
+
+>>>>>>> migz_v1

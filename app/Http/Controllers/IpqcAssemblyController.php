@@ -23,13 +23,13 @@ use App\Models\AssemblyRuncardStationsMods;
 class IpqcAssemblyController extends Controller
 {
     // NEW CODE CLARK 02042024
-    public function get_device_from_first_molding(Request $request){
-        $first_molding_devices = AssemblyRuncard::select('first_molding_device_id')->with('firstMoldingDevice')
+    public function get_devices_from_assembly(Request $request){
+        $assembly_devices = AssemblyRuncard::select('device_name')->with('device_details')
                                         ->whereNull('deleted_at')
                                         ->distinct()
                                         ->get();
 
-        return response()->json(['first_molding_devices' => $first_molding_devices]);
+        return response()->json(['assembly_devices' => $assembly_devices]);
     }
 
     public function get_first_molding_data(Request $request){

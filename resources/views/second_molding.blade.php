@@ -896,6 +896,7 @@
                                 $('#textContactLotNumberSecond', $('#formSecondMolding')).val(responseData[0].contact_name_lot_number_second);
                                 $('#textMELotNumberOne', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_one);
                                 $('#textMELotNumberSecond', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_second);
+                                $("#textSecondMoldingId", $('#formSecondMolding')).val();
                                 dataTablesSecondMoldingStation.draw();
                             }
                         }
@@ -932,6 +933,7 @@
                 dataTablesSecondMoldingStation = $("#tableStation").DataTable({
                     "processing" : true,
                     "serverSide" : true,
+                    "length" : 10,
                     "ajax" : {
                         url: "view_second_molding_station",
                         data: function (param){

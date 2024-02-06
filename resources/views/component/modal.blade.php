@@ -47,7 +47,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Invoice No.</span>
                                 </div>
-                                    {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
+                                    {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="1" value="0"> --}}
                                 <input type="text" class="form-control form-control-sm" id="invoice_no" name="invoice_no" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
@@ -97,7 +97,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty"  min="0" step="0.01" readonly>
+                                <input type="number" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty"  min="1" step="0.01" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -165,21 +165,21 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">AQL</span>
                                 </div>
-                                    {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
+                                    {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="1" value="0"> --}}
                                 <select class="form-select form-control-sm" id="aql" name="aql"></select>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Accept</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="1" step="0.01">
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Reject</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="1" step="0.01">
                             </div>
                         </div>
                     </div>
@@ -251,14 +251,14 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Target LAR</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="target_lar" name="target_lar" min="0" min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="target_lar" name="target_lar" min="1" min="1" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Target DPPM</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="target_dppm" name="target_dppm" min="0" min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="target_dppm" name="target_dppm" min="1" min="1" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
@@ -274,26 +274,26 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Inspected</span>
                                 </div>
-                                    {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
-                                <input type="number" class="form-control form-control-sm" id="lot_inspected" name="lot_inspected" min="0" step="0.01" readonly>
+                                    {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="1" value="0"> --}}
+                                <input type="number" class="form-control form-control-sm" id="lot_inspected" name="lot_inspected" min="1" step="0.01" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Accepted</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="0" max="1" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="1" max="1" step="0.01">
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Sampling Size</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="sampling_size" name="sampling_size" min="0" step="0.01">
+                                <input type="number" class="form-control form-control-sm" id="sampling_size" name="sampling_size" min="1" step="0.01">
                             </div>
                             <div class="input-group input-group-sm mb-3 d-none divMod">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">No. of Defectives</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="no_of_defects" name="no_of_defects" min="0" step="0.01" placeholder="auto-compute" readonly>
+                                <input type="number" class="form-control form-control-sm" id="no_of_defects" name="no_of_defects" min="1" step="0.01" placeholder="auto-compute" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -367,7 +367,7 @@
             <form id="formFirstMolding" autocomplete="off">
                 @csrf
                 <div class="modal-body">
-                    
+
 
                     <div class="row">
                         <div class="col-sm-6 border px-4">
@@ -390,7 +390,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">First Molding Id </span>
                                 </div>
-                                <input class="form-control form-control-sm" type="number" id="first_molding_id" name="first_molding_id" min="0" step="0.01">
+                                <input class="form-control form-control-sm" type="text" id="first_molding_id" name="first_molding_id">
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
@@ -426,7 +426,7 @@
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100" id="basic-addon1">Drawing No</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="drawing_no" name="drawing_no" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="drawing_no" name="drawing_no">
                                     </div>
                                 </div>
                             </div>
@@ -447,7 +447,7 @@
                                         <div class="input-group-prepend w-30">
                                             <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no">
                                     </div>
                                 </div>
                             </div>
@@ -483,7 +483,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Adjustment Shots</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="adjustment_shots" name="adjustment_shots" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="adjustment_shots" name="adjustment_shots" min="1" step="0.01">
                                     </div>
                                 </div>
                             </div>
@@ -493,7 +493,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="qc_samples" name="qc_samples" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="qc_samples" name="qc_samples" min="1" step="0.01">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -501,7 +501,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Prod Samples</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="prod_samples" name="prod_samples" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="prod_samples" name="prod_samples" min="1" step="0.01">
                                     </div>
                                 </div>
                             </div>
@@ -511,7 +511,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="ng_count" name="ng_count" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="ng_count" name="ng_count" min="1" step="0.01">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -519,7 +519,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Total Machine Output</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="total_machine_output" name="total_machine_output" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm" id="total_machine_output" name="total_machine_output" min="1" step="0.01">
                                     </div>
                                 </div>
                             </div>
@@ -529,7 +529,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="shipment_output" name="shipment_output" min="0" step="0.01" readonly>
+                                        <input type="number" class="form-control form-control-sm" id="shipment_output" name="shipment_output" min="1" step="0.01" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -555,7 +555,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Required Output</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="required_output" name="required_output" min="0" step="0.01" readonly>
+                                        <input type="number" class="form-control form-control-sm" id="required_output" name="required_output" min="1" step="0.01" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -601,7 +601,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Target For S/O</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="po_target" name="po_target" min="0" step="0.01" readonly>
+                                        <input type="number" class="form-control form-control-sm" id="po_target" name="po_target" min="1" step="0.01" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -609,7 +609,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Variance</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="po_balance" name="po_balance" min="0" step="0.01" readonly>
+                                        <input type="number" class="form-control form-control-sm" id="po_balance" name="po_balance" min="1" step="0.01" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -641,8 +641,10 @@
                                         <table class="table table-sm" id="tblFirstMoldingMaterial">
                                             <thead>
                                                 <tr>
-                                                    <th style="width: 45%;">Virgin Material</th>
-                                                    <th style="width: 45%;">Recycled Material</th>
+                                                    <th style="width: 35%;">Virgin Material</th>
+                                                    <th style="width: 10%;">Virgin Qty</th>
+                                                    <th style="width: 35%;">Recycled Material</th>
+                                                    <th style="width: 10%;">Recycled Qty</th>
                                                     <th style="width: 10%;">Action</th>
                                                 </tr>
                                             </thead>
@@ -784,7 +786,7 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100" id="basic-addon1">Input</span>
                             </div>
-                            <input type="number" class="form-control form-control-sm" id="input" name="input" min="0" step="0.01">
+                            <input type="number" class="form-control form-control-sm" id="input" name="input" min="1" step="0.01">
                             </div>
                         </div>
                     </div>
@@ -795,7 +797,7 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100" id="basic-addon1">NG Qty</span>
                             </div>
-                            <input type="number" class="form-control form-control-sm" id="ng_qty" name="ng_qty" min="0" value="0" step="0.01">
+                            <input type="number" class="form-control form-control-sm" id="ng_qty" name="ng_qty" min="1" value="0" step="0.01">
                             </div>
                         </div>
                     </div>
@@ -806,7 +808,7 @@
                             <div class="input-group-prepend w-50">
                                 <span class="input-group-text w-100" id="basic-addon1">Output</span>
                             </div>
-                            <input type="number" class="form-control form-control-sm" id="output" name="output" min="0" step="0.01" readonly>
+                            <input type="number" class="form-control form-control-sm" id="output" name="output" min="1" step="0.01" readonly>
                             </div>
                         </div>
                     </div>

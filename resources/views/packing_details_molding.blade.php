@@ -103,9 +103,9 @@
                                         <li class="nav-item">
                                             <a class="nav-link active" id="Packing-tab" data-bs-toggle="tab" href="#packingTab" role="tab" aria-controls="packingTab" aria-selected="true">Packing Data</a>
                                         </li>
-                                        <li class="nav-item">
+                                        {{-- <li class="nav-item">
                                             <a class="nav-link" id="Received-tab" data-bs-toggle="tab" href="#moldingReceived" role="tab" aria-controls="moldingReceived" aria-selected="false">Molding Received</a>
-                                        </li>
+                                        </li> --}}
                                     </ul>
 
                                     <div class="tab-content" id="myTabContent">

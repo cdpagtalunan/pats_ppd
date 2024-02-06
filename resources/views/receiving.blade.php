@@ -484,48 +484,56 @@
                     'scan_id' : toScanId
                 }
                 if(e.keyCode == 13){
-                    e.preventDefault();
-                    $.ajax({
-                        type: "post",
-                        url: "update_receiving_details",
-                        data: $('#formAddReceivingDetails').serialize() + '&' + $.param(scanId),
-                        dataType: "json",
-                        success: function (response) {
-                            if(response['validation'] == 1){
-                                toastr.error('Saving data failed!');
-                                    if(response['error']['supplier_name'] === undefined){
-                                        $("#txtSupplierName").removeClass('is-invalid');
-                                        $("#txtSupplierName").attr('title', '');
-                                    }
-                                    else{
-                                        $("#txtSupplierName").addClass('is-invalid');
-                                        $("#txtSupplierName").attr('title', response['error']['supplier_name']);
-                                    }
-                                    if(response['error']['supplier_lot_no'] === undefined){
-                                        $("#txtSupplierLotNo").removeClass('is-invalid');
-                                        $("#txtSupplierLotNo").attr('title', '');
-                                    }
-                                    else{
-                                        $("#txtSupplierLotNo").addClass('is-invalid');
-                                        $("#txtSupplierLotNo").attr('title', response['error']['supplier_lot_no']);
-                                    }
-                                    if(response['error']['supplier_qty'] === undefined){
-                                        $("#txtSupplierQty").removeClass('is-invalid');
-                                        $("#txtSupplierQty").attr('title', '');
-                                    }
-                                    else{
-                                        $("#txtSupplierQty").addClass('is-invalid');
-                                        $("#txtSupplierQty").attr('title', response['error']['supplier_qty']);
-                                    }
+                    validateUser($(this).val().toUpperCase(), [6], function(result){
+                        if(result == true){
+                                        e.preventDefault();
+                            $.ajax({
+                                type: "post",
+                                url: "update_receiving_details",
+                                data: $('#formAddReceivingDetails').serialize() + '&' + $.param(scanId),
+                                dataType: "json",
+                                success: function (response) {
+                                    if(response['validation'] == 1){
+                                        toastr.error('Saving data failed!');
+                                            if(response['error']['supplier_name'] === undefined){
+                                                $("#txtSupplierName").removeClass('is-invalid');
+                                                $("#txtSupplierName").attr('title', '');
+                                            }
+                                            else{
+                                                $("#txtSupplierName").addClass('is-invalid');
+                                                $("#txtSupplierName").attr('title', response['error']['supplier_name']);
+                                            }
+                                            if(response['error']['supplier_lot_no'] === undefined){
+                                                $("#txtSupplierLotNo").removeClass('is-invalid');
+                                                $("#txtSupplierLotNo").attr('title', '');
+                                            }
+                                            else{
+                                                $("#txtSupplierLotNo").addClass('is-invalid');
+                                                $("#txtSupplierLotNo").attr('title', response['error']['supplier_lot_no']);
+                                            }
+                                            if(response['error']['supplier_qty'] === undefined){
+                                                $("#txtSupplierQty").removeClass('is-invalid');
+                                                $("#txtSupplierQty").attr('title', '');
+                                            }
+                                            else{
+                                                $("#txtSupplierQty").addClass('is-invalid');
+                                                $("#txtSupplierQty").attr('title', response['error']['supplier_qty']);
+                                            }
 
-                            }else if(response['result'] == 0){
-                                toastr.success('Receiving Details Updated!');
-                                $('#modalEditReceivingDetails').modal('hide');
-                                $('#modalScanQRtoSave').modal('hide');
-                                dtViewReceivingDetails.draw();
-                            }
+                                    }else if(response['result'] == 0){
+                                        toastr.success('Receiving Details Updated!');
+                                        $('#modalEditReceivingDetails').modal('hide');
+                                        $('#modalScanQRtoSave').modal('hide');
+                                        dtViewReceivingDetails.draw();
+                                    }
+                                }
+                            });
                         }
+                        else{ // Error Handler
+                            toastr.error('User not authorize!');
+                        } 
                     });
+                    $(this).val('');
                 }
             });
 
