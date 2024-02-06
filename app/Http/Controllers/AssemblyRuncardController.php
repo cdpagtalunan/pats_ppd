@@ -73,19 +73,19 @@ class AssemblyRuncardController extends Controller
                                             ->get();
 
                                             return $device_name_by_prod_lot;
-        // if($device_name_by_prod_lot->isEmpty()){
-        //     $device_name = '';                                   
-        //     $production_lot = '';                                   
-        //     $device_id = '';
-        //     $yec_po_number = '';
-        //     $pmi_po_number = '';
-        // }else{
+        if($device_name_by_prod_lot->isEmpty()){
+            $device_name = '';                                   
+            $production_lot = '';                                   
+            $device_id = '';
+            $yec_po_number = '';
+            $pmi_po_number = '';
+        }else{
             $device_name = $device_name_by_prod_lot[0]->device_name;                                   
             $production_lot = $device_name_by_prod_lot[0]->production_lot;                                   
             $device_id = $device_name_by_prod_lot[0]->device_id->id;
             $yec_po_number = $device_name_by_prod_lot[0]->pmi_po_number;
             $pmi_po_number = $device_name_by_prod_lot[0]->po_number;
-        // }
+        }
 
         return response()->json(['device_name' => $device_name, 
                                 'production_lot' => $production_lot,
