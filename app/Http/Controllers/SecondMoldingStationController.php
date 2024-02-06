@@ -191,7 +191,7 @@ class SecondMoldingStationController extends Controller
                     INNER JOIN sec_molding_runcard_station_mods
                         ON sec_molding_runcard_station_mods.sec_molding_runcard_station_id = sec_molding_runcard_stations.id
                     WHERE sec_molding_runcard_stations.id = '$request->second_molding_station_id'
-                    AND deleted_at IS NULL
+                    AND sec_molding_runcard_stations.deleted_at IS NULL
         ");
         return response()->json(['data' => $secondMoldingStationResult]);
     }
