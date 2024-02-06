@@ -30,10 +30,15 @@ class SecondMoldingController extends Controller
     }
 
     public function checkMaterialLotNumberOfFirstMolding(Request $request){
-        return DB::select("SELECT a.production_lot, a.first_molding_device_id FROM first_moldings AS a
-                INNER JOIN first_molding_devices AS b
-                    ON b.id = a.first_molding_device_id
-                WHERE production_lot = '$request->production_lot_number'
+        return DB::select("SELECT 
+                    CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot, first_moldings.id AS first_molding_id, first_moldings.first_molding_device_id AS first_molding_device_id 
+                FROM first_moldings
+                INNER JOIN first_molding_devices
+                    ON first_molding_devices.id = first_moldings.first_molding_device_id
+                WHERE first_moldings.production_lot = '$request->production_lot_number'
+                AND first_moldings.production_lot_extension = '$request->production_lot_number_extension'
+                AND first_moldings.status = 3 -- Done
+                AND first_moldings.deleted_at IS NULL
                 LIMIT 1
         ");
     }
@@ -47,11 +52,15 @@ class SecondMoldingController extends Controller
     }
 
     public function viewSecondMolding(Request $request){
-        $secondMoldingResult = DB::connection('mysql')->select("SELECT a.* FROM sec_molding_runcards AS a 
-                    INNER JOIN first_moldings AS b
-                        ON b.id = a.lot_number_eight_first_molding_id
-                    WHERE a.po_number = '$request->po_number'
-                    ORDER BY a.id ASC
+        $secondMoldingResult = DB::connection('mysql')
+                    ->select("SELECT 
+                            sec_molding_runcards.* 
+                        FROM sec_molding_runcards
+                        -- INNER JOIN first_moldings
+                        --     ON first_moldings.id = sec_molding_runcards.lot_number_eight_first_molding_id
+                        WHERE sec_molding_runcards.po_number = '$request->po_number'
+                        AND deleted_at IS NULL
+                        ORDER BY sec_molding_runcards.id ASC
         ");
         // return $secondMoldingResult;
 
@@ -160,7 +169,7 @@ class SecondMoldingController extends Controller
                         'me_name_lot_number_second' => $request->me_name_lot_number_second,
 
                         // 'status' => 1,
-                        'created_by' => $_SESSION['user_id'],
+                        'created_by' => Auth::user()->id,
                         'created_at' => date('Y-m-d H:i:s'),
                     ]);
 
@@ -247,7 +256,7 @@ class SecondMoldingController extends Controller
                         'me_name_lot_number_one' => $request->me_name_lot_number_one,
                         'me_name_lot_number_second' => $request->me_name_lot_number_second,
 
-                        'last_updated_by' => $_SESSION['user_id'],
+                        'last_updated_by' => Auth::user()->id,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
                     DB::commit();
@@ -264,6 +273,7 @@ class SecondMoldingController extends Controller
         $secondMoldingResult = DB::connection('mysql')
         ->select("SELECT * FROM sec_molding_runcards
                     WHERE id = '$request->second_molding_id'
+                    AND deleted_at IS NULL
                     LIMIT 1
         ");
         return response()->json(['data' => $secondMoldingResult]);

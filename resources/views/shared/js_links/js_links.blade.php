@@ -80,3 +80,9 @@
 {{-- Second Molding --}}
 <script src="@php echo asset("public/js/main/SecondMolding.js?".date("YmdHis")) @endphp"></script>
 
+{{-- Production History --}}
+<script src="@php echo asset("public/js/main/ProductionHistory.js?".date("YmdHis")) @endphp"></script>
+
+
+
+

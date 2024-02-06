@@ -1,5 +1,6 @@
 const submitProdData = async (scannedId, form, stampCat) => {
     $('input[name="status"]').prop('disabled', false);
+    $('#selOperator').prop('disabled', false);
 
     let data = $.param({'scanned_id': scannedId, 'stamp_cat': stampCat }) + "&" + form.serialize();
     await $.ajax({
@@ -8,7 +9,8 @@ const submitProdData = async (scannedId, form, stampCat) => {
         // data: $('#formProdData').serialize(),
         data: data,
         dataType: "json",
-       
+        beforeSend: function(){
+        },
         success: function (response) {
             if(response['result'] == 1){
                 $('#modalScanQRSave').modal('hide');
@@ -22,6 +24,7 @@ const submitProdData = async (scannedId, form, stampCat) => {
                     $('#modalProdSecondStamp').modal('hide');
                 }
                 toastr.success(`${response['msg']}`);
+                
             }
             else{ // ! ERROR HANDLER
                 toastr.error('Please input required fields.');
@@ -157,7 +160,11 @@ const submitProdData = async (scannedId, form, stampCat) => {
                 }
                 
             }
-            $('input[name="status"]').prop('disabled', true);
+            setTimeout(() => {
+                $('input[name="status"]').prop('disabled', true);
+                $('#selOperator').prop('disabled', true);
+    
+            }, 500);
 
         },
         error: function(data, xhr, status){
@@ -179,6 +186,7 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
             $('#divProdLotInput').addClass('d-none');
             getOperatorList($('.selOpName'));
             $('#button-addon2').prop('disabled', true);
+            $('#btnScanOperator').prop('disabled', true);
 
 
         },
@@ -255,7 +263,7 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
 
             $(`#txtMaterialLot_0`).val(response['material_lot_no']);
 
-            if(btnFunction == 0){
+            if(btnFunction == 0){ // Viewing
                 $('#saveProdData').hide();
 
                 $('#formProdData :input').attr('readonly','readonly');
@@ -428,10 +436,9 @@ const getOperatorList = (cboElement) => {
         data: "",
         dataType: "json",
         success: function (response) {
-            console.log(response);
             let result = "";
             for(let x = 0; x<response.length; x++){
-                result += `<option value="${response[x]['id']}">${response[x]['firstname']} ${response[x]['lastname']}</option>`;
+                result += `<option value="${response[x]['employee_id']}">${response[x]['firstname']} ${response[x]['lastname']}</option>`;
             }
 
             cboElement.html(result);
@@ -547,7 +554,6 @@ const getSublotById = (id) => {
                 $(`#txtSublotNo_${counter}`).val(response['stampSubLot']['second_stamping_sublots'][x]['counter'])
                 $(`#txtSublotQty_${counter}`).val(response['stampSubLot']['second_stamping_sublots'][x]['batch_qty'])
 
-                
             }
 
             $('#txtSubLotPoNumber', $('#formSublot')).val(response['stampSubLot']['po_num'])
@@ -561,3 +567,25 @@ const getSublotById = (id) => {
         }
     });
 }
+
+let operatorArray = [];
+$('#btnScanOperator').on('click', function(){
+    $('#modalScanSelOp').modal('show');
+    operatorArray = [];
+    $('#selOperator').val(operatorArray).trigger('change');
+
+});
+
+$('#modalScanSelOp').on('shown.bs.modal', function () {
+    $('#txtScanOpId').focus();
+});
+
+$('#txtScanOpId').on('keyup', function(e){
+    if(e.keyCode == 13){
+        operatorArray.push($(this).val());
+        console.log(operatorArray);
+        $('#selOperator').val(operatorArray).trigger('change');
+
+        $(this).val('');
+    }
+});

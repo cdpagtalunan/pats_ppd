@@ -300,7 +300,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('cn_assembly') }}" class="nav-link">
+                                    <a href="{{ route('assembly') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>Assembly</p>
                                     </a>
@@ -356,7 +356,7 @@
                     <li class="nav-item has-treeview">
                         <a href="#" class="nav-link">
                             <div class="d-flex justify-content-between align-items-center">
-                                <p><i class="fa-solid fa-shapes"> </i> PPTS </p>
+                                <p><i class="fa-solid fa-boxes-packing"></i> PPTS </p>
                                 <i class="fas fa-angle-down"> </i>
                             </div>
                         </a>

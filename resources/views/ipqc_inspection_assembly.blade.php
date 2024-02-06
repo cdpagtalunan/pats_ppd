@@ -63,10 +63,10 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                                <label class="form-label">Series Name:</label>
+                                                <label class="form-label">Device Name:</label>
                                             <div class="input-group mb-3">
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Series Name"></i>
-                                                <select class="form-control select2bs5" id="txtSelectAssemblySeries" name="sel_series_name" placeholder="Select Series Name"></select>
+                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Device Name"></i>
+                                                <select class="form-control select2bs5" id="txtSelectAssemblyDevice" name="sel_series_name" placeholder="Select Device Name"></select>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -386,7 +386,7 @@
                 } );
 
                 // NEW CODE CLARK 02042024
-                GetSeriesNameFromAssembly($("#txtSelectAssemblySeries"));
+                GetDeviceNameFromAssembly($("#txtSelectAssemblyDevice"));
 
                 let dtAssemblyIpqcInspPending = $("#tblAssemblyIpqcInspPending").DataTable({
                     "processing" : true,
@@ -394,7 +394,7 @@
                     "ajax" : {
                         url: "view_assembly_ipqc_data",
                         data: function(param){
-                        param.device_id =  $("#txtSelectAssemblySeries").val();
+                        param.device_id =  $("#txtSelectAssemblyDevice").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
                         param.second_molding_status = [0]; //First Molding Status : For IPQC
                         param.process_category = 2; //Process Category : Second Molding
@@ -420,7 +420,7 @@
                     "ajax" : {
                         url: "view_assembly_ipqc_data",
                         data: function(param){
-                        param.device_id =  $("#txtSelectAssemblySeries").val();
+                        param.device_id =  $("#txtSelectAssemblyDevice").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
                         param.second_molding_status = [0]; //First Molding Status : For IPQC
                         param.process_category = 2; //Process Category : Second Molding
@@ -446,7 +446,7 @@
                     "ajax" : {
                         url: "view_assembly_ipqc_data",
                         data: function(param){
-                        param.device_id =  $("#txtSelectAssemblySeries").val();
+                        param.device_id =  $("#txtSelectAssemblyDevice").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
                         param.second_molding_status = [0]; //First Molding Status : For IPQC
                         param.process_category = 2; //Process Category : Second Molding
@@ -466,12 +466,12 @@
                     ],
                 });
 
-                function GetSeriesNameFromAssembly(cboElement){
+                function GetDeviceNameFromAssembly(cboElement){
                     let result = '<option value="" disabled selected>-- Select Device Name --</option>';
 
                     $.ajax({
                             type: "get",
-                            url: "get_series_from_assembly",
+                            url: "get_devices_from_assembly",
                             // data: {
                             //     "stamping_cat" : 1
                             // },
@@ -481,7 +481,7 @@
                                 cboElement.html(result);
                             },
                             success: function(response) {
-                                let fMoldingDevice = response['first_molding_devices'];
+                                let AssemblyDevices = response['assembly_devices'];
                                 if (fMoldingDevice.length > 0) {
                                         result = '<option value="" disabled selected>-- Select Device Name --</option>';
                                     for (let index = 0; index < fMoldingDevice.length; index++) {
@@ -500,8 +500,8 @@
                     });
                 }
 
-                $('#txtSelectAssemblySeries').on('change', function(e){
-                        let searchDeviceIdFrmFirstMolding = $('#txtSelectAssemblySeries').val();
+                $('#txtSelectAssemblyDevice').on('change', function(e){
+                        let searchDeviceIdFrmFirstMolding = $('#txtSelectAssemblyDevice').val();
                         $.ajax({
                             type: "get",
                             url: "get_assembly_data",
@@ -511,7 +511,7 @@
                             dataType: "json",
                             success: function (response) {
                                 let fMoldingData = response['first_molding_data'];
-                                $('#txtSelectAssemblySeries').val(fMoldingData[0].first_molding_device_id);
+                                $('#txtSelectAssemblyDevice').val(fMoldingData[0].first_molding_device_id);
                                 $('#txtSearchMaterialName').val(fMoldingData[0].first_molding_device.contact_name);
 
                                 let mat_name = fMoldingData[0].first_molding_device.device_name;

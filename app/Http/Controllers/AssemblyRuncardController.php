@@ -21,7 +21,7 @@ class AssemblyRuncardController extends Controller
 {
     public function get_data_from_matrix(Request $request){
         $material_name = [];
-        $matrix_data = Device::with(['material_process.material_details'])->with(['material_process.station_details.stations'])->where('name', $request->series_name)->where('status', 1)->get();
+        $matrix_data = Device::with(['material_process.material_details'])->with(['material_process.station_details.stations'])->where('name', $request->device_name)->where('status', 1)->get();
         foreach($matrix_data[0]->material_process[0]->material_details as $material_details){
             $material_name[] = $material_details->material_type;
         }
@@ -44,12 +44,20 @@ class AssemblyRuncardController extends Controller
                                             ->where('production_lot', $request->production_lot)
                                             ->get();
 
-        $device_name = $device_name_by_prod_lot[0]->firstMoldingDevice->device_name;                                   
-        $production_lot = $device_name_by_prod_lot[0]->production_lot;
-        $device_id = $device_name_by_prod_lot[0]->first_molding_device_id;
-        $yec_po_number = $device_name_by_prod_lot[0]->po_no;
-        $pmi_po_number = $device_name_by_prod_lot[0]->pmi_po_no;
-
+        // if($device_name_by_prod_lot->isEmpty()){
+        //     $device_name = '';                                   
+        //     $production_lot = '';                                   
+        //     $device_id = '';
+        //     $yec_po_number = '';
+        //     $pmi_po_number = '';
+        // }else{
+            $device_name = $device_name_by_prod_lot[0]->firstMoldingDevice->device_name;                                   
+            $production_lot = $device_name_by_prod_lot[0]->production_lot;
+            $device_id = $device_name_by_prod_lot[0]->first_molding_device_id;
+            $yec_po_number = $device_name_by_prod_lot[0]->po_no;
+            $pmi_po_number = $device_name_by_prod_lot[0]->pmi_po_no;
+        // }
+    
         return response()->json(['device_name' => $device_name, 
                                 'production_lot' => $production_lot,
                                 'device_id'      => $device_id,
@@ -64,11 +72,20 @@ class AssemblyRuncardController extends Controller
                                             ->where('production_lot', $request->production_lot)
                                             ->get();
 
-        $device_name = $device_name_by_prod_lot[0]->device_name;                                   
-        $production_lot = $device_name_by_prod_lot[0]->production_lot;                                   
-        $device_id = $device_name_by_prod_lot[0]->device_id->id;
-        $yec_po_number = $device_name_by_prod_lot[0]->pmi_po_number;
-        $pmi_po_number = $device_name_by_prod_lot[0]->po_number;
+                                            return $device_name_by_prod_lot;
+        if($device_name_by_prod_lot->isEmpty()){
+            $device_name = '';                                   
+            $production_lot = '';                                   
+            $device_id = '';
+            $yec_po_number = '';
+            $pmi_po_number = '';
+        }else{
+            $device_name = $device_name_by_prod_lot[0]->device_name;                                   
+            $production_lot = $device_name_by_prod_lot[0]->production_lot;                                   
+            $device_id = $device_name_by_prod_lot[0]->device_id->id;
+            $yec_po_number = $device_name_by_prod_lot[0]->pmi_po_number;
+            $pmi_po_number = $device_name_by_prod_lot[0]->po_number;
+        }
 
         return response()->json(['device_name' => $device_name, 
                                 'production_lot' => $production_lot,
@@ -101,13 +118,13 @@ class AssemblyRuncardController extends Controller
     }
 
     public function view_assembly_runcard(Request $request){
-        if(!isset($request->series_name)){
+        if(!isset($request->device_name)){
             return [];
         }else{
             $AssemblyRuncardData = DB::connection('mysql')->select("SELECT a.* FROM assembly_runcards AS a
                                         LEFT JOIN assembly_runcard_stations AS b
                                                 ON a.id = b.assembly_runcards_id
-                                            WHERE a.series_name = '$request->series_name'
+                                            WHERE a.device_name = '$request->device_name'
                                             ORDER BY a.id DESC
             ");
 
@@ -360,8 +377,14 @@ class AssemblyRuncardController extends Controller
                                         'updated_at'            => date('Y-m-d H:i:s'),
                 ]);
 
+                AssemblyRuncardStationsMods::where('assembly_runcard_stations_id', $request->assy_runcard_station_id)
+                                    ->where('logdel', 0)
+                                    ->update([
+                                            'logdel' => 1,
+                                        ]);
+
                 foreach ( $request->mod_id as $key => $value) {
-                    AssemblyRuncardStationsMods::where('assembly_runcard_stations_id', $request->assy_runcard_station_id)->update([
+                    AssemblyRuncardStationsMods::where('id',$request->assy_mod_id)->where('assembly_runcard_stations_id', $request->assy_runcard_station_id)->update([
                                         'mod_id'                       => $request->mod_id[$key],
                                         'mod_quantity'                 => $request->mod_quantity[$key],
                                         'created_by'                   => Auth::user()->id,
