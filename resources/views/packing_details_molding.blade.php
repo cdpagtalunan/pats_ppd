@@ -103,9 +103,9 @@
                                         <li class="nav-item">
                                             <a class="nav-link active" id="Packing-tab" data-bs-toggle="tab" href="#packingTab" role="tab" aria-controls="packingTab" aria-selected="true">Packing Data</a>
                                         </li>
-                                        <li class="nav-item">
+                                        {{-- <li class="nav-item">
                                             <a class="nav-link" id="Received-tab" data-bs-toggle="tab" href="#moldingReceived" role="tab" aria-controls="moldingReceived" aria-selected="false">Molding Received</a>
-                                        </li>
+                                        </li> --}}
                                     </ul>
 
                                     <div class="tab-content" id="myTabContent">
@@ -368,7 +368,7 @@
                             <div class="text-center text-secondary"><span id="modalScanEmpIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                         </div>
                     </form>
-    
+
                 </div>
             <!-- /.modal-content -->
             </div>
@@ -394,7 +394,7 @@
                     $('#txtScanPO').focus();
                     $('#txtScanPO').on('keyup', function(e){
                         if(e.keyCode == 13){
-                           
+
                             scannedPO = $('#txtScanPO').val();
                             ParseScannedPo = JSON.parse(scannedPO);
                             // console.log(ParseScannedPo['cat']);
@@ -407,7 +407,7 @@
                                 $('#modalScanPO').modal('hide');
                                 dtPackingDetailsFE.draw()
                             }else{
-                                
+
                                 toastr.error('Invalid Sticker');
                             }
 
@@ -553,7 +553,7 @@
                                     // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
 
                                     let powerOff = $(this).find('td:nth-child(1)').children();
-                                
+
                                     if(scannedItem['sublot_counter'].substring(0,1) == second_stamping_sub_lot){
                                         $(tr).addClass('checked-ok');
                                         let id = $(this).attr('id');
@@ -579,7 +579,7 @@
                             }else{
                                 toastr.error('Invalid Sticker');
                             }
-                            
+
                         }
                         catch (e){
                             toastr.error('Invalid Sticker');
@@ -593,7 +593,7 @@
                     $('#modalScanEmpId').modal('show');
                     // alert('hehe');
                 });
-                
+
                 $('#modalScanEmpId').on('shown.bs.modal', function () {
                     $('#txtScanPackerId').focus();
                 });
@@ -611,7 +611,7 @@
                     }
                     if(e.keyCode == 13){
                         if(moldingId != null){
-                            validateUser($(this).val().toUpperCase(), [2,5], function(result){    
+                            validateUser($(this).val().toUpperCase(), [2,5], function(result){
                                 if(result == true){
                                     let data2 = $('#formOqcDetails').serialize()+ '&' + $.param(scannedEmpId);
                                     // console.log(data2);
@@ -636,11 +636,11 @@
                                 }
                                 else{ // Error Handler
                                     toastr.error('User not authorize!');
-                                } 
+                                }
 
                             });
                         }else{
-                            validateUser($(this).val().toUpperCase(), [4,9], function(result){    
+                            validateUser($(this).val().toUpperCase(), [4,9], function(result){
                             if(result == true){
                                     e.preventDefault();
                                     let data1 = $('#formOqcDetails').serialize() + '&' + $.param(scannedEmpId);
@@ -664,11 +664,11 @@
                                 }
                                 else{ // Error Handler
                                     toastr.error('User not authorize!');
-                                } 
+                                }
 
                             });
                         }
-                       
+
                         $(this).val('');
                     }
                 });
@@ -679,7 +679,7 @@
                 //     'qc_scan_id' : toScanQcId
                 //     }
                 //         if(e.keyCode == 13){
-                           
+
                 //             $(this).val('');
                 //         }
                 // });

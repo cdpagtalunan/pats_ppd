@@ -111,11 +111,17 @@ const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue) => {
         textLotNumberIdValue = 'textLotNumberTenFirstMoldingId';
         firstMoldingDeviceId = 3;
     }
+    let qrScannerValueToJSON = JSON.parse(qrScannerValue);
+    let lotNumber = qrScannerValueToJSON.lot_no;
+    let lotNumberExtension = qrScannerValueToJSON.lot_no_ext;
+    console.log(`qrScannerValue ${lotNumber}`);
+    console.log(`qrScannerValue ${lotNumberExtension}`);
     $.ajax({
         type: "get",
         url: "check_material_lot_number_of_first_molding",
         data: {
-            production_lot_number: qrScannerValue,
+            production_lot_number: lotNumber,
+            production_lot_number_extension: lotNumberExtension,
         },
         dataType: "json",
         success: function (response) {
@@ -125,7 +131,7 @@ const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue) => {
             if(data.length > 0){
                 if(data[0].first_molding_device_id == firstMoldingDeviceId){
                     $(`#${textLotNumberValue}`).val(data[0].production_lot);
-                    $(`#${textLotNumberIdValue}`).val(data[0].first_molding_device_id);
+                    $(`#${textLotNumberIdValue}`).val(data[0].first_molding_id);
                     $('#modalQrScanner').modal('hide');
                 }else{
                     toastr.error('Incorrect material lot number.')

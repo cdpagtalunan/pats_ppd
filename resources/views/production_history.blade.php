@@ -195,16 +195,18 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Machine No.</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="machine_no" name="machine_no" required readonly>
+                                                <select type="text" class="form-control form-control-sm select2bs4" id="machine_no" name="machine_no[]" placeholder="Machine no." multiple>
+                                                </select>
+                                                {{-- <input class="form-control form-control-sm" type="text" id="machine_no" name="machine_no" required readonly>
                                                 <div class="input-group-append">
                                                     <button class="btn btn-info" type="button" title="Scan code" id="btnMachineNo" form-value="formMachineNo"><i class="fa fa-qrcode"></i></button>
-                                                </div>
+                                                </div> --}}
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Standard Parameter Date</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="date" id="standard_para_date" name="standard_para_date" required>
+                                                <input class="form-control form-control-sm" type="date" id="standard_para_date" name="standard_para_date">
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
@@ -216,33 +218,33 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Actual Cycle Time</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="act_cycle_time" name="act_cycle_time" placeholder="s" required>
+                                                <input class="form-control form-control-sm" type="text" id="act_cycle_time" name="act_cycle_time" placeholder="s">
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Shot Weight</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="shot_weight" name="shot_weight" placeholder="g" required>
+                                                <input class="form-control form-control-sm" type="text" id="shot_weight" name="shot_weight" placeholder="g">
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Product Weight</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="product_weight" name="product_weight" placeholder="g" required>
+                                                <input class="form-control form-control-sm" type="text" id="product_weight" name="product_weight" placeholder="g">
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Screw Most FWD</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="screw_most_fwd" name="screw_most_fwd" placeholder="mm" required>
+                                                <input class="form-control form-control-sm" type="text" id="screw_most_fwd" name="screw_most_fwd" placeholder="mm">
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">CCD Setting</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_s1" name="ccd_setting_s1" placeholder="S1" required>
-                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_s2" name="ccd_setting_s2" placeholder="S2" required>
-                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_ng" name="ccd_setting_ng" placeholder="NG" required>
+                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_s1" name="ccd_setting_s1" placeholder="S1">
+                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_s2" name="ccd_setting_s2" placeholder="S2">
+                                                <input class="form-control form-control-sm" type="text" id="ccd_setting_ng" name="ccd_setting_ng" placeholder="NG">
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
@@ -301,11 +303,11 @@
                                                 </div>
                                             </div>
 
-                                           
-                                        </div>            
+
+                                        </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-sm-6 border px-4">
                                     <div class="col-sm-12">
 
@@ -344,7 +346,7 @@
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 {{-- <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking"> --}}
-                                                
+
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.1</span>
                                                 </div>
@@ -364,7 +366,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code1" name="pmaterial_code1" value="108668401" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name1" name="pmaterial_name1" value="CT 6010R/L-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                            
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.2</span>
                                                 </div>
@@ -384,7 +386,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code2" name="pmaterial_code2" value="107977701" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name2" name="pmaterial_name2" value="CT 5869-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                           
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
                                                 </div>
@@ -400,7 +402,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code2_1" name="pmaterial_code2_1" value="107977801" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name2_1" name="pmaterial_name2_1" value="CT 5870-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                            
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
                                                 </div>
@@ -416,7 +418,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code2_2" name="pmaterial_code2_2" value="107977901" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name2_2" name="pmaterial_name2_2" value="CN171P-02#ME-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                            
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
                                                 </div>
@@ -436,7 +438,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code4" name="pmaterial_code4" value="108666601" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name4" name="pmaterial_name4" value="CN171S-08#IN-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                           
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.4</span>
                                                 </div>
@@ -452,7 +454,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code4_1" name="pmaterial_code4_1" value="107927202" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name4_1" name="pmaterial_name4_1" value="CN171S-03#ME-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                            
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
                                                 </div>
@@ -468,7 +470,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code4_2" name="pmaterial_code4_2" value="108032201" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name4_2" name="pmaterial_name4_2" value="CN171S-05#ME-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                            
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.4</span>
                                                 </div>
@@ -484,7 +486,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code4_3" name="pmaterial_code4_3" value="xxx" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name4_3" name="pmaterial_name4_3" value="CN171S-09/10#IN-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                            
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.4</span>
                                                 </div>
@@ -504,7 +506,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_code5" name="pmaterial_code5" value="107977401" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="pmaterial_name5" name="pmaterial_name5" value="CN171S-04#ME-VE" readonly>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">                                           
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.5</span>
                                                 </div>
@@ -514,11 +516,11 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
 
-                            
-                                        
-                                        
+
+
+
+
 
                                     </div>
                                 </div>
@@ -528,7 +530,7 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" id="btnSubmitFirstMoldingStation" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
+                            <button type="button" id="btnSubmit" class="btn btn-dark"><i id="iBtnAddUserIcon" class="fa fa-check"></i> Submit</button>
                         </div>
                     </form>
                 </div>
@@ -576,7 +578,7 @@
                                 </div>
                             </div>
 
-                            
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -682,7 +684,7 @@
     @section('js_content')
     <script>
         $(document).ready(function () {
-            let ProductionHistory;            
+            let ProductionHistory;
 
             getFirstModlingDevices();
             // getOperatorList($('.selOpName'));
@@ -732,7 +734,7 @@
                         $('#main_cycle').val(maintenance_cycle);
                         $('#device_name').val(device_name);
                         $('#global_device_name_id').val(first_molding_device_id);
-                        
+
                         formModal.ProdnHistory.find('#first_molding_device_id').html(`<option value="${first_molding_device_id}">${device_name}</option>`);
                         formModal.ProdnHistory.find('#std_cycle_time').val(std_cycle_time);
                         formModal.ProdnHistory.find('#maintenance_cycle').val(number_with_comma(maintenance_cycle));
@@ -773,16 +775,18 @@
                         }else{
                             $('#divMaterialName4').addClass('d-none');
                         }
-
-
-                        
                     }
                 });
             });
 
             $('#btnAddProductionHistory').click(function (e) {
                 e.preventDefault();
+                let materialName= $('#device_name').val();
+                console.log(materialName);
                 $('#modalProductionHistory').modal('show');
+
+                getMachineDropdown($('#machine_no'), materialName);
+
             });
 
             /*  Datatable */
@@ -822,23 +826,27 @@
             });
 
             /* Add */
-            $('#formProductionHistory').submit(function(e){
-                e.preventDefault();
-                $.ajax({
-                    type: "post",
-                    url: "add_prodn_history",
-                    data: $('#formProductionHistory').serialize(),
-                    dataType: "json",
-                    success: function (response) {
-                        if(response['result'] == 1){
-                            ProductionHistory.draw();
-                            $('#modalProductionHistory').modal('hide');
-                        }
-                    }
-                });
+            $("#btnSubmit").on('click', function(event){
+                event.preventDefault();
+                AddProdnHistory();
             });
+            // $('#formProductionHistory').submit(function(e){
+            //     e.preventDefault();
+            //     $.ajax({
+            //         type: "post",
+            //         url: "add_prodn_history",
+            //         data: $('#formProductionHistory').serialize(),
+            //         dataType: "json",
+            //         success: function (response) {
+            //             if(response['result'] == 1){
+            //                 ProductionHistory.draw();
+            //                 $('#modalProductionHistory').modal('hide');
+            //             }
+            //         }
+            //     });
+            // });
 
-            /* Edit */                
+            /* Edit */
             $(document).on('click', '.btnEdit', function(e){
                 let pId = $(this).data('id');
                 $.ajax({
@@ -849,7 +857,7 @@
                     },
                     dataType: "json",
                     success: function (data) {
-                        
+
                         $('#prodn_history_id').val(pId);
                         $('#prodn_date').val(data['prodn_date']);
                         $('#shift').val(data['shift']);
@@ -867,7 +875,7 @@
                         $("#remarks").val(data['remarks']).trigger('change');
                         $('#opt_name').val(data['operator_info']['firstname']+' '+data['operator_info']['lastname']);
                         $('#opt_id').val(data['opt_id']);
-                        
+
                         if (data['qc_info'] != null){
                             $('#qc_name').val(data['qc_info']['firstname']+' '+data['qc_info']['lastname']);
                         }else{
@@ -898,7 +906,7 @@
                     }, 500);
                 });
             });
-            
+
             $('#textQrMachine').keyup(delay(function(e){
                     let qrScannerValue = $('#textQrMachine').val();
                     let formId = $('#modalQrMachine').attr('data-form-id');
@@ -929,7 +937,7 @@
                     }, 500);
                 });
             });
-            
+
             /*  Opt/QC Name */
             $('#btnScanQrOptID').each(function(e){
                 $(this).on('click',function (e) {
@@ -952,7 +960,7 @@
                     }, 500);
                 });
             });
-            
+
             $('#textQrEmp').keyup(delay(function(e){
                 let qrScannerValue = $('#textQrEmp').val();
                 let formId = $('#modalQrEmp').attr('data-form-id');
@@ -982,7 +990,7 @@
                                             $('input[name="opt_id"]', $("#formProductionHistory")).val('');
                                             let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> OPERATOR not found, Please check!</p>`;
                                             $('#alert_notif').html(notif_alert);
-                                            $('#modalAlert_notif').modal('show');  
+                                            $('#modalAlert_notif').modal('show');
                                             $('#modalQrEmp').modal('hide');
                                         }
                                     }
@@ -1015,7 +1023,7 @@
                                             $('input[name="qc_id"]', $("#formProductionHistory")).val('');
                                             let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> QC not found, Please Check!</p>`;
                                             $('#alert_notif').html(notif_alert);
-                                            $('#modalAlert_notif').modal('show');  
+                                            $('#modalAlert_notif').modal('show');
                                             $('#modalQrEmp').modal('hide');
                                         }
                                     }
@@ -1026,7 +1034,7 @@
                             });
                             break;
                     }
-                    
+
 
                 }
             }, 100));
@@ -1061,10 +1069,10 @@
                     }else{
                         let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> Invalid Material Lot Number, Please check!</p>`;
                         $('#alert_notif').html(notif_alert);
-                        $('#modalAlert_notif').modal('show');  
+                        $('#modalAlert_notif').modal('show');
                         $('#modalQrLotNo').modal('hide');
                     }
-                    
+
 
                     $(this).val('');
                     $('#modalQrLotNo').modal('hide');
@@ -1093,22 +1101,23 @@
                     }else{
                         let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> Invalid Parts Material Lot Number, Please check!</p>`;
                         $('#alert_notif').html(notif_alert);
-                        $('#modalAlert_notif').modal('show');  
+                        $('#modalAlert_notif').modal('show');
                         $('#modalQrLotNo').modal('hide');
                     }
-                    
-                    
+
+
                     $(this).val('');
-                    
+
                 }
             });
-     
 
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
         });
     </script>
     @endsection

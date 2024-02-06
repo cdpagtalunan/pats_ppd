@@ -7,6 +7,7 @@ use App\Models\OQCInspection;
 use App\Models\AcdcsActiveDocs;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\StampingProductionSublot;
+use App\Models\ReceivingDetails;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class FirstStampingProduction extends Model
@@ -38,6 +39,10 @@ class FirstStampingProduction extends Model
 
     public function second_stamping_sublots(){
         return $this->hasMany(StampingProductionSublot::class,'stamp_prod_id', 'id');
+    }
+
+    public function receiving_info(){
+        return $this->hasMany(ReceivingDetails::class,'prod_id', 'id');
     }
 
 }

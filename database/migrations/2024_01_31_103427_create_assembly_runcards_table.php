@@ -15,8 +15,8 @@ class CreateAssemblyRuncardsTable extends Migration
     {
         Schema::create('assembly_runcards', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('series_name')->nullable();
             $table->string('device_name')->nullable();
+            $table->string('material_name')->nullable();
             $table->string('parts_code')->nullable();
             $table->string('po_number')->nullable();
             $table->string('po_quantity')->nullable();

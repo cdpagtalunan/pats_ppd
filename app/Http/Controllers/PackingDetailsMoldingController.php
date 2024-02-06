@@ -19,12 +19,12 @@ class PackingDetailsMoldingController extends Controller
     public function viewPackingDetailsFE(Request $request){
 
         // return $request->po_no;
-        
+
         $packing_details = OQCInspection::with([
-        'stamping_production_info', 
-        'stamping_production_info.second_stamping_sublots', 
-        'packing_info', 
-        'first_molding_info', 
+        'stamping_production_info',
+        'stamping_production_info.second_stamping_sublots',
+        'packing_info',
+        'first_molding_info',
         'first_molding_info.user_validated_by_info',
         'first_molding_info.user_checked_by_info'
         ])
@@ -80,7 +80,7 @@ class PackingDetailsMoldingController extends Controller
                 $fs_lot_no = explode('/', $packing_details->stamping_production_info->material_lot_no);
 
                 $result = $fs_lot_no[0];
-               
+
                 return $result;
             })
 
@@ -88,7 +88,7 @@ class PackingDetailsMoldingController extends Controller
                 $plating_lot_no = explode('/', $packing_details->stamping_production_info->material_lot_no);
 
                 $result = $plating_lot_no[1];
-               
+
                 return $result;
             })
 
@@ -96,7 +96,7 @@ class PackingDetailsMoldingController extends Controller
             ->rawColumns(['action','status'])
             ->make(true);
     }
-    
+
     public function viewSublotDetails(Request $request){
         $sublot_details = StampingProductionSublot::with(['stamping_info'])
             ->where('stamp_prod_id', $request->stamping_details_id)
@@ -157,7 +157,7 @@ class PackingDetailsMoldingController extends Controller
         PackingDetailsMolding::insert($array);
 
         return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
-        
+
     }
 
     //UPDATE QC CHECKING
@@ -179,5 +179,5 @@ class PackingDetailsMoldingController extends Controller
 
         return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
     }
-    
+
 }

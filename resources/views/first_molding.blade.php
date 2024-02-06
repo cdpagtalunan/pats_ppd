@@ -183,6 +183,8 @@
                     formModal.firstMolding.find('#item_name').val('');
                     formModal.firstMolding.find('#po_qty').val('');
                     formModal.firstMolding.find('#material_yield').val('');
+                    formModal.firstMolding.find('#drawing_no').val('');
+                    formModal.firstMolding.find('#revision_no').val('');
                     formModal.firstMolding.find('[type="number"]').val(0)
                     formModal.firstMolding.find('.form-control').removeClass('is-valid')
                     formModal.firstMolding.find('.form-control').removeClass('is-invalid');
@@ -239,7 +241,7 @@
                         { "data" : "device_name" },
                         { "data" : "contact_name" },
                         { "data" : "contact_lot_number" },
-                        { "data" : "production_lot" },
+                        { "data" : "prodn_lot_number" },
                         { "data" : "remarks" },
                         { "data" : "created_at" },
                     ]
@@ -270,11 +272,13 @@
                 });
 
                 table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
+                table.FirstMoldingDetails.on('click','#btnViewFirstMolding', editFirstMolding);
                 table.FirstMoldingStationDetails.on('click','#btnEditFirstMoldingStation', editFirstMoldingStation);
 
                 table.FirstMoldingDetails.on('click', '#btnPrintFirstMolding', function(e){
                     e.preventDefault();
                     let firstMoldingId = $(this).attr('first-molding-id');
+                    // $('#hiddenPreview').append(dataToAppend)
                     $.ajax({
                         type: "get",
                         url: "get_first_molding_qr_code",
@@ -290,7 +294,7 @@
                             //     `;
                             //     $('#hiddenPreview').append(dataToAppend)
                             // }
-                        
+
 
                             $("#img_barcode_PO").attr('src', response['qr_code']);
                             $("#img_barcode_PO_text").html(response['label']);
@@ -303,7 +307,6 @@
                 $('#btnFirstMoldingPrintQrCode').on('click', function(){
                     popup = window.open();
                     let content = '';
-
                     content += '<html>';
                     content += '<head>';
                     content += '<title></title>';
@@ -346,13 +349,14 @@
 
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
-                    // return;
                     dt.firstMoldingStation.draw()
                     $('#modalFirstMolding').modal('show');
                     $('#btnFirstMoldingStation').prop('disabled',true);
                     $('#btnSubmitFirstMoldingStation').prop('disabled',true);
                     $('#btnRuncardDetails').removeClass('d-none',true);
+                    $('#btnAddFirstMoldingMaterial').removeClass('d-none',true);
                     formModal.firstMolding.find('[type="number"]').val(0)
+
                 });
 
                 $('#btnFirstMoldingStation').click(function (e) {
@@ -608,6 +612,10 @@
                     calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#shipment_output').val());
                 });
 
+                formModal.firstMolding.find('.inputVirginQty').keyup(function (e) {
+                    alert('inputVirginQty')
+
+                });
                 formModal.firstMolding.submit(function (e) {
                     e.preventDefault();
                     saveFirstMolding();
@@ -625,10 +633,15 @@
                         <tr>
                             <td>
                                 <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                    <input type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_qty[]" required>
                                 </div>
                             </td>
                             <td>
@@ -637,6 +650,11 @@
                                             <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                    <input type="number" class="form-control form-control-sm" id="recycle_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_qty[]" required>
                                 </div>
                             </td>
                             <td>

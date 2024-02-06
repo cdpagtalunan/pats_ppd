@@ -20,47 +20,36 @@ use App\Models\ReceivingDetails;
 class ExportTraceabilityReportController extends Controller
 {
     public function exportCN171TraceabilityReport(Request $request){
-        $first_stamping_data = FirstStampingProduction::with([
+        $stamping_data = FirstStampingProduction::with([
+        'receiving_info',
+        'receiving_info.iqc_info',
+        'receiving_info.iqc_info.user_iqc',
         'stamping_ipqc', 
+        'user', 
         'stamping_ipqc.ipqc_insp_name', 
         'oqc_details', 
         'oqc_details.packing_info',
         'oqc_details.packing_info.user_validated_by_info'
         ])
         ->where('po_num', $request->po_number)
-        ->where('stamping_cat', 1)
+        // ->where('stamping_cat', 2)
         ->get();
+        
+        // return $stamping_data;
 
-        $receiving_data = ReceivingDetails::with([
-            'iqc_info',
-            'iqc_info.user_iqc'
-            ])
-        ->where('po_no', $request->po_number)
-        ->where('status', 2 )
-        ->get();
+        // $receiving_data = ReceivingDetails::with([
+        //     'iqc_info',
+        //     'iqc_info.user_iqc'
+        //     ])
+        // ->where('po_no', $request->po_number)
+        // ->where('status', 2 )
+        // ->get();
 
-        $second_stamping_data = FirstStampingProduction::with([
-            'stamping_ipqc', 
-            'stamping_ipqc.ipqc_insp_name', 
-            'oqc_details', 
-            'oqc_details.packing_info',
-            'oqc_details.packing_info.user_validated_by_info'
-            ])
-            ->where('po_num', $request->po_number)
-            ->where('stamping_cat', 2)
-            ->get();
-
-        // return $second_stamping_data;
-
-        // for ($i=0; $i < count($first_stamping_data); $i++) { 
-        //         # code...
-        //     return ($first_stamping_data[$i]->stamping_ipqc->id);
-        // }
-
+        // return $receiving_data;
     
         return Excel::download(new ExportCN171TraceabilityReport(
-            $first_stamping_data,
-            $receiving_data
+            $stamping_data,
+            // $receiving_data
         ), 
         'CN171 Traceability.xlsx');
 

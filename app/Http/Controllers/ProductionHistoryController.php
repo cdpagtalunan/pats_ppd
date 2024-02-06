@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProductionHistoryController extends Controller
-{   
+{
     protected $shots_accum = 0;
     public function load_prodn_history_details(Request $request){
         $prodn_history = ProductionHistory::with([
@@ -23,7 +23,7 @@ class ProductionHistoryController extends Controller
             $result = "";
             $result .= "<center>";
             $result .= "<button class='btn btn-secondary btn-sm btnEdit mr-1' data-id='$prodn_history->id'><i class='fa-solid fa-pen-to-square'></i></button>";
-            
+
             $result .= "</center>";
             return $result;
         })
@@ -44,10 +44,10 @@ class ProductionHistoryController extends Controller
         })
         ->addColumn('shots_accum', function($prodn_history){
             $result = "";
-        
+
             $shots = $prodn_history->shots;
             $this->shots_accum = $this->shots_accum + $shots;
-            
+
             $result .= $this->shots_accum;
             return $result;
         })
@@ -96,7 +96,7 @@ class ProductionHistoryController extends Controller
         })
         ->addColumn('operator', function($prodn_history){
             $result = "";
-           
+
             $firstname = $prodn_history->operator_info->firstname;
             $lastname = $prodn_history->operator_info->lastname;
             $operator = $firstname.' '.$lastname;
@@ -207,7 +207,7 @@ class ProductionHistoryController extends Controller
                 return $e;
             }
 
-            
+
 
         }
     }
@@ -230,4 +230,19 @@ class ProductionHistoryController extends Controller
             'qc_info'
         ])->where('id', $request->id)->first();
     }
+
+    public function getMachine(Request $request){
+        $machine = DB::connection('mysql')
+        ->select("
+            SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machines.* FROM material_processes
+            INNER JOIN devices
+                ON devices.id = material_processes.device_id
+            INNER JOIN material_process_machines
+                ON material_process_machines.mat_proc_id = material_processes.id
+            WHERE devices.name = '$request->material_name'
+        ");
+
+        return response()->json(['machine' => $machine]);
+    }
+
 }

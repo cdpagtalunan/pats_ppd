@@ -18,20 +18,28 @@ use App\Models\SecMoldingRuncardStationMod;
 class SecondMoldingStationController extends Controller
 {
     public function viewSecondMoldingStation(Request $request){
-        $secMoldingRuncardId = isset($request->sec_molding_runcard_id) ? $request->sec_molding_runcard_id : 0;
-        // return $secMoldingRuncardId;
+        // $secMoldingRuncardId = isset($request->sec_molding_runcard_id) ? $request->sec_molding_runcard_id : '';
+        // $secondMoldingResult = DB::connection('mysql')
+        //     ->select("SELECT 
+        //                 sec_molding_runcard_stations.*, 
+        //                 CONCAT(users.firstname, ' ', users.lastname) AS operator_name, 
+        //                 stations.station_name AS station_name  
+        //             FROM sec_molding_runcard_stations
+        //             INNER JOIN users
+        //                 ON users.id = sec_molding_runcard_stations.operator_name
+        //             INNER JOIN stations
+        //                 ON stations.id = sec_molding_runcard_stations.station
+        //             WHERE sec_molding_runcard_stations.sec_molding_runcard_id = '$request->sec_molding_runcard_id'
+        //             -- AND deleted_at IS NULL
+        // ");
+
         $secondMoldingResult = DB::connection('mysql')
-            ->select("SELECT 
-                        sec_molding_runcard_stations.*, 
-                        CONCAT(users.firstname, ' ', users.lastname) AS operator_name, 
-                        stations.station_name AS station_name  
-                    FROM sec_molding_runcard_stations
-                    INNER JOIN users
-                        ON users.id = sec_molding_runcard_stations.operator_name
-                    INNER JOIN stations
-                        ON stations.id = sec_molding_runcard_stations.station
-                    WHERE sec_molding_runcard_stations.sec_molding_runcard_id = '$request->sec_molding_runcard_id'
-        ");
+            ->table('sec_molding_runcard_stations')
+            ->select(DB::raw('CONCAT(users.firstname, " ", users.lastname) AS operator_name'), 'sec_molding_runcard_stations.*', 'stations.station_name AS station_name')
+            ->join('users', 'sec_molding_runcard_stations.operator_name', '=', 'users.id')
+            ->join('stations', 'sec_molding_runcard_stations.station', '=', 'stations.id')
+            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->sec_molding_runcard_id)
+            ->get();
 
         return DataTables::of($secondMoldingResult)
         ->addColumn('action', function($row){
@@ -85,7 +93,7 @@ class SecondMoldingStationController extends Controller
                         'remarks' => $request->remarks,
     
                         // 'status' => 1,
-                        'created_by' => $_SESSION['user_id'],
+                        'created_by' => Auth::user()->id,
                         'created_at' => date('Y-m-d H:i:s'),
                     ]);
     
@@ -97,13 +105,12 @@ class SecondMoldingStationController extends Controller
                                 'sec_molding_runcard_station_id' => $secondMoldingStationId,
                                 'mod_id' => $request->mod_id[$i],
                                 'mod_quantity' => $request->mod_quantity[$i],
-                                'created_by' => $_SESSION['user_id'],
+                                'created_by' => Auth::user()->id,
                                 'created_at' => date('Y-m-d H:i:s'),
                             ]);
                         }
                     }
                     
-    
                     DB::commit();
                     return response()->json(['hasError' => false]);
                 } catch (\Exception $e) {
@@ -143,7 +150,7 @@ class SecondMoldingStationController extends Controller
                         'station_yield' => $request->station_yield,
                         'remarks' => $request->remarks,
     
-                        'last_updated_by' => $_SESSION['user_id'],
+                        'last_updated_by' => Auth::user()->id,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
     
@@ -155,7 +162,7 @@ class SecondMoldingStationController extends Controller
                                 'sec_molding_runcard_station_id' => $request->second_molding_station_id,
                                 'mod_id' => $request->mod_id[$i],
                                 'mod_quantity' => $request->mod_quantity[$i],
-                                'created_by' => $_SESSION['user_id'],
+                                'created_by' => Auth::user()->id,
                                 'created_at' => date('Y-m-d H:i:s'),
                             ]);
                         }
@@ -184,6 +191,7 @@ class SecondMoldingStationController extends Controller
                     INNER JOIN sec_molding_runcard_station_mods
                         ON sec_molding_runcard_station_mods.sec_molding_runcard_station_id = sec_molding_runcard_stations.id
                     WHERE sec_molding_runcard_stations.id = '$request->second_molding_station_id'
+                    AND deleted_at IS NULL
         ");
         return response()->json(['data' => $secondMoldingStationResult]);
     }

@@ -32,7 +32,7 @@
 					<ol class="breadcrumb float-sm-right">
 						<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
 						</li>
-						<li class="breadcrumb-item active">OQC Inspection</li>
+						<li class="breadcrumb-item active">Shipment Confirmation</li>
 					</ol>
 				</div>
 			</div>
@@ -48,6 +48,7 @@
  				<div class="col-12">
  					<!-- general form elements -->
  					<div>
+						{{-- NASA PATS MAG UUPLOAD NG SHIPMENT CONFIRMATION PARA SA CN PPTS --}}
 						<iframe  src="http://rapidx/pats/iframe_request?username={{ Auth::user()->username }}&emp_id={{ Auth::user()->employee_id }}" style="border: none;" no-border height="850" width="100%">></iframe>
  					</div>
 				</div>

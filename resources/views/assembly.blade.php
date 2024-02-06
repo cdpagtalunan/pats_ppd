@@ -1,7 +1,7 @@
 @php $layout = 'layouts.admin_layout'; @endphp
 @auth
     @extends($layout)
-    @section('title', 'Material Process')
+    @section('title', 'Assembly')
     @section('content_page')
         <style type="text/css">
             .hidden_scanner_input{
@@ -25,13 +25,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>CN Assembly</h1>
+                            <h1>Assembly</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item active">CN Assembly</li>
+                                <li class="breadcrumb-item active">Assembly</li>
                             </ol>
                         </div>
                     </div>
@@ -47,21 +47,21 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                            <label class="form-label">Series Name</label>
+                                            <label class="form-label">Device Name</label>
                                             <div class="input-group mb-3">
-                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Series Name"></i>
-                                                {{-- <select class="form-control select2bs5" id="txtSelectPONo" name="series_name" placeholder="Select PO Number"></select> --}}
-                                                <select class="form-control" type="text" name="series_name" id="txtSelectSeriesName" required>
-                                                    <option value="" disabled selected>Select Series Name</option>
+                                                <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Device Name"></i>
+                                                {{-- <select class="form-control select2bs5" id="txtSelectPONo" name="device_name" placeholder="Select PO Number"></select> --}}
+                                                <select class="form-control" type="text" name="device_name" id="txtSelectDeviceName" required>
+                                                    <option value="" disabled selected>Select Device Name</option>
                                                     <option value="CN171P-007-1002-VE(01)">CN171P-007-1002-VE(01)</option>
                                                     <option value="CN171S-007-1002-VE(01)">CN171S-007-1002-VE(01)</option>
                                                 </select>
                                             </div>
                                         </div>
                                         <div class="col-sm-3">
-                                            <label class="form-label">Device Name</label>
+                                            <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Device Name" id="txtSearchDeviceName" readonly>
+                                                <input type="text" class="form-control" placeholder="Material Name" id="txtSearchDeviceName" readonly>
                                             </div>
                                         </div>
                                         {{-- <div class="col-sm-2">
@@ -87,7 +87,7 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        <button class="btn btn-primary" id="btnAddCnAssemblyRuncard"><i class="fa-solid fa-plus"></i> Add</button>
+                                        <button class="btn btn-primary" id="btnAddAssemblyRuncard"><i class="fa-solid fa-plus"></i> Add</button>
                                     </div> <br><br>
                                     <div class="table-responsive">
                                         <!-- style="max-height: 600px; overflow-y: auto;" -->
@@ -98,7 +98,7 @@
                                                     <th>Action</th>
                                                     <th>Status</th>
                                                     <th>PO Number</th>
-                                                    <th>Device Name</th>
+                                                    <th>Material Name</th>
                                                     <th>Parts Code</th>
                                                     {{-- <th>Runcard #</th> --}}
                                                 </tr>
@@ -146,15 +146,15 @@
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Series Name</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtSeriesName" name="series_name" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtDeviceName" name="device_name" placeholder="Auto generated" readonly>
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtMaterialName" name="material_name" placeholder="Auto generated" readonly>
                                     </div>
                                     {{-- <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -232,7 +232,7 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">S-07#IN - PMI PO No</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
                                             </div>
                                         </div>
 
@@ -261,7 +261,7 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">S-02#MO - PMI PO No</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -832,7 +832,7 @@
                     "ajax" : {
                         url: "view_assembly_runcard",
                         data: function (param){
-                            param.series_name = $("#txtSeriesName").val();
+                            param.device_name = $("#txtDeviceName").val();
                         }
                     },
                     fixedHeader: true,
@@ -841,7 +841,7 @@
                         { "data" : "status" },
                         { "data" : "device_name" },
                         { "data" : "parts_code" },
-                        { "data" : "series_name" },
+                        { "data" : "device_name" },
                         // { "data" : "runcard_no" },
                     ],
                     "columnDefs": [
@@ -906,10 +906,10 @@
                                 verifyProdLotfromMolding(qrScannerValue, formId, 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO', 'txtPZeroTwoDevicePMIPO');
                                 break;
                             case 'ScanSZeroSevenProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePMIPO');
+                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePMIPO', 'txtSZeroSevenDevicePMIPO');
                                 break;
                             case 'ScanSZeroTwoProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePMIPO');
+                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePMIPO', 'txtSZeroTwoDevicePMIPO');
                                 break;
                             default:
                                 break;
@@ -934,18 +934,22 @@
                         },
                         dataType: "json",
                         success: function (response) {
-                            $(`#${textLotNumberValue}`).val('');
-                            $(`#${textLotNumberIdValue}`).val('');
-                            $(`#${DevicePO}`).val('');
-
-                            if(response['device_name'] == SecondMoldingDeviceName){
-                                $(`#${textLotNumberValue}`).val(response['production_lot']);
-                                $(`#${textLotNumberIdValue}`).val(response['device_id']);
-                                $(`#${DevicePO}`).val(response['yec_po_number']);
-                                $(`#${DevicePMIPO}`).val(response['pmi_po_number']);
-                                $('#modalQrScanner').modal('hide');
+                            if(response['device_id'] == '' && response['production_lot'] == ''){
+                                toastr.error('Production Lot Does Not Exists.')
                             }else{
-                                toastr.error('Incorrect Production Lot Number.')
+                                $(`#${textLotNumberValue}`).val('');
+                                $(`#${textLotNumberIdValue}`).val('');
+                                $(`#${DevicePO}`).val('');
+
+                                if(response['device_name'] == SecondMoldingDeviceName){
+                                    $(`#${textLotNumberValue}`).val(response['production_lot']);
+                                    $(`#${textLotNumberIdValue}`).val(response['device_id']);
+                                    $(`#${DevicePO}`).val(response['yec_po_number']);
+                                    $(`#${DevicePMIPO}`).val(response['pmi_po_number']);
+                                    $('#modalQrScanner').modal('hide');
+                                }else{
+                                    toastr.error('Incorrect Production Lot Number.')
+                                }
                             }
                         }
                     });
@@ -964,13 +968,13 @@
                     }
                 });
 
-                $('#txtSelectSeriesName').on('change', function(e){
-                    let seriesName = $('#txtSelectSeriesName').val();
+                $('#txtSelectDeviceName').on('change', function(e){
+                    let deviceName = $('#txtSelectDeviceName').val();
                     $.ajax({
                         type: "get",
                         url: "get_data_from_matrix",
                         data: {
-                            "series_name" : seriesName
+                            "device_name" : deviceName
                         },
                         dataType: "json",
                         beforeSend: function(){
@@ -982,13 +986,13 @@
                             console.log(station_details);
 
                             $('#txtSearchDeviceName').val(material_details);
-                            $('#txtSeriesName', $('#formCNAssemblyRuncard')).val($('#txtSelectSeriesName').val());
-                            $('#txtDeviceName', $('#formCNAssemblyRuncard')).val(material_details);
+                            $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
+                            $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
-                            if(seriesName == 'CN171P-007-1002-VE(01)'){
+                            if(deviceName == 'CN171P-007-1002-VE(01)'){
                                 $('#sSeriesName').prop('hidden', true);
                                 $('#pSeriesName').prop('hidden', false);
-                            }else if(seriesName == 'CN171S-007-1002-VE(01)'){
+                            }else if(deviceName == 'CN171S-007-1002-VE(01)'){
                                 $('#sSeriesName').prop('hidden', false);
                                 $('#pSeriesName').prop('hidden', true);
                             }
@@ -1033,8 +1037,8 @@
                         });
                 }, 500));
 
-                $('#btnAddCnAssemblyRuncard').on('click', function(e){
-                    if($('#txtSelectSeriesName').val() != "" && $('#txtSearchDeviceName').val() != ""){
+                $('#btnAddAssemblyRuncard').on('click', function(e){
+                    if($('#txtSelectDeviceName').val() != "" && $('#txtSearchDeviceName').val() != ""){
                         $('#modalCNAssembly').modal('show');
 
                         if($('#txtAssyRuncardId').val() == ''){
@@ -1044,7 +1048,7 @@
                         }
                     }
                     else{
-                        toastr.error('Please Select Series Name')
+                        toastr.error('Please Select Device Name')
                     }
                 });
 
@@ -1130,8 +1134,8 @@
                             $('#modalCNAssembly').modal('show');
 
                             $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
-                            $('#formCNAssemblyRuncard #txtSeriesName').val(assy_runcard_data[0].series_name);
                             $('#formCNAssemblyRuncard #txtDeviceName').val(assy_runcard_data[0].device_name);
+                            $('#formCNAssemblyRuncard #txtMaterialName').val(assy_runcard_data[0].material_name);
                             $('#formCNAssemblyRuncard #txtPONumber').val(assy_runcard_data[0].po_number);
                             $('#formCNAssemblyRuncard #txtPartsCode').val(assy_runcard_data[0].parts_code);
                             $('#formCNAssemblyRuncard #txtPoQuantity').val(assy_runcard_data[0].po_quantity);
