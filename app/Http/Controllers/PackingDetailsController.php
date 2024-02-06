@@ -96,7 +96,7 @@ class PackingDetailsController extends Controller
         ORDER BY `stat` ASC");
 
 
-        // return $final_packing_data[0]->p_status;
+        // return $final_packing_data;
 
         if(!isset($request->po_no)){
             return [];
@@ -108,6 +108,9 @@ class PackingDetailsController extends Controller
                 $result .= "<center>";
                 if($final_packing_data->stat != 3){
                     $result .= "<button class='btn btn-primary btn-sm btnViewFinalPackingDetails' data-status='$final_packing_data->stat' data-ctrl-no='$final_packing_data->packing_ctrl_no'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+                }else{
+                    $result .= "<button class='btn btn-primary btn-sm btnViewFinalPackingDetails' data-status='$final_packing_data->stat' data-ctrl-no='$final_packing_data->packing_ctrl_no'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
+
                 }
                 // else{
                 //     $count = $final_packing_data->final_packing_info->print_count;

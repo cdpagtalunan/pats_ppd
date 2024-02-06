@@ -141,6 +141,8 @@ class FirstMoldingController extends Controller
                 //     'remarks' => $request->remarks,
                 //     'updated_at' => date('Y-m-d H:i:s'),
                 // ]);
+                // return 'edit';
+
                 FirstMolding::where('id',$request->first_molding_id)
                 ->update([
                     'deleted_at' => date('Y-m-d H:i:s'),
@@ -154,6 +156,7 @@ class FirstMoldingController extends Controller
                 ]);
                 $get_first_molding_id = $first_molding_id;
             }else{
+                // return 'add';
                 if( isset( $request->first_molding_id )){ //Edit
                     // return $request->first_molding_id;
                     FirstMolding::where('id',$request->first_molding_id)->update($request->validated());

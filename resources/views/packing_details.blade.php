@@ -541,7 +541,7 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
-                        { "data" : "packing_ctrl_no" },
+                        { "data" : "packing_ctrl_no"},
                         { "data" : "po"},
                     ],
                     "columnDefs": [
