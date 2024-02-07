@@ -25,29 +25,6 @@ $('input[type="number"]').on('keydown', function(e){
 });
 
 
-// * RESET
-function resetDeviceAddValues() {
-    // Reset values
-    $("#formAddDevice")[0].reset();
-
-    console.log('resetDeviceAddValues');
-    // Reset hidden input fields
-    // $("select[name='user_level']", $('#formAddUser')).val(0).trigger('change');
-
-    // Remove invalid & title validation
-    $("#txtAddDeviceName").removeClass('is-invalid');
-    $("#txtAddDeviceName").attr('title', '');
-    $("#txtAddDeviceCode").removeClass('is-invalid');
-    $("#txtAddDeviceCode").attr('title', '');
-    $("#selStampStep").removeClass('is-invalid');
-    $("#selStampStep").attr('title', '');
-}
-
-$("#modalAddDevice").on('hidden.bs.modal', function () {
-    console.log('hidden.bs.modal');
-    resetDeviceAddValues();
-});
-
 
 function resetMatProcValues() {
     // Reset values

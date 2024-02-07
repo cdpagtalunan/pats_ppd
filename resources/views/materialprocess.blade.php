@@ -16,7 +16,7 @@
 @auth
   @extends($layout)
 
-  @section('title', 'Material Process')
+  @section('title', 'Matrix')
 
   @section('content_page')
 
@@ -32,6 +32,22 @@
     #colDevice, #colMaterialProcess{
       transition: .5s;
     }
+
+    table.table tbody td{
+        padding: 4px 4px;
+        margin: 1px 1px;
+        font-size: 14px;
+        /* text-align: center; */
+        vertical-align: middle;
+    }
+
+    table.table thead th{
+        padding: 4px 4px;
+        margin: 1px 1px;
+        font-size: 15px;
+        text-align: center;
+        vertical-align: middle;
+    }
   </style>
 
   <!-- Content Wrapper. Contains page content -->
@@ -41,13 +57,13 @@
           <div class="container-fluid">
               <div class="row mb-2">
                   <div class="col-sm-6">
-                      <h1>Material Process</h1>
+                      <h1>Matrix</h1>
                   </div>
                   <div class="col-sm-6">
                       <ol class="breadcrumb float-sm-right">
                           <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                           </li>
-                          <li class="breadcrumb-item active">Material Process</li>
+                          <li class="breadcrumb-item active">Matrix</li>
                       </ol>
                   </div>
               </div>
@@ -63,7 +79,7 @@
                       <!-- general form elements -->
                       <div class="card card-dark">
                           <div class="card-header">
-                              <h3 class="card-title">Device (Packing Matrix)</h3>
+                              <h3 class="card-title">Device</h3>
                           </div>
 
                           <!-- Start Page Content -->
@@ -87,12 +103,16 @@
                                       style="width: 100%;">
                                       <thead>
                                           <tr>
-                                              <th>Status</th>
-                                              <th>Action</th>
-                                              <th>Device Code</th>
-                                              <th>Device Name</th>
-                                              <th>Process</th>
-
+                                              <th rowspan="2">Status</th>
+                                              <th rowspan="2">Action</th>
+                                              <th rowspan="2">Device Code</th>
+                                              <th rowspan="2">Device Name</th>
+                                              <th colspan="2">Percentage</th>
+                                              <th rowspan="2">Process</th>
+                                          </tr>
+                                          <tr>
+                                            <th>Virgin</th>
+                                            <th>Recycle</th>
                                           </tr>
                                       </thead>
                                   </table>
@@ -197,37 +217,39 @@
                                   <label>Material Name</label>
                                   <input type="text" class="form-control" name="name" id="txtAddDeviceName">
                               </div>
-                              {{-- <div class="form-group">
+                            
+                              <div class="form-group">
+                              
                                 <label>Process</label>
-                                <br>
-                                <input type="radio" id="stamping" name="process">
-                                <label for="stamping">Stamping</label>
-                                <input type="radio" id="molding" name="process">
-                                <label for="molding">Molding</label>
-                              </div> --}}
-                              <label>Process</label>
 
-                              <div class="form-check">
-                                <input class="form-check-input" type="radio" name="process" id="stamping" value="0">
-                                <label class="form-check-label" for="stamping">
-                                  Stamping
-                                </label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="process" id="stamping" value="0">
+                                    <label class="form-check-label" for="stamping">
+                                    Stamping
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="process" id="molding" value="1">
+                                    <label class="form-check-label" for="molding">
+                                    Molding/Assy
+                                    </label>
+                                </div>
                               </div>
-                              <div class="form-check">
-                                <input class="form-check-input" type="radio" name="process" id="molding" value="1">
-                                <label class="form-check-label" for="molding">
-                                  Molding/Assy
-                                </label>
+                              
+                              <div class="form-group">
+                                <label>Percentage needed</label>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <label>Virgin Material</label>
+                                        <input type="number" class="form-control" name="virgin" id="txtVirginPerc">
+                                    </div>
+                                    <div class="col-6">
+                                        <label>Recycled Material</label>
+                                        <input type="number" class="form-control" name="recycled" id="txtRecycledPerc">
+
+                                    </div>
+                                </div>
                               </div>
-                              {{-- <div class="form-group">
-                                <label>Stamping Process</label>
-                                <select name="stamp_step" id="selStampStep" class="form-control">
-                                  <option value="0" selected>N/A</option>
-                                  <option value="1">1st Stamping only</option>
-                                  <option value="2">1st Stamping->SANNNO</option>
-                                  <option value="3">1st Stamping->SANNNO->2nd Stamping</option>
-                                </select>
-                              </div> --}}
                           </div>
                       </div>
                   </div>
@@ -796,6 +818,8 @@
             { "data" : "label" },
             { "data" : "code" },
             { "data" : "name" },
+            { "data" : "virgin",  orderable:false, searchable:false},
+            { "data" : "recycle",  orderable:false, searchable:false },
             { "data" : "process_name" },
           ],
           // "columnDefs": [
@@ -895,7 +919,7 @@
           },
 
           "columns":[
-            { "data" : "action" },
+            { "data" : "action", },
             // { "data" : "mat_status" },
             { "data" : "step" },
             { "data" : "process_details.process_name"},
@@ -1070,62 +1094,6 @@
             });
         });
 
-        // $(document).on('keypress',function(e){
-        //   if( ($("#mdl_qrcode_scanner").data('bs.modal') || {})._isShown ){
-        //     $('#txt_qrcode_scanner').focus();
-        //     if( e.keyCode == 13 ){
-        //       $('#mdl_qrcode_scanner').modal('hide');
-        //       // alert($("#txt_qrcode_scanner").val());
-        //       var formid = $("#mdl_qrcode_scanner").attr('data-formid');
-
-        //       if ( ( formid ).indexOf('#') > -1){
-        //         $( formid ).submit();
-        //       }
-        //       else{
-        //         switch( formid ){
-        //           case 'fn_scan_machine_code':
-        //             var val = $('#txt_qrcode_scanner').val();
-        //             if ($('#selAddMatProcMachine').find("option[data-code='" + val + "']").length) {
-        //               $('#selAddMatProcMachine option[data-code="'+val+'"]').prop('selected', true).trigger('change');
-        //             }
-        //             else{
-        //               $('#selAddMatProcMachine').val("").trigger('change');
-        //               toastr.warning('Invalid Machine!');
-        //             }
-        //             $('#txt_qrcode_scanner').val("");
-        //           break;
-
-        //           case 'fn_scan_a_shift_user_code':
-        //             var val = $('#txt_qrcode_scanner').val();
-
-        //             if ($('#selAddMatProcAShiftManpower').find("option[data-code='" + val + "']").length) {
-        //               $("#selAddMatProcAShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
-        //             }
-        //             else{
-        //               toastr.warning('Invalid User!');
-        //             }
-        //             $('#txt_qrcode_scanner').val("0");
-        //           break;
-
-        //           case 'fn_scan_b_shift_user_code':
-        //             var val = $('#txt_qrcode_scanner').val();
-
-        //             if ($('#selAddMatProcBShiftManpower').find("option[data-code='" + val + "']").length) {
-        //               $("#selAddMatProcBShiftManpower option[data-code="+val+"]").prop("selected", true).trigger("change");
-        //             }
-        //             else{
-        //               toastr.warning('Invalid User!');
-        //             }
-        //             $('#txt_qrcode_scanner').val("0");
-        //           break;
-
-        //           default:
-        //           break;
-        //         }
-        //       }
-        //     }//key
-        //   }
-        // });
 
         $(document).on('click','#btnAddMatProcScanMachineCode',function(e){
           $('#txt_qrcode_scanner').val('');
@@ -1156,6 +1124,26 @@
           $("#btnMaximizeColMatProc").css({display: 'block'});
         });
 
+
+        // * RESET
+        function resetDeviceAddValues() {
+            // Reset values
+            $("#formAddDevice")[0].reset();
+            $('#txtDeviceId').val('');
+            
+            // Remove invalid & title validation
+            $("#txtAddDeviceName").removeClass('is-invalid');
+            $("#txtAddDeviceName").attr('title', '');
+            $("#txtAddDeviceCode").removeClass('is-invalid');
+            $("#txtAddDeviceCode").attr('title', '');
+            $("#selStampStep").removeClass('is-invalid');
+            $("#selStampStep").attr('title', '');
+        }
+
+        $("#modalAddDevice").on('hidden.bs.modal', function () {
+            console.log('hidden.bs.modal');
+            resetDeviceAddValues();
+        });
 
 
       });
