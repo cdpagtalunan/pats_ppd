@@ -682,21 +682,12 @@
                     // alert('sadsad')
                     let arr = document.getElementsByClassName('sumTotalMachineOutput');
                     // let inputTotalMachineOuput = formModal.firstMolding.find('#total_machine_output').val();
-
                     inputTotalMachineOuput=0;
                     for(let i=0;i<arr.length;i++){
                         if(parseFloat(arr[i].value))
                             inputTotalMachineOuput += parseFloat(arr[i].value);
                     }
-                    // let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
-
-                    // if( inputTotalMachineOuput === '' | inputTotalMachineOuput < 0 ){
-                    //     formModal.firstMolding.find('#shipment_output').val(0);
-                    //     return;
-                    // }
                     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
-                    // calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#total_machine_output').val());
-
                 });
 
                 // formModal.firstMolding.find('#total_machine_output').keyup(function (e) {

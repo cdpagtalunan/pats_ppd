@@ -322,14 +322,15 @@ class FirstMoldingController extends Controller
         return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'first_molding_data' => $first_molding]);
     }
 
-    // public function updateFirstMoldingShipmentMachine (Request $request)
-    // {
-    //     $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
-    //         'shipment_output',$request->shipment_output,
-    //         'total_machine_output',$request->total_machine_output,
-    //     ]);
+    public function updateFirstMoldingShipmentMachineOuput (Request $request)
+    {
+        return $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
+            'shipment_output' => $request->shipment_output,
+            'ng_count' => $request->ng_count,
+            'total_machine_output' => $request->total_machine_output,
+        ]);
 
-    // }
+    }
 
 
 

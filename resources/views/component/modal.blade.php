@@ -479,7 +479,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">25 Shots </span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm sumTotalShipmentOutput" id="target_shots" name="target_shots" value="25" readonly>
+                                        <input type="text" class="form-control form-control-sm sumTotalMachineOutput" id="target_shots" name="target_shots" value="25" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -487,7 +487,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Adjustment Shots</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="adjustment_shots" name="adjustment_shots" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="adjustment_shots" name="adjustment_shots" min="0" step="0.01">
                                     </div>
                                 </div>
                             </div>
@@ -497,7 +497,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="qc_samples" name="qc_samples" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="qc_samples" name="qc_samples" min="0" step="0.01">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -505,7 +505,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Prod Samples</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="prod_samples" name="prod_samples" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="prod_samples" name="prod_samples" min="0" step="0.01">
                                     </div>
                                 </div>
                             </div>
@@ -515,7 +515,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalShipmentOutput" id="ng_count" name="ng_count" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="ng_count" name="ng_count" min="0" step="0.01">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -533,7 +533,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="shipment_output" name="shipment_output" min="0" step="0.01" readonly>
+                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="shipment_output" name="shipment_output" min="0" step="0.01">
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -541,7 +541,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Material Yield</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
                                     </div>
                                 </div>
                             </div>
