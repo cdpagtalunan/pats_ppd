@@ -83,6 +83,8 @@
 {{-- Production History --}}
 <script src="@php echo asset("public/js/main/ProductionHistory.js?".date("YmdHis")) @endphp"></script>
 
+<script src="@php echo asset("public/js/main/Mimf.js?".date("YmdHis")) @endphp"></script>
+
 
 
 

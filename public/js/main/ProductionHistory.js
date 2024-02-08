@@ -83,26 +83,52 @@ function AddProdnHistory() {
         dataType: "json",
         beforeSend: function () {
             $("#iBtnAddUserIcon").addClass('fa fa-spinner fa-pulse');
-            $("#btnSubmit").prop('disabled', 'disabled');
+            // $("#btnSubmit").prop('disabled', 'disabled');
         },
         success: function (JsonObject) {
             if (JsonObject['result'] == 1) {
                 $("#modalProductionHistory").modal('hide');
-                $("#formProductionHistory")[0].reset();
+                // $("#formProductionHistory")[0].reset();
+                $("#prodn_stime").val('');
+                $("#machine_no").val('');
+                $("#standard_para_date").val('');
+                $("#standard_para_attach").val('');
+                $("#act_cycle_time").val('');
+                $("#shot_weight").val('');
+                $("#product_weight").val('');
+                $("#screw_most_fwd").val('');
+                $("#ccd_setting_s1").val('');
+                $("#ccd_setting_s2").val('');
+                $("#ccd_setting_ng").val('');
+                $("#changes_para").val('');
+                $("#remarks").val('');
+                $("#opt_id").val('');
+                $("#opt_name").val('');
+                $("#opt_name").val('');
+
+                // $("#ibtnSubmitIcon").removeClass('fa fa-spinner fa-pulse');
+                // $("#btnSubmit").removeAttr('disabled');
+                // $("#ibtnSubmitIcon").addClass('fa fa-check');
+
                 ProductionHistory.draw();
                 toastr.success('Production History was succesfully saved!');
             }
             else {
-                toastr.error('Saving Production History Failed!');
-
-                if (JsonObject['error']['machine_no'] === undefined) {
-                    $("#machine_no").removeClass('is-invalid');
-                    $("#machine_no").attr('title', '');
-                }else {
-                    $("#machine_no").addClass('is-invalid');
-                    $("#machine_no").attr('title', JsonObject['error']['machine_no']);
+                toastr.error('Saving Productionsss History Failed!');
+                if (JsonObject['error']['prodn_stime'] === undefined) {
+                    $("#prodn_stime").removeClass('is-invalid');
+                    $("#prodn_stime").attr('title', '');
+                } else {
+                    $("#prodn_stime").addClass('is-invalid');
+                    $("#prodn_stime").attr('title', JsonObject['error']['prodn_stime']);
                 }
-
+                // if (JsonObject['error']['machine_no'] === undefined) {
+                //     $("#machine_no").removeClass('is-invalid');
+                //     $("#machine_no").attr('title', '');
+                // }else {
+                //     $("#machine_no").addClass('is-invalid');
+                //     $("#machine_no").attr('title', JsonObject['error']['machine_no']);
+                // }
                 if (JsonObject['error']['standard_para_date'] === undefined) {
                     $("#standard_para_date").removeClass('is-invalid');
                     $("#standard_para_date").attr('title', '');
@@ -110,14 +136,107 @@ function AddProdnHistory() {
                     $("#standard_para_date").addClass('is-invalid');
                     $("#standard_para_date").attr('title', JsonObject['error']['standard_para_date']);
                 }
+                if (JsonObject['error']['act_cycle_time'] === undefined) {
+                    $("#act_cycle_time").removeClass('is-invalid');
+                    $("#act_cycle_time").attr('title', '');
+                } else {
+                    $("#act_cycle_time").addClass('is-invalid');
+                    $("#act_cycle_time").attr('title', JsonObject['error']['act_cycle_time']);
+                }
+                if (JsonObject['error']['shot_weight'] === undefined) {
+                    $("#shot_weight").removeClass('is-invalid');
+                    $("#shot_weight").attr('title', '');
+                } else {
+                    $("#shot_weight").addClass('is-invalid');
+                    $("#shot_weight").attr('title', JsonObject['error']['shot_weight']);
+                }
+                if (JsonObject['error']['product_weight'] === undefined) {
+                    $("#product_weight").removeClass('is-invalid');
+                    $("#product_weight").attr('title', '');
+                } else {
+                    $("#product_weight").addClass('is-invalid');
+                    $("#product_weight").attr('title', JsonObject['error']['product_weight']);
+                }
+                if (JsonObject['error']['screw_most_fwd'] === undefined) {
+                    $("#screw_most_fwd").removeClass('is-invalid');
+                    $("#screw_most_fwd").attr('title', '');
+                } else {
+                    $("#screw_most_fwd").addClass('is-invalid');
+                    $("#screw_most_fwd").attr('title', JsonObject['error']['screw_most_fwd']);
+                }
+                if (JsonObject['error']['ccd_setting_s1'] === undefined) {
+                    $("#ccd_setting_s1").removeClass('is-invalid');
+                    $("#ccd_setting_s1").attr('title', '');
+                } else {
+                    $("#ccd_setting_s1").addClass('is-invalid');
+                    $("#ccd_setting_s1").attr('title', JsonObject['error']['ccd_setting_s1']);
+                }
+                if (JsonObject['error']['ccd_setting_s2'] === undefined) {
+                    $("#ccd_setting_s2").removeClass('is-invalid');
+                    $("#ccd_setting_s2").attr('title', '');
+                } else {
+                    $("#ccd_setting_s2").addClass('is-invalid');
+                    $("#ccd_setting_s2").attr('title', JsonObject['error']['ccd_setting_s2']);
+                }
+                if (JsonObject['error']['ccd_setting_ng'] === undefined) {
+                    $("#ccd_setting_ng").removeClass('is-invalid');
+                    $("#ccd_setting_ng").attr('title', '');
+                } else {
+                    $("#ccd_setting_ng").addClass('is-invalid');
+                    $("#ccd_setting_ng").attr('title', JsonObject['error']['ccd_setting_ng']);
+                }
+                if (JsonObject['error']['remarks'] === undefined) {
+                    $("#remarks").removeClass('is-invalid');
+                    $("#remarks").attr('title', '');
+                } else {
+                    $("#remarks").addClass('is-invalid');
+                    $("#remarks").attr('title', JsonObject['error']['remarks']);
+                }
+                if (JsonObject['error']['opt_id'] === undefined) {
+                    $("#opt_name").removeClass('is-invalid');
+                    $("#opt_name").attr('title', '');
+                } else {
+                    $("#opt_name").addClass('is-invalid');
+                    $("#opt_name").attr('title', JsonObject['error']['opt_id']);
+                }
+
+                if (JsonObject['error']['shots'] === undefined) {
+                    $("#shots").removeClass('is-invalid');
+                    $("#shots").attr('title', '');
+                } else {
+                    $("#shots").addClass('is-invalid');
+                    $("#shots").attr('title', JsonObject['error']['shots']);
+                }
+                if (JsonObject['error']['prodn_etime'] === undefined) {
+                    $("#prodn_etime").removeClass('is-invalid');
+                    $("#prodn_etime").attr('title', '');
+                } else {
+                    $("#prodn_etime").addClass('is-invalid');
+                    $("#prodn_etime").attr('title', JsonObject['error']['prodn_etime']);
+                }
+                if (JsonObject['error']['qc_id'] === undefined) {
+                    $("#qc_name").removeClass('is-invalid');
+                    $("#qc_name").attr('title', '');
+                } else {
+                    $("#qc_name").addClass('is-invalid');
+                    $("#qc_name").attr('title', JsonObject['error']['qc_id']);
+                }
+                if (JsonObject['error']['material_lot'] === undefined) {
+                    $("#material_lotno").removeClass('is-invalid');
+                    $("#material_lotno").attr('title', '');
+                } else {
+                    $("#material_lotno").addClass('is-invalid');
+                    $("#material_lotno").attr('title', JsonObject['error']['material_lot']);
+                }
+
 
 
 
             }
 
-            $("#ibtnSubmitIcon").removeClass('fa fa-spinner fa-pulse');
-            $("#btnSubmit").removeAttr('disabled');
-            $("#ibtnSubmitIcon").addClass('fa fa-check');
+            // $("#ibtnSubmitIcon").removeClass('fa fa-spinner fa-pulse');
+            // $("#btnSubmit").removeAttr('disabled');
+            // $("#ibtnSubmitIcon").addClass('fa fa-check');
         },
         error: function (data, xhr, status) {
             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);

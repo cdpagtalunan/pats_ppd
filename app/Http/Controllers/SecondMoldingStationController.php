@@ -35,11 +35,18 @@ class SecondMoldingStationController extends Controller
 
         $secondMoldingResult = DB::connection('mysql')
             ->table('sec_molding_runcard_stations')
-            ->select(DB::raw('CONCAT(users.firstname, " ", users.lastname) AS operator_name'), 'sec_molding_runcard_stations.*', 'stations.station_name AS station_name')
             ->join('users', 'sec_molding_runcard_stations.operator_name', '=', 'users.id')
             ->join('stations', 'sec_molding_runcard_stations.station', '=', 'stations.id')
             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->sec_molding_runcard_id)
+            ->where('sec_molding_runcard_stations.deleted_at', '=', NULL)
+            ->select(
+                'users.firstname',
+                'users.lastname',
+                DB::raw('CONCAT(users.firstname, " ", users.lastname) AS concatted_operator_name'),
+                'sec_molding_runcard_stations.*', 
+                'stations.station_name AS station_name')
             ->get();
+            // return $secondMoldingResult;
 
         return DataTables::of($secondMoldingResult)
         ->addColumn('action', function($row){
@@ -97,8 +104,7 @@ class SecondMoldingStationController extends Controller
                         'created_at' => date('Y-m-d H:i:s'),
                     ]);
     
-                    if($request->ng_quantity > 0){
-                        SecMoldingRuncardStationMod::where('sec_molding_runcard_station_id', $secondMoldingStationId)->delete();
+                    if(isset($request->mod_id)){
                         for ($i=0; $i < count($request->mod_id); $i++) { 
                             SecMoldingRuncardStationMod::insert([
                                 'sec_molding_runcard_id' => $request->second_molding_id,
@@ -154,8 +160,8 @@ class SecondMoldingStationController extends Controller
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
     
-                    if($request->ng_quantity > 0){
-                        SecMoldingRuncardStationMod::where('sec_molding_runcard_station_id', $request->second_molding_station_id)->delete();
+                    SecMoldingRuncardStationMod::where('sec_molding_runcard_station_id', $request->second_molding_station_id)->delete();
+                    if(isset($request->mod_id)){
                         for ($i=0; $i < count($request->mod_id); $i++) { 
                             SecMoldingRuncardStationMod::insert([
                                 'sec_molding_runcard_id' => $request->second_molding_id,
@@ -168,7 +174,6 @@ class SecondMoldingStationController extends Controller
                         }
                     }
                     
-    
                     DB::commit();
                     return response()->json(['hasError' => false]);
                 } catch (\Exception $e) {
@@ -181,18 +186,36 @@ class SecondMoldingStationController extends Controller
     }
 
     public function getSecondMoldingStationById(Request $request){
+        // $secondMoldingStationResult = SecMoldingRuncardStation::with('sec_molding_runcard_station_mods')
+        // ->get();
+
+        // $secondMoldingStationResult = DB::connection('mysql')
+        // ->select("SELECT 
+        //                 sec_molding_runcard_stations.*,
+        //                 sec_molding_runcard_station_mods.id AS sec_molding_runcard_station_mod_id,
+        //                 sec_molding_runcard_station_mods.mod_id AS mod_id,
+        //                 sec_molding_runcard_station_mods.mod_quantity AS mod_quantity
+        //             FROM sec_molding_runcard_stations
+        //             INNER JOIN sec_molding_runcard_station_mods
+        //                 ON sec_molding_runcard_station_mods.sec_molding_runcard_station_id = sec_molding_runcard_stations.id
+        //             WHERE sec_molding_runcard_stations.id = $request->second_molding_station_id
+        //             AND sec_molding_runcard_stations.deleted_at IS NULL
+        // ");
+        
         $secondMoldingStationResult = DB::connection('mysql')
-        ->select("SELECT 
-                        sec_molding_runcard_stations.*,
-                        sec_molding_runcard_station_mods.id AS sec_molding_runcard_station_mod_id,
-                        sec_molding_runcard_station_mods.mod_id AS mod_id,
-                        sec_molding_runcard_station_mods.mod_quantity AS mod_quantity
-                    FROM sec_molding_runcard_stations
-                    INNER JOIN sec_molding_runcard_station_mods
-                        ON sec_molding_runcard_station_mods.sec_molding_runcard_station_id = sec_molding_runcard_stations.id
-                    WHERE sec_molding_runcard_stations.id = '$request->second_molding_station_id'
-                    AND sec_molding_runcard_stations.deleted_at IS NULL
-        ");
+        ->table('sec_molding_runcard_stations')
+        ->leftJoin('sec_molding_runcard_station_mods', 'sec_molding_runcard_stations.id', '=', 'sec_molding_runcard_station_mods.sec_molding_runcard_station_id')
+        ->where('sec_molding_runcard_stations.id', $request->second_molding_station_id)
+        ->where('sec_molding_runcard_stations.deleted_at', '=', NULL)
+        ->select(
+            'sec_molding_runcard_stations.*',
+            'sec_molding_runcard_station_mods.id AS sec_molding_runcard_station_mod_id',
+            'sec_molding_runcard_station_mods.mod_id AS mod_id',
+            'sec_molding_runcard_station_mods.mod_quantity AS mod_quantity'
+        )
+        ->get();
+
+        
         return response()->json(['data' => $secondMoldingStationResult]);
     }
 }

@@ -1049,8 +1049,12 @@
                             success: function (response) {
                                 let userDetails = response['userDetails']
                                 if(userDetails != null){
-                                    $('#txtEmployeeNo').val(userDetails.employee_id)
-                                    UpdateOqcInspection()
+                                    if(userDetails.position == 0 || userDetails.position == 2 userDetails.position == 5){
+                                        $('#txtEmployeeNo').val(userDetails.employee_id)
+                                        UpdateOqcInspection()
+                                    }else{
+                                        alert('Only QC Supervisors and QC Inspectors are authorized.')
+                                    }
                                 }else{
                                     toastr.error('ID Number Not Registered!')
                                 }

@@ -241,11 +241,16 @@
                                                     <input type="number" class="form-control form-control-sm" name="no_tray" id="txtNoTray" placeholder="No. of Tray" readonly>
                                                 </div>
                                             </div>
-                                           
+
+                                            <label class="form-label">Material Lot No.:</label>
+                                            <div class="input-group mb-1">
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly required>
+                                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                            </div>
 
                                             <div class="form-group">
                                                 <label class="form-label">Input Pins:</label>
-                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins">
+                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins" readonly>
                                             </div>
                                             {{-- <div class="form-group">
                                                 <label class="form-label">Actual Quantity:</label>
@@ -324,11 +329,11 @@
                                                 <input type="text" class="form-control" id="txtProdLotView" readonly>
                                             </div>
 
-                                            <label class="form-label">Material Lot No.:</label>
+                                            {{-- <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly required>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly required>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="form-group d-none" id="divRemarks">
                                                 <label class="form-label">Remarks:</label>
@@ -853,39 +858,39 @@
 
                 });
 
-                $('#btnAddMatNo').on('click', function(e){
-                    e.preventDefault();
-                    let newCount = Number($('#multipleCounter').val()) + Number(1);
-                    if(newCount > 0){
-                        $('#btnRemoveMatNo').removeClass('d-none');
-                    }
-                    $('#multipleCounter').val(newCount);
-                    let inputGroup = `
-                            <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
-                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
-                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
-                            </div>
-                    `;
-                    $('#divMultipleMatLot').append(inputGroup)
-                });
+                // $('#btnAddMatNo').on('click', function(e){
+                //     e.preventDefault();
+                //     let newCount = Number($('#multipleCounter').val()) + Number(1);
+                //     if(newCount > 0){
+                //         $('#btnRemoveMatNo').removeClass('d-none');
+                //     }
+                //     $('#multipleCounter').val(newCount);
+                //     let inputGroup = `
+                //             <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
+                //                 <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
+                //                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                //             </div>
+                //     `;
+                //     $('#divMultipleMatLot').append(inputGroup)
+                // });
 
-                $('#btnRemoveMatNo').on('click', function(e){
-                    e.preventDefault();
-                    let counter = $('#multipleCounter').val();
+                // $('#btnRemoveMatNo').on('click', function(e){
+                //     e.preventDefault();
+                //     let counter = $('#multipleCounter').val();
 
-                    $(`#divInput_${counter}`).remove();
+                //     $(`#divInput_${counter}`).remove();
 
-                    let newCount = $('#multipleCounter').val() - 1;
-                    $('#multipleCounter').val(newCount)
+                //     let newCount = $('#multipleCounter').val() - 1;
+                //     $('#multipleCounter').val(newCount)
 
-                    if(newCount == 0){
-                        $('#btnRemoveMatNo').addClass('d-none');
-                    }
-                });
+                //     if(newCount == 0){
+                //         $('#btnRemoveMatNo').addClass('d-none');
+                //     }
+                // });
 
                 $(document).on('click', '.btnQr', function(){
-                    multipleMatId = $(this).offsetParent().children().attr('id');
-                    console.log($(this).offsetParent().children().attr('id'));
+                    // multipleMatId = $(this).offsetParent().children().attr('id');
+                    // console.log($(this).offsetParent().children().attr('id'));
                     $('#modalScanQr').modal('show');
                     $('#modalScanQr').on('shown.bs.modal', function () {
                         $('#txtScanQrCode').focus();
@@ -897,7 +902,8 @@
                     if(e.keyCode == 13){
                         try{
                             scannedItem = JSON.parse($(this).val());
-                            $(`#${multipleMatId}`).val(scannedItem['new_lot_no']);
+                            $(`#txtMaterialLot`).val(scannedItem['new_lot_no']);
+                            $(`#txtInptPins`).val(scannedItem['qty']);
                             $('#modalScanQr').modal('hide');
                         }
                         catch (e){

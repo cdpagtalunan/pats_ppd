@@ -29,7 +29,7 @@ class StampingController extends Controller
         ->where('po_num', $request->po)
         ->where('stamping_cat', $request->stamp_cat)
         ->get();
-        
+
 
         return DataTables::of($stamping_data)
         ->addColumn('action', function($stamping_data){
@@ -671,10 +671,24 @@ class StampingController extends Controller
         $stamping_sub_lots = FirstStampingProduction::with([
             'second_stamping_sublots'
         ])->where('id', $request->id)
-        ->first();
+        ->firstOrFail();
 
         return response()->json([
             'stampSubLot' => $stamping_sub_lots
         ]);
+    }
+
+    public function get_matrix_for_mat_validation(Request $request){
+        $matrix_details = DB::connection('mysql')
+        ->table('material_processes')
+        ->join('devices', 'material_processes.device_id', '=', 'devices.id')
+        ->join('processes', 'material_processes.process', '=', 'processes.id')
+        ->join('material_process_materials', 'material_process_materials.mat_proc_id', '=', 'material_processes.id')
+        ->select('material_process_materials.material_type', 'material_process_materials.material_code', 'devices.code', 'devices.name', 'processes.process_name')
+        ->where('processes.process_name', $request->process_name)
+        ->where('devices.name', $request->device_name)
+        ->get();
+
+        return response()->json(['data' => $matrix_details]);
     }
 }

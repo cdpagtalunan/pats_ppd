@@ -64,7 +64,6 @@
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item">Production</li>
                                 <li class="breadcrumb-item active">First Stamping</li>
                             </ol>
                         </div>
@@ -236,7 +235,7 @@
                                                 <label class="form-label">Operator Name:</label>
                                                 {{-- <input type="text" class="form-control form-control-sm select2bs4" name="opt_name[]" id="txtOptName" readonly> --}}
                                                 {{-- <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple> --}}
-                                                    {{-- <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly>
+                                                    {{-- <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly>
                                                     <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                                 </select>
                                             </div> --}}
@@ -352,7 +351,7 @@
 
                                             <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2" title="Scan Material Lot #"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
                                             <input type="hidden" class="form-control form-control-sm" name="material_no_qty" id="txtMaterialLotQty">
@@ -375,7 +374,7 @@
                                             <label class="form-label">Material Lot No.:</label>
 
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtMaterialLot_0" readonly>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no[]" id="txtMaterialLot" readonly>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
                                             </div>
                                             <input type="text" class="hidden_scanner_input" id="multipleCounter" value="0">
@@ -831,14 +830,17 @@
                     if(e.keyCode == 13){
                         let explodedMat = $(this).val().split(' | ');
                         console.log(explodedMat);
-                        if(explodedMat.length != 2){
+                        if(explodedMat.length != 4){
                             toastr.error('Invalid Sticker');
                             $(this).val('');
                             $('#modalScanQr').modal('hide');
                             return;
                         }
-                        $('#txtMaterialLot_0').val(explodedMat[0]);
-                        $('#txtMaterialLotQty').val(explodedMat[1]);
+                        else{
+                            validateScannedMaterial($('#txtMatName').val(),explodedMat[3], '1st Stamping');
+                            $('#txtMaterialLot').val(explodedMat[0]);
+                            $('#txtMaterialLotQty').val(explodedMat[1]);
+                        }
 
                         // console.log(explodedMat);
                         // $(`#${multipleMatId}`).val($(this).val());

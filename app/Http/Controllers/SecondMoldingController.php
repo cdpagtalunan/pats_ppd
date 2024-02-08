@@ -67,20 +67,79 @@ class SecondMoldingController extends Controller
         return DataTables::of($secondMoldingResult)
         ->addColumn('action', function($row){
             $result = '';
-            $result .= "
-                <center>
-                    <button class='btn btn-primary btn-sm mr-1 actionEditSecondMolding' data-bs-toggle='modal' data-bs-target='#modalSecondMolding' second-molding-id='$row->id'><i class='fa-solid fa-pen-to-square'></i></button>
-                </center>
-            ";
+            switch ($row->status) {
+                case 0:
+                    $result .= "
+                        <center>
+                            <button class='btn btn-info btn-sm mr-1 actionViewSecondMolding' data-bs-toggle='modal' data-bs-target='#modalSecondMolding' second-molding-id='$row->id'><i class='fa-solid fa-eye'></i></button>
+                        </center>
+                    ";
+                    break;
+                case 1:
+                    $result .= "
+                        <center>
+                            <button class='btn btn-primary btn-sm mr-1 actionEditSecondMolding' data-bs-toggle='modal' data-bs-target='#modalSecondMolding' second-molding-id='$row->id'><i class='fa-solid fa-pen-to-square'></i></button>
+                        </center>
+                    ";
+                    break;
+                case 2:
+                    $result .= "
+                        <center>
+                            <button class='btn btn-primary btn-sm mr-1 actionEditSecondMolding' data-bs-toggle='modal' data-bs-target='#modalSecondMolding' second-molding-id='$row->id'><i class='fa-solid fa-pen-to-square'></i></button>
+                        </center>
+                    ";
+                    break;
+                case 3:
+                    $result .= "
+                        <center>
+                            <button class='btn btn-info btn-sm mr-1 actionViewSecondMolding' data-bs-toggle='modal' data-bs-target='#modalSecondMolding' second-molding-id='$row->id'><i class='fa-solid fa-eye'></i></button>
+                            <button class='btn btn-primary btn-sm mr-1'second-molding-id='".$row->id."' id='buttonPrintSecondMolding'><i class='fa-solid fa-print' disabled></i></button>
+                        </center>
+                    ";
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+
             return $result;
         })
         ->addColumn('status', function($row){
             $result = '';
-            $result .= "
-                <center>
-                    <span class='badge rounded-pill bg-info'> On-going </span>
-                </center>
-            ";
+            switch ($row->status) {
+                case 0:
+                    $result .= "
+                        <center>
+                            <span class='badge rounded-pill bg-info'> For IPQC 2nd Molding </span>
+                        </center>
+                    ";
+                    break;
+                case 1:
+                    $result .= "
+                        <center>
+                            <span class='badge rounded-pill bg-primary'> For Mass Production </span>
+                        </center>
+                    ";
+                    break;
+                case 2:
+                    $result .= "
+                        <center>
+                            <span class='badge rounded-pill bg-warning'> For Re-setup </span>
+                        </center>
+                    ";
+                    break;
+                case 3:
+                    $result .= "
+                        <center>
+                            <span class='badge rounded-pill bg-success'> For Assembly </span>
+                        </center>
+                    ";
+                    break;
+                default:
+                    # code...
+                    break;
+            }
+            
             return $result;
         })
         ->rawColumns(['action','status'])
@@ -230,7 +289,6 @@ class SecondMoldingController extends Controller
                 DB::beginTransaction();
                 try {
                     $imploded_machine = implode($request->machine_number, ' , '); // Chris
-
                     SecMoldingRuncard::where('id', $request->second_molding_id)->update([
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
@@ -276,6 +334,14 @@ class SecondMoldingController extends Controller
                     AND deleted_at IS NULL
                     LIMIT 1
         ");
+
+        // For Clark confirmation
+        // $moldingAssyIpqcInspectionResult = DB::connection('mysql')
+        // ->select("SELECT * FROM molding_assy_ipqc_inspections
+        //             WHERE id = '$request->second_molding_id'
+        //             AND deleted_at IS NULL
+        //             LIMIT 1
+        // ");
         return response()->json(['data' => $secondMoldingResult]);
     }
 
@@ -312,5 +378,24 @@ class SecondMoldingController extends Controller
         ");
 
         return response()->json(['machine' => $machine]);
+    }
+
+    public function completeSecondMolding(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        $data = $request->all();
+        // return $data;
+
+        DB::beginTransaction();
+        try {
+            SecMoldingRuncard::where('id', $request->second_molding_id)->update([
+                'status'=> 3
+            ]);
+            DB::commit();
+            return response()->json(['hasError' => false]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage()]);
+        }
+        
     }
 }

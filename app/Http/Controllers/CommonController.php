@@ -47,4 +47,6 @@ class CommonController extends Controller
         ->select("SELECT `doc_no`,`doc_type` FROM tbl_active_docs WHERE `doc_type` = '".$request->doc_type."' AND `doc_title` LIKE '%".$request->doc_title."%'");
         return response()->json(['acdcs_data' => $acdcs_data]);
     }
+
+    
 }

@@ -4,7 +4,7 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         $(`#${formId}`)[0].reset();
         console.log(`modalId ${modalId}`);
         console.log(`formId ${formId}`);
-        $(`#${formId}`).find('select').val(0).trigger('change');  // chris to reset the select machine
+        $(`#${formId}`).find('#selMachineNumber').val(0).trigger('change');  // chris to reset the select machine
         // Remove invalid & title validation
         $('div').find('input').removeClass('is-invalid');
         $("div").find('input').attr('title', '');
@@ -220,4 +220,18 @@ const getMachineDropdown = (cboElement, materialName) => {  // chris
 
         }
     });
+}
+
+function setDisabledSecondMoldingRuncard(boolean) {
+    $('#buttonQrScanMaterialLotNumber').prop('disabled', boolean);
+    $('#buttonViewBDrawing').prop('disabled', boolean);
+    $('#textProductionLot').prop('disabled', boolean);
+    $('#buttonQrScanMaterialLotNumberEight').prop('disabled', boolean);
+    $('#buttonQrScanMaterialLotNumberNine').prop('disabled', boolean);
+    $('#buttonQrScanMaterialLotNumberTen').prop('disabled', boolean);
+    $('#buttonQrScanContactLotNumberOne').prop('disabled', boolean);
+    $('#buttonQrScanContactLotNumberSecond').prop('disabled', boolean);
+    $('#buttonQrScanMELotNumberOne').prop('disabled', boolean);
+    $('#buttonQrScanMELotNumberSecond').prop('disabled', boolean);
+    $('#buttonSaveSecondMoldingData').prop('disabled', boolean);
 }

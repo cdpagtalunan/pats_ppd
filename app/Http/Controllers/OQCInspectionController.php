@@ -13,12 +13,12 @@ use Auth;
 use DataTables;
 
 use App\Models\User;
-use App\Models\ReelLot;
-use App\Models\PrintLot;
 use App\Models\OQCInspection;
 use App\Models\DropdownOqcAql;
 use App\Models\AcdcsActiveDocs;
 use App\Models\DropdownOqcFamily;
+use App\Models\OqcInspectionReelLot;
+use App\Models\OqcInspectionPrintLot;
 use App\Models\FirstStampingProduction;
 use App\Models\DropdownOqcStampingLine;
 use App\Models\DropdownOqcInspectionMod;
@@ -911,28 +911,28 @@ class OQCInspectionController extends Controller
                 // }
 
                 if ($request->print_lot_no_0 != null && $request->print_lot_qty_0 != null) {
-                    // PrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    // OqcInspectionPrintLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                     for($print_lot_counter = 0; $print_lot_counter <= $request->print_lot_counter; $print_lot_counter++) { 
                         $add_print_lot['oqc_inspection_id'] = $getID;
                         $add_print_lot['counter']  = $print_lot_counter;
                         $add_print_lot['print_lot_no']  = $request->input("print_lot_no_$print_lot_counter");
                         $add_print_lot['print_lot_qty'] = $request->input("print_lot_qty_$print_lot_counter");
 
-                        PrintLot::insert(
+                        OqcInspectionPrintLot::insert(
                             $add_print_lot
                         );
                     }
                 }
 
                 if ($request->reel_lot_no_0 != null && $request->reel_lot_qty_0 != null) {
-                    // ReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
+                    // OqcInspectionReelLot::where('oqc_inspection_id', $request->oqc_inspection_id)->delete();
                     for($reel_lot_counter = 0; $reel_lot_counter <= $request->reel_lot_counter; $reel_lot_counter++) { 
                         $add_reel_lot['oqc_inspection_id'] = $getID;
                         $add_reel_lot['counter']  = $reel_lot_counter;
                         $add_reel_lot['reel_lot_no']  = $request->input("reel_lot_no_$reel_lot_counter");
                         $add_reel_lot['reel_lot_qty'] = $request->input("reel_lot_qty_$reel_lot_counter");
 
-                        ReelLot::insert(
+                        OqcInspectionReelLot::insert(
                             $add_reel_lot
                         );
                     }

@@ -18,6 +18,10 @@
         Ctr : 0,
     }
 
+    var input = {
+        inputTotalMachineOuput : 0
+    }
+
     const getFirstModlingDevices = function (){
 
         $.ajax({
@@ -59,7 +63,6 @@
 
                 for (let i = 0; i < first_molding_material_list.length; i++) {
                     console.log(first_molding_material_list[i].virgin_material);
-                    // value="${first_molding_material_list[i].virgin_material}"
                     let rowFirstMoldingMaterial = `
                         <tr>
                             <td>
@@ -89,10 +92,44 @@
                                 </div>
                             </td>
                             <td>
-                                <center><button class="btn btn-xs btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
                             </td>
                         </tr>
                     `;
+                    // let rowFirstMoldingMaterial = `
+                    //     <tr>
+                    //         <td>
+                    //             <div class="input-group input-group-sm mb-3">
+                    //                     <input value="${first_molding_material_list[i].virgin_material}" type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
+                    //                     <div class="input-group-prepend">
+                    //                         <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
+                    //                     </div>
+                    //                     <input value="${first_molding_material_list[i].virgin_material}" type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
+                    //             </div>
+                    //         </td>
+                    //         <td>
+                    //             <div class="input-group input-group-sm mb-3">
+                    //                 <input value="${first_molding_material_list[i].virgin_qty}" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_qty[]" required>
+                    //             </div>
+                    //         </td>
+                    //         <td>
+                    //             <div class="input-group input-group-sm mb-3">
+                    //                     <div class="input-group-prepend">
+                    //                         <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                    //                     </div>
+                    //                     <input value="${first_molding_material_list[i].recycle_material}" type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
+                    //             </div>
+                    //         </td>
+                    //         <td>
+                    //             <div class="input-group input-group-sm mb-3">
+                    //                 <input value="${first_molding_material_list[i].recycle_qty}" type="number" class="form-control form-control-sm" id="recycle_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_qty[]" required>
+                    //             </div>
+                    //         </td>
+                    //         <td>
+                    //             <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                    //         </td>
+                    //     </tr>
+                    // `;
                     $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
                 }
 
@@ -207,66 +244,73 @@
             data: {"first_molding_station_id" : first_molding_station_id},
             dataType: "json",
             success: function (response) {
+                let is_data_first_molding_detail_mod = response['first_molding_detail_mod'];
+                let first_molding_station_detail = '';
 
-                let data = response['first_molding_detail_mod'][0].belongs_to_first_molding_detail;
-                let first_molding_detail_mod = response['first_molding_detail_mod'];
+                /* When data first_molding_detail_mod exist read the multiple Mode Of Defects  */
+                if( is_data_first_molding_detail_mod === undefined ){
+                    first_molding_station_detail = response['first_molding_detail'][0];
+                }else{
+                    first_molding_station_detail = response['first_molding_detail_mod'][0].belongs_to_first_molding_detail;
+                    let first_molding_detail_mod = response['first_molding_detail_mod'];
 
-                formModal.firstMoldingStation.find('#first_molding_id').val(data.first_molding_id);
-                formModal.firstMoldingStation.find('#first_molding_detail_id').val(data.id);
-                formModal.firstMoldingStation.find('#date').val(data.date);
-                formModal.firstMoldingStation.find('#operator_name').val(data.operator_name);
-                formModal.firstMoldingStation.find('#input').val(data.input);
-                formModal.firstMoldingStation.find('#ng_qty').val(data.ng_qty);
-                formModal.firstMoldingStation.find('#output').val(data.output);
-                formModal.firstMoldingStation.find('#station_yield').val(data.yield);
-                formModal.firstMoldingStation.find('#remarks').val(data.remarks);
+                    for(let i = 0; i < first_molding_detail_mod.length; i++){
+                        // console.log(first_molding_detail_mod[i]);
+                        let defects = first_molding_detail_mod[i].defects_info.defects;
+                        let info_defects_id = first_molding_detail_mod[i].defects_info.id;
+                        let mod_quantity = first_molding_detail_mod[i].mod_quantity;
+                        let rowModeOfDefect = `
+                            <tr>
+                                <td>
+                                    <select class="form-control select2 select2bs4 selectMOD" name="mod_id[]">
+                                        <option value="${info_defects_id}">${defects}</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${mod_quantity}" min="1">
+                                </td>
+                                <td>
+                                    <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                </td>
+                            </tr>
+                        `;
+                        console.log('dsad',info_defects_id);
+                        // getModeOfDefectForFirstMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
+                        $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
+                    }
+
+                    let totalNumberOfMOD = 0;
+
+                    $("#labelTotalNumberOfNG").empty();
+
+                    $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
+                        if($(this).val() === null || $(this).val() === ""){
+                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            $("#labelTotalNumberOfNG").text(parseInt(0));
+                        }
+                        totalNumberOfMOD += parseInt($(this).val());
+                    });
+
+                    getValidateTotalNgQty(first_molding_station_detail.ng_qty,totalNumberOfMOD);
+                }
+                formModal.firstMoldingStation.find('#first_molding_id').val(first_molding_station_detail.id);
+                formModal.firstMoldingStation.find('#first_molding_id').val(first_molding_station_detail.first_molding_id);
+                formModal.firstMoldingStation.find('#first_molding_detail_id').val(first_molding_station_detail.id);
+                formModal.firstMoldingStation.find('#date').val(first_molding_station_detail.date);
+                formModal.firstMoldingStation.find('#operator_name').val(first_molding_station_detail.operator_name);
+                formModal.firstMoldingStation.find('#input').val(first_molding_station_detail.input);
+                formModal.firstMoldingStation.find('#ng_qty').val(first_molding_station_detail.ng_qty);
+                formModal.firstMoldingStation.find('#output').val(first_molding_station_detail.output);
+                formModal.firstMoldingStation.find('#station_yield').val(first_molding_station_detail.yield);
+                formModal.firstMoldingStation.find('#remarks').val(first_molding_station_detail.remarks);
 
                 setTimeout(() => {
-                    formModal.firstMoldingStation.find('#station').val(data.station);
+                    formModal.firstMoldingStation.find('#station').val(first_molding_station_detail.station);
                 }, 300);
-                console.log(formModal.firstMolding.find("#first_molding_id").val());
+                // getStation();
+
                 $('#modalFirstMoldingStation').modal('show');
 
-                getStation();
-                for(let i = 0; i < first_molding_detail_mod.length; i++){
-                    // console.log(first_molding_detail_mod[i]);
-
-                    let defects = first_molding_detail_mod[i].defects_info.defects;
-                    let info_defects_id = first_molding_detail_mod[i].defects_info.id;
-                    let mod_quantity = first_molding_detail_mod[i].mod_quantity;
-                    let rowModeOfDefect = `
-                        <tr>
-                            <td>
-                                <select class="form-control select2 select2bs4 selectMOD" name="mod_id[]">
-                                    <option value="${info_defects_id}">${defects}</option>
-                                </select>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${mod_quantity}" min="1">
-                            </td>
-                            <td>
-                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
-                            </td>
-                        </tr>
-                    `;
-                    console.log('dsad',info_defects_id);
-                    // getModeOfDefectForFirstMolding($("#tableFirstMoldingStationMOD tr:last").find('.selectMOD'));
-                    $("#tableFirstMoldingStationMOD tbody").append(rowModeOfDefect);
-                }
-
-                let totalNumberOfMOD = 0;
-                let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
-                $("#labelTotalNumberOfNG").empty();
-
-                $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
-                    if($(this).val() === null || $(this).val() === ""){
-                        $("#tableFirstMoldingStationMOD tbody").empty();
-                        $("#labelTotalNumberOfNG").text(parseInt(0));
-                    }
-                    totalNumberOfMOD += parseInt($(this).val());
-                });
-
-                getValidateTotalNgQty(ngQty,totalNumberOfMOD);
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }
@@ -326,15 +370,46 @@
             }
         });
     }
+    // const calcuTotalMachineOutput = function (){
+    //     let arr = document.getElementsByClassName('sumTotalMachineOutput');
+
+    //     for(let i=0;i<arr.length;i++){
+    //         if(parseFloat(arr[i].value))
+    //         input.inputTotalMachineOuput += parseFloat(arr[i].value);
+    //     }
+    //     return input.inputTotalMachineOuput;
+    // }
+
+    const updateFirstMoldingShipmentMachineOuput = function (shipmentOutput,inputTotalMachineOuput){
+        $.ajax({
+            type: "GET",
+            url: "update_first_molding_shipment_machine_ouput",
+            data: {"shipment_output": shipmentOutput, "total_machine_ouput": inputTotalMachineOuput},
+            dataType: "json",
+            success: function (response) {
+                
+            }
+        });
+    }
 
     const savefirstMoldingStation = function (){
+        calcuTotalMachineOutput();
+        let data = $.param({ 'shipment_output': input.inputTotalMachineOuput }) + "&" + formModal.firstMoldingStation.serialize();
+
         $.ajax({
             type: "POST",
             url: "save_first_molding_station",
-            data: formModal.firstMoldingStation.serialize(),
+            data: data,
             dataType: "json",
             success: function (response) {
                 if(response['result'] === 1){
+                    let shipmentOutput = formModal.firstMoldingStation.find('#output').val();
+                    let ngCount = formModal.firstMoldingStation.find('#ng_qty').val();
+
+                    formModal.firstMolding.find('#shipment_output').val(shipmentOutput);
+                    formModal.firstMolding.find('#ng_count').val(ngCount);
+                    formModal.firstMolding.find('#total_machine_output').val(input.inputTotalMachineOuput);
+
                     $('#modalFirstMoldingStation').modal('hide');
                     formModal.firstMoldingStation[0].reset();
                     dt.firstMoldingStation.draw();
@@ -365,13 +440,14 @@
         });
     }
 
-    const getStation = function (){
+    const getStation = function (elementId,device_name){
         $.ajax({
             type: "GET",
             url: "get_stations",
-            data: "data",
+            data: {"device_name" : device_name},
             dataType: "json",
             success: function (response) {
+                // return response;
                 let id = response['id'];
                 let value = response['value'];
                 let result = '';
@@ -385,32 +461,21 @@
                 else{
                     result = '<option value="0" selected disabled> No record found </option>';
                 }
-                $('select[name="station"]').html(result);
+                elementId.html(result);
             }
         });
     }
 
     const totalOutput = function (input_qty,ng_qty){
         let totalOutputQty = input_qty - ng_qty;
-        if(input_qty == "" || ng_qty == "" || totalOutputQty <= 0){
-            formModal.firstMoldingStation.find('#input').val(0);
-            formModal.firstMoldingStation.find('#output').val(0);
-            formModal.firstMoldingStation.find('#ng_qty').val(0);
-            formModal.firstMoldingStation.find("#station_yield").val('0%');
-            Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Output qty. cannot be negative value!",
-                showConfirmButton: false,
-                timer: 1500
-            });
-            return;
-        }
         formModal.firstMoldingStation.find('#output').val(totalOutputQty);
     }
 
     const totalStationYield = function (station_input,station_output){
         let stationYield = (station_output/station_input)*100;
+        console.log('station_input',station_input);
+        console.log('stationYield_station_output',station_output);
+        console.log('stationYield',stationYield);
         if(station_input == "" || station_output == ""){
             formModal.firstMoldingStation.find("#station_yield").val('0%');
             return;

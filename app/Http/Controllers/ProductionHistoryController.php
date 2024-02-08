@@ -124,19 +124,23 @@ class ProductionHistoryController extends Controller
 
     public function add_prodn_history(Request $request){
 
-        if(!isset($request->prodn_history_id)){
+        if($request->prodn_history_id != ""){
             $validation = array(
+                'shots' => ['required'],
+                'prodn_etime' => ['required'],
+                'qc_id' => ['required'],
                 'material_name' => ['required'],
+                'material_lot' => ['required'],
             );
         }
         else{
             $validation = array(
                 'global_device_name_id' => ['required'],
                 'prodn_date' => ['required'],
+                'prodn_stime' => ['required'],
                 'shift' => ['required'],
-                'machine_no' => ['required'],
+                // 'machine_no' => ['required'],
                 'standard_para_date' => ['required'],
-                'opt_id' => ['required'],
                 'act_cycle_time' => ['required'],
                 'shot_weight' => ['required'],
                 'product_weight' => ['required'],
@@ -144,8 +148,9 @@ class ProductionHistoryController extends Controller
                 'ccd_setting_s1' => ['required'],
                 'ccd_setting_s2' => ['required'],
                 'ccd_setting_ng' => ['required'],
-                'changes_para' => ['required'],
                 'remarks' => ['required'],
+                'opt_id' => ['required'],
+
             );
         }
 
@@ -164,10 +169,11 @@ class ProductionHistoryController extends Controller
                     'fkid_molding_devices' => $request->global_device_name_id,
                     'status' => 0,
                     'prodn_date' => $request->prodn_date,
+                    'prodn_stime' => $request->prodn_stime,
                     'shift' => $request->shift,
                     'machine_no' => $request->machine_no,
                     'standard_para_date' => $request->standard_para_date,
-                    'standard_para_attach' => $request->standard_para_attach,
+                    // 'standard_para_attach' => $request->standard_para_attach,
                     'act_cycle_time' => $request->act_cycle_time,
                     'shot_weight' => $request->shot_weight,
                     'product_weight' => $request->product_weight,
@@ -184,8 +190,8 @@ class ProductionHistoryController extends Controller
                 $edit_process_array = array(
                     'status' => 1,
                     'material_name' => $request->material_name,
+                    'material_lot' => $request->material_lot,
                     'shots' => $request->shots,
-                    'prodn_stime' => $request->prodn_stime,
                     'prodn_etime' => $request->prodn_etime,
                     'qc_id' => $request->qc_id,
 

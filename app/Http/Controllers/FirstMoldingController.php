@@ -56,8 +56,8 @@ class FirstMoldingController extends Controller
             $result .= '<center>';
             switch ($row->status) {
                 case 0:
-                    // $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
-                    $result .= "";
+                    $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    // $result .= "";
                     break;
                 case 1:
                     // $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
@@ -90,7 +90,7 @@ class FirstMoldingController extends Controller
                     $result .= '<span class="badge rounded-pill bg-primary"> For Mass Prod </span>';
                     break;
                 case 2:
-                    $result .= '<span class="badge rounded-pill bg-warning"> Re set-up </span>';
+                    $result .= '<span class="badge rounded-pill bg-warning"> Re-quali </span>';
                     break;
                 case 3:
                     $result .= '<span class="badge rounded-pill bg-success"> Done </span>';
@@ -128,54 +128,41 @@ class FirstMoldingController extends Controller
             if ($validator->fails()) {
                 return response()->json(['result' => '0', 'error' => $validator->messages()]);
             }
-
-
-            $first_molding_status = FirstMolding::where('id',$request->first_molding_id)->get(['status']);
-
-            if($first_molding_status[0]->status == 2){ // if status is 2 or re set up change the status into 0 - For Quali
-                // FirstMolding::where('id',$request->first_molding_id)->update($request->validated());
-                // FirstMolding::where('id',$request->first_molding_id)
-                // ->update([
-                //     'first_molding_device_id' => $request->first_molding_device_id,
-                //     'status' => 0,
-                //     'remarks' => $request->remarks,
-                //     'updated_at' => date('Y-m-d H:i:s'),
-                // ]);
-                FirstMolding::where('id',$request->first_molding_id)
-                ->update([
-                    'deleted_at' => date('Y-m-d H:i:s'),
-                ]);
-                $first_molding_id = FirstMolding::insertGetId($request->validated());
-                FirstMolding::where('id',$first_molding_id)
+            if( isset( $request->first_molding_id )){ //Edit
+                $first_molding_status = FirstMolding::where('id',$request->first_molding_id)->get(['status']);
+                if($first_molding_status[0]->status == 2){ // if status is 2 or re set up change the status into 0 - For Quali
+                    FirstMolding::where('id',$request->first_molding_id)
                     ->update([
-                        'first_molding_device_id' => $request->first_molding_device_id,
-                        'remarks' => $request->remarks,
-                        'created_at' => date('Y-m-d H:i:s'),
-                ]);
-                $get_first_molding_id = $first_molding_id;
-            }else{
-                if( isset( $request->first_molding_id )){ //Edit
-                    // return $request->first_molding_id;
+                        'deleted_at' => date('Y-m-d H:i:s'),
+                    ]);
+                    $first_molding_id = FirstMolding::insertGetId($request->validated());
+                    FirstMolding::where('id',$first_molding_id)
+                        ->update([
+                            'first_molding_device_id' => $request->first_molding_device_id,
+                            'remarks' => $request->remarks,
+                            'created_at' => date('Y-m-d H:i:s'),
+                    ]);
+                    $get_first_molding_id = $first_molding_id;
+                }else{
                     FirstMolding::where('id',$request->first_molding_id)->update($request->validated());
                     FirstMolding::where('id',$request->first_molding_id)
                     ->update([
                         'first_molding_device_id' => $request->first_molding_device_id,
-                        // 'contact_lot_number' => $request->contact_lot_number,
-                        // 'production_lot_extension' => $request->production_lot_extension,
                         'remarks' => $request->remarks,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
                     $get_first_molding_id = $request->first_molding_id;
-                }else{ //Add
-                    $first_molding_id = FirstMolding::insertGetId($request->validated());
-                    FirstMolding::where('id',$first_molding_id)
-                    ->update([
-                        'first_molding_device_id' => $request->first_molding_device_id,
-                        'remarks' => $request->remarks,
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ]);
-                    $get_first_molding_id = $first_molding_id;
                 }
+
+            }else{ //Add
+                $first_molding_id = FirstMolding::insertGetId($request->validated());
+                FirstMolding::where('id',$first_molding_id)
+                ->update([
+                    'first_molding_device_id' => $request->first_molding_device_id,
+                    'remarks' => $request->remarks,
+                    'created_at' => date('Y-m-d H:i:s'),
+                ]);
+                $get_first_molding_id = $first_molding_id;
             }
 
             /* Save Resin  Materials */
@@ -187,11 +174,11 @@ class FirstMoldingController extends Controller
                 foreach ( $virgin_material as $key => $value_virgin_material) {
                     FirstMoldingMaterialList::insert([
                         'first_molding_id'   => $get_first_molding_id,
-                        'virgin_material'           => $virgin_material[$key],
-                        'virgin_qty'           => $request->virgin_qty[$key],
-                        'recycle_material'              => $request->recycle_material[$key],
-                        'recycle_qty'              => $request->recycle_qty[$key],
-                        'created_at'                => date('Y-m-d H:i:s')
+                        'virgin_material'    => $virgin_material[$key],
+                        'virgin_qty'         => $request->virgin_qty[$key],
+                        'recycle_material'   => $request->recycle_material[$key],
+                        'recycle_qty'        => $request->recycle_qty[$key],
+                        'created_at'         => date('Y-m-d H:i:s'),
                     ]);
                 }
             }else{
@@ -261,7 +248,8 @@ class FirstMoldingController extends Controller
         }
     }
 
-    public function getDiesetDetailsByDeviceName (Request $request){
+    public function getDiesetDetailsByDeviceName (Request $request)
+    {
         $tbl_dieset =  TblDieset::where('DeviceName',$request->device_name)->get();
         return response()->json( [
              'dieset_no' => $tbl_dieset[0]->DieNo,
@@ -270,7 +258,9 @@ class FirstMoldingController extends Controller
         ] );
 
     }
-    public function getFirstMoldingQrCode (Request $request){
+
+    public function getFirstMoldingQrCode (Request $request)
+    {
 
         $first_molding = FirstMolding::leftJoin('first_molding_devices', function($join) {
             $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
@@ -331,6 +321,16 @@ class FirstMoldingController extends Controller
 
         return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'first_molding_data' => $first_molding]);
     }
+
+    // public function updateFirstMoldingShipmentMachine (Request $request)
+    // {
+    //     $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
+    //         'shipment_output',$request->shipment_output,
+    //         'total_machine_output',$request->total_machine_output,
+    //     ]);
+
+    // }
+
 
 
 

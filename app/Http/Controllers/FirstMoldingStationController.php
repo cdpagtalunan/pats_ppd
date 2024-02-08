@@ -6,8 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use DataTables;
 use App\Models\FirstMoldingDetail;
-use App\Models\Station;
+use App\Models\FirstMolding;
 use App\Models\FirstMoldingDetailMod;
+use App\Models\FirstMoldingStation;
+use App\Models\Station;
 use App\Models\User;
 use App\Http\Requests\FirstMoldingStationRequest;
 
@@ -16,7 +18,7 @@ class FirstMoldingStationController extends Controller
     public function loadFirstMoldingStationDetails(Request $request)
     {
         $first_molding_id= isset($request->first_molding_id) ? $request->first_molding_id : 0;
-        $first_molding_station_details = FirstMoldingDetail::where('first_molding_id',$first_molding_id)->get();
+        $first_molding_station_details = FirstMoldingDetail::where('first_molding_id',$first_molding_id)->whereNull('deleted_at')->get();
         return DataTables::of($first_molding_station_details)
         ->addColumn('action', function($row){
             $result = '';
@@ -46,31 +48,31 @@ class FirstMoldingStationController extends Controller
 
     }
 
-    public function getStations(Request $request)
-    {
-        // return 'true';
-        try{
-            $station = Station::get();
-            foreach ($station as $key => $value_station) {
-                $arr_station_id[] =$value_station['id'];
-                $arr_station_value[] =$value_station['station_name'];
-            }
-            return response()->json([
-                'id'    =>  $arr_station_id,
-                'value' =>  $arr_station_value
-            ]);
-        } catch (\Throwable $th) {
-            return $th;
-        }
-    }
+    // public function getStations(Request $request)
+    // {
+    //     try{
+    //         $station = Station::get();
+    //         foreach ($station as $key => $value_station) {
+    //             $arr_station_id[] =$value_station['id'];
+    //             $arr_station_value[] =$value_station['station_name'];
+    //         }
+    //         return response()->json([
+    //             'id'    =>  $arr_station_id,
+    //             'value' =>  $arr_station_value
+    //         ]);
+    //     } catch (\Throwable $th) {
+    //         return $th;
+    //     }
+    // }
 
     public function saveFirstMoldingStation(FirstMoldingStationRequest $request)
     {
         date_default_timezone_set('Asia/Manila');
         try{
+            return $request->all();
 
             if( isset($request->first_molding_detail_id) ){
-                // return 'edit';
+                return 'edit';
                 $first_molding_detail_id = FirstMoldingDetail::where('id',$request->first_molding_detail_id)
                 ->update([
                     'first_molding_id' => $request->first_molding_id,
@@ -101,15 +103,24 @@ class FirstMoldingStationController extends Controller
                 ]);
                 $first_molding_detail_id = $get_first_molding_detail_id;
             }
+        
+            return $is_first_molding_station = FirstMoldingDetail::where('id',$first_molding_detail_id)->where(['station',8])->count();
+            /* 
+                $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
+                    'shipment_output',$request->shipment_output,
+                    'total_machine_output',$request->total_machine_output,
+                ]);
+            */
+            return response()->json( [ 'result' => 1 ] );
             /*
                 TODO: Save Auto Prod Lot
                 TODO: Multiple Resin Lot Number Virgin at Recycle
-                TODO: Show Variance
             */
             if(isset($request->mod_id)){
-                FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
-                    'deleted_at' => date('Y-m-d H:i:s')
-                ]);
+                // FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
+                //     'deleted_at' => date('Y-m-d H:i:s')
+                // ]);
+                $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
 
                 foreach ( $request->mod_id as $key => $value_mod_id) {
                     FirstMoldingDetailMod::insert([
@@ -122,12 +133,12 @@ class FirstMoldingStationController extends Controller
                 }
             }else{
                 if(FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->exists()){
-                    FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
-                        'deleted_at' => date('Y-m-d H:i:s')
-                    ]);
+                    // FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
+                    //     'deleted_at' => date('Y-m-d H:i:s')
+                    // ]);
+                    $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
                 }
             }
-            return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
             return $th;
         }
@@ -137,9 +148,58 @@ class FirstMoldingStationController extends Controller
     {
         $first_molding_detail_mod = FirstMoldingDetailMod::where('first_molding_detail_id',$request->first_molding_station_id)->whereNull('deleted_at')
         ->with('belongsToFirstMoldingDetail','defectsInfo')->get();
+        if(count($first_molding_detail_mod) == 0 ){
+            $first_molding_detail = FirstMoldingDetail::where('id',$request->first_molding_station_id)->whereNull('deleted_at')->get();
+            return response()->json( [ 'first_molding_detail' => $first_molding_detail ] );
 
+        }
         return response()->json( [ 'first_molding_detail_mod' => $first_molding_detail_mod ] );
+
     }
+
+    public function getFirstMoldingStationLastOuput (Request $request){
+        $first_molding_detail = FirstMoldingDetail::where('first_molding_id',$request->first_molding_station_last_ouput)->orderBy('id','DESC')->get(['id','first_molding_id','output']);
+        $is_exist = count($first_molding_detail);
+        if(  $is_exist > 0 ){
+            return response()->json( [
+                'first_molding_station_id' => $first_molding_detail[0]->id,
+                'first_molding_id' => $first_molding_detail[0]->first_molding_id,
+                'first_molding_station_last_output' => $first_molding_detail[0]->output,
+                'first_molding_detail_count' => $is_exist,
+            ] );
+        }else{
+            return response()->json( [
+                'first_molding_detail_count' => $is_exist,
+            ] );
+        }
+
+    }
+
+    public function getStations(Request $request)
+    {
+        
+        $material_station_by_device_name = DB::connection('mysql')
+        ->select("  SELECT material_processes.*, devices.*, material_process_stations.*, stations.id AS station_id, stations.station_name AS station_name FROM material_processes
+                    INNER JOIN devices
+                    ON devices.id = material_processes.device_id
+                    INNER JOIN material_process_stations
+                    ON material_process_stations.mat_proc_id = material_processes.id
+                    INNER JOIN stations
+                    ON stations.id = material_process_stations.station_id
+                    WHERE devices.name = '$request->device_name'
+        ");
+
+        foreach ($material_station_by_device_name as $key => $value_material_station_by_device_name) {
+            $arr_material_station_by_device_name_id[] = $value_material_station_by_device_name->station_id;
+            $arr_material_station_by_device_name_value[] = $value_material_station_by_device_name->station_name;
+        }
+        return response()->json([
+            'id'    =>  $arr_material_station_by_device_name_id,
+            'value' =>  $arr_material_station_by_device_name_value,
+        ]);
+    }
+
+
 
 
 }

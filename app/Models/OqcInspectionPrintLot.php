@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PrintLot extends Model
+class OqcInspectionPrintLot extends Model
 {
-    protected $table = "print_lots";
+    protected $table = "oqc_inspection_print_lots";
     protected $connection = "mysql";
 }

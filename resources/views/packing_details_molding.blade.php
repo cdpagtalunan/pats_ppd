@@ -550,7 +550,10 @@
                             if(scannedItem['cat'] == 2){
                                 $('#tblViewSublotDetails tbody tr').each(function(index, tr){
                                     let second_stamping_sub_lot = $(tr).find('td:eq(0)').text().trim().toUpperCase();
+                                    // let second_stamping_sub_lot = $(tr).find('td:eq(0)').text().trim().toUpperCase();
                                     // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+
+                                    // && scannedItem['prod_lot_number'] == second_stamping_sub_lot
 
                                     let powerOff = $(this).find('td:nth-child(1)').children();
 

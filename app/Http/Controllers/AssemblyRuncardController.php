@@ -43,20 +43,20 @@ class AssemblyRuncardController extends Controller
                                             ->whereNull('deleted_at')
                                             ->where('production_lot', $request->production_lot)
                                             ->get();
-
-        // if($device_name_by_prod_lot->isEmpty()){
-        //     $device_name = '';                                   
-        //     $production_lot = '';                                   
-        //     $device_id = '';
-        //     $yec_po_number = '';
-        //     $pmi_po_number = '';
-        // }else{
+// return $device_name_by_prod_lot;
+        if($device_name_by_prod_lot->isEmpty()){
+            $device_name = '';                                   
+            $production_lot = '';                                   
+            $device_id = '';
+            $yec_po_number = '';
+            $pmi_po_number = '';
+        }else{
             $device_name = $device_name_by_prod_lot[0]->firstMoldingDevice->device_name;                                   
             $production_lot = $device_name_by_prod_lot[0]->production_lot;
             $device_id = $device_name_by_prod_lot[0]->first_molding_device_id;
             $yec_po_number = $device_name_by_prod_lot[0]->po_no;
             $pmi_po_number = $device_name_by_prod_lot[0]->pmi_po_no;
-        // }
+        }
     
         return response()->json(['device_name' => $device_name, 
                                 'production_lot' => $production_lot,
@@ -72,7 +72,7 @@ class AssemblyRuncardController extends Controller
                                             ->where('production_lot', $request->production_lot)
                                             ->get();
 
-                                            return $device_name_by_prod_lot;
+                                            // return $device_name_by_prod_lot;
         if($device_name_by_prod_lot->isEmpty()){
             $device_name = '';                                   
             $production_lot = '';                                   

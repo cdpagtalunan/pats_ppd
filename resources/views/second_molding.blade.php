@@ -93,11 +93,11 @@
                                                     <th>Status</th>
                                                     <th>Device Name</th>
                                                     <th>Parts Code</th>
-                                                    <th>PO Number</th>
+                                                    <th>PMI PO Number</th>
                                                     <th>PO Quantity</th>
-                                                    <th>Machine #</th>
-                                                    <th>Material Name</th>
+                                                    <th style="min-width: 15%; width: 15%">Machine #</th>
                                                     <th>Material Lot #</th>
+                                                    <th>Material Name</th>
                                                     <th>MATL Drawing #</th>
                                                     <th>Revision #</th>
                                                     <th>Production Lot #</th>
@@ -180,7 +180,7 @@
                                         </div>
                                         {{-- ADDED Chris For Multiple Machine--}}
                                         {{-- <input type="text" class="form-control form-control-sm" id="textMachineNumber" name="machine_number" placeholder="Machine #"> --}}
-                                        <select type="text" class="form-control form-control-sm select2bs4" id="selMachineNumber" name="machine_number[]" placeholder="Machine #" multiple>
+                                        <select class="form-control form-control-sm select2bs4" id="selMachineNumber" name="machine_number[]" placeholder="Machine #" multiple>
                                         </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
@@ -324,7 +324,7 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success" disabled id="buttonSubmitSecondMolding">Submit</button>
+                            <button type="button" class="btn btn-success" id="buttonSubmitSecondMolding">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -374,7 +374,6 @@
                                             <span class="input-group-text w-100" id="basic-addon1">Station</span>
                                         </div>
                                         <select type="text" class="form-control form-control-sm" id="textStation" name="station" placeholder="Station">
-                                            {{-- <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option> --}}
                                         </select>
                                     </div>
                                 </div>
@@ -523,6 +522,7 @@
                             $('#textMaterialLotNumberChecking').val(0);
                         }
                         $('#buttonAddStation').prop('disabled', true);
+                        setDisabledSecondMoldingRuncard(false);
                         $('#modalSecondMolding').modal('show');
                         dataTablesSecondMoldingStation.draw();
                         getMaterialProcessStation();
@@ -896,7 +896,6 @@
                                 $('#textContactLotNumberSecond', $('#formSecondMolding')).val(responseData[0].contact_name_lot_number_second);
                                 $('#textMELotNumberOne', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_one);
                                 $('#textMELotNumberSecond', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_second);
-                                $("#textSecondMoldingId", $('#formSecondMolding')).val();
                                 dataTablesSecondMoldingStation.draw();
                             }
                         }
@@ -915,8 +914,20 @@
                 $("#tableSecondMolding").on('click', '.actionEditSecondMolding', function(){
                     id = $(this).attr('second-molding-id');
                     let materialName = $('#textSearchMaterialName').val();
-                    console.log(`id ${id}`)
+                    console.log(`actionEditSecondMolding id ${id}`)
                     $('#buttonAddStation').prop('disabled', false); // remove disabled for edit
+                    setDisabledSecondMoldingRuncard(false);
+                    getMachineDropdown($('#selMachineNumber'), materialName);
+                    getSecondMoldingById(id);
+                    getMaterialProcessStation();
+                });
+
+                $("#tableSecondMolding").on('click', '.actionViewSecondMolding', function(){
+                    id = $(this).attr('second-molding-id');
+                    let materialName = $('#textSearchMaterialName').val();
+                    console.log(`actionViewSecondMolding id ${id}`)
+                    $('#buttonAddStation').prop('disabled', true); // remove disabled for edit
+                    setDisabledSecondMoldingRuncard(true);
                     getMachineDropdown($('#selMachineNumber'), materialName);
                     getSecondMoldingById(id);
                     getMaterialProcessStation();
@@ -933,11 +944,10 @@
                 dataTablesSecondMoldingStation = $("#tableStation").DataTable({
                     "processing" : true,
                     "serverSide" : true,
-                    "length" : 10,
                     "ajax" : {
                         url: "view_second_molding_station",
                         data: function (param){
-                            param.sec_molding_runcard_id = $("#textSecondMoldingId", $('#formSecondMolding')).val();
+                            param.sec_molding_runcard_id = $('#textSecondMoldingId', $('#formSecondMolding')).val();
                         }
                     },
                     fixedHeader: true,
@@ -945,7 +955,7 @@
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "station_name" },
                         { "data" : "date" },
-                        { "data" : "operator_name",},
+                        { "data" : "concatted_operator_name",},
                         { "data" : "input_quantity" },
                         { "data" : "ng_quantity" },
                         { "data" : "output_quantity" },
@@ -1135,7 +1145,7 @@
                 */
 
                 /**
-                 * Add Mode Of Defect
+                 * Add/Remove Mode Of Defect
                  * Start
                 */
                 $("#buttonAddModeOfDefect").click(function(){
@@ -1203,7 +1213,7 @@
                     $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
                 });
                 /**
-                 * Add Mode Of Defect
+                 * Add/Remove Mode Of Defect
                  * End
                 */
 
@@ -1232,46 +1242,48 @@
                                 $('#textStationYield', $('#formAddStation')).val(responseData[0].station_yield);
                                 $('#textRemarks', $('#formAddStation')).val(responseData[0].remarks);
                                 let rowModeOfDefect = '';
-                                for (let i = 0; i < response['data'].length; i++) {
-                                    rowModeOfDefect = `
-                                        <tr>
-                                            <td>
-                                                <select class="form-control select2 select2bs5 selectMOD" name="mod_id[]">
-                                                    <option value="0">N/A</option>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${response['data'][i]['mod_quantity']}" min="1">
-                                            </td>
-                                            <td>
-                                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
-                                            </td>
-                                        </tr>
-                                    `;
-                                    $("#tableSecondMoldingStationMOD tbody").append(rowModeOfDefect);
-                                    $('.select2bs5').select2({
-                                        theme: 'bootstrap-5'
-                                    });
-                                    getModeOfDefectForSecondMolding($("#tableSecondMoldingStationMOD tr:last").find('.selectMOD'), response['data'][i]['mod_id']);
+                                if(responseData[0].sec_molding_runcard_station_mod_id != null){
+                                    for (let i = 0; i < response['data'].length; i++) {
+                                        rowModeOfDefect = `
+                                            <tr>
+                                                <td>
+                                                    <select class="form-control select2 select2bs5 selectMOD" name="mod_id[]">
+                                                        <option value="0">N/A</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${response['data'][i]['mod_quantity']}" min="1">
+                                                </td>
+                                                <td>
+                                                    <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                                </td>
+                                            </tr>
+                                        `;
+                                        $("#tableSecondMoldingStationMOD tbody").append(rowModeOfDefect);
+                                        $('.select2bs5').select2({
+                                            theme: 'bootstrap-5'
+                                        });
+                                        getModeOfDefectForSecondMolding($("#tableSecondMoldingStationMOD tr:last").find('.selectMOD'), response['data'][i]['mod_id']);
 
-                                    let totalNumberOfMOD = 0;
-                                    $('#tableSecondMoldingStationMOD .textMODQuantity').each(function() {
-                                        if($(this).val() !== null || $(this).val() !== ""){
-                                            totalNumberOfMOD += parseInt($(this).val());
+                                        let totalNumberOfMOD = 0;
+                                        $('#tableSecondMoldingStationMOD .textMODQuantity').each(function() {
+                                            if($(this).val() !== null || $(this).val() !== ""){
+                                                totalNumberOfMOD += parseInt($(this).val());
+                                            }
+                                        });
+
+                                        if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
+                                            // toastr.warning('Mode of Defect NG Qty not tally!');
+                                            $('#labelTotalNumberOfNG').css({color: 'red'})
+                                            $("#buttonSaveSecondMoldingStation").prop('disabled', true);
+                                            $("#buttonAddModeOfDefect").prop('disabled', false);
+                                        }else{
+                                            $('#labelTotalNumberOfNG').css({color: 'green'})
+                                            $("#buttonSaveSecondMoldingStation").prop('disabled', false);
+                                            $("#buttonAddModeOfDefect").prop('disabled', true);
                                         }
-                                    });
-
-                                    if(parseInt($('#textNGQuantity').val()) !== totalNumberOfMOD){
-                                        // toastr.warning('Mode of Defect NG Qty not tally!');
-                                        $('#labelTotalNumberOfNG').css({color: 'red'})
-                                        $("#buttonSaveSecondMoldingStation").prop('disabled', true);
-                                        $("#buttonAddModeOfDefect").prop('disabled', false);
-                                    }else{
-                                        $('#labelTotalNumberOfNG').css({color: 'green'})
-                                        $("#buttonSaveSecondMoldingStation").prop('disabled', false);
-                                        $("#buttonAddModeOfDefect").prop('disabled', true);
+                                        $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
                                     }
-                                    $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
                                 }
                             }
                         }
@@ -1296,6 +1308,36 @@
                  * Edit of Second Molding Station to be use in Update
                  * End
                 */
+
+                /**
+                 * Complete Second Molding for Assembly
+                 * Start
+                */
+                $('#buttonSubmitSecondMolding').click(function(){
+                    console.log(`buttonSubmitSecondMolding clicked`);
+                    $.ajax({
+                        type: "POST",
+                        url: "complete_second_molding",
+                        data: {
+                            'second_molding_id': $('#textSecondMoldingId').val(),
+                            "_token": "{{ csrf_token() }}",
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            if(!response.hasError){
+                                toastr.success('Successfully saved');
+                                dataTablesSecondMolding.draw();
+                                $('#modalSecondMolding').modal('hide');
+                            }
+                        }
+                    });
+                });
+                /**
+                 * Complete Second Molding for Assembly
+                 * End
+                */
+
+                $('#buttonPrintSecondMolding').click
             });
         </script>
     @endsection
