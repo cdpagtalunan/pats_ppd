@@ -69,10 +69,9 @@ class FirstMoldingStationController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         try{
-            return $request->all();
+            // return $request->all();
 
             if( isset($request->first_molding_detail_id) ){
-                return 'edit';
                 $first_molding_detail_id = FirstMoldingDetail::where('id',$request->first_molding_detail_id)
                 ->update([
                     'first_molding_id' => $request->first_molding_id,
@@ -104,13 +103,8 @@ class FirstMoldingStationController extends Controller
                 $first_molding_detail_id = $get_first_molding_detail_id;
             }
         
-            return $is_first_molding_station = FirstMoldingDetail::where('id',$first_molding_detail_id)->where(['station',8])->count();
-            /* 
-                $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
-                    'shipment_output',$request->shipment_output,
-                    'total_machine_output',$request->total_machine_output,
-                ]);
-            */
+            // $is_first_molding_station = FirstMoldingDetail::where('id',$first_molding_detail_id)->where(['station',8])->count();
+            
             return response()->json( [ 'result' => 1 ] );
             /*
                 TODO: Save Auto Prod Lot
@@ -177,7 +171,6 @@ class FirstMoldingStationController extends Controller
 
     public function getStations(Request $request)
     {
-        
         $material_station_by_device_name = DB::connection('mysql')
         ->select("  SELECT material_processes.*, devices.*, material_process_stations.*, stations.id AS station_id, stations.station_name AS station_name FROM material_processes
                     INNER JOIN devices

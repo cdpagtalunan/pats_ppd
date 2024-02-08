@@ -25,13 +25,30 @@ class StampingIpqcController extends Controller
         if(!isset($request->po_number)){
             return [];
         }else{
+            // $ipqc_status = implode(',',$request->ipqc_status);
+            // $fs_prod_status = implode(',',$request->fs_prod_status);
+            // return $fs_prod_status;
+
+            // $first_stamping_data = DB::connection('mysql')->select('
+            //                                 SELECT a.*,b.* FROM stamping_productions AS a LEFT JOIN stamping_ipqcs AS b ON a.id = b.fs_productions_id
+            //                                 WHERE b.status IN ('.$ipqc_status.')
+            //                                 AND a.po_num = '.$request->po_number.'
+            //                                 AND a.stamping_cat = '.$request->fs_prod_stamping_cat.'
+            //                                 AND a.status IN ('.$fs_prod_status.')
+            //                                 ORDER BY a.id DESC
+            // ');
+
+            // return $first_stamping_data;
+
             $first_stamping_data = FirstStampingProduction::whereNull('deleted_at')
-                                    ->whereIn('status', $request->fs_prod_status)
-                                    ->where('stamping_cat', $request->fs_prod_stamping_cat)
                                     ->with(['stamping_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); },
                                             'stamping_ipqc' => function($query) use ($request) { $query->whereIn('status', $request->ipqc_status); }])
+                                    ->where('stamping_cat', $request->fs_prod_stamping_cat)
                                     ->where('po_num', $request->po_number)
+                                    ->whereIn('status', $request->fs_prod_status)
                                     ->get();
+                                    
+            // return $first_stamping_data;
 
             return DataTables::of($first_stamping_data)
             ->addColumn('action', function($first_stamping_data){
@@ -173,13 +190,18 @@ class StampingIpqcController extends Controller
         return response()->json(['fs_production_po' => $fs_production_po]);
     }
 
+    public function get_data_from_first_stamping_by_po(Request $request){
+        $first_stamping_data = FirstStampingProduction::whereNull('deleted_at')
+                                                    ->where('po_num', $request->po_number)
+                                                    ->distinct()
+                                                    ->get();
+
+        return response()->json(['first_stamping_data' => $first_stamping_data]);
+    }
+
     public function get_data_from_fs_production(Request $request){
         $data = FirstStampingProduction::select('id','stamping_cat','po_num','part_code','material_name','material_lot_no','prod_lot_no','qc_samp','status')
                                         ->whereNull('deleted_at')
-                                        // ->where('status', 0)
-                                        ->when($request->po_number, function ($query) use ($request){
-                                            return $query ->where('po_num', $request->po_number);
-                                        })
                                         ->when($request->fs_prod_id, function ($query) use ($request){
                                                 return $query ->where('id', $request->fs_prod_id);
                                         })
@@ -215,9 +237,7 @@ class StampingIpqcController extends Controller
         // return $data;
 
                 if($request->stamping_ipqc_id == 0){
-
                     $validator = Validator::make($data, [
-
                         'doc_no_b_drawing' => 'required',
                         'doc_no_inspection_standard' => 'required',
                         'doc_no_ud' => 'required',
@@ -249,6 +269,7 @@ class StampingIpqcController extends Controller
                                                     'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
                                                     'doc_no_urgent_direction' => $request->doc_no_ud,
                                                     'measdata_attachment'     => $original_filename,
+                                                    'remarks'                 => $request->remarks,
                                                     'status'                  => $status,
                                                     'created_by'              => Auth::user()->id,
                                                     'last_updated_by'         => Auth::user()->id,
@@ -284,6 +305,7 @@ class StampingIpqcController extends Controller
                                 'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
                                 'doc_no_urgent_direction' => $request->doc_no_ud,
                                 'measdata_attachment'     => $original_filename,
+                                'remarks'                 => $request->remarks,
                                 'status'                  => $status,
                                 'last_updated_by'         => Auth::user()->id,
                                 'updated_at'              => date('Y-m-d H:i:s'),

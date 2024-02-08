@@ -63,7 +63,7 @@
 
                                 <div class="card-body"><!-- Start Page Content -->
                                     <div class="text-right"> 
-                                        <button button type="button" class="btn btn-dark mb-3" id="buttonAddForkliftRequest" data-bs-toggle="modal" data-bs-target="#modalMimf" data-bs-keyboard="false"><i class="fa fa-plus fa-md"></i> New Request</button>
+                                        <button button type="button" class="btn btn-dark mb-3" id="buttonAddMimf" data-bs-toggle="modal" data-bs-target="#modalMimf" data-bs-keyboard="false"><i class="fa fa-plus fa-md"></i> New Request</button>
                                     </div>
                                     <div class="table-responsive"><!-- Table responsive -->
                                         <table id="tblMimf" class="table table-sm table-bordered table-striped table-hover"
@@ -112,7 +112,10 @@
 
                     <form method="post" id="formMimf" autocomplete="off">
                         @csrf
-                        <input type="hidden" class="form-control" id="txtMimfId" name="mimf_id">
+                        <input type="text" class="form-control" id="txtMimfId" name="mimf_id">
+                        <input type="text" class="form-control" id="txtPpsPoReceivedId" name="pps_po_rcvd_id">
+                        <input type="text" class="form-control" id="txtPssWhseId" name="pps_whse_id">
+                        <input type="text" class="form-control" id="txtPpsDiesetId" name="pps_dieset_id">
                         <input type="hidden" class="form-control" id="txtEmployeeNo" name="employee_no">
                         
                         <div class="modal-body">
@@ -129,11 +132,11 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>PMI PO No.</strong></span>
                                         </div>
-                                        <select class="form-select" id="slctMimfPmiPoNo" name="mimf_pmi_po_no">
-                                            <option>
-                                                
-                                            </option>
-                                        </select>    
+                                        {{-- <select class="form-select select2bs4 selectPmiPo" id="slctMimfPmiPoNo" name="mimf_pmi_po_no">  </select> --}}
+                                        {{-- <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div> --}}
+                                            <input type="text" class="form-control" id="txtMimfPmiPoNo" name="mimf_pmi_po_no" value="PR2410098834">
                                     </div>
 
                                     <div class="input-group mb-3">
@@ -147,35 +150,35 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Prod'n Quantity</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfProdnQuantity" name="mimf_prodn_quantity" readonly>
+                                        <input type="text" class="form-control clearReceivedPo" id="txtMimfProdnQuantity" name="mimf_prodn_quantity" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Device Code</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfDeviceCode" name="mimf_device_code" readonly>
+                                        <input type="text" class="form-control clearReceivedPo" id="txtMimfDeviceCode" name="mimf_device_code" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Device Name</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfDeviceName" name="mimf_device_name" readonly>
+                                        <input type="text" class="form-control clearReceivedPo" id="txtMimfDeviceName" name="mimf_device_name" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Material Code</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfMaterialCode" name="mimf_material_code" readonly>
+                                        <input type="text" class="form-control clearPPSMIS" id="txtMimfMaterialCode" name="mimf_material_code" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Material Type</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfMaterialType" name="mimf_material_type" readonly>
+                                        <input type="text" class="form-control clearPPSMIS" id="txtMimfMaterialType" name="mimf_material_type" readonly>
                                     </div>
                                 </div>
 
@@ -184,28 +187,28 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Quantity from Inventory</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfQuantityFromInventory" name="mimf_quantity_from_inventory" readonly>
+                                        <input type="text" class="form-control clearPPSMIS" id="txtMimfQuantityFromInventory" name="mimf_quantity_from_inventory" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Needed KGS</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfNeededKgs" name="mimf_needed_kgs" readonly>
+                                        <input type="text" class="form-control clearDieSet" id="txtMimfNeededKgs" name="mimf_needed_kgs" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Virgin Material</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfVirginMaterial" name="mimf_virgin_material">
+                                        <input type="text" class="form-control clearMatrix" id="txtMimfVirginMaterial" name="mimf_virgin_material" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Recycled</strong></span>
                                         </div>
-                                        <input type="text" class="form-control" id="txtMimfRecycled" name="mimf_recycled">
+                                        <input type="text" class="form-control clearMatrix" id="txtMimfRecycled" name="mimf_recycled" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
@@ -269,16 +272,16 @@
 
     @section('js_content')
         <script type="text/javascript">
-            let getPoNo
-            let checkedDrawCount
-            let dataTableOQCInspectionFirstStamping
+            let dataTableMimf
             $(document).ready(function() {
                 $('.select2bs4').select2({
                     theme: 'bootstrap-5'
                 })          
 
+                // GetPmiPo($('.selectPmiPo'));
+
                 // ======================= START DATA TABLE =======================
-                dataTableOQCInspectionFirstStamping = $("#tblMimf").DataTable({
+                dataTableMimf = $("#tblMimf").DataTable({
                     "processing"    : false,
                     "serverSide"    : true,
                     "destroy"       : true,
@@ -307,6 +310,98 @@
                     "columnDefs": [
                         // { className: "", targets: 0 },
                     ],
+                })
+
+                $('#buttonAddMimf').click(function(event){
+                    event.preventDefault()
+                    $.ajax({
+                        url: 'get_control_no',
+                        method: 'get',
+                        data: {
+                            'tist': ''
+                        },
+
+                        beforeSend: function(){
+                        
+                        },
+                        success: function (response) {
+                            let getNewControlNo = response['newControlNo'];
+                            console.log('getNewControlNo',getNewControlNo)
+                            $('#txtMimfControlNo').val(getNewControlNo);
+
+                        }
+                    });
+                });
+
+                $("#txtMimfPmiPoNo").keypress(function(){
+                    $(this).val($(this).val().toUpperCase())
+                })
+
+                $("#txtMimfPmiPoNo").keyup(function() {
+                    let getValue = $(this).val()
+                    $.ajax({
+                        url: 'get_pmi_po',
+                        method: 'get',
+                        data: {
+                            'getValue': getValue
+                        },
+                        beforeSend: function(){
+                        },
+                        success: function(response){
+                            let getPoReceivedPmiPo = response['getPoReceivedPmiPo']
+                            let kgs = 0;
+                            if(getPoReceivedPmiPo.length > 0){
+                                $('#txtMimfProdnQuantity').val(getPoReceivedPmiPo[0].OrderQty)
+                                $('#txtMimfDeviceCode').val(getPoReceivedPmiPo[0].ItemCode)
+                                $('#txtMimfDeviceName').val(getPoReceivedPmiPo[0].ItemName)
+                                
+                                if(getPoReceivedPmiPo[0].pps_dieset_info != null){
+                                    kgs = (getPoReceivedPmiPo[0].OrderQty*getPoReceivedPmiPo[0].pps_dieset_info.ShotWgt*getPoReceivedPmiPo[0].pps_dieset_info.NoOfCav/1000).toFixed(2)
+                                    $('#txtMimfNeededKgs').val(kgs)
+
+                                    if(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info != null){
+                                        $('#txtMimfMaterialCode').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.PartNumber)
+                                        $('#txtMimfMaterialType').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.MaterialType)
+                                        $('#txtMimfQuantityFromInventory').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.Balance)
+                                    }else{
+                                        console.log('ELSE pps_warehouse_info')
+                                        $('.clearPPSMIS').val('')
+
+                                    }
+                                }else{
+                                    console.log('ELSE pps_dieset_info')
+                                    $('.clearDieSet').val('')
+                                    $('.clearPPSMIS').val('')
+                                }
+
+                                if(getPoReceivedPmiPo[0].matrix_info != null){
+                                    let virgin_computation = (kgs*getPoReceivedPmiPo[0].matrix_info.virgin_percent)/100
+                                    let recyled_computation = (kgs*getPoReceivedPmiPo[0].matrix_info.recycle_percent)/100
+
+                                    $('#txtMimfVirginMaterial').val(virgin_computation.toFixed(2))
+                                    $('#txtMimfRecycled').val(recyled_computation.toFixed(2))
+                                }else{
+                                    console.log('ELSE matrix_info')
+                                    $('.clearMatrix').val('')
+
+                                }
+                            }else{
+                                $('.clearReceivedPo').val('')
+                                $('.clearPPSMIS').val('')
+                                $('.clearDieSet').val('')
+                                $('.clearPPSMIS').val('')
+                                $('.clearMatrix').val('')
+                            }
+                        }
+                    })
+                })
+
+                $(document).on('click', '.actionEditMimf', function(e){
+                    e.preventDefault()
+                    mimfID = $(this).attr('mimf-id')
+                    $('#txtMimfId').val(mimfID)
+
+                    GetMimfById(mimfID)
                 })
 
                 $('#formMimf').submit(function (e) { 

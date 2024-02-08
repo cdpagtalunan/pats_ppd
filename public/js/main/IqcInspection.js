@@ -109,7 +109,6 @@
             url: "get_family",
             method: "get",
             dataType: "json",
-
             beforeSend: function(){
                 result = '<option value="" selected disabled> -- Loading -- </option>';
                 form.iqcInspection.find('select[name=family]').html(result);

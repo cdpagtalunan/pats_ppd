@@ -49,7 +49,7 @@
                                         <div class="col-sm-2">
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="PO Number" id="textSearchPONumber">
+                                                <input type="text" class="form-control" placeholder="PO Number" id="textSearchPMIPONumber">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -62,6 +62,12 @@
                                             <label class="form-label">PO Quantity</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="PO Quantity" id="textSearchPOQuantity" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Target Output<small>(with usage allowance)</small></label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" id="textRequiredOutput" name="required_output" placeholder="Auto generated" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -94,13 +100,8 @@
                                                     <th>Device Name</th>
                                                     <th>Parts Code</th>
                                                     <th>PMI PO Number</th>
-                                                    <th>PO Quantity</th>
-                                                    <th style="min-width: 15%; width: 15%">Machine #</th>
-                                                    <th>Material Lot #</th>
-                                                    <th>Material Name</th>
-                                                    <th>MATL Drawing #</th>
-                                                    <th>Revision #</th>
                                                     <th>Production Lot #</th>
+                                                    <th>Material Name</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -134,165 +135,226 @@
                         <div class="modal-body">
                             <input type="text" class="d-none" id="textSecondMoldingId" name="second_molding_id">
                             <div class="row">
-                                <div class="col-sm-4 border px-4">
+                                <div class="col-sm-6 border px-4">
                                     <div class="py-3 d-flex align-items-center">
                                         <span class="badge badge-secondary">1.</span> Second Molding Details
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textDeviceName" name="device_name" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Parts Code</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textPartsCode" name="parts_code" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textPMIPONumber" name="pmi_po_number" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textPONumber" name="po_number" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textPoQuantity" name="po_quantity" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Required Output</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textRequiredOutput" name="required_output" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Machine #</span>
-                                        </div>
-                                        {{-- ADDED Chris For Multiple Machine--}}
-                                        {{-- <input type="text" class="form-control form-control-sm" id="textMachineNumber" name="machine_number" placeholder="Machine #"> --}}
-                                        <select class="form-control form-control-sm select2bs4" id="selMachineNumber" name="machine_number[]" placeholder="Machine #" multiple>
-                                        </select>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Material Lot #</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textMaterialLotNumber" name="material_lot_number" placeholder="Scan Machine Lot #" readonly>
-                                        <div class="input-group-append">
-                                            <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumber" form-value="formMaterialLotNumber"><i class="fa fa-qrcode"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textMaterialName" readonly name="material_name" placeholder="Auto Generated">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">MATL Drawing # on Rapid</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textDrawingNumber" name="drawing_number" value="B137229-001" placeholder="Auto generated" readonly>
-                                        <button style="width:30px" type="button" class="btn btn-sm py-0 btn-info table-btns" id="buttonViewBDrawing">
-                                            <i class="fa fa-file" title="View"></i>
-                                        </button>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Revision # on Rapid</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textRevisionNumber" name="revision_number" placeholder="Auto generated" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textProductionLot" name="production_lot" placeholder="Production Lot">
-                                    </div>
-                                    <div id="divMaterialLotNumbers">
-                                        <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking">
-                                        <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">CN171S-08#IN-VE - Lot #</span>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textDeviceName" name="device_name" placeholder="Auto generated" readonly>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="textLotNumberEight" name="lot_number_eight" readonly placeholder="CN171S-08#IN-VE - Lot #">
-                                            <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" readonly placeholder="CN171S-08#IN-VE - Lot #">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberEight" form-value="formProductionLotNumberEight"><i class="fa fa-qrcode"></i></button>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Parts Code</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textPartsCode" name="parts_code" placeholder="Auto generated" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textPMIPONumber" name="pmi_po_number" placeholder="Auto generated" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textPONumber" name="po_number" placeholder="Auto generated" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textPoQuantity" name="po_quantity" placeholder="Auto generated" readonly>
+                                            </div>
+                                            {{-- <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Required Output</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textRequiredOutput" name="required_output" placeholder="Auto generated" readonly>
+                                            </div> --}}
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Machine #</span>
+                                                </div>
+                                                {{-- ADDED Chris For Multiple Machine--}}
+                                                {{-- <input type="text" class="form-control form-control-sm" id="textMachineNumber" name="machine_number" placeholder="Machine #"> --}}
+                                                <select class="form-control form-control-sm select2bs4" id="selMachineNumber" name="machine_number[]" placeholder="Machine #" multiple>
+                                                </select>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Lot #</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textMaterialLotNumber" name="material_lot_number" placeholder="Scan Machine Lot #" readonly>
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumber" form-value="formMaterialLotNumber"><i class="fa fa-qrcode"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textMaterialName" readonly name="material_name" placeholder="Auto Generated">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">MATL Drawing # on Rapid</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textDrawingNumber" name="drawing_number" value="B137229-001" placeholder="Auto generated" readonly>
+                                                <button style="width:30px" type="button" class="btn btn-sm py-0 btn-info table-btns" id="buttonViewBDrawing">
+                                                    <i class="fa fa-file" title="View"></i>
+                                                </button>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Revision # on Rapid</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textRevisionNumber" name="revision_number" placeholder="Auto generated" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textProductionLot" name="production_lot" placeholder="Production Lot">
+                                            </div>
+                                            <div id="divMaterialLotNumbers">
+                                                <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking">
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">CN171S-08#IN-VE - Lot #</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="textLotNumberEight" name="lot_number_eight" readonly placeholder="CN171S-08#IN-VE - Lot #">
+                                                    <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" readonly placeholder="CN171S-08#IN-VE - Lot #">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberEight" form-value="formProductionLotNumberEight"><i class="fa fa-qrcode"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">CN171S-09#IN-VE - Lot #</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="textLotNumberNine" name="lot_number_nine" readonly placeholder="CN171S-08#IN-VE - Lot #">
+                                                    <input type="hidden" class="form-control form-control-sm" id="textLotNumberNineFirstMoldingId" name="lot_number_nine_first_molding_id" readonly placeholder="CN171S-09#IN-VE - Lot #">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberNine" form-value="formProductionLotNumberNine"><i class="fa fa-qrcode"></i></button>
+                                                    </div>
+                                                </div>
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">CN171S-10#IN-VE - Lot #</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="textLotNumberTen" name="lot_number_ten" readonly placeholder="CN171S-08#IN-VE - Lot #">
+                                                    <input type="hidden" class="form-control form-control-sm" id="textLotNumberTenFirstMoldingId" name="lot_number_ten_first_molding_id" readonly placeholder="CN171S-10#IN-VE - Lot #">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberTen" form-value="formProductionLotNumberTen"><i class="fa fa-qrcode"></i></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textContactLotNumberOne" value="N/A" readonly name="contact_name_lot_number_one" placeholder="C/T Name/Lot #">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberOne" form-value="formContactLotNumberOne"><i class="fa fa-qrcode"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textContactLotNumberSecond" value="N/A" readonly name="contact_name_lot_number_second" placeholder="C/T Name/Lot #">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberSecond" form-value="formContactLotNumberSecond"><i class="fa fa-qrcode"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">ME Name/Lot #</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textMELotNumberOne" value="N/A" readonly name="me_name_lot_number_one" placeholder="ME Name/Lot #">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMELotNumberOne" form-value="formMELotNumberOne"><i class="fa fa-qrcode"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">ME Name/Lot #</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="textMELotNumberSecond" value="N/A" readonly name="me_name_lot_number_second" placeholder="ME Name/Lot #">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMELotNumberSecond" form-value="formMELotNumberSecond"><i class="fa fa-qrcode"></i></button>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">CN171S-09#IN-VE - Lot #</span>
+                                        <div class="col-6">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">25 Shots </span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm sumTotalMachineOutput" id="target_shots" name="target_shots" value="25" readonly>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="textLotNumberNine" name="lot_number_nine" readonly placeholder="CN171S-08#IN-VE - Lot #">
-                                            <input type="hidden" class="form-control form-control-sm" id="textLotNumberNineFirstMoldingId" name="lot_number_nine_first_molding_id" readonly placeholder="CN171S-09#IN-VE - Lot #">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberNine" form-value="formProductionLotNumberNine"><i class="fa fa-qrcode"></i></button>
+                                        
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Adjustment Shots</span>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="adjustment_shots" name="adjustment_shots" min="0">
+                                            </div>
+                                        
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="qc_samples" name="qc_samples" min="0">
+                                            </div>
+                                        
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Prod Samples</span>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="prod_samples" name="prod_samples" min="0">
+                                            </div>
+                                        
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm sumTotalMachineOutput" readonly id="ng_count" name="ng_count" min="0">
+                                            </div>
+                                        
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm sumTotalMachineOutput" readonly id="shipment_output" name="shipment_output" min="0">
+                                            </div>
+
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Total Machine Output</span>
+                                                </div>
+                                                <input type="number" class="form-control form-control-sm" id="total_machine_output" readonly name="total_machine_output" min="0">
+                                            </div>
+                                        
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Yield</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="material_yield" readonly name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
+                                                <button type="submit" class="btn btn-sm btn-success" id="buttonSaveSecondMoldingData"><i class="fa-solid fa-floppy-disk"></i> Save</button>
                                             </div>
                                         </div>
-                                        <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">CN171S-10#IN-VE - Lot #</span>
-                                            </div>
-                                            <input type="text" class="form-control form-control-sm" id="textLotNumberTen" name="lot_number_ten" readonly placeholder="CN171S-08#IN-VE - Lot #">
-                                            <input type="hidden" class="form-control form-control-sm" id="textLotNumberTenFirstMoldingId" name="lot_number_ten_first_molding_id" readonly placeholder="CN171S-10#IN-VE - Lot #">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberTen" form-value="formProductionLotNumberTen"><i class="fa fa-qrcode"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textContactLotNumberOne" value="N/A" readonly name="contact_name_lot_number_one" placeholder="C/T Name/Lot #">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberOne" form-value="formContactLotNumberOne"><i class="fa fa-qrcode"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textContactLotNumberSecond" value="N/A" readonly name="contact_name_lot_number_second" placeholder="C/T Name/Lot #">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberSecond" form-value="formContactLotNumberSecond"><i class="fa fa-qrcode"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">ME Name/Lot #</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textMELotNumberOne" value="N/A" readonly name="me_name_lot_number_one" placeholder="ME Name/Lot #">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMELotNumberOne" form-value="formMELotNumberOne"><i class="fa fa-qrcode"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">ME Name/Lot #</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textMELotNumberSecond" value="N/A" readonly name="me_name_lot_number_second" placeholder="ME Name/Lot #">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMELotNumberSecond" form-value="formMELotNumberSecond"><i class="fa fa-qrcode"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
-                                        <button type="submit" class="btn btn-sm btn-success" id="buttonSaveSecondMoldingData"><i class="fa-solid fa-floppy-disk"></i> Save</button>
                                     </div>
                                 </div>
-                                <div class="col-sm-8">
+                                <div class="col-sm-6">
                                     <div class="col border px-4 border">
                                         <div class="py-3 d-flex justify-content-between align-items-center">
                                             <div class="d-flex align-items-center"><span class="badge badge-secondary">2.</span> Second Molding Stations</div>
@@ -489,13 +551,38 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="modalSecondMoldingPrintQr">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Print QR Code</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="imageBarcodePO" style="max-width: 200px;"><br></center>
+                                <div id="bodyBarcodeDetails"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="buttonSecondMoldingPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
     @endsection
 
     @section('js_content')
         <script>
             $(document).ready(function(){
                 let dataTablesSecondMolding, dataTablesSecondMoldingStation;
-                $(document).on('keypress', '#textSearchPONumber', function(e){
+                $(document).on('keypress', '#textSearchPMIPONumber', function(e){
                     if(e.keyCode == 13){
                         getPOReceivedByPONumber($(this).val());
                         dataTablesSecondMolding.draw();
@@ -507,7 +594,7 @@
                  * Start
                 */
                 $('#buttonAddSecondMolding').on('click', function(e){
-                    let poNumber = $('#textSearchPONumber').val();
+                    let poNumber = $('#textSearchPMIPONumber').val();
                     let materialName = $('#textSearchMaterialName').val();
                     let materialNameSubstring = materialName.substring(0,6);
                     
@@ -656,7 +743,7 @@
                     "ajax" : {
                         url: "view_second_molding",
                         data: function (param){
-                            param.po_number = $("#textSearchPONumber").val();
+                            param.pmi_po_number = $("#textSearchPMIPONumber").val();
                         }
                     },
                     fixedHeader: true,
@@ -665,14 +752,9 @@
                         { "data" : "status" },
                         { "data" : "device_name" },
                         { "data" : "parts_code" },
-                        { "data" : "po_number" },
-                        { "data" : "po_quantity" },
-                        { "data" : "machine_number" },
-                        { "data" : "material_lot_number" },
-                        { "data" : "material_name" },
-                        { "data" : "drawing_number" },
-                        { "data" : "revision_number" },
+                        { "data" : "pmi_po_number" },
                         { "data" : "production_lot" },
+                        { "data" : "material_name" },
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
@@ -865,7 +947,7 @@
                         success: function (response) {
                             let responseData = response['data'];
                             if(response['data'].length > 0){
-                                let machineArray = responseData[0].machine_number.split(" , "); // ADDED Chris
+                                let machineArray = responseData[0].machine_number.split(" , "); // Added by Chris
 
                                 $('#textSecondMoldingId', $('#formSecondMolding')).val(responseData[0].id);
                                 // $('#textSecondMoldingId', $('#formAddStation')).val(responseData[0].id); // Id from sec_molding_runcards(table)
@@ -875,12 +957,7 @@
                                 $('#textPONumber', $('#formSecondMolding')).val(responseData[0].po_number);
                                 $('#textPoQuantity', $('#formSecondMolding')).val(responseData[0].po_quantity);
                                 $('#textRequiredOutput', $('#formSecondMolding')).val(responseData[0].required_output);
-
-                                // ADDED Chris
-                                // $('#textMachineNumber', $('#formSecondMolding')).val(responseData[0].machine_number);
-                                $('select[name="machine_number[]"]').val(machineArray).trigger('change') 
-                                // !
-
+                                $('select[name="machine_number[]"]').val(machineArray).trigger('change') // Added by Chris
                                 $('#textMaterialLotNumber', $('#formSecondMolding')).val(responseData[0].material_lot_number);
                                 $('#textMaterialName', $('#formSecondMolding')).val(responseData[0].material_name);
                                 $('#textDrawingNumber', $('#formSecondMolding')).val(responseData[0].drawing_number);
@@ -896,6 +973,19 @@
                                 $('#textContactLotNumberSecond', $('#formSecondMolding')).val(responseData[0].contact_name_lot_number_second);
                                 $('#textMELotNumberOne', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_one);
                                 $('#textMELotNumberSecond', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_second);
+
+
+                                $('#target_shots', $('#formSecondMolding')).val(responseData[0].target_shots);
+                                $('#adjustment_shots', $('#formSecondMolding')).val(responseData[0].adjustment_shots);
+                                $('#qc_samples', $('#formSecondMolding')).val(responseData[0].qc_samples);
+                                $('#prod_samples', $('#formSecondMolding')).val(responseData[0].prod_samples);
+                                $('#total_machine_output', $('#formSecondMolding')).val(responseData[0].total_machine_output);
+                                $('#ng_count', $('#formSecondMolding')).val(responseData[0].ng_count);
+                                $('#ng_count', $('#formSecondMolding')).css({'color': 'red', 'font-weight': 'bold'});
+                                $('#shipment_output', $('#formSecondMolding')).val(responseData[0].shipment_output);
+                                $('#shipment_output', $('#formSecondMolding')).css({'color': 'green', 'font-weight': 'bold'});
+                                responseData[0].material_yield != null ? $('#material_yield', $('#formSecondMolding')).val(`${responseData[0].material_yield}%`) : '';
+                                
                                 dataTablesSecondMoldingStation.draw();
                             }
                         }
@@ -927,9 +1017,9 @@
                     let materialName = $('#textSearchMaterialName').val();
                     console.log(`actionViewSecondMolding id ${id}`)
                     $('#buttonAddStation').prop('disabled', true); // remove disabled for edit
-                    setDisabledSecondMoldingRuncard(true);
                     getMachineDropdown($('#selMachineNumber'), materialName);
                     getSecondMoldingById(id);
+                    setDisabledSecondMoldingRuncard(true);
                     getMaterialProcessStation();
                 });
                 /**
@@ -1001,6 +1091,7 @@
                             if(!response.validationHasError){
                                 if(!response.hasError){
                                     toastr.success('Successfully saved');
+                                    getSecondMoldingById(response['second_molding_id']);
                                     dataTablesSecondMoldingStation.draw();
                                     $('#modalSecondMoldingStation').modal('hide');
                                 }else if(response['sessionError']){
@@ -1315,29 +1406,84 @@
                 */
                 $('#buttonSubmitSecondMolding').click(function(){
                     console.log(`buttonSubmitSecondMolding clicked`);
-                    $.ajax({
-                        type: "POST",
-                        url: "complete_second_molding",
-                        data: {
-                            'second_molding_id': $('#textSecondMoldingId').val(),
-                            "_token": "{{ csrf_token() }}",
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            if(!response.hasError){
-                                toastr.success('Successfully saved');
-                                dataTablesSecondMolding.draw();
-                                $('#modalSecondMolding').modal('hide');
-                            }
-                        }
-                    });
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "complete_second_molding",
+                    //     data: {
+                    //         'second_molding_id': $('#textSecondMoldingId').val(),
+                    //         "_token": "{{ csrf_token() }}",
+                    //     },
+                    //     dataType: "json",
+                    //     success: function (response) {
+                    //         if(!response.hasError){
+                    //             toastr.success('Successfully saved');
+                    //             dataTablesSecondMolding.draw();
+                    //             $('#modalSecondMolding').modal('hide');
+                    //         }
+                    //     }
+                    // });
                 });
                 /**
                  * Complete Second Molding for Assembly
                  * End
                 */
 
-                $('#buttonPrintSecondMolding').click
+                /**
+                 * Print QR Code for Assembly
+                 * Start
+                */
+                $('#tableSecondMolding').on('click', '.buttonPrintSecondMolding',function(e){
+                    e.preventDefault();
+                    let secondMoldingId = $(this).attr('second-molding-id');
+                    console.log('buttonPrintSecondMolding clicked ', secondMoldingId);
+                    $.ajax({
+                        type: "get",
+                        url: "get_second_molding_qr_code",
+                        data: {
+                            "second_molding_id" : secondMoldingId
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                            $("#imageBarcodePO").attr('src', response['qr_code']);
+                            $("#bodyBarcodeDetails").html(response['label']);
+                            img_barcode_PO_text_hidden = response['label_hidden'];
+                            $('#modalSecondMoldingPrintQr').modal('show');
+                        }
+                    });
+                });
+
+                $('#buttonSecondMoldingPrintQrCode').on('click', function(){
+                    popup = window.open();
+                    let content = '';
+                    content += '<html>';
+                    content += '<head>';
+                    content += '<title></title>';
+                    content += '<style type="text/css">';
+                    content += '@media print { .pagebreak { page-break-before: always; } }';
+                    content += '</style>';
+                    content += '</head>';
+                    content += '<body>';
+                    content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                        content += '<tr style="width: 290px;">';
+                            content += '<td style="vertical-align: bottom;">';
+                                content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                            content += '</td>';
+                            content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                        content += '</tr>';
+                    content += '</table>';
+                    content += '<br>';
+                    content += '</body>';
+                    content += '</html>';
+                    popup.document.write(content);
+                    popup.focus(); //required for IE
+                    popup.print();
+                    popup.close();
+                });
+                /**
+                 * Print QR Code for Assembly
+                 * End
+                */
             });
         </script>
     @endsection

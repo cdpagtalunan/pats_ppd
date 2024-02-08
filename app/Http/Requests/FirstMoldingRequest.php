@@ -45,7 +45,7 @@ class FirstMoldingRequest extends FormRequest
             "item_name" => 'required',
             "shipment_output" => 'required',
             "po_qty" => 'required',
-            "material_yield" =>'required',
+            // "material_yield" =>'required',
             "required_output" => 'required',
             // "recycle_material" => 'required',
             // "po_target" => 'required',

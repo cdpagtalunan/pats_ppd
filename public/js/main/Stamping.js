@@ -346,13 +346,14 @@ const printProdData = async (id, stampCat) => {
         type: "get",
         url: "print_qr_code",
         data: {
-            "id" : id,
-            "stamp_cat" : stampCat
+            "id"       : id,
+            "stamp_cat": stampCat
         },
         dataType: "json",
         success: function (response) {
             response['label_hidden'][0]['id'] = id;
-            console.log(response['label_hidden']);
+          
+            console.log(response['label_hidden'][0]);
             for(let x = 0; x < response['label_hidden'].length; x++){
                 let dataToAppend = `
                 <img class='hiddnQr' src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
@@ -596,6 +597,26 @@ const validateScannedMaterial = (deviceName, MaterialName, process, callback) =>
     });
 }
 
+const printQrForIPQC = (id, stampCat) => {
+    $.ajax({
+        type: "get",
+        url: "print_qr_for_ipqc",
+        data: {
+            "id" : id,
+            "stamp_cat" : stampCat
+        },
+        dataType: "json",
+        success: function (response) {
+            response['label_hidden'][0]['id'] = id;
+            response['label_hidden'][0]['stampCat'] = stampCat;
+            $("#img_barcode_PO").attr('src', response['qrCode']);
+            $("#img_barcode_PO_text").html(response['label']);
+            img_barcode_PO_text_hidden = response['label_hidden'];
+            $('#modalPrintQr').modal('show');
+        }
+    });
+}
+
 /*
     * This is common script for first and second stamping
     * For Scanning of operator ID for valueing in operator name field
@@ -620,4 +641,12 @@ $('#txtScanOpId').on('keyup', function(e){
 
         $(this).val('');
     }
+});
+
+
+$(document).on('click', '.btnPrintIPQC', function(e){
+    let id = $(this).data('id');
+    let stampCat = $(this).data('stampcat');
+
+    printQrForIPQC(id, stampCat)
 });

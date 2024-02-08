@@ -108,7 +108,6 @@
                                                 <tr>
                                                     <th>Action</th>
                                                     <th>Status</th>
-                                                    <th>PO No.</th>
                                                     <th>Device Name</th>
                                                     <th>Contact Name</th>
                                                     <th>Contact Lot No.</th>
@@ -249,7 +248,6 @@
                     formModal.firstMolding.find('#material_yield').val('');
                     formModal.firstMolding.find('#drawing_no').val('');
                     formModal.firstMolding.find('#revision_no').val('');
-                    formModal.firstMolding.find('#required_output').val('');
                     formModal.firstMolding.find('[type="number"]').val(0)
                     formModal.firstMolding.find('.form-control').removeClass('is-valid')
                     formModal.firstMolding.find('.form-control').removeClass('is-invalid');
@@ -307,7 +305,6 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
-                        { "data" : "po_no" },
                         { "data" : "device_name" },
                         { "data" : "contact_name" },
                         { "data" : "contact_lot_number" },
@@ -467,11 +464,11 @@
 
                 $('#btnFirstMoldingStation').click(function (e) {
                     e.preventDefault();
+                    getStation();
                     $('#modalFirstMoldingStation').modal('show');
                     formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
                     formModal.firstMoldingStation.find('[type="number"]').val(0)
                     getFirstMoldingStationLastOuput(formModal.firstMolding.find('#first_molding_id').val());
-                    // getStation();
 
                 });
 
@@ -535,9 +532,8 @@
 
                             dt.firstMolding.draw();
                             getDiesetDetailsByDeviceName(device_name);
-                            //
                             getMachineFromMaterialProcess(formModal.firstMolding.find('#machine_no'),device_name);
-                            getStation (formModal.firstMoldingStation.find('#station'),device_name)
+
                             //nmodify
                         }
                     });
@@ -560,10 +556,7 @@
 
                 formModal.firstMolding.find('#pmi_po_no').on('keyup',function (e) {
                     e.preventDefault();
-                    let  deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
-
-                    getPmiPoReceivedDetails( $(this).val(),deviceId);
-
+                        getPmiPoReceivedDetails( $(this).val() );
                 });
 
                 $('#btnScanQrFirstMolding').click(function (e) {
@@ -685,34 +678,42 @@
 
                 });
 
-                // formModal.firstMolding.find('.sumTotalMachineOutput').keyup(function (e) {
-                //     // alert('sadsad')
-                //     let arr = document.getElementsByClassName('sumTotalMachineOutput');
-                //     // let inputTotalMachineOuput = formModal.firstMolding.find('#total_machine_output').val();
-                //     inputTotalMachineOuput=0;
-                //     for(let i=0;i<arr.length;i++){
-                //         if(parseFloat(arr[i].value))
-                //             inputTotalMachineOuput += parseFloat(arr[i].value);
-                //     }
-                //     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
-                // });
+                formModal.firstMolding.find('.sumTotalShipmentOutput').keyup(function (e) {
+                    let arr = document.getElementsByClassName('sumTotalShipmentOutput');
+                    let inputTotalMachineOuput = formModal.firstMolding.find('#total_machine_output').val();
 
-                // formModal.firstMolding.find('#total_machine_output').keyup(function (e) {
-                //     let inputTotalMachineOuput = $(this).val();
-                //     console.log(inputTotalMachineOuput);
-                //     let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
-                //     let ngCount = formModal.firstMolding.find("#ng_count").val();
+                    total=0;
+                    for(let i=0;i<arr.length;i++){
+                        if(parseFloat(arr[i].value))
+                            total += parseFloat(arr[i].value);
+                    }
+                    let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
+
+                    if( inputTotalMachineOuput === '' | inputTotalMachineOuput < 0 ){
+                        formModal.firstMolding.find('#shipment_output').val(0);
+                        return;
+                    }
+                    formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
+                    calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#shipment_output').val());
+
+                });
+
+                formModal.firstMolding.find('#total_machine_output').keyup(function (e) {
+                    let inputTotalMachineOuput = $(this).val();
+                    console.log(inputTotalMachineOuput);
+                    let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
+                    let ngCount = formModal.firstMolding.find("#ng_count").val();
 
 
-                //     if( inputTotalMachineOuput == '' | inputTotalMachineOuput < 0 ){
-                //         formModal.firstMolding.find('#shipment_output').val(0);
-                //         formModal.firstMolding.find("#material_yield").val('0%');
-                //         return;
-                //     }
+                    if( inputTotalMachineOuput == '' | inputTotalMachineOuput < 0 ){
+                        formModal.firstMolding.find('#shipment_output').val(0);
+                        formModal.firstMolding.find("#material_yield").val('0%');
+                        return;
+                    }
 
-                //     formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
-                //     calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#shipment_output').val());
-                // });
+                    formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
+                    calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#shipment_output').val());
+                });
 
                 formModal.firstMolding.find('.inputVirginQty').keyup(function (e) {
                     alert('inputVirginQty')

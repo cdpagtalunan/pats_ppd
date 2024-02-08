@@ -59,6 +59,6 @@ class OQCInspection extends Model
     public function prodn_info(){
         return $this->hasOne(User::class, 'id', 'countedby');
     }
-
+    
 
 }

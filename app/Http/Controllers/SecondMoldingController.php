@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+// use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use QrCode;
 use DataTables;
 
 /**
@@ -58,7 +60,7 @@ class SecondMoldingController extends Controller
                         FROM sec_molding_runcards
                         -- INNER JOIN first_moldings
                         --     ON first_moldings.id = sec_molding_runcards.lot_number_eight_first_molding_id
-                        WHERE sec_molding_runcards.po_number = '$request->po_number'
+                        WHERE sec_molding_runcards.pmi_po_number = '$request->pmi_po_number'
                         AND deleted_at IS NULL
                         ORDER BY sec_molding_runcards.id ASC
         ");
@@ -93,7 +95,7 @@ class SecondMoldingController extends Controller
                     $result .= "
                         <center>
                             <button class='btn btn-info btn-sm mr-1 actionViewSecondMolding' data-bs-toggle='modal' data-bs-target='#modalSecondMolding' second-molding-id='$row->id'><i class='fa-solid fa-eye'></i></button>
-                            <button class='btn btn-primary btn-sm mr-1'second-molding-id='".$row->id."' id='buttonPrintSecondMolding'><i class='fa-solid fa-print' disabled></i></button>
+                            <button class='btn btn-primary btn-sm mr-1 buttonPrintSecondMolding'second-molding-id='".$row->id."'><i class='fa-solid fa-print' disabled></i></button>
                         </center>
                     ";
                     break;
@@ -201,7 +203,6 @@ class SecondMoldingController extends Controller
                 DB::beginTransaction();
                 try {
                     $imploded_machine = implode($request->machine_number, ' , '); // chris
-
                     $secondMoldingId = SecMoldingRuncard::insertGetId([
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
@@ -209,7 +210,6 @@ class SecondMoldingController extends Controller
                         'pmi_po_number' => $request->pmi_po_number,
                         'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
-                        // 'machine_number' => $request->machine_number,
                         'machine_number' => $imploded_machine,  // chris
                         'material_lot_number' => $request->material_lot_number,
                         'material_name' => $request->material_name,
@@ -226,6 +226,15 @@ class SecondMoldingController extends Controller
                         'contact_name_lot_number_second' => $request->contact_name_lot_number_second,
                         'me_name_lot_number_one' => $request->me_name_lot_number_one,
                         'me_name_lot_number_second' => $request->me_name_lot_number_second,
+
+                        'target_shots' => $request->target_shots,
+                        'adjustment_shots' => $request->adjustment_shots,
+                        'qc_samples' => $request->qc_samples,
+                        'prod_samples' => $request->prod_samples,
+                        'ng_count' => $request->ng_count,
+                        'total_machine_output' => $request->total_machine_output,
+                        'shipment_output' => $request->shipment_output,
+                        'material_yield' => $request->material_yield,
 
                         // 'status' => 1,
                         'created_by' => Auth::user()->id,
@@ -296,7 +305,6 @@ class SecondMoldingController extends Controller
                         'po_number' => $request->po_number,
                         'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
-                        // 'machine_number' => $request->machine_number,
                         'machine_number' => $imploded_machine, // chris
                         'material_lot_number' => $request->material_lot_number,
                         'material_name' => $request->material_name,
@@ -313,6 +321,15 @@ class SecondMoldingController extends Controller
                         'contact_name_lot_number_second' => $request->contact_name_lot_number_second,
                         'me_name_lot_number_one' => $request->me_name_lot_number_one,
                         'me_name_lot_number_second' => $request->me_name_lot_number_second,
+
+                        'target_shots' => $request->target_shots,
+                        'adjustment_shots' => $request->adjustment_shots,
+                        'qc_samples' => $request->qc_samples,
+                        'prod_samples' => $request->prod_samples,
+                        'ng_count' => $request->ng_count,
+                        'total_machine_output' => $request->total_machine_output,
+                        'shipment_output' => $request->shipment_output,
+                        'material_yield' => $request->material_yield,
 
                         'last_updated_by' => Auth::user()->id,
                         'updated_at' => date('Y-m-d H:i:s'),
@@ -397,5 +414,64 @@ class SecondMoldingController extends Controller
             return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage()]);
         }
         
+    }
+
+    public function getSecondMoldingQrCode(Request $request){
+        $secondMoldingResult = DB::connection('mysql')
+        ->table('sec_molding_runcards')
+        ->where('sec_molding_runcards.id',$request->second_molding_id)
+        ->whereNull('sec_molding_runcards.deleted_at')
+        ->first([
+            'po_number',
+            'parts_code',
+            'device_name',
+            'production_lot',
+            'po_quantity',
+        ]);
+        // return $secondMoldingResult;
+
+        $qrcode = QrCode::format('png')
+        ->size(250)->errorCorrection('H')
+        ->generate(json_encode($secondMoldingResult));
+        // return $qrcode;
+
+        $qr_code = "data:image/png;base64," . base64_encode($qrcode);
+        // return $qr_code;
+        
+        $data[] = array(
+            'img' => $qr_code,
+            'text' =>  "<strong>$secondMoldingResult->po_number</strong><br>
+            <strong>$secondMoldingResult->parts_code</strong><br>
+            <strong>$secondMoldingResult->device_name</strong><br>
+            <strong>$secondMoldingResult->production_lot</strong><br>
+            <strong>$secondMoldingResult->po_quantity</strong><br>
+            "
+        );
+
+        $label = "
+            <table class='table table-sm table-borderless' style='width: 100%;'>
+                <tr>
+                    <td>PO No.:</td>
+                    <td>$secondMoldingResult->po_number</td>
+                </tr>
+                <tr>
+                    <td>Material Code:</td>
+                    <td>$secondMoldingResult->parts_code</td>
+                </tr>
+                <tr>
+                    <td>Material Name:</td>
+                    <td>$secondMoldingResult->device_name</td>
+                </tr>
+                <tr>
+                    <td>Production Lot #:</td>
+                    <td>".$secondMoldingResult->production_lot."</td>
+                </tr>
+                <tr>
+                    <td>PO Quantity:</td>
+                    <td>$secondMoldingResult->po_quantity</td>
+                </tr>
+            </table>
+        ";
+        return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'second_molding_data' => $secondMoldingResult]);
     }
 }

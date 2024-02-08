@@ -150,36 +150,42 @@
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtDeviceName" name="device_name" placeholder="Auto generated" readonly>
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
+                                    {{-- <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtMaterialName" name="material_name" placeholder="Auto generated" readonly>
-                                    </div>
-                                    {{-- <div class="input-group input-group-sm mb-3">
+                                    </div> --}}
+                                    <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtPONumber" name="po_number" placeholder="Search PO">
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Parts Code</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtPartsCode" name="parts_code" placeholder="Auto generated" readonly>
-                                    </div>
                                     <div class="input-group input-group-sm mb-2">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated" readonly>
+                                        <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated">
                                     </div>
-                                    --}}
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Required Qty</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtRequiredQty" name="required_qty" placeholder="Auto generated">
+                                    </div>
 
                                     <div id="pSeriesName" style="border:2px; border-style:dashed; padding:2px;">
                                         <div class="input-group input-group-sm mb-2">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">CN171P-02#IN-VE - Lot No</span>
+                                                <span class="input-group-text w-100" id="basic-addon1">CN171P-02#IN-VE - Material Name</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoMatName" name="p_zero_two_material_name" placeholder="Auto generated" readonly>
+                                        </div>
+
+                                        <div class="input-group input-group-sm mb-2">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
                                             </div>
                                             <div class="input-group-append">
                                                 <button class="btn btn-info" type="button" title="Scan code" id="btnScanPZeroTwoProdLot" form-value="ScanPZeroTwoProdLot">
@@ -192,25 +198,39 @@
 
                                         <div class="input-group input-group-sm mb-2">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">P-02#IN - PO No</span>
+                                                <span class="input-group-text w-100" id="basic-addon1">PO No</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePO" name="po_quantity" placeholder="Auto generated" readonly>
+                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePO" name="p_zero_two_po_no" placeholder="Auto generated" readonly>
                                         </div>
 
-                                        <div class="input-group input-group-sm mb-1">
+                                        {{-- <div class="input-group input-group-sm mb-1">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">P-02#IN - PMI PO No</span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                        </div> --}}
+
+                                        <div class="input-group input-group-sm mb-2">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDeviceQty" name="p_zero_two_dev_qty" placeholder="Auto generated" readonly>
                                         </div>
                                     </div>
 
 
                                     <div id="sSeriesName">
                                         <div style="border: 2px; border-style:dashed; padding:2px;">
+                                            <div class="input-group input-group-sm mb-2">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">CN171S-07#IN-VE - Material Name</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" placeholder="Auto generated" readonly>
+                                            </div>
+                                            
                                             <div class="input-group input-group-sm mt-1 mb-2">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">CN171S-07#IN-VE - Lot No</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
                                                 </div>
                                                 <div class="input-group-append">
                                                     <button class="btn btn-info" type="button" title="Scan code" id="btnScanSZeroSevenProdLot" form-value="ScanSZeroSevenProdLot">
@@ -223,23 +243,37 @@
 
                                             <div class="input-group input-group-sm mb-2">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">S-07#IN - PO No</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">PO No</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePO" name="po_quantity" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePO" name="s_zero_seven_po_no" placeholder="Auto generated" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-1">
+                                            {{-- <div class="input-group input-group-sm mb-1">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">S-07#IN - PMI PO No</span>
                                                 </div>
                                                 <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                            </div> --}}
+
+                                            <div class="input-group input-group-sm mb-2">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDeviceQty" name="s_zero_seven_dev_qty" placeholder="Auto generated" readonly>
                                             </div>
                                         </div>
 
                                         <div style="border: 2px; border-style:dashed; padding:2px;" class="border-top-0">
+                                            <div class="input-group input-group-sm mb-2">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">CN171S-02#MO-VE - Material Name</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoMatName" name="s_zero_two_material_name" placeholder="Auto generated" readonly>
+                                            </div>
+
                                             <div class="input-group input-group-sm mt-1 mb-2">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">CN171S-02#MO-VE - Lot No</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
                                                 </div>
                                                 <div class="input-group-append">
                                                     <button class="btn btn-info" type="button" title="Scan code" id="btnScanSZeroTwoProdLot" form-value="ScanSZeroTwoProdLot">
@@ -252,16 +286,23 @@
 
                                             <div class="input-group input-group-sm mb-2">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">S-02#MO - PO No</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">PO No</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePO" name="po_quantity" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePO" name="s_zero_two_po_no" placeholder="Auto generated" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-1">
+                                            {{-- <div class="input-group input-group-sm mb-1">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">S-02#MO - PMI PO No</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">PMI PO No</span>
                                                 </div>
                                                 <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                            </div> --}}
+
+                                            <div class="input-group input-group-sm mb-2">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDeviceQty" name="s_zero_two_dev_qty" placeholder="Auto generated" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -1015,27 +1056,29 @@
                     });
                 });
 
-                $('#formCNAssemblyRuncard').keyup('#txtPONumber', delay(function(e){
-                        let search_po_number_val = $('#txtPONumber').val();
-                        $.ajax({
-                            type: "get",
-                            url: "get_data_from_2nd_molding",
-                            data: {
-                                "po_number" : search_po_number_val
-                            },
-                            dataType: "json",
-                            success: function (response) {
-                                let sm_runcard_data = response['sec_molding_runcard_data'];
-                                // console.log(sm_runcard_data);
-                                if(sm_runcard_data[0] == undefined){
-                                    toastr.error('PO does not exists')
-                                }else{
-                                    $('#txtPartsCode', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['parts_code']);
-                                    $('#txtPoQuantity', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['po_quantity']);
-                                }
-                            }
-                        });
-                }, 500));
+                /* SEARCH PO COMMENTED BY CLARK */
+                // $('#formCNAssemblyRuncard').keyup('#txtPONumber', delay(function(e){
+                //         let search_po_number_val = $('#txtPONumber').val();
+                //         $.ajax({
+                //             type: "get",
+                //             url: "get_data_from_2nd_molding",
+                //             data: {
+                //                 "po_number" : search_po_number_val
+                //             },
+                //             dataType: "json",
+                //             success: function (response) {
+                //                 let sm_runcard_data = response['sec_molding_runcard_data'];
+                //                 // console.log(sm_runcard_data);
+                //                 if(sm_runcard_data[0] == undefined){
+                //                     toastr.error('PO does not exists')
+                //                 }else{
+                //                     $('#txtPartsCode', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['parts_code']);
+                //                     $('#txtPoQuantity', $('#formCNAssemblyRuncard')).val(sm_runcard_data[0]['po_quantity']);
+                //                 }
+                //             }
+                //         });
+                // }, 500));
+                /* SEARCH PO COMMENTED BY CLARK END*/
 
                 $('#btnAddAssemblyRuncard').on('click', function(e){
                     if($('#txtSelectDeviceName').val() != "" && $('#txtSearchDeviceName').val() != ""){
@@ -1137,8 +1180,9 @@
                             $('#formCNAssemblyRuncard #txtDeviceName').val(assy_runcard_data[0].device_name);
                             $('#formCNAssemblyRuncard #txtMaterialName').val(assy_runcard_data[0].material_name);
                             $('#formCNAssemblyRuncard #txtPONumber').val(assy_runcard_data[0].po_number);
-                            $('#formCNAssemblyRuncard #txtPartsCode').val(assy_runcard_data[0].parts_code);
+                            // $('#formCNAssemblyRuncard #txtPartsCode').val(assy_runcard_data[0].parts_code);
                             $('#formCNAssemblyRuncard #txtPoQuantity').val(assy_runcard_data[0].po_quantity);
+                            $('#formCNAssemblyRuncard #txtRequiredQty').val(assy_runcard_data[0].required_qty);
                             $('#formCNAssemblyRuncard #txtPZeroTwoProdLot').val(assy_runcard_data[0].p_zero_two_prod_lot);
                             $('#formCNAssemblyRuncard #txtPZeroTwoDeviceId').val(assy_runcard_data[0].p_zero_two_device_id);
                             $('#formCNAssemblyRuncard #txtSZeroSevenProdLot').val(assy_runcard_data[0].s_zero_seven_prod_lot);

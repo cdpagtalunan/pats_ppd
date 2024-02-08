@@ -56,12 +56,13 @@ class FirstMoldingController extends Controller
             $result .= '<center>';
             switch ($row->status) {
                 case 0:
-                    $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
-                    // $result .= "";
+                    // $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
                     break;
                 case 1:
                     // $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
                     $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    // $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
                     break;
                 case 2:
                     $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
@@ -250,11 +251,22 @@ class FirstMoldingController extends Controller
 
     public function getDiesetDetailsByDeviceName (Request $request)
     {
-        $tbl_dieset =  TblDieset::where('DeviceName',$request->device_name)->get();
+        // $tbl_dieset =  TblDieset::where('DeviceName',$request->device_name)->get();
+        // return $request->device_name;
+        return $tbl_dieset = DB::connection('mysql_rapid_stamping_dmcms')
+        ->select('SELECT * FROM `tbl_device` WHERE `device_name` LIKE "'.$request->device_name.'" ');
+
+        // if(count($get_drawing) > 0){
+        //     return $get_drawing[0];
+        // }
+        // else{
+        //     // return "No Data on Stamping DMCMS";
+        //     return response()->json(['msg' => 'No Data on Stamping DMCMS'], 400);
+        // }
         return response()->json( [
-             'dieset_no' => $tbl_dieset[0]->DieNo,
-             'drawing_no' => $tbl_dieset[0]->DrawingNo,
-             'rev_no' => $tbl_dieset[0]->Rev,
+            //  'dieset_no' => $tbl_dieset[0]->DieNo,
+             'drawing_no' => $tbl_dieset[0]->drawing_no,
+             'rev_no' => $tbl_dieset[0]->rev,
         ] );
 
     }
@@ -324,7 +336,8 @@ class FirstMoldingController extends Controller
 
     public function updateFirstMoldingShipmentMachineOuput (Request $request)
     {
-        return $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
+
+        $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
             'shipment_output' => $request->shipment_output,
             'ng_count' => $request->ng_count,
             'total_machine_output' => $request->total_machine_output,

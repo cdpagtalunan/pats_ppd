@@ -857,7 +857,7 @@ class OQCInspectionController extends Controller
         } else {
             DB::beginTransaction();
             try {
-                $check_existing_record = OQCInspection::with(['stamping_production_info'])->where('id', $request->oqc_inspection_id)->where('logdel', 0)->get();
+                // $check_existing_record = OQCInspection::with(['stamping_production_info'])->where('id', $request->oqc_inspection_id)->where('logdel', 0)->get();
                 // return $check_existing_record;
 
                 $add_update_oqc_inspection =[
@@ -1033,7 +1033,7 @@ class OQCInspectionController extends Controller
     public function scanUserId(Request $request){
         date_default_timezone_set('Asia/Manila');
 
-        $user_details = User::where('employee_id', $request->user_id)->first();
+        $user_details = User::where('employee_id', $request->user_id)->where('position', [0,2,5])->first();
         // return $user_details;
         return response()->json(['userDetails' => $user_details]);
     }

@@ -433,7 +433,10 @@
                                                 </div>
                                             </div>
                                             {{-- ATTACHMENT --}}
-                                            <br>
+                                            <div class="form-group">
+                                                <label class="form-label">Remarks:</label>
+                                                <textarea class="form-control form-control-sm" name="remarks" id="txtRemarks"></textarea>
+                                            </div>
                                             <div class="form-group text-center">
                                                 {{-- <label class="form-label">ILQCM Link:</label> --}}
                                                 {{-- <a href="{{ route('ilqcm') }}" target="_blank"> --}}
@@ -677,24 +680,26 @@
                 // $('#txtSearchPONum').on('keypress', function(e){
                 $('#txtScanQrCode').on('keypress', function(e){
                     if(e.keyCode == 13){
-                        // let search_po_number_val = $('#txtScanQrCode').val();
-                        // console.log('log1', $('#txtScanQrCode').val());
-                        let ScanQrCodeVal = jQuery.parseJSON($('#txtScanQrCode').val());
-                        // console.log('log2', ScanQrCodeVal);
+                        let ScanQrCode = $('#txtScanQrCode').val();
+                        try {
+                            let ScanQrCodeVal = JSON.parse(ScanQrCode)
+                            getPoNum =  ScanQrCodeVal.po_num
+                        }catch (error) {
+                            toastr.error('PO does not existssss')
+                            getPoNum = ''
+                        }
+
                         $.ajax({
                             type: "get",
-                            url: "get_data_from_fs_production",
+                            url: "get_data_from_first_stamping_by_po",
                             data: {
-                                "po_number" : ScanQrCodeVal.po_no
-                                // "po_number" : search_po_number_val
+                                "po_number" : getPoNum
                             },
                             dataType: "json",
                             beforeSend: function(){
-                                // prodData = {};
                             },
                             success: function (response) {
                                 let fs_prod_data = response['fs_production_data'];
-                                // console.log('log data', fs_prod_data);
                                 if(fs_prod_data[0] == undefined){
                                     toastr.error('PO does not exists')
                                 }else{
@@ -965,6 +970,7 @@
                                 $('#txtOutput').val(ipqc_data['output']);
                                 $('#txtJudgement').val(ipqc_data['judgement']);
                                 $('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
+                                $('#txtRemarks').val(ipqc_data['remarks']);
                                 // $('#txtKeepSample').val(ipqc_data['ipqc_insp_name']['id']);
 
                                 if(ipqc_data['keep_sample'] == 1){

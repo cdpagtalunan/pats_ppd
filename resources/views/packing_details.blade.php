@@ -359,7 +359,7 @@
                         <div class="col-sm-12">
                             <strong>Final Packing Details</strong>
 
-                            <button class="btn btn-primary" data-bs-toggle="modal" style="float: right;"
+                            <button disabled class="btn btn-primary" data-bs-toggle="modal" style="float: right;"
                                 data-bs-target="#modalValidateFinalPackingDetails" id="btnScanLotNumber"><i
                                     class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
                             </button>
@@ -404,8 +404,8 @@
             <div class="modal-content modal-sm">
                 <div class="modal-body">
                     {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanLotNumber" name="scan_lot_number" autocomplete="off" value='{"po_no":"450244133600010","po_qty":"2400","mat_name":"CT 6009-VE","lot_no":"C240123-0101MZ-2","drawing_no":"B139312-001","del_bal":"2500","no_of_cuts":"1","mat_quality":"test"}'> --}}
-                    {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off"> --}}
-                    <input type="text" class="w-100 " id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off">
+                    {{-- <input type="text" class="w-100 " id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off"> --}}
                     <div class="text-center text-secondary"><span id="txtScanLotNumber">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                 </div>
             </div>
@@ -423,8 +423,8 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="packing_details_id" id="txtPackingDetailsId">
-                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtPackerId" name="scan_packer_id" autocomplete="off"> --}}
-                        <input type="text" class="scanner w-100" id="txtPackerId" name="scan_packer_id" autocomplete="off">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtPackerId" name="scan_packer_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100" id="txtPackerId" name="scan_packer_id" autocomplete="off"> --}}
                         <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </form>
@@ -651,7 +651,7 @@
                     finalPackingDetailsCtrlNo =  $(this).attr('data-ctrl-no');
                     dataStatus =  $(this).attr('data-status');
 
-                    if(dataStatus == 0 || dataStatus == 1){
+                    if(dataStatus == 0 || dataStatus == 1 || dataStatus == 2){
                         $('#btnScanLotNumber').removeAttr('disabled');
                     }
                     
@@ -768,7 +768,7 @@
                     console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
                 });
                 
-                let validateUser = [];
+                let validatedUser = [];
                 $(document).on('keypress', '#txtPackerId', function(e){
                     let toScanId =  $('#txtPackerId').val();
                     let dataScanned = {
@@ -779,13 +779,13 @@
                     }
                     if(e.keyCode == 13){
                         if(dataStatus == 0 ){
-                            validateUser = [4,9];
+                            validatedUser = [4,9];
                         }else{
-                            validateUser = [2,5];
+                            validatedUser = [2,5];
                         }
-                        console.log('validateUser', validateUser);
+                        console.log('validatedUser', validatedUser);
                         // return;
-                        validateUser($(this).val().toUpperCase(), validateUser, function(result){
+                        validateUser($(this).val().toUpperCase(), validatedUser, function(result){
                             if(result == true){
                                 e.preventDefault();
                                 let data1 = $('#formFinalPackingScanOperatorId').serialize() + '&' + $.param(dataScanned);

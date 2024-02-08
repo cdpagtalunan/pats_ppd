@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Controllers
 use App\Http\Controllers\PdfController;
+use App\Http\Controllers\MimfController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\DeviceController;
@@ -11,33 +12,33 @@ use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\StampingController;
 use App\Http\Controllers\UserLevelController;
+use App\Http\Controllers\DefectsInfoController;
 use App\Http\Controllers\FirstMoldingController;
-use App\Http\Controllers\FirstMoldingStationController;
+use App\Http\Controllers\IpqcAssemblyController;
+// use App\Http\Controllers\SecondStampingController;
 use App\Http\Controllers\StampingIpqcController;
 use App\Http\Controllers\IqcInspectionController;
-// use App\Http\Controllers\SecondStampingController;
 use App\Http\Controllers\OQCInspectionController;
+use App\Http\Controllers\SecondMoldingController;
 use App\Http\Controllers\CarrierDetailsController;
 use App\Http\Controllers\PackingDetailsController;
+use App\Http\Controllers\AssemblyRuncardController;
 use App\Http\Controllers\CustomerDetailsController;
 use App\Http\Controllers\MaterialProcessController;
+use App\Http\Controllers\IpqcFirstMoldingController;
 use App\Http\Controllers\ReceivingDetailsController;
+use App\Http\Controllers\IpqcSecondMoldingController;
+use App\Http\Controllers\ProductionHistoryController;
 use App\Http\Controllers\LoadingPortDetailsController;
 use App\Http\Controllers\PackingListDetailsController;
+use App\Http\Controllers\StampingChecksheetController;
+use App\Http\Controllers\FirstMoldingStationController;
+
+use App\Http\Controllers\SecondMoldingStationController;
+use App\Http\Controllers\MoldingIpqcInspectionController;
 use App\Http\Controllers\PackingDetailsMoldingController;
 use App\Http\Controllers\DestinationPortDetailsController;
-use App\Http\Controllers\SecondMoldingController;
-use App\Http\Controllers\SecondMoldingStationController;
-use App\Http\Controllers\AssemblyRuncardController;
-use App\Http\Controllers\DefectsInfoController;
-use App\Http\Controllers\ProductionHistoryController;
-use App\Http\Controllers\MoldingIpqcInspectionController;
 use App\Http\Controllers\ExportTraceabilityReportController;
-
-use App\Http\Controllers\IpqcFirstMoldingController;
-use App\Http\Controllers\IpqcSecondMoldingController;
-use App\Http\Controllers\IpqcAssemblyController;
-use App\Http\Controllers\MimfController;
 
 /*
 |--------------------------------------------------------------------------
@@ -215,20 +216,30 @@ Route::controller(StampingController::class)->group(function () {
 
     Route::get('/print_qr_for_ipqc', 'print_qr_for_ipqc')->name('print_qr_for_ipqc');
     Route::get('/get_matrix_for_mat_validation', 'get_matrix_for_mat_validation')->name('get_matrix_for_mat_validation');
-
-
     // SECON STAMPING
     Route::get('/get_2_stamp_reqs', 'get_2_stamp_reqs')->name('get_2_stamp_reqs');
     Route::post('/save_sublot', 'save_sublot')->name('save_sublot');
     Route::get('/get_sublot_by_id', 'get_sublot_by_id')->name('get_sublot_by_id');
-
 });
+
+// STAMPING CHECKSHEET
+Route::controller(StampingChecksheetController::class)->group(function () {
+
+    // 5S CHECKSHEET
+    Route::post('/save_checksheet', 'save_checksheet')->name('save_checksheet');
+    Route::get('/get_machine_dropdown', 'get_machine_dropdown')->name('get_machine_dropdown');
+    Route::get('/view_checksheet', 'view_checksheet')->name('view_checksheet');
+    
+});
+
+
 
 // STAMPING -> IPQC CONTROLLER
 Route::controller(StampingIpqcController::class)->group(function () {
     Route::get('/view_stamping_ipqc_data', 'view_stamping_ipqc_data')->name('view_stamping_ipqc_data');
     // Route::get('/get_po_from_pps_db', 'get_po_from_pps_db')->name('get_po_from_pps_db');
     Route::get('/get_po_from_fs_production', 'get_po_from_fs_production')->name('get_po_from_fs_production');
+    Route::get('/get_data_from_first_stamping_by_po', 'get_data_from_first_stamping_by_po')->name('get_data_from_first_stamping_by_po');
     Route::get('/get_data_from_fs_production', 'get_data_from_fs_production')->name('get_data_from_fs_production');
     Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
     Route::post('/update_status_of_ipqc_inspection', 'update_status_of_ipqc_inspection')->name('update_status_of_ipqc_inspection');

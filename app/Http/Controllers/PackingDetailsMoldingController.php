@@ -45,12 +45,12 @@ class PackingDetailsMoldingController extends Controller
                     $id = $packing_details->first_molding_info->id;
                     if($packing_details->first_molding_info->status == 0){
                         // $result .= "<button class='btn btn-warning btn-sm btnQCScanMoldingID' style='display: none;' data-id='".$packing_details->first_molding_info->id."'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
-                        $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' style='display: none;' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
                     }else if($packing_details->first_molding_info->status == 1){
                         $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
                     }
                 }else{
-                    $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
+                    $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' style='display: none;' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
 
                 }
                 return $result;

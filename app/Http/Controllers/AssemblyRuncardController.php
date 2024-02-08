@@ -20,15 +20,15 @@ use App\Models\Device;
 class AssemblyRuncardController extends Controller
 {
     public function get_data_from_matrix(Request $request){
-        $material_name = [];
+        // $material_name = [];
         $matrix_data = Device::with(['material_process.material_details'])->with(['material_process.station_details.stations'])->where('name', $request->device_name)->where('status', 1)->get();
-        foreach($matrix_data[0]->material_process[0]->material_details as $material_details){
-            $material_name[] = $material_details->material_type;
-        }
-        $material_type = implode(',',$material_name);
+        // foreach($matrix_data[0]->material_process[0]->material_details as $material_details){
+        //     $material_name[] = $material_details->material_type;
+        // }
+        // $material_type = implode(',',$material_name);
 
-        $station_details = $matrix_data[0]->material_process[0]->station_details;
-        return response()->json(['material_details' => $material_type, 'station_details' => $station_details]);
+        // $station_details = $matrix_data[0]->material_process[0]->station_details;
+        return response()->json(['matrix_data' => $matrix_data]);
     }
 
     public function get_data_from_2nd_molding(Request $request){

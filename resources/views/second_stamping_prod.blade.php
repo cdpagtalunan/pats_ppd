@@ -851,7 +851,10 @@
                         * this event will trigger after closing the tab of printing
                     */
                     popup.addEventListener("beforeunload", function (e) {
-                        changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        if(img_barcode_PO_text_hidden[0]['stampCat'] == undefined){
+
+                            changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        }
                     });
 
                     popup.close();
@@ -1107,28 +1110,6 @@
 
                     getSublotById(stampingId);
                 });
-
-                // let operatorArray = [];
-                // $('#btnScanOperator').on('click', function(){
-                //     $('#modalScanSelOp').modal('show');
-                //     operatorArray = [];
-                //     $('#selOperator').val(operatorArray).trigger('change');
-
-                // });
-
-                // $('#modalScanSelOp').on('shown.bs.modal', function () {
-                //     $('#txtScanOpId').focus();
-                // });
-
-                // $('#txtScanOpId').on('keyup', function(e){
-                //     if(e.keyCode == 13){
-                //         operatorArray.push($(this).val());
-                //         console.log(operatorArray);
-                //         $('#selOperator').val(operatorArray).trigger('change');
-
-                //         $(this).val('');
-                //     }
-                // });
 
             });
 

@@ -14,6 +14,7 @@ use DataTables;
 
 use App\Models\Mimf;
 use App\Models\User;
+use App\Models\TblPoReceived;
 
 class MimfController extends Controller
 {
@@ -26,13 +27,13 @@ class MimfController extends Controller
         ->addColumn('action', function($get_mimf){
             $result = '<center>';
             $result .= '
-                <button class="btn btn-info btn-sm text-center 
-                    actionOqcInspectionView" 
+                <button class="btn btn-dark btn-sm text-center 
+                    actionEditMimf" 
                     mimf-id="'. $get_mimf->id .'" 
                     data-bs-toggle="modal" 
                     data-bs-target="#modalMimf" 
                     data-bs-keyboard="false" title="View">
-                    <i class="nav-icon fa fa-eye"></i>
+                    <i class="nav-icon fa fa-edit"></i>
                 </button>';
             $result .= '</center>';
             return $result;
@@ -43,7 +44,26 @@ class MimfController extends Controller
         ->make(true);
     }
 
-    public function EmployeeID(Request $request){
+    public function getControlNo(){
+        date_default_timezone_set('Asia/Manila');
+
+        $get_control_no = Mimf::orderBy('id', 'DESC')->where('logdel', 0)->first();
+        $control_no_format = "MIMF-".NOW()->format('ym')."-";
+
+        if ($get_control_no == null){
+            $new_control_no = $control_no_format.'001';
+        }elseif(explode('-',$get_control_no->control_no)[1] != NOW()->format('ym')){
+            $new_control_no = $control_no_format.'001';
+        }else{
+            $explode_control_no = explode("-",  $get_control_no->control_no);
+            $increment_control_number = $explode_control_no[2]+1;
+            $string_pad = str_pad($increment_control_number,3,"0",STR_PAD_LEFT);
+            $new_control_no = $control_no_format.$string_pad;
+        }
+        return response()->json(['newControlNo' => $new_control_no]);
+    }
+
+    public function employeeID(Request $request){
         date_default_timezone_set('Asia/Manila');
 
         $user_details = User::where('employee_id', $request->user_id)->first();
@@ -55,21 +75,21 @@ class MimfController extends Controller
         $data = $request->all();
 
         $validator = Validator::make($data, [
-            // 'mimf_control_no'               => 'required',
-            // 'mimf_pmi_po_no'                => 'required',
-            // 'mimf_date_issuance'            => 'required',
-            // 'mimf_prodn_quantity'           => 'required',
-            // 'mimf_device_code'              => 'required',
-            // 'mimf_device_name'              => 'required',
-            // 'mimf_material_code'            => 'required',
-            // 'mimf_material_type'            => 'required',
-            // 'mimf_quantity_from_inventory'  => 'required',
-            // 'mimf_needed_kgs'               => 'required',
-            // 'mimf_virgin_material'          => 'required',
-            // 'mimf_recycled'                 => 'required',
-            // 'mimf_prodn'                    => 'required',
-            // 'mimf_delivery'                 => 'required',
-            // 'mimf_remark'                   => 'required',
+            'mimf_control_no'               => 'required',
+            'mimf_pmi_po_no'                => 'required',
+            'mimf_date_issuance'            => 'required',
+            'mimf_prodn_quantity'           => 'required',
+            'mimf_device_code'              => 'required',
+            'mimf_device_name'              => 'required',
+            'mimf_material_code'            => 'required',
+            'mimf_material_type'            => 'required',
+            'mimf_quantity_from_inventory'  => 'required',
+            'mimf_needed_kgs'               => 'required',
+            'mimf_virgin_material'          => 'required',
+            'mimf_recycled'                 => 'required',
+            'mimf_prodn'                    => 'required',
+            'mimf_delivery'                 => 'required',
+            'mimf_remark'                   => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -77,6 +97,7 @@ class MimfController extends Controller
         } else {
             DB::beginTransaction();
             try {
+                $check_existing_record = Mimf::where('id', $request->mimf_id)->where('logdel', 0)->get();
                 $mimf =[
                     'control_no'        => $request->mimf_control_no,
                     'date_issuance'     => $request->mimf_date_issuance,
@@ -94,13 +115,20 @@ class MimfController extends Controller
                     'delivery'          => $request->mimf_delivery,
                     'remarks'           => $request->mimf_remark,
                     'scan_by'           => $request->employee_no,
-                    'created_by'        => $request->created_by,
-                    'created_at'        => date('Y-m-d H:i:s'),
                 ];   
                 
-                Mimf::insert(
-                    $mimf
-                );
+                if(count($check_existing_record) != 1){
+                    $mimf['created_at']  = date('Y-m-d H:i:s');
+                    Mimf::insert(
+                        $mimf
+                    );
+                }else{
+                    $mimf['updated_at']  = date('Y-m-d H:i:s');
+                    Mimf::where('id', $request->mimf_id)
+                    ->update(
+                        $mimf
+                    );
+                }
 
                 DB::commit();
                 return response()->json(['hasError' => 0]);
@@ -109,5 +137,28 @@ class MimfController extends Controller
                 return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
             }
         }
+    }
+
+    public function getMimfById(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        
+        $get_mimf_to_edit = Mimf::where('id', $request->mimfID)->get();
+        return response()->json(['getMimfToEdit'  => $get_mimf_to_edit]);
+    }
+
+    public function getPmiPoFromPoReceived(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        
+        // $get_po_received_pmi_po = TblPoReceived::where('OrderNo','LIKE','%'.$request->getValue.'%')->where('logdel', 0)->get();
+        $get_po_received_pmi_po = TblPoReceived::with([
+            'matrix_info',
+            'pps_dieset_info',
+            'pps_dieset_info.pps_warehouse_info'
+        ])
+        ->where('OrderNo',$request->getValue)
+        ->where('logdel', 0)
+        ->get();
+        // return $get_po_received_pmi_po;
+        return response()->json(['getPoReceivedPmiPo'  => $get_po_received_pmi_po]);
     }
 }

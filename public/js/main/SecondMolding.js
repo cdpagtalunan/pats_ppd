@@ -54,13 +54,26 @@ const getPOReceivedByPONumber = (poNumber) => {
                 $('#textSearchPOQuantity').val(response[0]['OrderQty']);
                 $('#textDeviceName', $('#formSecondMolding')).val(response[0]['ItemName']);
                 $('#textPartsCode', $('#formSecondMolding')).val(response[0]['ItemCode']);
-                $('#textPONumber', $('#formSecondMolding')).val(response[0]['OrderNo']);
-                $('#textPMIPONumber', $('#formSecondMolding')).val(response[0]['ProductPONo']);
+                $('#textPMIPONumber', $('#formSecondMolding')).val(response[0]['OrderNo']);
+                $('#textPONumber', $('#formSecondMolding')).val(response[0]['ProductPONo']);
                 $('#textPoQuantity', $('#formSecondMolding')).val(response[0]['OrderQty']);
+
                 let poQuantity = parseFloat(response[0]['OrderQty']);
-                let poQuantityPercentage = parseFloat(poQuantity * 5 * 0.05);
-                let requiredOutput = (poQuantity * 5) + poQuantityPercentage;
-                $('#textRequiredOutput', $('#formSecondMolding')).val(requiredOutput.toFixed(2));
+                let usage = 1;
+                let poQuantityPercentage = parseFloat(poQuantity * usage * 0.05);
+                let requiredOutput = (poQuantity * usage) + poQuantityPercentage;
+                $('#textRequiredOutput').val(requiredOutput.toFixed(2));
+                
+                /**
+                 * Computation of Target Output with Usage allowance
+                 */
+                // let poQuantity = parseFloat(response[0]['OrderQty']);
+                // let poQuantityPercentage = parseFloat(poQuantity * 5 * 0.05);
+                // let requiredOutput = (poQuantity * 5) + poQuantityPercentage;
+                // $('#textRequiredOutput', $('#formSecondMolding')).val(requiredOutput.toFixed(2));
+
+
+                
             }
             else{
                 toastr.error('No PO Found')
@@ -234,4 +247,11 @@ function setDisabledSecondMoldingRuncard(boolean) {
     $('#buttonQrScanMELotNumberOne').prop('disabled', boolean);
     $('#buttonQrScanMELotNumberSecond').prop('disabled', boolean);
     $('#buttonSaveSecondMoldingData').prop('disabled', boolean);
+    $('#adjustment_shots').prop('disabled', boolean);
+    $('#qc_samples').prop('disabled', boolean);
+    $('#prod_samples').prop('disabled', boolean);
+    $('#ng_count').prop('disabled', boolean);
+    $('#total_machine_output').prop('disabled', boolean);
+    $('#shipment_output').prop('disabled', boolean);
+    $('#buttonSubmitSecondMolding').prop('disabled', boolean);
 }

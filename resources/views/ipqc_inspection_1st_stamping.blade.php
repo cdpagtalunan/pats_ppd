@@ -62,11 +62,18 @@
                             <div class="card">
                                 <div class="card-body">
                                     <div class="row">
-                                        <div class="col-sm-2">
+                                        {{-- <div class="col-sm-2">
                                                 <label class="form-label">PO Number:</label>
                                             <div class="input-group mb-3">
                                                 <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select PO Number"></i>
                                                 <select class="form-control select2bs5" id="txtSelectPONo" name="po_number" placeholder="Select PO Number"></select>
+                                            </div>
+                                        </div> --}}
+                                        <div class="col-sm-2">
+                                            <label class="form-label">PO Number</label>
+                                            <div class="input-group mb-3">
+                                                <button class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button>
+                                                <input readonly type="text" class="form-control" placeholder="Search PO Number" aria-label="Username" name="po_number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -377,7 +384,10 @@
                                                 </div>
                                             </div>
                                             {{-- ATTACHMENT --}}
-                                            <br>
+                                            <div class="form-group">
+                                                <label class="form-label">Remarks:</label>
+                                                <textarea class="form-control form-control-sm" name="remarks" id="txtRemarks"></textarea>
+                                            </div>
                                             <div class="form-group text-center">
                                                 {{-- <label class="form-label">ILQCM Link:</label> --}}
                                                 {{-- <a href="{{ route('ilqcm') }}" target="_blank"> --}}
@@ -431,40 +441,42 @@
                     theme: 'bootstrap-5'
                 } );
 
-                GetPOFromFirstStampingProd($("#txtSelectPONo"));
+                /* SELECT PO FROM FIRST STAMPING - CLARK COMMENT */
+                // GetPOFromFirstStampingProd($("#txtSelectPONo"));
 
-                function GetPOFromFirstStampingProd(cboElement){
-                    let result = '<option value="" disabled selected>-- Select PO No. --</option>';
+                // function GetPOFromFirstStampingProd(cboElement){
+                //     let result = '<option value="" disabled selected>-- Select PO No. --</option>';
 
-                    $.ajax({
-                            type: "get",
-                            url: "get_po_from_fs_production",
-                            data: {
-                                "stamping_cat" : 1
-                            },
-                            dataType: "json",
-                            beforeSend: function() {
-                                result = '<option value="0" disabled selected> -- Loading -- </option>';
-                                cboElement.html(result);
-                            },
-                            success: function(response) {
-                                if (response['fs_production_po'].length > 0) {
-                                        result = '<option value="" disabled selected>-- Select PO No. --</option>';
-                                    for (let index = 0; index < response['fs_production_po'].length; index++) {
-                                        result += '<option value="' + response['fs_production_po'][index].po_num + '">' + response['fs_production_po'][index].po_num + '</option>';
-                                    }
-                                } else {
-                                    result = '<option value="0" selected disabled> -- No record found -- </option>';
-                                }
-                                cboElement.html(result);
-                            },
-                            error: function(data, xhr, status) {
-                                result = '<option value="0" selected disabled> -- Reload Again -- </option>';
-                                cboElement.html(result);
-                                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                            }
-                        });
-                }
+                //     $.ajax({
+                //             type: "get",
+                //             url: "get_po_from_fs_production",
+                //             data: {
+                //                 "stamping_cat" : 1
+                //             },
+                //             dataType: "json",
+                //             beforeSend: function() {
+                //                 result = '<option value="0" disabled selected> -- Loading -- </option>';
+                //                 cboElement.html(result);
+                //             },
+                //             success: function(response) {
+                //                 if (response['fs_production_po'].length > 0) {
+                //                         result = '<option value="" disabled selected>-- Select PO No. --</option>';
+                //                     for (let index = 0; index < response['fs_production_po'].length; index++) {
+                //                         result += '<option value="' + response['fs_production_po'][index].po_num + '">' + response['fs_production_po'][index].po_num + '</option>';
+                //                     }
+                //                 } else {
+                //                     result = '<option value="0" selected disabled> -- No record found -- </option>';
+                //                 }
+                //                 cboElement.html(result);
+                //             },
+                //             error: function(data, xhr, status) {
+                //                 result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                //                 cboElement.html(result);
+                //                 console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                //             }
+                //         });
+                // }
+                /* SELECT PO FROM FIRST STAMPING - CLARK COMMENT */
 
                 console.log('b drawing', $('#txtSelectDocNoBDrawing').val());
                 console.log('ins', $('#txtSelectDocNoInspStandard').val());
@@ -540,7 +552,7 @@
                     "ajax" : {
                         url: "view_stamping_ipqc_data",
                         data: function(param){
-                        param.po_number =  $("#txtSelectPONo").val();
+                        param.po_number =  $("#txtSearchPONum").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
                         param.fs_prod_status = [0]; // Stamping productions Status : For IPQC
                         param.fs_prod_stamping_cat = 1; // Stamping productions Stamping Category: 1
@@ -579,7 +591,7 @@
                     "ajax" : {
                         url: "view_stamping_ipqc_data",
                         data: function(param){
-                        param.po_number =  $("#txtSelectPONo").val();
+                        param.po_number =  $("#txtSearchPONum").val();
                         // param.status = [3];
                         param.ipqc_status = [3]; //Status 3 = Submitted: Judgement - Accepted
                         param.fs_prod_status = [1,2]; //Stamping productions Status : For Mass Prod, Done
@@ -619,7 +631,7 @@
                     "ajax" : {
                         url: "view_stamping_ipqc_data",
                         data: function(param){
-                        param.po_number =  $("#txtSelectPONo").val();
+                        param.po_number =  $("#txtSearchPONum").val();
                         param.ipqc_status = [4]; //Status 4 = Submitted: Judgement - Rejected
                         param.fs_prod_status = [3]; //Stamping productions Status : For Resetup
                         param.fs_prod_stamping_cat = 1; // Stamping productions Stamping Category: 1
@@ -676,50 +688,101 @@
                     });
                 });
 
-                $('#txtSelectPONo').on('change', function(e){
-                    // if(e.keyCode == 13){
-                        let search_po_number_val = $('#txtSelectPONo').val();
-                        // console.log('log1', $('#txtScanQrCode').val());
-                        // let ScanQrCodeVal = jQuery.parseJSON($('#txtScanQrCode').val());
-                        // console.log('log2', ScanQrCodeVal);
+                // $('#txtSelectPONo').on('change', function(e){
+                //     // if(e.keyCode == 13){
+                //         let search_po_number_val = $('#txtSelectPONo').val();
+                //         // console.log('log1', $('#txtScanQrCode').val());
+                //         // let ScanQrCodeVal = jQuery.parseJSON($('#txtScanQrCode').val());
+                //         // console.log('log2', ScanQrCodeVal);
+                //         $.ajax({
+                //             type: "get",
+                //             url: "get_data_from_fs_production",
+                //             data: {
+                //                 // "po_number" : ScanQrCodeVal.po
+                //                 "po_number" : search_po_number_val
+                //             },
+                //             dataType: "json",
+                //             beforeSend: function(){
+                //                 // prodData = {};
+                //             },
+                //             success: function (response) {
+                //                 let fs_prod_data = response['fs_production_data'];
+                //                 // console.log('log data', fs_prod_data);
+                //                 if(fs_prod_data[0] == undefined){
+                //                     toastr.error('PO does not exists')
+                //                 }else{
+                //                         $('#txtSelectPONo').val(fs_prod_data[0]['po_num']);
+                //                         $('#txtSearchPartCode').val(fs_prod_data[0]['part_code']);
+                //                         $('#txtSearchMatName').val(fs_prod_data[0]['material_name']);
+                //                         $('#txtScanQrCode').val('');
+                //                         $('#mdlScanQrCode').modal('hide');
+
+                //                         let mat_name = fs_prod_data[0]['material_name'];
+                //                         mat_name = mat_name.replace(/ /g,'');
+                //                         // console.log(mat_name);
+
+                //                         GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                //                         GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                //                         GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+
+                //                         dt1stStampingIpqcInspectionPending.draw();
+                //                         dt1stStampingIpqcInspectionCompleted.draw();
+                //                         dt1stStampingIpqcInspectionResetup.draw();
+                //                 }
+                //             }
+                //         });
+                //     // }
+                // });
+
+                $('#txtScanQrCode').on('keypress', function(e){
+                    if(e.keyCode == 13){
+                        const ScanQrCode = $('#txtScanQrCode').val();
+                        try {
+                            let ScanQrCodeVal = JSON.parse(ScanQrCode)
+                            getPoNum =  ScanQrCodeVal.po_num
+                            console.log(getPoNum);
+                        }catch (error) {
+                            toastr.error('PO does not existsssss')
+                            getPoNum = ''
+                            // console.log(getPoNum);
+                        }
+                        
                         $.ajax({
                             type: "get",
-                            url: "get_data_from_fs_production",
+                            url: "get_data_from_first_stamping_by_po",
                             data: {
-                                // "po_number" : ScanQrCodeVal.po
-                                "po_number" : search_po_number_val
+                                "po_number" : getPoNum
                             },
                             dataType: "json",
                             beforeSend: function(){
                                 // prodData = {};
                             },
                             success: function (response) {
-                                let fs_prod_data = response['fs_production_data'];
-                                // console.log('log data', fs_prod_data);
+                                let fs_prod_data = response['first_stamping_data'];
                                 if(fs_prod_data[0] == undefined){
                                     toastr.error('PO does not exists')
                                 }else{
-                                        $('#txtSelectPONo').val(fs_prod_data[0]['po_num']);
-                                        $('#txtSearchPartCode').val(fs_prod_data[0]['part_code']);
-                                        $('#txtSearchMatName').val(fs_prod_data[0]['material_name']);
-                                        $('#txtScanQrCode').val('');
-                                        $('#mdlScanQrCode').modal('hide');
+                                    $('#txtSearchPONum').val(fs_prod_data[0]['po_num']);
+                                    $('#txtSearchPartCode').val(fs_prod_data[0]['part_code']);
+                                    $('#txtSearchMatName').val(fs_prod_data[0]['material_name']);
+                                    $('#txtScanQrCode').val('');
+                                    $('#mdlScanQrCode').modal('hide');
 
-                                        let mat_name = fs_prod_data[0]['material_name'];
-                                        mat_name = mat_name.replace(/ /g,'');
-                                        // console.log(mat_name);
+                                    let mat_name = fs_prod_data[0]['material_name'];
+                                    mat_name = mat_name.replace(/ /g,'');
+                                    // console.log(mat_name);
 
-                                        GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
-                                        GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
-                                        GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+                                    GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                    GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                    GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
 
-                                        dt1stStampingIpqcInspectionPending.draw();
-                                        dt1stStampingIpqcInspectionCompleted.draw();
-                                        dt1stStampingIpqcInspectionResetup.draw();
+                                    dt1stStampingIpqcInspectionPending.draw();
+                                    dt1stStampingIpqcInspectionCompleted.draw();
+                                    dt1stStampingIpqcInspectionResetup.draw();
                                 }
                             }
                         });
-                    // }
+                    }
                 });
 
                 $('#txtOutput').keyup(function(e){
@@ -932,6 +995,7 @@
                                 $('#txtOutput').val(ipqc_data['output']);
                                 $('#txtJudgement').val(ipqc_data['judgement']);
                                 $('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
+                                $('#txtRemarks').val(ipqc_data['remarks']);
                                 // $('#txtKeepSample').val(ipqc_data['ipqc_insp_name']['id']);
 
                                 if(ipqc_data['keep_sample'] == 1){

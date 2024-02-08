@@ -349,7 +349,10 @@
                                                 </div>
                                             </div>
                                             {{-- ATTACHMENT --}}
-                                            <br>
+                                            <div class="form-group">
+                                                <label class="form-label">Remarks:</label>
+                                                <textarea class="form-control form-control-sm" name="remarks" id="txtRemarks"></textarea>
+                                            </div>
                                             <div class="form-group text-center">
                                                 {{-- <label class="form-label">ILQCM Link:</label> --}}
                                                 {{-- <a href="{{ route('ilqcm') }}" target="_blank"> --}}
@@ -630,6 +633,7 @@
                                 frmIPQCInspectionData.find('#txtOutput').val(ipqc_data['output']);
                                 frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
                                 frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
+                                frmIPQCInspectionData.find('#txtRemarks').val(ipqc_data['remarks']);
 
                                 if(ipqc_data['keep_sample'] == 1){
                                     frmIPQCInspectionData.find('#txtKeepSample1').prop('checked', true);

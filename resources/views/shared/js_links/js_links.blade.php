@@ -50,28 +50,29 @@
     };
 </script>
 
-<script src="{{ asset('public/js/main/Common.js?') }}" async></script>
-<script src="{{ asset('public/js/main/User.js?') }}" async></script>
+<script src="{{ asset('public/js/main/Common.js') }}" async></script>
+<script src="{{ asset('public/js/main/User.js') }}" async></script>
 
-<script src="{{ asset('public/js/main/UserLevel.js?') }}" async></script>
-<script src="{{ asset('public/js/main/Device.js?') }}" async></script>
-<script src="{{ asset('public/js/main/MaterialProcess.js?') }}" async></script>
-<script src="{{ asset('public/js/main/OqcInspection.js?') }}" async></script>
+<script src="{{ asset('public/js/main/UserLevel.js') }}" async></script>
+<script src="{{ asset('public/js/main/Device.js') }}" async></script>
+<script src="{{ asset('public/js/main/MaterialProcess.js') }}" async></script>
+<script src="{{ asset('public/js/main/OqcInspection.js') }}" async></script>
 
-
-<script src="{{ asset('public/js/main/Stamping.js?') }}" async></script>
+<!-- STAMPING JS -->
+<script src="{{ asset('public/js/main/Stamping.js') }}" async></script>
+<script src="{{ asset('public/js/main/StampingChecksheet.js') }}" async></script>
 
 <!-- PACKING LIST JS -->
-<script src="{{ asset('public/js/main/CustomerDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/CarrierDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/LoadingPortDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/DestinationPortDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/PackingList.js?') }}" async></script>
-<script src="{{ asset('public/js/main/ReceivingDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/PackingDetails.js?') }}" async></script>
+<script src="{{ asset('public/js/main/CustomerDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/CarrierDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/LoadingPortDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/DestinationPortDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/PackingList.js') }}" async></script>
+<script src="{{ asset('public/js/main/ReceivingDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/PackingDetails.js') }}" async></script>
 
 {{-- IQC --}}
-<script src="{{ asset('public/js/main/IqcInspection.js?') }}"></script>
+<script src="{{ asset('public/js/main/IqcInspection.js') }}" async></script>
 
 {{-- MOLDING --}}
 <script src="@php echo asset("public/js/main/FirstMolding.js?".date("YmdHis")) @endphp"></script>

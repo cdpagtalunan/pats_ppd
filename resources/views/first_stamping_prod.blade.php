@@ -780,7 +780,10 @@
                         * this event will trigger after closing the tab of printing
                     */
                     popup.addEventListener("beforeunload", function (e) {
-                        changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        if(img_barcode_PO_text_hidden[0]['stampCat'] == undefined){
+
+                            changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        }
                     });
 
                     popup.close();
