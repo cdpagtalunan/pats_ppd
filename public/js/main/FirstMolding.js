@@ -152,7 +152,7 @@
                         $('#btnAddFirstMoldingMaterial').removeClass('d-none',true);
                     }
                 }
-                
+
                 /* Calculate the Material Yield */
                 calculateTotalMaterialYield(data.total_machine_output,data.shipment_output);
                 dt.firstMoldingStation.draw();
@@ -333,7 +333,7 @@
             }
         });
     }
-    
+
 
     const updateFirstMoldingShipmentMachineOuput = function (firstMoldingId,shipmentOutput,ngCount,inputTotalMachineOuput){
         let data = $.param({
@@ -377,20 +377,20 @@
                     let ngCount = formModal.firstMoldingStation.find('#ng_qty').val();
                     let firstMoldingId = formModal.firstMoldingStation.find('#first_molding_id').val();
                     let station = formModal.firstMoldingStation.find('#station').val();
-                     
+
                     // if(station == 8){ // id 8-Machine 1st Overmold  in Rev | id 5-Machine 1st Overmold in Live, need to change id to live
                     formModal.firstMolding.find('#shipment_output').val(shipmentOutput);
                     formModal.firstMolding.find('#ng_count').val(ngCount);
 
                     /* Calculate the Total Machine Output */
-                    calcuTotalMachineOutput(); //return inputTotalMachineOuput
+                    calcuTotalMachineOutput(); //NOTE: return inputTotalMachineOuput
                     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
                     /* Calculate the Material Yield */
                     calculateTotalMaterialYield (inputTotalMachineOuput,shipmentOutput);
                     /* Save the updated shipment out, machine output and ng */
                     updateFirstMoldingShipmentMachineOuput(firstMoldingId,shipmentOutput,ngCount,inputTotalMachineOuput);
                     // }
-                    
+
                     $('#modalFirstMoldingStation').modal('hide');
                     formModal.firstMoldingStation[0].reset();
                     dt.firstMoldingStation.draw();

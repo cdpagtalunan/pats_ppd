@@ -81,6 +81,10 @@
                                                   </div>
                                                 </div>
                                                 <div class="col-sm-3">
+                                                  <label>Input Device Name</label>
+                                                    <input type="text" class="form-control" id="global_input_device_name" name="global_input_device_name" readonly>
+                                                </div>
+                                                <div class="col-sm-3">
                                                   <label>Contact Name</label>
                                                     <input type="text" class="form-control" id="global_contact_name" name="global_contact_name" readonly>
                                                 </div>
@@ -221,11 +225,17 @@
                         data: {"device_name" : deviceName},
                         dataType: "json",
                         success: function (response) {
-                            let diesetNo = response['dieset_no'];
+                            let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
+                            let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
+                            let twoDigitDay = String(strDatTime.dateToday.getDate()).padStart(2, '0');
+                            // let diesetNo = response['dieset_no'];
                             let drawingNo = response['drawing_no'];
                             let revNo = response['rev_no'];
+
                             formModal.firstMolding.find('#drawing_no').val(drawingNo);
                             formModal.firstMolding.find('#revision_no').val(revNo);
+                            //Auto generated production lot number: DiesetRevisionNumberYYMMDD
+                            formModal.firstMolding.find('#production_lot').val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
                         }
                     });
                 }
@@ -247,8 +257,9 @@
                     formModal.firstMolding.find('#item_name').val('');
                     formModal.firstMolding.find('#po_qty').val('');
                     formModal.firstMolding.find('#material_yield').val('');
-                    formModal.firstMolding.find('#drawing_no').val('');
-                    formModal.firstMolding.find('#revision_no').val('');
+                    // formModal.firstMolding.find('#drawing_no').val('');
+                    // formModal.firstMolding.find('#revision_no').val('');
+                    formModal.firstMolding.find('#dieset_no').val('');
                     formModal.firstMolding.find('#required_output').val('');
                     formModal.firstMolding.find('[type="number"]').val(0)
                     formModal.firstMolding.find('.form-control').removeClass('is-valid')
@@ -418,15 +429,17 @@
 
                     });
 
+
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
+                    let device_name = $('#global_input_device_name').val();
                     dt.firstMoldingStation.draw()
                     $('#modalFirstMolding').modal('show');
                     $('#btnFirstMoldingStation').prop('disabled',true);
                     $('#btnSubmitFirstMoldingStation').prop('disabled',true);
                     $('#btnRuncardDetails').removeClass('d-none',true);
                     $('#btnAddFirstMoldingMaterial').removeClass('d-none',true);
-                    formModal.firstMolding.find('[type="number"]').val(0)
+                    formModal.firstMolding.find('[type="number"]').val(0);
 
                     let rowFirstMoldingMaterial = `
                         <tr>
@@ -463,6 +476,7 @@
                     `;
                     $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
 
+                    getDiesetDetailsByDeviceName(device_name);
                 });
 
                 $('#btnFirstMoldingStation').click(function (e) {
@@ -514,36 +528,6 @@
                     });
                 });
 
-
-                $('#global_device_name').change(function (e) {
-                    e.preventDefault();
-                    $.ajax({
-                        type: "GET",
-                        url: "get_first_molding_devices_by_id",
-                        data: {"first_molding_device_id" : $(this).val()},
-                        dataType: "json",
-                        success: function (response) {
-                            let first_molding_device_id = response[0].id
-                            let contact_name = response[0].contact_name
-                            let device_name = response[0].device_name
-
-                            $('#btnAddFirstMolding').prop('disabled',false);
-                            $('#global_contact_name').val(contact_name);
-                            formModal.firstMolding.find('#first_molding_device_id').html(`<option value="${first_molding_device_id}">${device_name}</option>`);
-                            formModal.firstMolding.find('#contact_name').val(contact_name);
-
-
-                            dt.firstMolding.draw();
-                            getDiesetDetailsByDeviceName(device_name);
-                            //
-                            getMachineFromMaterialProcess(formModal.firstMolding.find('#machine_no'),device_name);
-                            getStation (formModal.firstMoldingStation.find('#station'),device_name)
-                            //nmodify
-                        }
-                    });
-                });
-
-
                 $('#tableFirstMoldingStationMOD').on('keyup','.textMODQuantity', function (e) {
                     let totalNumberOfMOD = 0;
                     let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
@@ -571,9 +555,47 @@
                     $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal');
                 });
 
+                $('#btnAddFirstMoldingMaterial').click(function (e) {
+                    e.preventDefault();
+                    arr.Ctr ++;
+                    let rowFirstMoldingMaterial = `
+                        <tr>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required min=1 step="0.01">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                    <input value="0" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_qty[]" required min=1 step="0.01">
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-group input-group-sm mb-3">
+                                    <input value="0" type="number" class="form-control form-control-sm" id="recycle_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_qty[]" required>
+                                </div>
+                            </td>
+                            <td>
+                                <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                            </td>
+                        </tr>
+                    `;
+                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
+                });
+
                 /**
                  * Add Mode Of Defect
-                 * Start
                 */
                 $("#buttonAddFirstMoldingModeOfDefect").click(function(){
                     let totalNumberOfMOD = 0;
@@ -633,6 +655,32 @@
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
 
+                $('#global_device_name').change(function (e) {
+                    e.preventDefault();
+                    $.ajax({
+                        type: "GET",
+                        url: "get_first_molding_devices_by_id",
+                        data: {"first_molding_device_id" : $(this).val()},
+                        dataType: "json",
+                        success: function (response) {
+                            let first_molding_device_id = response[0].id
+                            let contact_name = response[0].contact_name
+                            let device_name = response[0].device_name
+
+                            $('#btnAddFirstMolding').prop('disabled',false);
+                            $('#global_contact_name').val(contact_name);
+                            $('#global_input_device_name').val(device_name);
+                            formModal.firstMolding.find('#first_molding_device_id').html(`<option value="${first_molding_device_id}">${device_name}</option>`);
+                            formModal.firstMolding.find('#contact_name').val(contact_name);
+
+                            dt.firstMolding.draw();
+                            // getDiesetDetailsByDeviceName(device_name);
+                            getMachineFromMaterialProcess(formModal.firstMolding.find('#machine_no'),device_name);
+                            getStation (formModal.firstMoldingStation.find('#station'),device_name)
+                            //nmodify
+                        }
+                    });
+                });
 
                 $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
                     if(e.keyCode == 13){
@@ -729,44 +777,7 @@
                     savefirstMoldingStation();
                 });
 
-                $('#btnAddFirstMoldingMaterial').click(function (e) {
-                    e.preventDefault();
-                    arr.Ctr ++;
-                    let rowFirstMoldingMaterial = `
-                        <tr>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend">
-                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required min=1 step="0.01">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="0" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_qty[]" required min=1 step="0.01">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="0" type="number" class="form-control form-control-sm" id="recycle_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_qty[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
-                            </td>
-                        </tr>
-                    `;
-                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
-                });
+
 
                 $("#tblFirstMoldingMaterial").on('click', '.buttonRemoveMaterial', function(){
                     $(this).closest ('tr').remove();
