@@ -66,6 +66,8 @@
 
                 for (let i = 0; i < first_molding_material_list.length; i++) {
                     console.log(first_molding_material_list[i].virgin_material);
+                    arr.Ctr += 1;
+                    console.log('arr.Ctr',arr.Ctr);
                     let rowFirstMoldingMaterial = `
                         <tr>
                             <td>
@@ -201,6 +203,7 @@
 
     const editFirstMoldingStation = function (){
         let first_molding_station_id = $(this).attr('first-molding-station-id');
+        let view_data = $(this).attr('view-data');
         $.ajax({
             type: "GET",
             url: "get_first_molding_station_details",
@@ -233,7 +236,7 @@
                                     <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${mod_quantity}" min="1">
                                 </td>
                                 <td>
-                                    <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                    <center><button class="btn btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
                                 </td>
                             </tr>
                         `;
@@ -272,6 +275,13 @@
                 }, 300);
                 // getStation();
 
+                if(view_data != undefined){
+                    $('#buttonFirstMoldingStation').prop('disabled',true);
+                    $('#buttonAddFirstMoldingModeOfDefect').prop('disabled',true);
+                }else{
+                    $('#buttonFirstMoldingStation').prop('disabled',false);
+                    $('#buttonAddFirstMoldingModeOfDefect').prop('disabled',false);
+                }
                 $('#modalFirstMoldingStation').modal('show');
 
             },error: function (data, xhr, status){
@@ -335,12 +345,11 @@
     }
 
 
-    const updateFirstMoldingShipmentMachineOuput = function (firstMoldingId,shipmentOutput,ngCount,inputTotalMachineOuput){
+    const updateFirstMoldingShipmentMachineOuput = function (firstMoldingId,shipmentOutput,ngCount){
         let data = $.param({
             "first_molding_id": firstMoldingId,
             "shipment_output": shipmentOutput,
             "ng_count": ngCount,
-            "total_machine_output": inputTotalMachineOuput,
         });
         $.ajax({
             type: "GET",
@@ -348,19 +357,19 @@
             data: data,
             dataType: "json",
             success: function (response) {
-                console.log('updateFirstMoldingShipmentMachineOuput',response);
-            }
-        });
-    }
+                let total_machine_output = response.total_machine_output;
+                let shipment_output = response.shipment_output;
 
-    const calcuTotalMachineOutput = function (){
-        let arr = document.getElementsByClassName('sumTotalMachineOutput');
-        inputTotalMachineOuput = 0;
-        for(let i=0;i<arr.length;i++){
-            if(parseFloat(arr[i].value))
-            inputTotalMachineOuput += parseFloat(arr[i].value);
-        }
-        return inputTotalMachineOuput;
+                formModal.firstMolding.find('#shipment_output').val(shipment_output);
+                formModal.firstMolding.find('#ng_count').val(response.ng_count);
+                formModal.firstMolding.find('#total_machine_output').val(total_machine_output);
+                /* Calculate the Material Yield */
+                calculateTotalMaterialYield (total_machine_output,shipment_output);
+            },error: function (data, xhr, status){
+                toastr.error(`Error: ${data.status}`);
+            }
+
+        });
     }
 
     const savefirstMoldingStation = function (){
@@ -376,19 +385,10 @@
                     let shipmentOutput = formModal.firstMoldingStation.find('#output').val();
                     let ngCount = formModal.firstMoldingStation.find('#ng_qty').val();
                     let firstMoldingId = formModal.firstMoldingStation.find('#first_molding_id').val();
-                    let station = formModal.firstMoldingStation.find('#station').val();
 
                     // if(station == 8){ // id 8-Machine 1st Overmold  in Rev | id 5-Machine 1st Overmold in Live, need to change id to live
-                    formModal.firstMolding.find('#shipment_output').val(shipmentOutput);
-                    formModal.firstMolding.find('#ng_count').val(ngCount);
-
-                    /* Calculate the Total Machine Output */
-                    calcuTotalMachineOutput(); //NOTE: return inputTotalMachineOuput
-                    formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
-                    /* Calculate the Material Yield */
-                    calculateTotalMaterialYield (inputTotalMachineOuput,shipmentOutput);
-                    /* Save the updated shipment out, machine output and ng */
-                    updateFirstMoldingShipmentMachineOuput(firstMoldingId,shipmentOutput,ngCount,inputTotalMachineOuput);
+                    //Save the updated shipment out, machine output and ng to First Molding Table
+                    updateFirstMoldingShipmentMachineOuput(firstMoldingId,shipmentOutput,ngCount);
                     // }
 
                     $('#modalFirstMoldingStation').modal('hide');
@@ -413,6 +413,17 @@
                     errorHandler( errors.input,formModal.firstMoldingStation.find('#input') );
                     errorHandler( errors.ng_qty,formModal.firstMoldingStation.find('#ng_qty') );
                     errorHandler( errors.output,formModal.firstMoldingStation.find('#output') );
+                }else if(data.status === 409){
+                    // toastr.error(`Error: ${data.status}`);
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: "Warning: The Station is already exists !",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $('#modalFirstMoldingStation').modal('hide');
+
                 }else{
                     toastr.error(`Error: ${data.status}`);
                 }
@@ -543,4 +554,101 @@
         $('#labelIsTally').removeClass('fa-thumbs-up')
         $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
     }
+
+    const getMachineFromMaterialProcess = function (cboElement,material_name){
+        let result = `<option value="0" selected> N/A </option>`;
+        $.ajax({
+            type: "GET",
+            url: "get_machine",
+            data: {"material_name":material_name},
+            dataType: "json",
+            beforeSend: function(){
+                result = `<option value="0" selected disabled> - Loading - </option>`;
+                cboElement.html(result);
+            },
+            success: function (response) {
+                console.log('machine',response['machine']);
+                let result = '';
+                    if(response['machine'].length > 0){
+                        for(let index = 0; index < response['machine'].length; index++){
+                            result += `<option value="${response['machine'][index].id}">${response['machine'][index].machine_name}</option>`;
+                        }
+                    }else{
+                        result = `<option value="0" selected disabled> - No data found - </option>`;
+                    }
+
+                cboElement.html(result);
+            },error: function(data, xhr, status){
+                result = `<option value="0" selected disabled> - Reload Again - </option>`;
+                cboElement.html(result);
+                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            }
+        });
+    }
+
+    const getFirstMoldingStationLastOuput = function (first_molding_station_last_ouput){
+        $.ajax({
+            type: "GET",
+            url: "get_first_molding_station_last_ouput",
+            data: {"first_molding_station_last_ouput":first_molding_station_last_ouput},
+            dataType: "json",
+            success: function (response) {
+                let station_input_qty = response['first_molding_station_last_output'];
+                let station_ng_qty = formModal.firstMoldingStation.find('#ng_qty').val();
+                formModal.firstMoldingStation.find('#input').val(station_input_qty);
+                totalOutput(station_input_qty,station_ng_qty);
+
+                /* Get initialized totalOutput before the Total Yield*/
+                let station_output_qty = parseFloat(formModal.firstMoldingStation.find('#output').val());
+                totalStationYield(station_input_qty,station_output_qty);
+            }
+        });
+    }
+
+    const getDiesetDetailsByDeviceName = function (deviceName){
+        $.ajax({
+            type: "GET",
+            url: "get_dieset_details_by_device_name",
+            data: {"device_name" : deviceName},
+            dataType: "json",
+            success: function (response) {
+                let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
+                let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
+                let twoDigitDay = String(strDatTime.dateToday.getDate()).padStart(2, '0');
+                // let diesetNo = response['dieset_no'];
+                let drawingNo = response['drawing_no'];
+                let revNo = response['rev_no'];
+
+                formModal.firstMolding.find('#drawing_no').val(drawingNo);
+                formModal.firstMolding.find('#revision_no').val(revNo);
+                //Auto generated production lot number: DiesetRevisionNumberYYMMDD
+                formModal.firstMolding.find('#production_lot').val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
+            }
+        });
+    }
+
+    const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo){
+        $.ajax({
+            type: "GET",
+            url: "validate_scan_first_molding_contact_lot_num",
+            data: {"contact_lot_num" : scanFirstMoldingContactLotNo},
+            dataType: "json",
+            success: function (response) {
+                console.log(response);
+                if(response.result == 1){
+                    formModal.firstMolding.find('#contact_lot_number').val(scanFirstMoldingContactLotNo);
+                    toastr.success('Scanned Successfully !')
+                }else{
+                    Swal.fire({
+                        position: "center",
+                        icon: "warning",
+                        title: "This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !",
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                }
+            }
+        });
+    }
+
 // })

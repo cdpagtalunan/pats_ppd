@@ -169,76 +169,7 @@
     @section('js_content')
         <script>
             $(document).ready(function () {
-                const getMachineFromMaterialProcess = function (cboElement,material_name){
-                    let result = `<option value="0" selected> N/A </option>`;
-                    $.ajax({
-                        type: "GET",
-                        url: "get_machine",
-                        data: {"material_name":material_name},
-                        dataType: "json",
-                        beforeSend: function(){
-                            result = `<option value="0" selected disabled> - Loading - </option>`;
-                            cboElement.html(result);
-                        },
-                        success: function (response) {
-                            console.log('machine',response['machine']);
-                            let result = '';
-                                if(response['machine'].length > 0){
-                                    for(let index = 0; index < response['machine'].length; index++){
-                                        result += `<option value="${response['machine'][index].id}">${response['machine'][index].machine_name}</option>`;
-                                    }
-                                }else{
-                                    result = `<option value="0" selected disabled> - No data found - </option>`;
-                                }
 
-                            cboElement.html(result);
-                        },error: function(data, xhr, status){
-                            result = `<option value="0" selected disabled> - Reload Again - </option>`;
-                            cboElement.html(result);
-                            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                        }
-                    });
-                }
-                const getFirstMoldingStationLastOuput = function (first_molding_station_last_ouput){
-                    $.ajax({
-                        type: "GET",
-                        url: "get_first_molding_station_last_ouput",
-                        data: {"first_molding_station_last_ouput":first_molding_station_last_ouput},
-                        dataType: "json",
-                        success: function (response) {
-                            let station_input_qty = response['first_molding_station_last_output'];
-                            let station_ng_qty = formModal.firstMoldingStation.find('#ng_qty').val();
-                            formModal.firstMoldingStation.find('#input').val(station_input_qty);
-                            totalOutput(station_input_qty,station_ng_qty);
-
-                            /* Get initialized totalOutput before the Total Yield*/
-                            let station_output_qty = parseFloat(formModal.firstMoldingStation.find('#output').val());
-                            totalStationYield(station_input_qty,station_output_qty);
-                        }
-                    });
-                }
-
-                const getDiesetDetailsByDeviceName = function (deviceName){
-                    $.ajax({
-                        type: "GET",
-                        url: "get_dieset_details_by_device_name",
-                        data: {"device_name" : deviceName},
-                        dataType: "json",
-                        success: function (response) {
-                            let twoDigitYear = strDatTime.dateToday.getFullYear().toString().substr(-2);
-                            let twoDigitMonth = (strDatTime.dateToday.getMonth() + 1).toString().padStart(2, "0");
-                            let twoDigitDay = String(strDatTime.dateToday.getDate()).padStart(2, '0');
-                            // let diesetNo = response['dieset_no'];
-                            let drawingNo = response['drawing_no'];
-                            let revNo = response['rev_no'];
-
-                            formModal.firstMolding.find('#drawing_no').val(drawingNo);
-                            formModal.firstMolding.find('#revision_no').val(revNo);
-                            //Auto generated production lot number: DiesetRevisionNumberYYMMDD
-                            formModal.firstMolding.find('#production_lot').val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
-                        }
-                    });
-                }
                 getFirstModlingDevices();
 
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
@@ -355,6 +286,49 @@
                 table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
                 table.FirstMoldingDetails.on('click','#btnViewFirstMolding', editFirstMolding);
                 table.FirstMoldingStationDetails.on('click','#btnEditFirstMoldingStation', editFirstMoldingStation);
+                table.FirstMoldingStationDetails.on('click','#btnViewFirstMoldingStation', editFirstMoldingStation);
+
+                table.FirstMoldingStationDetails.on('click','#btnDeleteFirstMoldingStation', function (){
+                    let first_molding_detail_id = $(this).attr('first-molding-station-id');
+
+                    Swal.fire({
+                        // title: "Are you sure?",
+                        text: "Are you sure you want to submit this process",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: "GET",
+                                url: "delete_first_molding_detail",
+                                data: {
+                                    "first_molding_detail_id" : first_molding_detail_id,
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    console.log(response);
+                                    if(response['result'] === 1){
+                                        $('#modalFirstMoldingStation').modal('hide');
+                                        dt.firstMoldingStation.draw();
+                                        Swal.fire({
+                                            position: "center",
+                                            icon: "success",
+                                            title: "Deleted Successfully !",
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        });
+                                    }
+                                },error: function (data, xhr, status){
+                                    toastr.error(`Error: ${data.status}`);
+                                }
+                            });
+                        }
+                    });
+
+                });
 
                 table.FirstMoldingDetails.on('click', '#btnPrintFirstMolding', function(e){
                     e.preventDefault();
@@ -430,7 +404,8 @@
                     });
 
 
-                $('#btnAddFirstMolding').click(function (e) {
+
+                    $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
                     let device_name = $('#global_input_device_name').val();
                     dt.firstMoldingStation.draw()
@@ -439,6 +414,8 @@
                     $('#btnSubmitFirstMoldingStation').prop('disabled',true);
                     $('#btnRuncardDetails').removeClass('d-none',true);
                     $('#btnAddFirstMoldingMaterial').removeClass('d-none',true);
+
+                    formModal.firstMolding.find('#material_yield').val('0%');
                     formModal.firstMolding.find('[type="number"]').val(0);
 
                     let rowFirstMoldingMaterial = `
@@ -481,10 +458,14 @@
 
                 $('#btnFirstMoldingStation').click(function (e) {
                     e.preventDefault();
-                    $('#modalFirstMoldingStation').modal('show');
+                    $('#buttonFirstMoldingStation').prop('disabled',false);
+                    $('#buttonAddFirstMoldingModeOfDefect').prop('disabled',false);
+
                     formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
                     formModal.firstMoldingStation.find('[type="number"]').val(0)
                     getFirstMoldingStationLastOuput(formModal.firstMolding.find('#first_molding_id').val());
+
+                    $('#modalFirstMoldingStation').modal('show');
                     // getStation();
 
                 });
@@ -611,7 +592,7 @@
                                 <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="1" min="1">
                             </td>
                             <td>
-                                <center><button class="btn btn-xs btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                <center><button class="btn btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
                             </td>
                         </tr>
                     `;
@@ -647,7 +628,7 @@
 
                     $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
                         if($(this).val() === null || $(this).val() === ""){
-                            $("#tableFirstMoldingStationMOD tbody").empty();
+                            // $("#tableFirstMoldingStationMOD tbody").empty();
                             $("#labelTotalNumberOfNG").text(parseInt(0));
                         }
                         totalNumberOfMOD += parseInt($(this).val());
@@ -684,13 +665,14 @@
 
                 $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        console.log(($(this).val()));
-                        // let explodedMat = $(this).val().split(' $|| ');
+                        let scanFirstMoldingContactLotNo = $(this).val()
+                        console.log((scanFirstMoldingContactLotNo));
+                        // let explodedMat = scanFirstMoldingContactLotNo.split(' $|| ');
                         // $('#txtMaterialLot_0').val(explodedMat[0]);
                         // $('#txtMaterialLotQty').val(explodedMat[1]);
 
                         // // console.log(explodedMat);
-                        formModal.firstMolding.find('#contact_lot_number').val($(this).val());
+                        validateScanFirstMoldingContactLotNum(scanFirstMoldingContactLotNo);
                         $(this).val('');
                         $('#mdlScanQrCodeFirstMolding').modal('hide');
                     }
@@ -733,17 +715,16 @@
 
                 });
 
-                // formModal.firstMolding.find('.sumTotalMachineOutput').keyup(function (e) {
-                //     // alert('sadsad')
-                //     let arr = document.getElementsByClassName('sumTotalMachineOutput');
-                //     // let inputTotalMachineOuput = formModal.firstMolding.find('#total_machine_output').val();
-                //     inputTotalMachineOuput=0;
-                //     for(let i=0;i<arr.length;i++){
-                //         if(parseFloat(arr[i].value))
-                //             inputTotalMachineOuput += parseFloat(arr[i].value);
-                //     }
-                //     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
-                // });
+                /* */
+                formModal.firstMolding.find('.sumTotalMachineOutput').keyup(function (e) {
+                    let arr = document.getElementsByClassName('sumTotalMachineOutput');
+                    inputTotalMachineOuput=0;
+                    for(let i=0;i<arr.length;i++){
+                        if(parseFloat(arr[i].value))
+                            inputTotalMachineOuput += parseFloat(arr[i].value);
+                    }
+                    formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
+                });
 
                 // formModal.firstMolding.find('#total_machine_output').keyup(function (e) {
                 //     let inputTotalMachineOuput = $(this).val();
@@ -783,6 +764,12 @@
                     $(this).closest ('tr').remove();
                     arr.Ctr --;
                 });
+
+                $('#mdlScanQrCodeFirstMoldingMaterial').click(function (e) {
+                    e.preventDefault();
+                    // mdlScanQrCodeFirstMoldingMaterial
+                });
+
 
             });
         </script>

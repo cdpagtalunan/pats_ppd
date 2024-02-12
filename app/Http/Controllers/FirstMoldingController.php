@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers;
 use DataTables;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 use App\Models\Station;
 use App\Models\TblDieset;
 use App\Models\FirstMolding;
-use Illuminate\Http\Request;
 use App\Models\TblPoReceived;
 use App\Models\FirstMoldingDetail;
 use App\Models\FirstMoldingDevice;
-use Illuminate\Support\Facades\DB;
+use App\Models\FirstStampingProduction;
 use App\Models\FirstMoldingMaterialList;
-use Illuminate\Support\Facades\Validator;
+
 use App\Http\Requests\FirstMoldingRequest;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\FirstMoldingStationRequest;
 
 
@@ -253,16 +257,15 @@ class FirstMoldingController extends Controller
     {
         // $tbl_dieset =  TblDieset::where('DeviceName',$request->device_name)->get();
         // return $request->device_name;
-        return $tbl_dieset = DB::connection('mysql_rapid_stamping_dmcms')
-        ->select('SELECT * FROM `tbl_device` WHERE `device_name` LIKE "'.$request->device_name.'" ');
+        if($request->device_name == "CN171S-09#IN-R-VE" || $request->device_name == "CN171S-10#IN-L-VE"){
+            $device_name = "CN171S-09/10#IN-VE";
+        }else{
+            $device_name = $request->device_name;
+        }
+        $tbl_dieset = DB::connection('mysql_rapid_stamping_dmcms')
+        ->select('SELECT * FROM `tbl_device` WHERE `device_name` LIKE "'.$device_name.'" ');
 
-        // if(count($get_drawing) > 0){
-        //     return $get_drawing[0];
-        // }
-        // else{
-        //     // return "No Data on Stamping DMCMS";
-        //     return response()->json(['msg' => 'No Data on Stamping DMCMS'], 400);
-        // }
+
         return response()->json( [
             //  'dieset_no' => $tbl_dieset[0]->DieNo,
              'drawing_no' => $tbl_dieset[0]->drawing_no,
@@ -336,13 +339,82 @@ class FirstMoldingController extends Controller
 
     public function updateFirstMoldingShipmentMachineOuput (Request $request)
     {
+        $arr_ng_qty = [];
+        $arr_total_machine_output = [];
+        // Read all NG QTY from First Molding Details Table
+        $arr_ng_qty_first_molding_station_by_first_molding_id = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)->whereNull('deleted_at')->get(['ng_qty']);
+        foreach ($arr_ng_qty_first_molding_station_by_first_molding_id as $key => $value) {
+            $arr_ng_qty [] = $value->ng_qty;
+        }
+        // Calculate the NG QTY then save to First Molding Table
+        $sum_ng_qty = array_sum($arr_ng_qty);
 
-        $save_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
+        $update_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
             'shipment_output' => $request->shipment_output,
-            'ng_count' => $request->ng_count,
-            'total_machine_output' => $request->total_machine_output,
+            'ng_count' => $sum_ng_qty
+        ]);
+        // Calculate the total machine output then save to First Molding Table
+        $get_first_molding_by_id = FirstMolding::findOrFail($request->first_molding_id);
+
+        $arr_total_machine_output = [
+            $get_first_molding_by_id['target_shots'],
+            $get_first_molding_by_id['adjustment_shots'],
+            $get_first_molding_by_id['ng_count'],
+            $get_first_molding_by_id['qc_samples'],
+            $get_first_molding_by_id['prod_samples'],
+            $get_first_molding_by_id['shipment_output'],
+        ];
+        $sum_total_machine_output =array_sum($arr_total_machine_output);
+
+        $update_first_molding_total_machine_output = FirstMolding::where('id',$request->first_molding_id)->update([
+            'total_machine_output' => $sum_total_machine_output,
         ]);
 
+        return response()->json([
+            "result" => 1,
+            "shipment_output" => $request->shipment_output,
+            "ng_count" => $sum_ng_qty,
+            "total_machine_output" => $sum_total_machine_output,
+        ]);
+    }
+
+    public function validateScanFirstMoldingContactLotNum (Request $request){
+        // return 'true'; stamping_productions
+        // return $request->contact_lot_num;
+        // FirstStampingProduction::wh
+        // DB::beginTransaction();
+        // try{
+        //     Stamping5sChecksheet::where('id', $request->id)
+        //     ->update([
+        //         'status' => $request->status,
+        //         'checked_by' => $_SESSION['user_id']
+        //     ]);
+
+        //     DB::commit();
+        //     return response()->json(['result' => true]);
+
+        // }catch(Exemption $e){
+        //     DB::rollback();
+        //     return $e;
+        // }
+        try{
+            $stamping_prod = FirstStampingProduction::where('prod_lot_no',$request->contact_lot_num)->whereNull('deleted_at')->get(['status']);
+            $current_status = $stamping_prod[0]->status;
+            if($current_status == 2 || $current_status == 4){
+                return response()->json([
+                    "result" => 1,
+                    "stamping_prodn_status" => $current_status,
+                ]);
+            }else{
+                return response()->json([
+                    "result" => 2,
+                    "stamping_prodn_status" => $current_status,
+                ]);
+            }
+        }catch(Exemption $e){
+            return $e;
+        }
+        
     }
 
 

@@ -23,7 +23,9 @@ class FirstMoldingStationController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= '<button type="button" class="btn btn-info btn-sm mr-1" first-molding-station-id='.$row->id.' id="btnEditFirstMoldingStation"><i class="fa-solid fa-pen-to-square"></i></button>';
+            // $result .= '<button type="button" class="btn btn-info btn-sm mr-1" first-molding-station-id='.$row->id.' id="btnEditFirstMoldingStation"><i class="fa-solid fa-pen-to-square"></i></button>';
+            $result .= '<button type="button" class="btn btn-outline-info btn-sm mb-1" first-molding-station-id='.$row->id.' view-data="true" id="btnViewFirstMoldingStation"><i class="fa-solid fa-eye"></i></button>';
+            $result .= '<button type="button" class="btn btn-outline-danger btn-sm mb-1" first-molding-station-id='.$row->id.' id="btnDeleteFirstMoldingStation"><i class="fa-solid fa-times"></i></button>';
             $result .= '</center>';
             return $result;
         })
@@ -69,7 +71,10 @@ class FirstMoldingStationController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         try{
-            // return $request->all();
+            $is_exist_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)->where('station',$request->station)->exists();
+            if($is_exist_first_molding_detail_station == 1){
+                return response()->json( [ 'result' => 2,'error_msg' => 'Station is already exists' ] ,409);
+            }
 
             if( isset($request->first_molding_detail_id) ){
                 $first_molding_detail_id = FirstMoldingDetail::where('id',$request->first_molding_detail_id)
@@ -102,9 +107,9 @@ class FirstMoldingStationController extends Controller
                 ]);
                 $first_molding_detail_id = $get_first_molding_detail_id;
             }
-        
+
             // $is_first_molding_station = FirstMoldingDetail::where('id',$first_molding_detail_id)->where(['station',8])->count();
-            
+
             return response()->json( [ 'result' => 1 ] );
             /*
                 TODO: Save Auto Prod Lot
@@ -192,6 +197,17 @@ class FirstMoldingStationController extends Controller
         ]);
     }
 
+    public function deleteFirstMoldingDetail(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        $request->first_molding_detail_id;
+        $first_molding_detail_id = FirstMoldingDetail::where('id',$request->first_molding_detail_id)
+            ->update([
+                'deleted_at' => date('Y-m-d H:i:s')
+        ]);
+        return response()->json([
+            'result'    =>  1,
+        ]);
+    }
 
 
 
