@@ -475,4 +475,15 @@ class SecondMoldingController extends Controller
         ";
         return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'second_molding_data' => $secondMoldingResult]);
     }
+
+    public function getLastShipmentOuput(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        $data = $request->all();
+        // return $data;
+
+        $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
+        DB::commit();
+        return response()->json(['data' => $getShipmentOuput]);
+        
+    }
 }

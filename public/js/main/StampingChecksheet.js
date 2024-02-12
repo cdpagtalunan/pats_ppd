@@ -39,14 +39,15 @@ const getMachineForChecksheet = (cboElement) => {
     });
 }
 
-const changeStatusChecksheet = (status, checksheetId, token) => { // Status => 1-approved, 2-disapproved
+const changeStatusChecksheet = (status, checksheetId, token, remarks) => { // Status => 1-approved, 2-disapproved
     $.ajax({
         type: "post",
         url: "change_status",
         data: {
-            "_token": token,
-            "status": status,
-            "id"    : checksheetId
+            "_token" : token,
+            "status" : status,
+            "id"     : checksheetId,
+            "remarks": remarks
         },
         dataType: "json",
         success: function (response) {
@@ -72,13 +73,18 @@ const getChecksheet = (id, checkFunction) => {
         dataType: "json",
         beforeSend: function (){
             getMachineForChecksheet($('#selMachine'));
-            $('#btnSave').hide();
-            $('input', $('#formAddChecksheet')).prop('disabled', true);
-            $('#txtRemarks', $('#formAddChecksheet')).prop('disabled', true);
-            $('select', $('#formAddChecksheet')).prop('disabled', true);
+            if(checkFunction == 0){
+                $('#btnSave').hide();
+                $('input', $('#formAddChecksheet')).prop('disabled', true);
+                $('#txtRemarks', $('#formAddChecksheet')).prop('disabled', true);
+                $('select', $('#formAddChecksheet')).prop('disabled', true);
+            }
         },
         success: function (response) {
             $('#modalAddChecksheet').modal('show');
+
+            $('#txtCheckId').val(`${response['id']}`);
+            $('#txtCheckBy').val(`${response['firstname']} ${response['lastname']}`);
             $('#txtCheckDate').val(response['date']);
             $('#txtCheckCondBy').val(response['conducted_by']);
             $('#txtShift').val(response['shift']);

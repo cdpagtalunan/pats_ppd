@@ -174,6 +174,18 @@
                                         </div>
                                         <input type="text" class="form-control form-control-sm" id="txtRequiredOutput" name="required_output" placeholder="Auto generated">
                                     </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Runcard No.</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Auto generated">
+                                    </div>
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Production Lot No.</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="txtProductionLot" name="production_lot" placeholder="Auto generated">
+                                    </div>
 
                                     <div id="pSeriesName" style="border:2px; border-style:dashed; padding:2px;">
                                         <div class="input-group input-group-sm mb-2">
@@ -951,19 +963,23 @@
                 });
 
                 $('#textQrScanner').keyup(delay(function(e){
-                    let qrScannerValue = $('#textQrScanner').val();
+                    const qrScannerValue = $('#textQrScanner').val();
+                    let ScanQrCodeVal = JSON.parse(qrScannerValue)
+                            getLotNo =  ScanQrCodeVal.lot_no
+                        // qrScannerValue = qrScannerValue.lot_no;
+                        // console.log(qrScannerValue.lot_no);
                     let formId = $('#modalQrScanner').attr('data-form-id');
                     if( e.keyCode == 13 ){
                         $('#textQrScanner').val(''); // Clear after enter
                         switch (formId) {
                             case 'ScanPZeroTwoProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
+                                verifyProdLotfromMolding(getLotNo, formId, 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
                                 break;
                             case 'ScanSZeroSevenProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO','txtSZeroSevenDeviceQty');
+                                verifyProdLotfromMolding(getLotNo, formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO','txtSZeroSevenDeviceQty');
                                 break;
                             case 'ScanSZeroTwoProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+                                verifyProdLotfromMolding(getLotNo, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
                                 break;
                             default:
                                 break;
@@ -972,7 +988,7 @@
                 }, 100));
                 // NEW CODE TESTIN
 
-                const verifyProdLotfromMolding = (qrScannerValue, ScanProdLotValue, textLotNumberValue, textLotNumberIdValue, SecondMoldingDeviceName, DevicePO, DeviceQty) => {
+                const verifyProdLotfromMolding = (getLotNo, ScanProdLotValue, textLotNumberValue, textLotNumberIdValue, SecondMoldingDeviceName, DevicePO, DeviceQty) => {
                     let route;
                     if(ScanProdLotValue == 'ScanSZeroTwoProdLot'){ //
                         route = 'chk_device_prod_lot_from_first_molding';
@@ -984,7 +1000,7 @@
                         type: "get",
                         url: route,
                         data: {
-                            production_lot: qrScannerValue,
+                            production_lot: getLotNo,
                         },
                         dataType: "json",
                         success: function (response) {
@@ -1182,6 +1198,17 @@
                                 toastr.success('Successful!');
                                 $("#modalAddStation").modal('hide');
                                 dtAssemblyRuncardStation.draw();
+
+                                // $.ajax({
+                                //     type:"GET",
+                                //     url: "chck_existing_stations",
+                                //     data: $('#formCNAssemblyRuncard').find('formCNAssemblyRuncard')
+                                //     dataType: "json",
+                                //     success: function(response){
+                                        
+                                //     }
+                                // });
+
                             }else{
                                 toastr.error('Error!, Please Contanct ISS Local 208');
                             }
@@ -1213,6 +1240,8 @@
                             // $('#formCNAssemblyRuncard #txtPartsCode').val(assy_runcard_data[0].parts_code);
                             $('#formCNAssemblyRuncard #txtPoQuantity').val(assy_runcard_data[0].po_quantity);
                             $('#formCNAssemblyRuncard #txtRequiredOutput').val(assy_runcard_data[0].required_output);
+                            $('#formCNAssemblyRuncard #txtRuncardNo').val(assy_runcard_data[0].runcard_no);
+                            $('#formCNAssemblyRuncard #txtProductionLot').val(assy_runcard_data[0].production_lot);
                             $('#formCNAssemblyRuncard #txtPZeroTwoProdLot').val(assy_runcard_data[0].p_zero_two_prod_lot);
                             $('#formCNAssemblyRuncard #txtPZeroTwoDeviceId').val(assy_runcard_data[0].p_zero_two_device_id);
                             $('#formCNAssemblyRuncard #txtSZeroSevenProdLot').val(assy_runcard_data[0].s_zero_seven_prod_lot);

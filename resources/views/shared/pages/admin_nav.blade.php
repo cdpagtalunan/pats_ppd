@@ -236,9 +236,10 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a href="{{ route('mimf') }}" class="nav-link">
+                            <a href="{{ route('Material_Issuance_Monitoring_Form') }}" class="nav-link">
                                 <i class="fa-solid fa-person-chalkboard"></i>                                
-                                <p>MIMF</p>
+                                <p>Material Issuance</p>
+                                <p class="ml-4">Monitoring Form</p>
                             </a>
                         </li>
                         <li class="nav-item">

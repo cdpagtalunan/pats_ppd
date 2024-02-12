@@ -230,6 +230,8 @@ class AssemblyRuncardController extends Controller
                                     'po_number'              => $request->po_number,
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
+                                    'runcard_no'            => $request->runcard_no,
+                                    'production_lot'        => $request->production_lot,
                                     'p_zero_two_prod_lot'    => $request->p_zero_two_prod_lot,
                                     'p_zero_two_device_id'   => $request->p_zero_two_device_id,
                                     's_zero_seven_prod_lot'  => $request->s_zero_seven_prod_lot,
@@ -252,6 +254,8 @@ class AssemblyRuncardController extends Controller
                                     'po_number'              => $request->po_number,
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
+                                    'runcard_no'            => $request->runcard_no,
+                                    'production_lot'        => $request->production_lot,
                                     'p_zero_two_prod_lot'    => $request->p_zero_two_prod_lot,
                                     'p_zero_two_device_id'   => $request->p_zero_two_device_id,
                                     's_zero_seven_prod_lot'  => $request->s_zero_seven_prod_lot,
@@ -384,7 +388,16 @@ class AssemblyRuncardController extends Controller
         }
     }
 
-    // public function update_status_of_ipqc_inspection(Request $request){
+    // public function chck_existing_stations(Request $request){
+    //     $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name','assembly_runcard_station.user','assembly_runcard_station'])
+    //                                             ->whereNull('deleted_at')
+    //                                             ->where('id', $request->assy_runcard_id)
+    //                                             ->get();
+                                                
+    //     return response()->json(['assembly_runcard_data' => $assembly_runcard_data]);
+    // }
+
+    // public function update_assy_runcard_status(Request $request){
     //     date_default_timezone_set('Asia/Manila');
     //     // session_start();
     //         if($request->stamping_ipqc_status == 1){

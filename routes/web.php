@@ -100,7 +100,7 @@ Route::view('/packing_list_settings','packing_list_settings')->name('packing_lis
 Route::view('/receiving','receiving')->name('receiving');
 
 /* MIMF */
-Route::view('/mimf','mimf')->name('mimf');
+Route::view('/Material_Issuance_Monitoring_Form','mimf')->name('Material_Issuance_Monitoring_Form');
 
 /* MOLDING */
 Route::view('/second_molding','second_molding')->name('second_molding');
@@ -126,7 +126,6 @@ Route::view('/cn171_traceability_report','cn171_traceability_report')->name('cn1
 /* 5S CHECKSHEET VIEW */
 Route::view('/5s_checksheet','5s_checksheet')->name('5s_checksheet');
 
-//
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
@@ -456,6 +455,7 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::get('/get_mode_of_defect_for_second_molding', 'getModeOfDefectForSecondMolding')->name('get_mode_of_defect_for_second_molding');
     Route::post('/complete_second_molding', 'completeSecondMolding')->name('complete_second_molding');
     Route::get('/get_second_molding_qr_code', 'getSecondMoldingQrCode')->name('get_second_molding_qr_code');
+    Route::get('/get_last_shipment_output', 'getLastShipmentOuput')->name('get_last_shipment_output');
 
     Route::get('/get_machine', 'getMachine')->name('get_machine');
 });
@@ -478,16 +478,15 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/get_data_from_matrix', 'get_data_from_matrix')->name('get_data_from_matrix');
     Route::get('/chk_device_prod_lot_from_first_molding', 'chk_device_prod_lot_from_first_molding')->name('chk_device_prod_lot_from_first_molding');
     Route::get('/chk_device_prod_lot_from_sec_molding', 'chk_device_prod_lot_from_sec_molding')->name('chk_device_prod_lot_from_sec_molding');
+    // Route::get('/chck_existing_stations', 'chck_existing_stations')->name('chck_existing_stations'); //CLARK DITO KANA
 });
 
 // MODE OF DEFECTS CONTROLLER
 Route::controller(DefectsInfoController::class)->group(function () {
-
     Route::get('/view_defectsinfo', 'view_defectsinfo')->name('view_defectsinfo');
     Route::post('/add_defects', 'add_defects')->name('add_defects');
     Route::get('/get_defects_by_id', 'get_defects_by_id')->name('get_defects_by_id');
 });
-
 
 Route::controller(ProductionHistoryController::class)->group(function () {
     Route::post('/add_prodn_history', 'add_prodn_history')->name('add_prodn_history');
@@ -496,7 +495,6 @@ Route::controller(ProductionHistoryController::class)->group(function () {
     // Route::get('/get_material_list', 'get_material_list')->name('get_material_list');
     // Route::get('/check_material_details', 'check_material_details')->name('check_material_details');
     Route::get('/get_prodn_history_by_id', 'get_prodn_history_by_id')->name('get_prodn_history_by_id');
-
 });
 
 Route::view('/production_history','production_history')->name('production_history');

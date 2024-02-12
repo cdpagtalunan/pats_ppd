@@ -67,8 +67,14 @@
                         <!-- general form elements -->
                         <div class="card">
                                 <div class="card-header">
-                                    <div class="col-sm-2">
-                                        <input type="text" placeholder="test" class="form-control">
+                                    <div class="col-sm-4 d-flex flex-row">
+                                        <div class="input-group">
+                                            <div class="input-group-prepend w-25">
+                                                <span class="input-group-text w-100" id="basic-addon1">Date:</span>
+                                            </div>
+                                            <input type="text" id="selMonth" name="" class="datepicker form-control" />
+
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -115,6 +121,7 @@
                 </div>
                 <form id="formAddChecksheet">
                     @csrf
+                    <input type="hidden" id="txtCheckId" name="checksheet_id">
                     <div class="modal-body">
                         <div class="card">
                             <div class="card-body">
@@ -167,7 +174,7 @@
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Checked By:</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtCheckBy" name="check_by" value="H. De Guzman" readonly>
+                                            <input type="text" class="form-control form-control-sm" id="txtCheckBy" name="check_by" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -227,7 +234,7 @@
                                                         <label>A.1.1 Sound proof body surface</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA1_1" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA1_1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -256,7 +263,7 @@
                                                         <label>A.1.2 Clamping/ Purging Area (no purged naterials, product or scattered resin)</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA1_2" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA1_2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -287,7 +294,7 @@
                                                         <label>A.1.3 Product Drop (no oil,dust, and unrelated product)</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA1_3" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA1_3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -316,7 +323,7 @@
                                                         <label>A.1.4 Base Part (no dust and oil spills)</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" value="1" checked required name="checkA1_4">
+                                                                <input class="form-check-input" type="radio" value="1" required name="checkA1_4">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -347,7 +354,7 @@
                                                         <label> A.1.5 Sorrounding of Machine Area (No dust, Oil stain/ Spill and scattered materials)</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA1_5" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA1_5" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -376,7 +383,7 @@
                                                         <label>A.1.6 "NO" contact- units and correlation samples on top of machine, top of scope, sorrounding  and floor.</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA1_6" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA1_6" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -418,7 +425,7 @@
                                                         <label>  A.2.1 Reel winding machine</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA2_1" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA2_1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -447,7 +454,7 @@
                                                         <label> A.2.2 CCD Camera</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA2_2" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA2_2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -478,7 +485,7 @@
                                                         <label>  A.2.3  Turntable</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA2_3" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA2_3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -507,7 +514,7 @@
                                                         <label> A.2.4  Oil matic - temp controller</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA2_4" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA2_4" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -549,7 +556,7 @@
                                                         <label>  A.3.1  Vacuum machine</label>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" checked name="checkA3_1" id="">
+                                                                <input class="form-check-input" type="radio" required value="1" name="checkA3_1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     Yes
                                                                 </label>
@@ -602,16 +609,26 @@
 <script>
     var dtDatatableChecksheet;
     var checkSheetfunction;
+    
+
     $(document).ready(function(e){
+        var date = new Date();
+        var today = new Date(date.getFullYear(), date.getMonth());
+        $(".datepicker").datepicker( {
+            format: "yyyy-mm",
+            viewMode: "months", 
+            minViewMode: "months",
+            // startDate: today,
+        }).datepicker("setDate", "now");
+        
         dtDatatableChecksheet = $("#tblChecksheet").DataTable({
             "processing": true,
             "serverSide": true,
             "ajax": {
                 url: "view_checksheet",
-                // data: function (param) {
-                //     param.po = $("#txtSearchPONum").val();
-                //     param.stamp_cat = 1;
-                // }
+                data: function (param) {
+                    param.month = $("#selMonth").val();
+                }
             },
             fixedHeader: true,
             "columns": [
@@ -624,6 +641,9 @@
            
         });
 
+        $(".datepicker").on('change', function(){
+            dtDatatableChecksheet.draw();
+        });
         $('#addChecksheet').on('click', function(){
             // let date = moment().format('MM-DD-YYYY');
             let date = moment().format('YYYY-MM-DD');
@@ -631,12 +651,10 @@
             getMachineForChecksheet($('#selMachine'));
 
             if(time >= "07:00" && time <= "19:29"){
-                $('#txtShift').val('B')
-
+                $('#txtShift').val('A')
             }
             else{
-                $('#txtShift').val('A')
-
+                $('#txtShift').val('B')
             }
             $('#txtCheckDate').val(date)
             $('#txtCheckTime').val(time)
@@ -672,6 +690,8 @@
 
         $(document).on('click', '.btnCheck', function(e){
             let id = $(this).data('id');
+            let tokin = "{{ csrf_token() }}";
+
             Swal.fire({
                 title: "Do you want to approve this checklist?",
                 icon: "question",
@@ -681,8 +701,8 @@
                 confirmButtonColor: "#17bf39",
                 denyButtonText: `Disapprove`
             }).then((result) => {
+
                 if (result.isConfirmed) {
-                    let tokin = "{{ csrf_token() }}";
                     changeStatusChecksheet(1, id, tokin);
                 }
                 else if (result.isDenied) {
@@ -700,7 +720,9 @@
                         }
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            const text = result.value;
+                            const remarks = result.value;
+                            changeStatusChecksheet(2, id, tokin, remarks);
+
                         }
                     });
                     
@@ -715,10 +737,17 @@
             getChecksheet(id, checkSheetfunction);
         });
 
+        $(document).on('click', '.btnEdit', function(e){
+            let id = $(this).data('id');
+            checkSheetfunction = $(this).data('function');
+
+            getChecksheet(id, checkSheetfunction);
+        });
+
         $("#modalAddChecksheet").on('hidden.bs.modal', function () {
             console.log('hidden.bs.modal');
             $('#formAddChecksheet')[0].reset();
-
+            $('#txtCheckId').val('');
             $('input', $('#formAddChecksheet')).prop('disabled', false);
             $('#txtRemarks', $('#formAddChecksheet')).prop('disabled', false);
             $('select', $('#formAddChecksheet')).prop('disabled', false);

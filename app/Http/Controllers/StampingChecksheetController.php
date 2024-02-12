@@ -17,10 +17,12 @@ class StampingChecksheetController extends Controller
     public function view_checksheet(Request $request){
         session_start();
 
+        // return $request->month;
         $five_s_checksheet = DB::connection('mysql')
         ->table('stamping5s_checksheets AS a')
         ->join('stamping_checksheet_machine_dropdowns AS b', 'a.machine_id', '=', 'b.id')
         ->select('a.*', 'b.machine_name')
+        ->where('date', 'LIKE', "%$request->month%")
         ->whereNull('deleted_at')
         ->get();
 
@@ -32,6 +34,9 @@ class StampingChecksheetController extends Controller
             
             if($five_s_checksheet->status == 0 && in_array( $_SESSION['position'], [0,1,2])){
                 $result .= "<button class='btn btn-success btn-sm ml-1 btnCheck' data-id='$five_s_checksheet->id'><i class='fa-solid fa-list-check'></i></button>";
+            }
+            else if($five_s_checksheet->status == 2){
+                $result .= "<button class='btn btn-secondary btn-sm ml-1 btnEdit' data-id='$five_s_checksheet->id'  data-function='1'><i class='fa-solid fa-pen-to-square'></i></button>";
             }
             $result .= "</center>";
             return $result;
@@ -45,7 +50,10 @@ class StampingChecksheetController extends Controller
             else if($five_s_checksheet->status == 1){
                 $result .= "<span class='badge bg-success text-light'>Approved</span><br>";
                 $result .= "<span class='badge bg-success text-light'>Done</span>";
-
+            }
+            else if($five_s_checksheet->status == 2){
+                $result .= "<span class='badge bg-danger text-light'>Disapproved</span><br>";
+                $result .= "Remarks:<br>$five_s_checksheet->dis_remarks";
             }
             $result .= "</center>";
             return $result;
@@ -56,48 +64,8 @@ class StampingChecksheetController extends Controller
     }
 
     public function save_checksheet(Request $request){
-        
+
             $mutable = Carbon::now()->format('Y-m-d');
-
-            if( $mutable == $request->date && $request->shift == "A" ){ // check if data exist on shift A
-
-                $check_checklist_exist = DB::connection('mysql')
-                ->table('stamping5s_checksheets')
-                ->select('*')
-                ->where('date', $request->date)
-                ->where('machine_id', $request->machine)
-                ->where('shift', "A")
-                ->first();
-                
-                if(!isset($check_checklist_exist)){
-                    $insert = $this->insert_check_data($request);
-
-                    if($insert == true){
-                        return response()->json([
-                            'result' => true
-                        ]);
-                    }
-                }
-                else{
-                    return response()->json([
-                        "result" => false,
-                        "msg"   => "Data already exist for today's shift."
-                    ], 409);
-                }
-            }
-            else{
-                $dt = Carbon::create($request->date);
-                $dt->addDay();
-                $eto = $dt->format('Y-m-d');  
-
-                return $eto;
-            }
-    }
-
-    function insert_check_data($request){
-        DB::beginTransaction();
-
-        try{
             $user_details = User::where('employee_id', $request->scanned_id)->first();
 
             $stamping_5s_checksheet_array = array(
@@ -127,6 +95,91 @@ class StampingChecksheetController extends Controller
                 'created_at'       => NOW()
             );
 
+            if(isset($request->checksheet_id)){ // EDIT
+                DB::beginTransaction();
+                try{
+                    $stamping_5s_checksheet_array['dis_remarks'] = null;
+                    $stamping_5s_checksheet_array['status'] = 0;
+
+
+                    Stamping5sChecksheet::where('id', $request->checksheet_id)
+                    ->update($stamping_5s_checksheet_array);
+                    DB::commit();
+                    return response()->json([
+                        'result' => true
+                    ]);
+                }
+                catch(Exemption $e){
+                    DB::rollback();
+                    return $e;
+                }
+            }
+            else{ // ADD
+                if( $mutable == $request->date && $request->shift == "A" ){ // check if data exist on shift A
+
+                    $check_checklist_exist = DB::connection('mysql')
+                    ->table('stamping5s_checksheets')
+                    ->select('*')
+                    ->where('date', $request->date)
+                    ->where('machine_id', $request->machine)
+                    ->where('shift', "A")
+                    ->first();
+                    
+                    if(!isset($check_checklist_exist)){
+                        $insert = $this->insert_check_data($request, $stamping_5s_checksheet_array);
+    
+                        if($insert == true){
+                            return response()->json([
+                                'result' => true
+                            ]);
+                        }
+                    }
+                    else{
+                        return response()->json([
+                            "result" => false,
+                            "msg"   => "Data already exist for today's shift."
+                        ], 409);
+                    }
+                }
+                else{
+                    $dt = Carbon::create($request->date);
+                    $dt->addDay();
+                    $ref_date = $dt->format('Y-m-d');
+    
+                    $check_checklist_exist = DB::connection('mysql')
+                    ->table('stamping5s_checksheets')
+                    ->select('*')
+                    ->where('machine_id', $request->machine)
+                    ->where('shift', "B")
+                    ->where('date', '=' , $request->date)
+                    ->orWhere('date', '=' , $ref_date)
+                    ->first();
+    
+                    if(!isset($check_checklist_exist)){
+                        $insert = $this->insert_check_data($request, $stamping_5s_checksheet_array);
+    
+                        if($insert == true){
+                            return response()->json([
+                                'result' => true
+                            ]);
+                        }
+                    }
+                    else{
+                        return response()->json([
+                            "result" => false,
+                            "msg"   => "Data already exist for today's shift."
+                        ], 409);
+                    }
+                }
+            }
+          
+    }
+
+    function insert_check_data($request, $stamping_5s_checksheet_array){
+        DB::beginTransaction();
+
+        try{
+            
             Stamping5sChecksheet::insert($stamping_5s_checksheet_array);
             DB::commit();
 
@@ -151,11 +204,16 @@ class StampingChecksheetController extends Controller
 
         DB::beginTransaction();
         try{
-            Stamping5sChecksheet::where('id', $request->id)
-            ->update([
+            $update_array = array(
                 'status' => $request->status,
                 'checked_by' => $_SESSION['user_id']
-            ]);
+            );
+            if($request->status != 1){
+                $update_array['dis_remarks'] = $request->remarks;
+            }
+
+            Stamping5sChecksheet::where('id', $request->id)
+            ->update($update_array);
 
             DB::commit();
             return response()->json(['result' => true]);

@@ -408,7 +408,9 @@ class StampingController extends Controller
 
             $data[] = array(
                 'img' => $QrCode,
-                'text' =>  "<strong>$prod_data->po</strong><br>
+                'text' =>  "
+                <strong>1st Stamping</strong><br>
+                <strong>$prod_data->po</strong><br>
                 <strong>$prod_data->code</strong><br>
                 <strong>$prod_name</strong><br>
                 <strong>$prod_data->production_lot_no</strong><br>
@@ -434,7 +436,9 @@ class StampingController extends Controller
 
                 $data[] = array(
                     'img' => $QrCode,
-                    'text' =>  "<strong>$prod_data->po</strong><br>
+                    'text' =>  "
+                    <strong>2nd Stamping</strong><br>
+                    <strong>$prod_data->po</strong><br>
                     <strong>$prod_data->qty</strong><br>
                     <strong>$prod_data->code</strong><br>
                     <strong>$prod_name</strong><br>
@@ -714,7 +718,9 @@ class StampingController extends Controller
 
         $data[] = array(
             'img' => $QrCode,
-            'text' => "<strong>$stamping_details->po_num</strong><br>
+            'text' => "
+            <strong>For IPQC</strong><br>
+            <strong>$stamping_details->po_num</strong><br>
             <strong>$stamping_details->part_code</strong><br>
             <strong>$stamping_details->material_name</strong><br>
             <strong>$stamping_details->prod_lot_no</strong><br>"

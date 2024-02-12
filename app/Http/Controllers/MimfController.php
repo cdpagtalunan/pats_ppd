@@ -164,7 +164,8 @@ class MimfController extends Controller
         $get_po_received_pmi_po = TblPoReceived::with([
             'matrix_info',
             'pps_dieset_info',
-            'pps_dieset_info.pps_warehouse_info'
+            'pps_dieset_info.pps_warehouse_info',
+            'pps_dieset_info.pps_warehouse_info.pps_warehouse_transaction_info'
         ])
         ->where('OrderNo',$request->getValue)
         ->where('logdel', 0)

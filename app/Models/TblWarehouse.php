@@ -15,7 +15,7 @@ class TblWarehouse extends Model
     protected $connection = 'mysql_rapid_pps';
 
     public function pps_warehouse_transaction_info(){
-        return $this->hasOne(TblWarehouseTransaction::class, 'fkid','id');
+        return $this->hasMany(TblWarehouseTransaction::class, 'fkid','id')->orderBy('pkid', 'DESC');
     }
 
 }

@@ -985,11 +985,11 @@
                                 responseData[0].material_yield != null ? $('#material_yield', $('#formSecondMolding')).val(`${responseData[0].material_yield}%`) : '';
                                 
                                 console.log('responseDataIPQCSecondMolding ', responseDataIPQCSecondMolding);
-                                // if(responseDataIPQCSecondMolding.length > 0){
-                                //     $('#buttonAddStation').prop('disabled', false);
-                                // }else{
-                                //     $('#buttonAddStation').prop('disabled', true);
-                                // }
+                                if(responseDataIPQCSecondMolding.length > 0){
+                                    $('#buttonAddStation').prop('disabled', false);
+                                }else{
+                                    $('#buttonAddStation').prop('disabled', true);
+                                }
                                 dataTablesSecondMoldingStation.draw();
                             }
                         }
@@ -1070,6 +1070,24 @@
                     $('#textSecondMoldingId', $('#formAddStation')).val(secondMoldingId);
                     $('#labelTotalNumberOfNG', $('#formAddStation')).text(0);
                     $('#labelTotalNumberOfNG', $('#formAddStation')).val(0);
+
+                    /**
+                     * Get last shipment output
+                    */
+                    $.ajax({
+                        type: "get",
+                        url: "get_last_shipment_output",
+                        data: {
+                            second_molding_id: secondMoldingId
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            console.log('get_last_shipment_output ', response['data']);
+                            if(response['data'].length > 0){
+                                $('#textInputQuantity', $('#formAddStation')).val(response['data'][0].shipment_output);
+                            }
+                        }
+                    });
                 });
                 /**
                  * Get Id of Second Molding after click 

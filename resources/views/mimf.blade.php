@@ -1,7 +1,7 @@
 @php $layout = 'layouts.admin_layout'; @endphp
 @auth
     @extends($layout)
-    @section('title', 'MIMF')
+    @section('title', 'Material Issuance Monitoring Form')
     @section('content_page')
         <style type="text/css">
             table.table tbody td{
@@ -38,13 +38,13 @@
                 <div class="container-fluid"><!-- Container-fluid -->
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>MIMF</h1>
+                            <h1>Material Issuance Monitoring Form</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item active">MIMF</li>
+                                <li class="breadcrumb-item active">Material Issuance Monitoring Form</li>
                             </ol>
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                         <div class="col-12"><!-- Col -->
                             <div class="card card-dark"><!-- General form elements -->
                                 <div class="card-header">
-                                    <h3 class="card-title">MIMF Table</h3>
+                                    <h3 class="card-title">Material Issuance Monitoring Form Table</h3>
                                 </div>
 
                                 <div class="card-body"><!-- Start Page Content -->
@@ -104,7 +104,7 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title"><i class="fa fa-edit"></i> MIMF</h4>
+                        <h4 class="modal-title"><i class="fa fa-edit"></i>Material Issuance Monitoring Form</h4>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -362,7 +362,8 @@
                                         $('#txtPpsWhseId').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.id)
                                         $('#txtMimfMaterialCode').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.PartNumber)
                                         $('#txtMimfMaterialType').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.MaterialType)
-                                        $('#txtMimfQuantityFromInventory').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.Balance)
+                                        console.log('object',getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.pps_warehouse_transaction_info[0].Eoh);
+                                        $('#txtMimfQuantityFromInventory').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.pps_warehouse_transaction_info[0].Eoh)
                                     }else{
                                         console.log('ELSE pps_warehouse_info')
                                         $('.clearPPSMIS').val('')
