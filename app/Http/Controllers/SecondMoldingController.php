@@ -60,7 +60,7 @@ class SecondMoldingController extends Controller
                         FROM sec_molding_runcards
                         -- INNER JOIN first_moldings
                         --     ON first_moldings.id = sec_molding_runcards.lot_number_eight_first_molding_id
-                        WHERE sec_molding_runcards.pmi_po_number = '$request->pmi_po_number'
+                        WHERE sec_molding_runcards.pmi_po_number = '$request->pmi_po_number '
                         AND deleted_at IS NULL
                         ORDER BY sec_molding_runcards.id ASC
         ");
@@ -353,13 +353,14 @@ class SecondMoldingController extends Controller
         ");
 
         // For Clark confirmation
-        // $moldingAssyIpqcInspectionResult = DB::connection('mysql')
-        // ->select("SELECT * FROM molding_assy_ipqc_inspections
-        //             WHERE id = '$request->second_molding_id'
-        //             AND deleted_at IS NULL
-        //             LIMIT 1
-        // ");
-        return response()->json(['data' => $secondMoldingResult]);
+        $moldingAssyIpqcInspectionResult = DB::connection('mysql')
+        ->select("SELECT * FROM molding_assy_ipqc_inspections
+                    WHERE fk_molding_assy_id = '$request->second_molding_id'
+                    AND process_category = '2'
+                    AND status = '3'
+                    LIMIT 1
+        ");
+        return response()->json(['data' => $secondMoldingResult, 'dataIPQCSecondMolding' => $moldingAssyIpqcInspectionResult]);
     }
 
     public function getMaterialProcessStation(Request $request){

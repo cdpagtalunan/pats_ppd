@@ -11,6 +11,11 @@ html{
     box-sizing: inherit;
 }
 
+.hidden_scanner_input{
+  position: absolute;
+  opacity: 0;
+}
+
 body {
     margin: 0;
     padding: 0;

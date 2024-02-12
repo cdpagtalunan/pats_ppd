@@ -61,7 +61,7 @@
                                         <div class="col-sm-3">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Material Name" id="txtSearchDeviceName" readonly>
+                                                <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMaterialName" readonly>
                                             </div>
                                         </div>
                                         {{-- <div class="col-sm-2">
@@ -97,9 +97,9 @@
                                                 <tr>
                                                     <th>Action</th>
                                                     <th>Status</th>
+                                                    <th>Device Name</th>
                                                     <th>PO Number</th>
-                                                    <th>Material Name</th>
-                                                    <th>Parts Code</th>
+                                                    <th>Required Output</th>
                                                     {{-- <th>Runcard #</th> --}}
                                                 </tr>
                                             </thead>
@@ -172,15 +172,15 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Required Qty</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtRequiredQty" name="required_qty" placeholder="Auto generated">
+                                        <input type="text" class="form-control form-control-sm" id="txtRequiredOutput" name="required_output" placeholder="Auto generated">
                                     </div>
 
                                     <div id="pSeriesName" style="border:2px; border-style:dashed; padding:2px;">
                                         <div class="input-group input-group-sm mb-2">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">CN171P-02#IN-VE - Material Name</span>
+                                                <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoMatName" name="p_zero_two_material_name" placeholder="Auto generated" readonly>
+                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoMatName" name="p_zero_two_material_name" value="CN171P-02#IN-VE" readonly>
                                         </div>
 
                                         <div class="input-group input-group-sm mb-2">
@@ -223,9 +223,9 @@
                                         <div style="border: 2px; border-style:dashed; padding:2px;">
                                             <div class="input-group input-group-sm mb-2">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">CN171S-07#IN-VE - Material Name</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" value="CN171S-07#IN-VE" readonly>
                                             </div>
                                             
                                             <div class="input-group input-group-sm mt-1 mb-2">
@@ -266,9 +266,9 @@
                                         <div style="border: 2px; border-style:dashed; padding:2px;" class="border-top-0">
                                             <div class="input-group input-group-sm mb-2">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">CN171S-02#MO-VE - Material Name</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoMatName" name="s_zero_two_material_name" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoMatName" name="s_zero_two_material_name" value="CN171S-02#MO-VE" readonly>
                                             </div>
 
                                             <div class="input-group input-group-sm mt-1 mb-2">
@@ -539,7 +539,7 @@
                             </div> --}}
 
                             {{-- P SERIES Lubricant Coating Add Fields START --}}
-                            <div id="LubricantCoatingDiv">
+                            <div id="LubricantCoatingDiv" class="d-none">
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -571,7 +571,7 @@
                             {{-- P SERIES Lubricant Coating Add Fields END --}}
 
                             {{-- Visual Inspection Add Fields START --}}
-                            <div id="VisualInspDocNoDiv">
+                            <div id="VisualInspDocNoDiv" class="d-none">
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -726,6 +726,15 @@
                     // $('.select2bs5').select2({
                     //     theme: 'bootstrap-5'
                     // });
+                    
+                    // $('#tableAssemblyStationMOD .textMODQuantity').each(function() {
+                    //     if($(this).val() === null || $(this).val() === ""){
+                    //         $("#tableAssemblyStationMOD tbody").empty();
+                    //         $("#labelTotalNumberOfNG").text(parseInt(0));
+                    //     }
+                    //     totalNumberOfMOD += parseInt($(this).val());
+                    // });
+
                     getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'));
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
@@ -741,7 +750,8 @@
                             elementId.html(result);
                         },
                         success: function(response){
-                            result = '';
+                            // result = '';
+                            result = `<option value="0" selected disabled> Please Select Mode of Defect </option>`;
                             // console.log('ggg',response['data']);
                             if(response['data'].length > 0){
                                 for(let index = 0; index < response['data'].length; index++){
@@ -765,12 +775,12 @@
                 }
 
                 const getValidateTotalNgQty = function (ngQty,totalNumberOfMOD){
-                    $('#tableAssemblyStationMOD .textMODQuantity').each(function() {
-                        if($(this).val() === null || $(this).val() === ""){
+                    $('#tableAssemblyStationMOD .textMODQuantity').each(function(){
+                        totalNumberOfMOD += parseInt($(this).val());
+                        if(totalNumberOfMOD > ngQty){
                             $("#tableAssemblyStationMOD tbody").empty();
                             $("#labelTotalNumberOfNG").text(parseInt(0));
                         }
-                        totalNumberOfMOD += parseInt($(this).val());
                     });
 
                     if(parseInt(ngQty) === totalNumberOfMOD){
@@ -779,10 +789,10 @@
                         $('#labelIsTally').addClass('fa-thumbs-up')
                         $('#labelIsTally').removeClass('fa-thumbs-down')
                         $('#labelIsTally').attr('title','')
-                        $("#btnAddRuncardStation").prop('disabled', false);
+                        // $("#btnAddRuncardStation").prop('disabled', false);
                         $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
                         $("#btnSaveNewAssemblyRuncardStation").prop('disabled', false);
-                    }else if(parseInt(ngQty) <= totalNumberOfMOD){
+                    }else if(parseInt(ngQty) < totalNumberOfMOD){
                         Swal.fire({
                             position: "center",
                             icon: "error",
@@ -794,14 +804,14 @@
                         $('#tableAssemblyStationMOD tbody').find('tr').remove();
                         $("#buttonAddAssemblyModeOfDefect").prop('disabled', false);
                         $("#btnSaveNewAssemblyRuncardStation").prop('disabled', true);
-                    }else{
+                    }else if(parseInt(ngQty) > totalNumberOfMOD){
                         console.log('Mode of Defect & NG Qty not tally!');
                         $('#labelTotalNumberOfNG').css({color: 'red'})
                         $('#labelIsTally').css({color: 'red'})
                         $('#labelIsTally').addClass('fa-thumbs-down')
                         $('#labelIsTally').removeClass('fa-thumbs-up')
                         $('#labelIsTally').attr('title','Mode of Defect & NG Qty are not tally!')
-                        $("#btnAddRuncardStation").prop('disabled', true);
+                        // $("#btnAddRuncardStation").prop('disabled', true);
                         $("#buttonAddAssemblyModeOfDefect").prop('disabled', false);
                         $("#btnSaveNewAssemblyRuncardStation").prop('disabled', true);
                     }
@@ -819,7 +829,8 @@
                     $(this).closest ('tr').remove();
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
-                $(document).on('keyup','.textMODQuantity', function (e) {
+
+                $(document).on('keyup','.textMODQuantity', function (e){
                     let totalNumberOfMOD = 0;
                     let ngQty = $('#txtNgQuantity').val();
                     let defectQty = $('.textMODQuantity').val();
@@ -840,7 +851,9 @@
                         $("#buttonAddAssemblyModeOfDefect").prop('disabled', false);
                     }
                     else{
-                        $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
+                        $('#tableAssemblyStationMOD tbody').empty();
+                        $('#buttonAddAssemblyModeOfDefect').prop('disabled', true);
+                        $("#labelTotalNumberOfNG").text(parseInt(0));
                     }
 
                     if(parseInt(ngQty) === parseInt($('#labelTotalNumberOfNG').text())){
@@ -851,7 +864,7 @@
                         $("#btnAddRuncardStation").prop('disabled', false);
                         $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
                         $("#btnSaveNewAssemblyRuncardStation").prop('disabled', false);
-                    }else{
+                    }else if(parseInt(ngQty) > parseInt($('#labelTotalNumberOfNG').text())){
                         console.log('Mode of Defect NG is greater than NG qty');
                         $('#labelTotalNumberOfNG').css({color: 'red'})
                         $('#labelIsTally').css({color: 'red'})
@@ -873,7 +886,7 @@
                     "ajax" : {
                         url: "view_assembly_runcard",
                         data: function (param){
-                            param.device_name = $("#txtDeviceName").val();
+                            param.device_name = $("#txtSelectDeviceName").val();
                         }
                     },
                     fixedHeader: true,
@@ -881,8 +894,8 @@
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
                         { "data" : "device_name" },
-                        { "data" : "parts_code" },
-                        { "data" : "device_name" },
+                        { "data" : "po_number" },
+                        { "data" : "required_output" },
                         // { "data" : "runcard_no" },
                     ],
                     "columnDefs": [
@@ -944,13 +957,13 @@
                         $('#textQrScanner').val(''); // Clear after enter
                         switch (formId) {
                             case 'ScanPZeroTwoProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO', 'txtPZeroTwoDevicePMIPO');
+                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
                                 break;
                             case 'ScanSZeroSevenProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO', 'txtSZeroSevenDevicePMIPO');
+                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO','txtSZeroSevenDeviceQty');
                                 break;
                             case 'ScanSZeroTwoProdLot':
-                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDevicePMIPO');
+                                verifyProdLotfromMolding(qrScannerValue, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
                                 break;
                             default:
                                 break;
@@ -959,7 +972,7 @@
                 }, 100));
                 // NEW CODE TESTIN
 
-                const verifyProdLotfromMolding = (qrScannerValue, ScanProdLotValue, textLotNumberValue, textLotNumberIdValue, SecondMoldingDeviceName, DevicePO, DevicePMIPO) => {
+                const verifyProdLotfromMolding = (qrScannerValue, ScanProdLotValue, textLotNumberValue, textLotNumberIdValue, SecondMoldingDeviceName, DevicePO, DeviceQty) => {
                     let route;
                     if(ScanProdLotValue == 'ScanSZeroTwoProdLot'){ //
                         route = 'chk_device_prod_lot_from_first_molding';
@@ -981,12 +994,13 @@
                                 $(`#${textLotNumberValue}`).val('');
                                 $(`#${textLotNumberIdValue}`).val('');
                                 $(`#${DevicePO}`).val('');
+                                $(`#${DeviceQty}`).val('');
 
                                 if(response['device_name'] == SecondMoldingDeviceName){
                                     $(`#${textLotNumberValue}`).val(response['production_lot']);
                                     $(`#${textLotNumberIdValue}`).val(response['device_id']);
                                     $(`#${DevicePO}`).val(response['yec_po_number']);
-                                    $(`#${DevicePMIPO}`).val(response['pmi_po_number']);
+                                    $(`#${DeviceQty}`).val(response['shipment_output']);
                                     $('#modalQrScanner').modal('hide');
                                 }else{
                                     toastr.error('Incorrect Production Lot Number.')
@@ -998,14 +1012,14 @@
 
                 $('#txtSelectRuncardStation').on('change', function(e){
                     if($(this).val() == 4){//Lubricant Coating Station
-                        $('#LubricantCoatingDiv').prop('hidden', false);
-                        $('#VisualInspDocNoDiv').prop('hidden', true);
-                    }else if($(this).val() == 5){// Visual Inspection
-                        $('#LubricantCoatingDiv').prop('hidden', true);
-                        $('#VisualInspDocNoDiv').prop('hidden', true);
+                        $('#LubricantCoatingDiv').removeClass('d-none');
+                        $('#VisualInspDocNoDiv').addClass('d-none');
                     }else if($(this).val() == 6){// Visual Inspection
-                        $('#LubricantCoatingDiv').prop('hidden', true);
-                        $('#VisualInspDocNoDiv').prop('hidden', false);
+                        $('#LubricantCoatingDiv').addClass('d-none');
+                        $('#VisualInspDocNoDiv').removeClass('d-none');
+                    }else{
+                        $('#LubricantCoatingDiv').addClass('d-none');
+                        $('#VisualInspDocNoDiv').addClass('d-none');
                     }
                 });
 
@@ -1026,9 +1040,9 @@
                             let station_details = response['station_details'];
                             console.log(station_details);
 
-                            $('#txtSearchDeviceName').val(material_details);
-                            $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
-                            $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
+                            $('#txtSearchMaterialName').val(material_details);
+                            // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
+                            // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
                             if(deviceName == 'CN171P-007-1002-VE(01)'){
                                 $('#sSeriesName').prop('hidden', true);
@@ -1081,8 +1095,10 @@
                 /* SEARCH PO COMMENTED BY CLARK END*/
 
                 $('#btnAddAssemblyRuncard').on('click', function(e){
-                    if($('#txtSelectDeviceName').val() != "" && $('#txtSearchDeviceName').val() != ""){
+                    if($('#txtSelectDeviceName').val() != "" && $('#txtSearchMaterialName').val() != ""){
+
                         $('#modalCNAssembly').modal('show');
+                        $('#txtDeviceName').val($('#txtSelectDeviceName').val());
 
                         if($('#txtAssyRuncardId').val() == ''){
                             $('#btnAddRuncardStation').prop('disabled', true);
@@ -1099,12 +1115,13 @@
                      $('#modalAddStation').modal('show');
                      let runcard_id = $(this).attr('runcard_id');
                      $('#txtStationAssyRuncardId').val(runcard_id);
+                     $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
                 });
 
                 $("#modalCNAssembly").on('hidden.bs.modal', function () {
                     // Reset form values
                     $("#formCNAssemblyRuncard")[0].reset();
-
+                    dtAssemblyRuncardStation.draw();
                     // Remove invalid & title validation
                     $('div').find('input').removeClass('is-invalid');
                     $("div").find('input').attr('title', '');
@@ -1113,11 +1130,24 @@
                 $("#modalAddStation").on('hidden.bs.modal', function () {
                     // Reset form values
                     $("#formAddAssemblyRuncardStation")[0].reset();
+                    $("#tableAssemblyStationMOD tbody").empty();
+                    $("#labelTotalNumberOfNG").text(parseInt(0));
+                    $('#LubricantCoatingDiv').addClass('d-none', true);
+                    $('#VisualInspDocNoDiv').addClass('d-none', true);
 
+                    if($('#txtAssyRuncardId').val() == ''){
+                        $('#btnAddRuncardStation').prop('disabled', true);
+                    }else{
+                        $('#btnAddRuncardStation').prop('disabled', false);
+                    }
+
+                    // $("#labelTotalNumberOfNG").val('');
                     // Remove invalid & title validation
                     $('div').find('input').removeClass('is-invalid');
                     $("div").find('input').attr('title', '');
                 });
+
+                // CLARK TO BE CONTINUED
 
                 $('#btnRuncardDetails').click( function(e){
                     e.preventDefault();
@@ -1182,7 +1212,7 @@
                             $('#formCNAssemblyRuncard #txtPONumber').val(assy_runcard_data[0].po_number);
                             // $('#formCNAssemblyRuncard #txtPartsCode').val(assy_runcard_data[0].parts_code);
                             $('#formCNAssemblyRuncard #txtPoQuantity').val(assy_runcard_data[0].po_quantity);
-                            $('#formCNAssemblyRuncard #txtRequiredQty').val(assy_runcard_data[0].required_qty);
+                            $('#formCNAssemblyRuncard #txtRequiredOutput').val(assy_runcard_data[0].required_output);
                             $('#formCNAssemblyRuncard #txtPZeroTwoProdLot').val(assy_runcard_data[0].p_zero_two_prod_lot);
                             $('#formCNAssemblyRuncard #txtPZeroTwoDeviceId').val(assy_runcard_data[0].p_zero_two_device_id);
                             $('#formCNAssemblyRuncard #txtSZeroSevenProdLot').val(assy_runcard_data[0].s_zero_seven_prod_lot);
@@ -1195,6 +1225,9 @@
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
                             //Enable Adding of Runcard Station
                             $('#btnAddRuncardStation').prop('disabled', false);
+
+                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
+                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_two_prod_lot, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
 
                             dtAssemblyRuncardStation.draw();
                         },
@@ -1225,14 +1258,14 @@
                             console.log('log data', assy_runcard_station_data);
 
                             if(assy_runcard_station_data.station == 4 ){//Lubricant Coating Station
-                                $('#LubricantCoatingDiv').prop('hidden', false);
-                                $('#VisualInspDocNoDiv').prop('hidden', true);
-                            }else if(assy_runcard_station_data.station == 5){// Visual Inspection
-                                $('#LubricantCoatingDiv').prop('hidden', true);
-                                $('#VisualInspDocNoDiv').prop('hidden', true);
+                                $('#LubricantCoatingDiv').removeClass('d-none');
+                                $('#VisualInspDocNoDiv').addClass('d-none');
                             }else if(assy_runcard_station_data.station == 6){// Visual Inspection
-                                $('#LubricantCoatingDiv').prop('hidden', true);
-                                $('#VisualInspDocNoDiv').prop('hidden', false);
+                                $('#LubricantCoatingDiv').addClass('d-none');
+                                $('#VisualInspDocNoDiv').removeClass('d-none');
+                            }else{
+                                $('#LubricantCoatingDiv').addClass('d-none');
+                                $('#VisualInspDocNoDiv').addClass('d-none');
                             }
 
                             $('#modalAddStation').modal('show');
@@ -1262,12 +1295,13 @@
                             $('#formAddAssemblyRuncardStation #txtRemarks').val(assy_runcard_station_data.remarks);
 
 
+                            // <option value="${mode_of_defect_data[index].mod_id}">${mode_of_defect_data[index].mode_of_defect[0].defects}</option>
+
                             for(let index = 0; index < mode_of_defect_data.length; index++){
                                 let rowModeOfDefect = `
                                     <tr>
                                         <td>
-                                            <select class="form-control select2bs5 selectMOD" name="mod_id[${mode_of_defect_data[index].mod_id}]" id="a">
-                                                <option value="${mode_of_defect_data[index].mod_id}">${mode_of_defect_data[index].mode_of_defect[0].defects}</option>
+                                            <select class="form-control select2bs5 selectMOD" name="mod_id[]">
                                             </select>
                                         </td>
                                         <td id=textMODQuantity>
@@ -1279,16 +1313,9 @@
                                     </tr>
                                 `;
                                 $("#tableAssemblyStationMOD tbody").append(rowModeOfDefect);
-                                console.log('mod_id',mode_of_defect_data[index].mod_id);
-
-                                //CLARK KULANG KAPA DITO
+                                // console.log('mod_id',mode_of_defect_data[index].mod_id);
 
                                 getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'), mode_of_defect_data[index].mod_id);
-                                // console.log('test log',$('#tableAssemblyStationMOD .selectMOD option[value="'+mode_of_defect_data[index].mod_id+'"]]').attr('selected'));
-                                // $('#tableAssemblyStationMOD .selectMOD select[name="mod_id[2]"]').find('option').val(mode_of_defect_data[index].mod_id);
-                                // $('#tableAssemblyStationMOD tbody .selectMOD #a').val(3);
-
-                                // $('#tableAssemblyStationMOD #a').val('3');
                             }
                             $("#labelTotalNumberOfNG").text(parseInt(0));
                         },

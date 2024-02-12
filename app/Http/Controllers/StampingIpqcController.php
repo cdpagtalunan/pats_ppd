@@ -22,9 +22,9 @@ class StampingIpqcController extends Controller
 {
     public function view_stamping_ipqc_data(Request $request){
 
-        if(!isset($request->po_number)){
-            return [];
-        }else{
+        // if(!isset($request->po_number)){
+        //     return [];
+        // }else{
             // $ipqc_status = implode(',',$request->ipqc_status);
             // $fs_prod_status = implode(',',$request->fs_prod_status);
             // return $fs_prod_status;
@@ -177,7 +177,7 @@ class StampingIpqcController extends Controller
 
             ->rawColumns(['action','ipqc_status','fs_prod_created_at','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
             ->make(true);
-        }
+        // }
     }
 
     public function get_po_from_fs_production(Request $request){

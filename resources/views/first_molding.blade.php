@@ -80,7 +80,7 @@
                                                     </select>
                                                   </div>
                                                 </div>
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-3 d-none">
                                                   <label>Input Device Name</label>
                                                     <input type="text" class="form-control" id="global_input_device_name" name="global_input_device_name" readonly>
                                                 </div>
@@ -172,6 +172,19 @@
 
                 getFirstModlingDevices();
 
+                // const getOperationNames = function (){
+                //     $.ajax({
+                //         type: "GET",
+                //         url: "get_operation_ames",
+                //         data: "data",
+                //         dataType: "json",
+                //         success: function (response) {
+
+                //         }
+                //     });
+                // }
+
+
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
                     formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMoldingStation.find('#first_molding_id').val('');
@@ -203,8 +216,8 @@
                     formModal.firstMoldingStation.find('#first_molding_detail_id').val('');
                     formModal.firstMoldingStation.find('#operator_name').val('');
                     formModal.firstMoldingStation.find('#remarks').val('');
-                    formModal.firstMoldingStation.find('#station_yield').val('0%');
-                    formModal.firstMoldingStation.find('[type="number"]').val(0);
+                    // formModal.firstMoldingStation.find('#station_yield').val('0%');
+                    // formModal.firstMoldingStation.find('[type="number"]').val(0);
                     formModal.firstMoldingStation.find('.form-control').removeClass('is-valid')
                     formModal.firstMoldingStation.find('.form-control').removeClass('is-invalid');
                     formModal.firstMoldingStation.find('.form-control').attr('title', '');
@@ -417,15 +430,15 @@
 
                     formModal.firstMolding.find('#material_yield').val('0%');
                     formModal.firstMolding.find('[type="number"]').val(0);
-
+                    arr.Ctr = 0;
                     let rowFirstMoldingMaterial = `
                         <tr>
                             <td>
                                 <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend">
-                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial" btn-counter = "0"><i class="fa fa-qrcode w-100"></i></button>
+                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm" id="virgin_material_0" name="virgin_material[]" required min=1 step="0.01">
+                                    <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter="${arr.Ctr}" name="virgin_material[]" required min=1 step="0.01">
                                 </div>
                             </td>
                             <td>
@@ -458,15 +471,19 @@
 
                 $('#btnFirstMoldingStation').click(function (e) {
                     e.preventDefault();
+                    let elementId = formModal.firstMoldingStation.find('#operator_name');
+
                     $('#buttonFirstMoldingStation').prop('disabled',false);
                     $('#buttonAddFirstMoldingModeOfDefect').prop('disabled',false);
 
                     formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
                     formModal.firstMoldingStation.find('[type="number"]').val(0)
+                    formModal.firstMoldingStation.find('#station_yield').val('0%');
                     getFirstMoldingStationLastOuput(formModal.firstMolding.find('#first_molding_id').val());
 
+                    getOperationNames(elementId);
+
                     $('#modalFirstMoldingStation').modal('show');
-                    // getStation();
 
                 });
 
@@ -769,6 +786,10 @@
                     e.preventDefault();
                     // mdlScanQrCodeFirstMoldingMaterial
                 });
+
+
+
+
 
 
             });

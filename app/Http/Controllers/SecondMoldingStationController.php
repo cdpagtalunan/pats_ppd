@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Query\JoinClause;
 use DataTables;
 
 /**
@@ -87,7 +88,6 @@ class SecondMoldingStationController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    // SecMoldingRuncardStation::where('sec_molding_runcard_id', $request->second_molding_id)->delete();
                     $secondMoldingStationId = SecMoldingRuncardStation::insertGetId([
                         'sec_molding_runcard_id' => $request->second_molding_id,
                         'station' => $request->station,
@@ -102,46 +102,67 @@ class SecondMoldingStationController extends Controller
                         'created_at' => date('Y-m-d H:i:s'),
                     ]);
 
-                    $updateSecondMoldingNGAndOutputQuantity = DB::connection('mysql')
-                        ->table('sec_molding_runcards')
-                        ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
-                            'ng_count' => $request->ng_quantity,
-                            'shipment_output' => $request->output_quantity,
-                        ]);
+                    if($request->station == 1 || $request->station == 6){ // 1-Machine Final Overmold, 6-Visual Inspection
+                        /**
+                         * Check if shipment_output(column) is not null to update shipment_output and ng_count
+                         * that will be used to the next process
+                         */
+                        $getShipmentOuput = DB::connection('mysql')
+                            ->table('sec_molding_runcards')
+                            ->where('sec_molding_runcards.id', $request->second_molding_id)
+                            // ->whereNull('sec_molding_runcards.shipment_output')
+                            ->whereNull('sec_molding_runcards.deleted_at')
+                            ->take(1)->update([
+                                'ng_count' => $request->ng_quantity,
+                                'shipment_output' => $request->output_quantity,
+                            ]);
+                            // return response()->json(['getShipmentOuput' => $getShipmentOuput]);
 
-                    $getSecondMoldingRuncardDetails = DB::connection('mysql')
-                        ->table('sec_molding_runcards')
-                        ->join('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
-                        ->where('sec_molding_runcards.id', $request->second_molding_id)
-                        ->whereNull('sec_molding_runcards.deleted_at')
-                        ->select(
-                            'sec_molding_runcards.target_shots',
-                            'sec_molding_runcards.adjustment_shots',
-                            'sec_molding_runcards.qc_samples',
-                            'sec_molding_runcards.prod_samples',
-                            'sec_molding_runcards.ng_count',
-                            'sec_molding_runcards.total_machine_output',
-                            'sec_molding_runcards.shipment_output',
-                            'sec_molding_runcards.material_yield',
-                            // 'sec_molding_runcard_stations.*'
-                        )
-                        ->get();
-                        // return response()->json(['getSecondMoldingRuncardDetails' => $getSecondMoldingRuncardDetails]);
+                        if($getShipmentOuput == 1){
+                            $updateNGAndOutputQuantity = DB::connection('mysql')
+                                ->table('sec_molding_runcards')
+                                ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
+                                    'ng_count' => $request->ng_quantity,
+                                    'shipment_output' => $request->output_quantity,
+                                ]);
 
-                    $totalMachineOutput = $getSecondMoldingRuncardDetails[0]->target_shots 
-                        + $getSecondMoldingRuncardDetails[0]->adjustment_shots 
-                        + $getSecondMoldingRuncardDetails[0]->qc_samples
-                        + $getSecondMoldingRuncardDetails[0]->ng_count
-                        + $getSecondMoldingRuncardDetails[0]->prod_samples
-                        + $getSecondMoldingRuncardDetails[0]->shipment_output;
-                    $materialYield = ($getSecondMoldingRuncardDetails[0]->shipment_output / $totalMachineOutput * 100);
+                                $getSecondMoldingRuncardDetails = DB::connection('mysql')
+                                    ->table('sec_molding_runcards')
+                                    ->where('sec_molding_runcards.id', $request->second_molding_id)
+                                    ->whereNull('sec_molding_runcards.deleted_at')
+                                    ->groupBy('sec_molding_runcards.id')
+                                    ->select(
+                                        'sec_molding_runcards.target_shots',
+                                        'sec_molding_runcards.adjustment_shots',
+                                        'sec_molding_runcards.qc_samples',
+                                        'sec_molding_runcards.prod_samples',
+                                        'sec_molding_runcards.ng_count',
+                                        'sec_molding_runcards.shipment_output',
+                                        'sec_molding_runcards.material_yield',
+                                    )
+                                    ->get();
+                                // return response()->json(['getSecondMoldingRuncardDetails' => $getSecondMoldingRuncardDetails]);
 
-                    $updateSecondMoldingRuncardDetails = DB::connection('mysql')
-                        ->table('sec_molding_runcards')
-                        ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
-                            'total_machine_output' => $totalMachineOutput,
-                            'material_yield' => $materialYield,
-                        ]);
+                                $totalMachineOutput = $getSecondMoldingRuncardDetails[0]->target_shots 
+                                    + $getSecondMoldingRuncardDetails[0]->adjustment_shots 
+                                    + $getSecondMoldingRuncardDetails[0]->qc_samples
+                                    + $getSecondMoldingRuncardDetails[0]->prod_samples
+                                    + $getSecondMoldingRuncardDetails[0]->ng_count
+                                    + $getSecondMoldingRuncardDetails[0]->shipment_output;
+                                $materialYield = ($getSecondMoldingRuncardDetails[0]->shipment_output / $totalMachineOutput * 100);
+                                // return response()->json(['totalMachineOutput' => $totalMachineOutput, 'materialYield' => $materialYield]);
+
+                                $updateTotalMachineOutputAndMaterialYield = DB::connection('mysql')
+                                    ->table('sec_molding_runcards')
+                                    ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
+                                        'total_machine_output' => $totalMachineOutput,
+                                        'material_yield' => $materialYield,
+                                    ]);
+                        }
+                    }
+                    // else{
+                    //     return 'not Machine Final or Visual Inspection';
+                    // }
     
                     if(isset($request->mod_id)){
                         for ($i=0; $i < count($request->mod_id); $i++) { 
@@ -198,17 +219,51 @@ class SecondMoldingStationController extends Controller
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
 
-                    $getNGAndOutputQuantity = DB::connection('mysql')
-                        ->table('sec_molding_runcards')
-                        ->join('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
-                        ->where('sec_molding_runcards.id', $request->second_molding_id)
-                        ->whereNull('sec_molding_runcards.deleted_at')
-                        ->select(
-                            'sec_molding_runcards.*',
-                            'sec_molding_runcard_stations.*'
-                        )
-                        ->get();
-                    return response()->json(['data' => $getNGAndOutputQuantity]);
+                    if($request->station == 6){ // 6-Visual Inspection
+                        $updateNGAndOutputQuantity = DB::connection('mysql')
+                            ->table('sec_molding_runcards')
+                            ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
+                                'ng_count' => $request->ng_quantity,
+                                'shipment_output' => $request->output_quantity,
+                            ]);
+
+                        $getSecondMoldingRuncardDetails = DB::connection('mysql')
+                            ->table('sec_molding_runcards')
+                            ->join('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
+                            ->where('sec_molding_runcards.id', $request->second_molding_id)
+                            ->whereNull('sec_molding_runcards.deleted_at')
+                            ->select(
+                                'sec_molding_runcards.target_shots',
+                                'sec_molding_runcards.adjustment_shots',
+                                'sec_molding_runcards.qc_samples',
+                                'sec_molding_runcards.prod_samples',
+                                'sec_molding_runcards.ng_count',
+                                'sec_molding_runcards.total_machine_output',
+                                'sec_molding_runcards.shipment_output',
+                                'sec_molding_runcards.material_yield',
+                                // 'sec_molding_runcard_stations.*'
+                            )
+                            ->get();
+                            // return response()->json(['getSecondMoldingRuncardDetails' => $getSecondMoldingRuncardDetails]);
+
+                        $totalMachineOutput = $getSecondMoldingRuncardDetails[0]->target_shots 
+                            + $getSecondMoldingRuncardDetails[0]->adjustment_shots 
+                            + $getSecondMoldingRuncardDetails[0]->qc_samples
+                            + $getSecondMoldingRuncardDetails[0]->ng_count
+                            + $getSecondMoldingRuncardDetails[0]->prod_samples
+                            + $getSecondMoldingRuncardDetails[0]->shipment_output;
+                        $materialYield = ($getSecondMoldingRuncardDetails[0]->shipment_output / $totalMachineOutput * 100);
+
+                        $updateTotalMachineOutputAndMaterialYield = DB::connection('mysql')
+                            ->table('sec_molding_runcards')
+                            ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
+                                'total_machine_output' => $totalMachineOutput,
+                                'material_yield' => $materialYield,
+                            ]);
+                    }
+                    
+
+
 
                     SecMoldingRuncardStationMod::where('sec_molding_runcard_station_id', $request->second_molding_station_id)->delete();
                     if(isset($request->mod_id)){
@@ -252,30 +307,41 @@ class SecondMoldingStationController extends Controller
         //             AND sec_molding_runcard_stations.deleted_at IS NULL
         // ");
         
-        // $secondMoldingStationResult = DB::connection('mysql')
-        // ->table('sec_molding_runcard_stations')
-        // ->leftJoin('sec_molding_runcard_station_mods', 'sec_molding_runcard_stations.id', '=', 'sec_molding_runcard_station_mods.sec_molding_runcard_station_id')
-        // ->where('sec_molding_runcard_stations.id', $request->second_molding_station_id)
-        // ->where('sec_molding_runcard_stations.deleted_at', '=', NULL)
-        // ->select(
-        //     'sec_molding_runcard_stations.*',
-        //     'sec_molding_runcard_station_mods.id AS sec_molding_runcard_station_mod_id',
-        //     'sec_molding_runcard_station_mods.mod_id AS mod_id',
-        //     'sec_molding_runcard_station_mods.mod_quantity AS mod_quantity'
-        // )
-        // ->get();
-        // return response()->json(['data' => $secondMoldingStationResult]);
-
         $secondMoldingStationResult = DB::connection('mysql')
-        ->table('sec_molding_runcards')
-        ->leftJoin('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
-        ->where('sec_molding_runcards.id', 1)
-        ->groupBy('sec_molding_runcards.id')
+        ->table('sec_molding_runcard_stations')
+        ->leftJoin('sec_molding_runcard_station_mods', 'sec_molding_runcard_stations.id', '=', 'sec_molding_runcard_station_mods.sec_molding_runcard_station_id')
+        ->where('sec_molding_runcard_stations.id', $request->second_molding_station_id)
+        ->where('sec_molding_runcard_stations.deleted_at', '=', NULL)
         ->select(
-            'sec_molding_runcards.*',
-            DB::raw('JSON_OBJECTAGG(sec_molding_runcard_stations.id, sec_molding_runcard_stations.mod_quantity) AS sec_molding_runcard_stations'),
+            'sec_molding_runcard_stations.*',
+            'sec_molding_runcard_station_mods.id AS sec_molding_runcard_station_mod_id',
+            'sec_molding_runcard_station_mods.mod_id AS mod_id',
+            'sec_molding_runcard_station_mods.mod_quantity AS mod_quantity'
         )
         ->get();
         return response()->json(['data' => $secondMoldingStationResult]);
+
+        // $secondMoldingStationResult = DB::connection('mysql')
+        // ->table('sec_molding_runcards')
+        // ->leftJoin('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
+        // ->where('sec_molding_runcards.id', 1)
+        // ->groupBy('sec_molding_runcards.id')
+        // ->select(
+        //     'sec_molding_runcards.id',
+        //     'sec_molding_runcards.device_name',
+        //     DB::raw("CONCAT('[', GROUP_CONCAT(JSON_OBJECT('id', sec_molding_runcard_stations.id, 'date', sec_molding_runcard_stations.date, 'station_yield', sec_molding_runcard_stations.station_yield) ORDER BY sec_molding_runcards.id separator ','), ']') AS sec_molding_runcard_stations"),
+        // )
+        // ->get();    
+        // return response()->json(['data' => $secondMoldingStationResult]);
+
+        // $stations = DB::table('sec_molding_runcard_stations')
+        //     ->select('sec_molding_runcard_id')
+        //     ->groupBy('sec_molding_runcard_id');
+
+        // $secondMoldingStationResult = DB::table('sec_molding_runcards')
+        //     ->joinSub($stations, 'stations', function (JoinClause $join) {
+        //         $join->on('sec_molding_runcards.id', '=', 'stations.sec_molding_runcard_id');
+        //     })->get();
+        // return response()->json(['data' => $secondMoldingStationResult]);
     }
 }

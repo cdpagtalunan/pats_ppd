@@ -19,6 +19,8 @@
 @section('title', 'Dashboard')
 
 @section('content_page')
+{{-- <meta name="csrf-token" content="{{ csrf_token() }}" />  --}}
+
     <style>
         table.table tbody td{
             padding: 4px 4px;
@@ -85,6 +87,8 @@
                                                             <th>Action</th>
                                                             <th>Status</th>
                                                             <th>Date</th>
+                                                            <th>Machine</th>
+                                                            <th>Shift</th>
                                                         </tr>
                                                     </thead>
                                                 </table>
@@ -154,7 +158,8 @@
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Date/Time</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtCheckDateTime" name="date_time" readonly>
+                                            <input type="text" class="form-control form-control-sm" id="txtCheckDate" name="date" readonly>
+                                            <input type="hidden" class="form-control form-control-sm" id="txtCheckTime" name="time" readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-4">
@@ -189,7 +194,7 @@
                                                 <span class="input-group-text w-100" id="basic-addon1">Machine</span>
                                             </div>
                                             {{-- <input type="text" class="form-control form-control-sm" id="txtMachine" name="machine"> --}}
-                                            <select class="form-control select2bs4" id="selMachine" name="machine"></select>
+                                            <select class="form-control select2bs4" id="selMachine" name="machine" required></select>
                                         </div>
                                     </div>
                                 </div>
@@ -580,7 +585,7 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="" class="btn btn-primary">
+                        <button type="submit" id="btnSave" class="btn btn-primary">
                             <i class="fa fa-check"></i>
                             Save
                         </button>
@@ -596,6 +601,7 @@
 
 <script>
     var dtDatatableChecksheet;
+    var checkSheetfunction;
     $(document).ready(function(e){
         dtDatatableChecksheet = $("#tblChecksheet").DataTable({
             "processing": true,
@@ -611,32 +617,115 @@
             "columns": [
                 { "data": "action" },
                 { "data": "status" },
-                { "data": "date_time" }
+                { "data": "date" },
+                { "data": "machine_name" },
+                { "data": "shift" },
             ],
            
         });
 
         $('#addChecksheet').on('click', function(){
-            let dateTime = moment().format('MM-DD-YYYY kk:mm');
-            let timeForShift = moment().format('kk:mm');
+            // let date = moment().format('MM-DD-YYYY');
+            let date = moment().format('YYYY-MM-DD');
+            let time = moment().format('kk:mm');
             getMachineForChecksheet($('#selMachine'));
 
-            if(timeForShift >= "07:00" && timeForShift <= "19:29"){
-                $('#txtShift').val('A')
+            if(time >= "07:00" && time <= "19:29"){
+                $('#txtShift').val('B')
+
             }
             else{
-                $('#txtShift').val('B')
+                $('#txtShift').val('A')
+
             }
-            $('#txtCheckDateTime').val(dateTime)
+            $('#txtCheckDate').val(date)
+            $('#txtCheckTime').val(time)
+            
 
             $('#modalAddChecksheet').modal('show');
             
         });
         $('#formAddChecksheet').submit(function(e){
             e.preventDefault();
+            saveChecksheet('Q121');
 
-           saveChecksheet();
+            // $('#modalScanQRSave').modal('show');
+            // $('#modalScanQRSaveText').html('Please Scan Employee ID.')
+
+        //    saveChecksheet();
         })
+
+        $(document).on('keyup','#txtScanUserId', function(e){
+            if(e.keyCode == 13){
+                validateUser($(this).val().toUpperCase(), [0,1,4,9,11], function(result){
+                    if(result == true){
+                        saveChecksheet($('#txtScanUserId').val());
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+                    $('#txtScanUserId').val('');
+                });
+            }
+
+        });
+
+        $(document).on('click', '.btnCheck', function(e){
+            let id = $(this).data('id');
+            Swal.fire({
+                title: "Do you want to approve this checklist?",
+                icon: "question",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: "Approve",
+                confirmButtonColor: "#17bf39",
+                denyButtonText: `Disapprove`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let tokin = "{{ csrf_token() }}";
+                    changeStatusChecksheet(1, id, tokin);
+                }
+                else if (result.isDenied) {
+                    Swal.fire({
+                        title: 'Input Remarks',
+                        html: '<textarea id="disapproveRemarks" rows="5" class="form-control" placeholder="Enter text here..."></textarea>',
+                        showCancelButton: true,
+                        confirmButtonText: 'Submit',
+                        preConfirm: () => {
+                            const textareaValue = $.trim($('#disapproveRemarks').val());
+                            if (!textareaValue) {
+                                Swal.showValidationMessage('Remarks cannot be empty!');
+                            }
+                            return textareaValue;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const text = result.value;
+                        }
+                    });
+                    
+                }
+            });
+        });
+
+        $(document).on('click', '.btnView', function(e){
+            let id = $(this).data('id');
+            checkSheetfunction = $(this).data('function');
+
+            getChecksheet(id, checkSheetfunction);
+        });
+
+        $("#modalAddChecksheet").on('hidden.bs.modal', function () {
+            console.log('hidden.bs.modal');
+            $('#formAddChecksheet')[0].reset();
+
+            $('input', $('#formAddChecksheet')).prop('disabled', false);
+            $('#txtRemarks', $('#formAddChecksheet')).prop('disabled', false);
+            $('select', $('#formAddChecksheet')).prop('disabled', false);
+            $('#btnSave').show();
+
+        });
+
     })
 </script>
 

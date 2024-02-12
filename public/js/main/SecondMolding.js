@@ -222,7 +222,7 @@ const getMachineDropdown = (cboElement, materialName) => {  // chris
         dataType: "json",
         success: function (response) {
             let result = '';
-            console.log(response['machine']);
+            // console.log(response['machine']);
             if(response['machine'].length > 0){
                 for(let index = 0; index < response['machine'].length; index++){
                     result += `<option value="${response['machine'][index].machine_name}">${response['machine'][index].machine_name}</option>`;

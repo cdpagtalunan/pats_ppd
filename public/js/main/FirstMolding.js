@@ -24,6 +24,44 @@
 
     var inputTotalMachineOuput = 0;
 
+    const getOperationNames = (elementId, valueId = null) => {
+        let result = `<option value="0" selected> N/A </option>`;
+        $.ajax({
+            url: 'get_operation_names',
+            method: 'get',
+            dataType: 'json',
+            beforeSend: function(){
+                result = `<option value="0" selected disabled> - Loading - </option>`;
+                elementId.html(result);
+            },
+            success: function(response){
+                // console.log('getOperationNames',response);
+                // return;
+                result = '';
+                if(response.id.length > 0){
+                    for(let index = 0; index < response.id.length; index++){
+
+                        result += `<option value="${response.id[index]}">${response.value[index]}</option>`;
+                    }
+                }
+                else{
+                    result = `<option value="0" selected disabled> - No data found - </option>`;
+                }
+                elementId.append(result);
+
+                if(valueId != null){
+                    console.log(valueId)
+                    elementId.val(valueId).trigger('change');
+                }
+            },
+            error: function(data, xhr, status){
+                result = `<option value="0" selected disabled> - Reload Again - </option>`;
+                elementId.html(result);
+                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            }
+        });
+    }
+
     const getFirstModlingDevices = function (){
 
         $.ajax({
@@ -66,7 +104,6 @@
 
                 for (let i = 0; i < first_molding_material_list.length; i++) {
                     console.log(first_molding_material_list[i].virgin_material);
-                    arr.Ctr += 1;
                     console.log('arr.Ctr',arr.Ctr);
                     let rowFirstMoldingMaterial = `
                         <tr>
@@ -263,7 +300,7 @@
                 formModal.firstMoldingStation.find('#first_molding_id').val(first_molding_station_detail.first_molding_id);
                 formModal.firstMoldingStation.find('#first_molding_detail_id').val(first_molding_station_detail.id);
                 formModal.firstMoldingStation.find('#date').val(first_molding_station_detail.date);
-                formModal.firstMoldingStation.find('#operator_name').val(first_molding_station_detail.operator_name);
+                // formModal.firstMoldingStation.find('#operator_name').val(first_molding_station_detail.operator_name);
                 formModal.firstMoldingStation.find('#input').val(first_molding_station_detail.input);
                 formModal.firstMoldingStation.find('#ng_qty').val(first_molding_station_detail.ng_qty);
                 formModal.firstMoldingStation.find('#output').val(first_molding_station_detail.output);
@@ -283,7 +320,7 @@
                     $('#buttonAddFirstMoldingModeOfDefect').prop('disabled',false);
                 }
                 $('#modalFirstMoldingStation').modal('show');
-
+                getOperationNames(formModal.firstMoldingStation.find('#operator_name'),first_molding_station_detail.operator_name);
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }

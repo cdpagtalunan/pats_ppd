@@ -209,6 +209,18 @@ class FirstMoldingStationController extends Controller
         ]);
     }
 
+    public function getOperatioNames(){
+        // $arr_data = User::where('position',4)->get();
+        $arr_data = User::all();
 
+        foreach ($arr_data as $key => $value_data) {
+            $arr_value_id[] =$value_data['id'];
+            $arr_value_name[] =$value_data['firstname'] .' '.$value_data['lastname'];
+        }
 
+        return response()->json([
+            'id'    =>  $arr_value_id,
+            'value' =>  $arr_value_name
+        ]);
+    }
 }

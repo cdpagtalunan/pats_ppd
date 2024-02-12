@@ -128,43 +128,43 @@
                                         </div>
                                         {{-- Completed Tab --}}
                                         <div class="tab-pane fade" id="Completed" role="tabpanel" aria-labelledby="Completed-tab">
-                                                <div class="table-responsive">
-                                                    <table id="tblAssemblyIpqcInspCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
-                                                        style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Action</th>
-                                                                <th>IPQC Status</th>
-                                                                <th>Created At</th>
-                                                                <th>PO Number</th>
-                                                                <th>Production Lot#</th>
-                                                                <th>Judgement</th>
-                                                                <th>QC Sample</th>
-                                                                <th>Inspected At</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
+                                            <div class="table-responsive">
+                                                <table id="tblAssemblyIpqcInspCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>IPQC Status</th>
+                                                            <th>Created At</th>
+                                                            <th>PO Number</th>
+                                                            <th>Production Lot#</th>
+                                                            <th>Judgement</th>
+                                                            <th>QC Sample</th>
+                                                            <th>Inspected At</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
                                         </div>
                                         {{-- For Re-Setup Tab --}}
                                         <div class="tab-pane fade" id="Resetup" role="tabpanel" aria-labelledby="Resetup-tab">
-                                                <div class="table-responsive">
-                                                    <table id="tblAssemblyIpqcInspResetup" class="table table-sm table-bordered table-striped table-hover text-center"
-                                                        style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Action</th>
-                                                                <th>IPQC Status</th>
-                                                                <th>Created At</th>
-                                                                <th>PO Number</th>
-                                                                <th>Production Lot#</th>
-                                                                <th>Judgement</th>
-                                                                <th>QC Sample</th>
-                                                                <th>Inspected At</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
+                                            <div class="table-responsive">
+                                                <table id="tblAssemblyIpqcInspResetup" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>IPQC Status</th>
+                                                            <th>Created At</th>
+                                                            <th>PO Number</th>
+                                                            <th>Production Lot#</th>
+                                                            <th>Judgement</th>
+                                                            <th>QC Sample</th>
+                                                            <th>Inspected At</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                     {{-- TABS END --}}
@@ -282,7 +282,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="card">
-                                        <div class="card-body"><div class="form-group">
+                                        <div class="card-body">
                                             <div class="form-group">
                                                 <label class="form-label">Judgement:</label>
                                                 {{-- <input type="text" class="form-control form-control-sm" name="judgement" id="txtJudgement"> --}}
@@ -377,7 +377,6 @@
 
     @section('js_content')
         <script type="text/javascript">
-            var prodData;
             $(document).ready(function(){
                 let frmIPQCInspectionData = $('#formIPQCInspectionData');
 
@@ -482,10 +481,10 @@
                             },
                             success: function(response) {
                                 let AssemblyDevices = response['assembly_devices'];
-                                if (fMoldingDevice.length > 0) {
+                                if (AssemblyDevices.length > 0) {
                                         result = '<option value="" disabled selected>-- Select Device Name --</option>';
-                                    for (let index = 0; index < fMoldingDevice.length; index++) {
-                                        result += '<option value="' + fMoldingDevice[index].first_molding_device_id + '">'+fMoldingDevice[index].first_molding_device.device_name+'</option>';
+                                    for (let index = 0; index < AssemblyDevices.length; index++) {
+                                        result += '<option value="' + AssemblyDevices[index].first_molding_device_id + '">'+AssemblyDevices[index].first_molding_device.device_name+'</option>';
                                     }
                                 } else {
                                     result = '<option value="0" selected disabled> -- No record found -- </option>';

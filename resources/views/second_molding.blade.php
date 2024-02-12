@@ -504,7 +504,7 @@
                                     <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">Yield</span>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm" id="textStationYield" placeholder="0%" readonly name="station_yield">
+                                    <input type="text" class="form-control form-control-sm" id="textStationYield" placeholder="0%" readonly name="station_yield" min="0" value="0">
                                     </div>
                                 </div>
                             </div>
@@ -788,7 +788,6 @@
                                     console.log(`response ${response['second_molding_id']}`);
                                     toastr.success('Successfully saved');
                                     dataTablesSecondMolding.draw();
-                                    $('#buttonAddStation').prop('disabled', false); // remove disabled after save
                                     getSecondMoldingById(response['second_molding_id']);
                                 }else if(response['sessionError']){
                                     toastr.error('Session Expired. Please re-login again.');
@@ -946,9 +945,9 @@
                         dataType: "json",
                         success: function (response) {
                             let responseData = response['data'];
+                            let responseDataIPQCSecondMolding = response['dataIPQCSecondMolding'];
                             if(response['data'].length > 0){
                                 let machineArray = responseData[0].machine_number.split(" , "); // Added by Chris
-
                                 $('#textSecondMoldingId', $('#formSecondMolding')).val(responseData[0].id);
                                 // $('#textSecondMoldingId', $('#formAddStation')).val(responseData[0].id); // Id from sec_molding_runcards(table)
                                 $('#textDeviceName', $('#formSecondMolding')).val(responseData[0].device_name);
@@ -974,7 +973,6 @@
                                 $('#textMELotNumberOne', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_one);
                                 $('#textMELotNumberSecond', $('#formSecondMolding')).val(responseData[0].me_name_lot_number_second);
 
-
                                 $('#target_shots', $('#formSecondMolding')).val(responseData[0].target_shots);
                                 $('#adjustment_shots', $('#formSecondMolding')).val(responseData[0].adjustment_shots);
                                 $('#qc_samples', $('#formSecondMolding')).val(responseData[0].qc_samples);
@@ -986,6 +984,12 @@
                                 $('#shipment_output', $('#formSecondMolding')).css({'color': 'green', 'font-weight': 'bold'});
                                 responseData[0].material_yield != null ? $('#material_yield', $('#formSecondMolding')).val(`${responseData[0].material_yield}%`) : '';
                                 
+                                console.log('responseDataIPQCSecondMolding ', responseDataIPQCSecondMolding);
+                                // if(responseDataIPQCSecondMolding.length > 0){
+                                //     $('#buttonAddStation').prop('disabled', false);
+                                // }else{
+                                //     $('#buttonAddStation').prop('disabled', true);
+                                // }
                                 dataTablesSecondMoldingStation.draw();
                             }
                         }
@@ -1005,7 +1009,6 @@
                     id = $(this).attr('second-molding-id');
                     let materialName = $('#textSearchMaterialName').val();
                     console.log(`actionEditSecondMolding id ${id}`)
-                    $('#buttonAddStation').prop('disabled', false); // remove disabled for edit
                     setDisabledSecondMoldingRuncard(false);
                     getMachineDropdown($('#selMachineNumber'), materialName);
                     getSecondMoldingById(id);
@@ -1016,11 +1019,11 @@
                     id = $(this).attr('second-molding-id');
                     let materialName = $('#textSearchMaterialName').val();
                     console.log(`actionViewSecondMolding id ${id}`)
-                    $('#buttonAddStation').prop('disabled', true); // remove disabled for edit
                     getMachineDropdown($('#selMachineNumber'), materialName);
                     getSecondMoldingById(id);
                     setDisabledSecondMoldingRuncard(true);
                     getMaterialProcessStation();
+                    $('#buttonAddStation').prop('disabled', true);
                 });
                 /**
                  * Edit of Second Molding to be use in Update
@@ -1063,7 +1066,6 @@
                  * Start
                 */
                 $('#buttonAddStation').click(function(){
-                    console.log('buttonAddStation');
                     let secondMoldingId = $('#textSecondMoldingId', $('#formSecondMolding')).val();
                     $('#textSecondMoldingId', $('#formAddStation')).val(secondMoldingId);
                     $('#labelTotalNumberOfNG', $('#formAddStation')).text(0);
@@ -1306,7 +1308,7 @@
                 /**
                  * Add/Remove Mode Of Defect
                  * End
-                */
+                */ 
 
                 /**
                  * Get Second Molding Data to be use in Edit
@@ -1322,6 +1324,7 @@
                         dataType: "json",
                         success: function (response) {
                             let responseData = response['data'];
+                            console.log('laravel relationship like ',responseData);
                             if(response['data'].length > 0){
                                 $('#textSecondMoldingStationId', $('#formAddStation')).val(responseData[0].id); // Id from sec_molding_runcards(table)
                                 $('#textSecondMoldingId', $('#formAddStation')).val(responseData[0].sec_molding_runcard_id); // Id from sec_molding_runcards(table)

@@ -288,7 +288,7 @@
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="card">
-                                        <div class="card-body"><div class="form-group">
+                                        <div class="card-body">
                                             <div class="form-group">
                                                 <label class="form-label">Judgement:</label>
                                                 {{-- <input type="text" class="form-control form-control-sm" name="judgement" id="txtJudgement"> --}}

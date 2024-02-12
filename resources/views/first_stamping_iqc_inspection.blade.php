@@ -324,7 +324,7 @@
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }
                 });
-                
+
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){
                         // console.log($(this).val());

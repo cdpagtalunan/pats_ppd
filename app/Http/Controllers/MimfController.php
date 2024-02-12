@@ -47,17 +47,18 @@ class MimfController extends Controller
     public function getControlNo(){
         date_default_timezone_set('Asia/Manila');
 
-        $get_control_no = Mimf::orderBy('id', 'DESC')->where('logdel', 0)->first();
+        $get_last_control_no = Mimf::orderBy('id', 'DESC')->where('logdel', 0)->first();
         $control_no_format = "MIMF-".NOW()->format('ym')."-";
 
-        if ($get_control_no == null){
+        if ($get_last_control_no == null){
             $new_control_no = $control_no_format.'001';
-        }elseif(explode('-',$get_control_no->control_no)[1] != NOW()->format('ym')){
+        }elseif(explode('-',$get_last_control_no->control_no)[1] != NOW()->format('ym')){
             $new_control_no = $control_no_format.'001';
         }else{
-            $explode_control_no = explode("-",  $get_control_no->control_no);
-            $increment_control_number = $explode_control_no[2]+1;
-            $string_pad = str_pad($increment_control_number,3,"0",STR_PAD_LEFT);
+            $explode_control_no = explode("-",  $get_last_control_no->control_no);
+            // $increment_control_number = $explode_control_no[2]+1;
+            // $string_pad = str_pad($increment_control_number,3,"0",STR_PAD_LEFT);
+            $string_pad = str_pad($explode_control_no[2]+1,3,"0",STR_PAD_LEFT);
             $new_control_no = $control_no_format.$string_pad;
         }
         return response()->json(['newControlNo' => $new_control_no]);
@@ -94,11 +95,15 @@ class MimfController extends Controller
 
         if ($validator->fails()) {
             return response()->json(['validationHasError' => 1, 'error' => $validator->messages()]);
-        } else {
+        }else{
             DB::beginTransaction();
             try {
-                $check_existing_record = Mimf::where('id', $request->mimf_id)->where('logdel', 0)->get();
-                $mimf =[
+                $check_existing_record = Mimf::where('control_no', $request->mimf_control_no)->where('logdel', 0)->get();
+                $mimf = [
+                    'pps_po_rcvd_id'    => $request->pps_po_rcvd_id,
+                    'pps_dieset_id'     => $request->pps_dieset_id,
+                    'pps_whse_id'       => $request->pps_whse_id,
+                    'ppd_matrix_id'     => $request->ppd_matrix_id,
                     'control_no'        => $request->mimf_control_no,
                     'date_issuance'     => $request->mimf_date_issuance,
                     'po_no'             => $request->mimf_pmi_po_no,
@@ -118,16 +123,22 @@ class MimfController extends Controller
                 ];   
                 
                 if(count($check_existing_record) != 1){
+                    $mimf['created_by']  = $request->created_by;
                     $mimf['created_at']  = date('Y-m-d H:i:s');
                     Mimf::insert(
                         $mimf
                     );
                 }else{
-                    $mimf['updated_at']  = date('Y-m-d H:i:s');
-                    Mimf::where('id', $request->mimf_id)
-                    ->update(
-                        $mimf
-                    );
+                    if($request->mimf_id != ''){
+                        $mimf['updated_by']  = $request->updated_by;
+                        $mimf['updated_at']  = date('Y-m-d H:i:s');
+                        Mimf::where('id', $request->mimf_id)
+                        ->update(
+                            $mimf
+                        );
+                    }else{
+                        return response()->json(['result' => 1]);
+                    }
                 }
 
                 DB::commit();
@@ -158,7 +169,6 @@ class MimfController extends Controller
         ->where('OrderNo',$request->getValue)
         ->where('logdel', 0)
         ->get();
-        // return $get_po_received_pmi_po;
         return response()->json(['getPoReceivedPmiPo'  => $get_po_received_pmi_po]);
     }
 }

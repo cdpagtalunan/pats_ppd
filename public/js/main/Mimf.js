@@ -54,14 +54,10 @@ function UpdateMimf(){
                 if(response['error']['mimf_pmi_po_no'] === undefined){
                     $("#txtMimfPmiPoNo").removeClass('is-invalid')
                     $("#txtMimfPmiPoNo").attr('title', '')
-                    // $("#slctMimfPmiPoNo").removeClass('is-invalid')
-                    // $("#slctMimfPmiPoNo").attr('title', '')
                 }
                 else{
                     $("#txtMimfPmiPoNo").addClass('is-invalid')
                     $("#txtMimfPmiPoNo").attr('title', response['error']['mimf_pmi_po_no'])
-                    // $("#slctMimfPmiPoNo").addClass('is-invalid')
-                    // $("#slctMimfPmiPoNo").attr('title', response['error']['mimf_pmi_po_no'])
                 }
 
                 if(response['error']['mimf_date_issuance'] === undefined){
@@ -194,6 +190,8 @@ function UpdateMimf(){
                 $('#modalMimf').modal('hide')
                 dataTableMimf.draw()
                 toastr.success('Succesfully saved!')
+            }else{
+                alert('Control No. "'+$("#txtMimfControlNo").val()+'" is already exist! '+"\n\n"+' Please refresh the browser to process the request once again.')
             }
 
             $("#iBtnMimfIcon").removeClass('spinner-border spinner-border-sm')
@@ -223,8 +221,8 @@ function GetMimfById(mimfID){
             console.log(getMimfToEdit)
             if(getMimfToEdit.length > 0){
                 $('#txtMimfControlNo').val(getMimfToEdit[0].control_no)
-                $('#slctMimfPmiPoNo').val(getMimfToEdit[0].po_no)
-                $('#mimf_date_issuance').val(getMimfToEdit[0].date_issuance)
+                $('#txtMimfPmiPoNo').val(getMimfToEdit[0].po_no)
+                $('#dateMimfDateOfInssuance').val(getMimfToEdit[0].date_issuance)
                 $('#txtMimfProdnQuantity').val(getMimfToEdit[0].prodn_qty)
                 $('#txtMimfDeviceCode').val(getMimfToEdit[0].device_code)
                 $('#txtMimfDeviceName').val(getMimfToEdit[0].device_name)

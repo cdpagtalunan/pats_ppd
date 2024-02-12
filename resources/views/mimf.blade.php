@@ -112,11 +112,12 @@
 
                     <form method="post" id="formMimf" autocomplete="off">
                         @csrf
-                        <input type="text" class="form-control" id="txtMimfId" name="mimf_id">
-                        <input type="text" class="form-control" id="txtPpsPoReceivedId" name="pps_po_rcvd_id">
-                        <input type="text" class="form-control" id="txtPssWhseId" name="pps_whse_id">
-                        <input type="text" class="form-control" id="txtPpsDiesetId" name="pps_dieset_id">
-                        <input type="hidden" class="form-control" id="txtEmployeeNo" name="employee_no">
+                        <input type="hidden" class="col-2" id="txtMimfId" name="mimf_id">
+                        <input type="hidden" class="col-2" id="txtPpsPoReceivedId" name="pps_po_rcvd_id">
+                        <input type="hidden" class="col-2" id="txtPpdMatrixId" name="ppd_matrix_id">
+                        <input type="hidden" class="col-2" id="txtPpsDiesetId" name="pps_dieset_id">
+                        <input type="hidden" class="col-2" id="txtPpsWhseId" name="pps_whse_id">
+                        <input type="hidden" class="col-2" id="txtEmployeeNo" name="employee_no">
                         
                         <div class="modal-body">
                             <div class="row"><!-- Start Row OQC Data -->
@@ -132,11 +133,8 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>PMI PO No.</strong></span>
                                         </div>
-                                        {{-- <select class="form-select select2bs4 selectPmiPo" id="slctMimfPmiPoNo" name="mimf_pmi_po_no">  </select> --}}
-                                        {{-- <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div> --}}
-                                            <input type="text" class="form-control" id="txtMimfPmiPoNo" name="mimf_pmi_po_no" value="PR2410098834">
+                                        <!-- <select class="form-select select2bs4 selectPmiPo" id="slctMimfPmiPoNo" name="mimf_pmi_po_no">  </select> -->
+                                            <input type="text" class="form-control" id="txtMimfPmiPoNo" name="mimf_pmi_po_no">
                                     </div>
 
                                     <div class="input-group mb-3">
@@ -293,7 +291,7 @@
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "control_no" },
                         { "data" : "date_issuance" },
-                        { "data" : "po_no" },
+                        { "data" : "pmi_po_no" },
                         { "data" : "prodn_qty" },
                         { "data" : "device_code" },
                         { "data" : "device_name" },
@@ -326,7 +324,6 @@
                         },
                         success: function (response) {
                             let getNewControlNo = response['newControlNo'];
-                            console.log('getNewControlNo',getNewControlNo)
                             $('#txtMimfControlNo').val(getNewControlNo);
 
                         }
@@ -351,15 +348,18 @@
                             let getPoReceivedPmiPo = response['getPoReceivedPmiPo']
                             let kgs = 0;
                             if(getPoReceivedPmiPo.length > 0){
+                                $('#txtPpsPoReceivedId').val(getPoReceivedPmiPo[0].id)
                                 $('#txtMimfProdnQuantity').val(getPoReceivedPmiPo[0].OrderQty)
                                 $('#txtMimfDeviceCode').val(getPoReceivedPmiPo[0].ItemCode)
                                 $('#txtMimfDeviceName').val(getPoReceivedPmiPo[0].ItemName)
                                 
                                 if(getPoReceivedPmiPo[0].pps_dieset_info != null){
                                     kgs = (getPoReceivedPmiPo[0].OrderQty*getPoReceivedPmiPo[0].pps_dieset_info.ShotWgt*getPoReceivedPmiPo[0].pps_dieset_info.NoOfCav/1000).toFixed(2)
+                                    $('#txtPpsDiesetId').val(getPoReceivedPmiPo[0].pps_dieset_info.id)
                                     $('#txtMimfNeededKgs').val(kgs)
 
                                     if(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info != null){
+                                        $('#txtPpsWhseId').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.id)
                                         $('#txtMimfMaterialCode').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.PartNumber)
                                         $('#txtMimfMaterialType').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.MaterialType)
                                         $('#txtMimfQuantityFromInventory').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.Balance)
@@ -378,6 +378,7 @@
                                     let virgin_computation = (kgs*getPoReceivedPmiPo[0].matrix_info.virgin_percent)/100
                                     let recyled_computation = (kgs*getPoReceivedPmiPo[0].matrix_info.recycle_percent)/100
 
+                                    $('#txtPpdMatrixId').val(getPoReceivedPmiPo[0].matrix_info.id)
                                     $('#txtMimfVirginMaterial').val(virgin_computation.toFixed(2))
                                     $('#txtMimfRecycled').val(recyled_computation.toFixed(2))
                                 }else{

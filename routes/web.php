@@ -229,6 +229,8 @@ Route::controller(StampingChecksheetController::class)->group(function () {
     Route::post('/save_checksheet', 'save_checksheet')->name('save_checksheet');
     Route::get('/get_machine_dropdown', 'get_machine_dropdown')->name('get_machine_dropdown');
     Route::get('/view_checksheet', 'view_checksheet')->name('view_checksheet');
+    Route::post('/change_status', 'change_status')->name('change_status');
+    Route::get('/get_checksheet_data', 'get_checksheet_data')->name('get_checksheet_data');
     
 });
 
@@ -416,8 +418,8 @@ Route::controller(FirstMoldingController::class)->group(function () {
     Route::get('/get_dieset_details_by_device_name', 'getDiesetDetailsByDeviceName')->name('get_dieset_details_by_device_name');
     Route::get('/get_first_molding_qr_code', 'getFirstMoldingQrCode')->name('get_first_molding_qr_code');
     Route::get('/get_machine_from_material_process', 'getMachineFromMaterialProcess')->name('get_machine_from_material_process');
-
     Route::get('/update_first_molding_shipment_machine_ouput', 'updateFirstMoldingShipmentMachineOuput')->name('update_first_molding_shipment_machine_ouput');
+    Route::get('/validate_scan_first_molding_contact_lot_num', 'validateScanFirstMoldingContactLotNum')->name('validate_scan_first_molding_contact_lot_num');
 
     Route::post('/save_first_molding', 'saveFirstMolding')->name('save_first_molding');
 });
@@ -427,6 +429,8 @@ Route::controller(FirstMoldingStationController::class)->group(function () {
     Route::get('/load_first_molding_station_details', 'loadFirstMoldingStationDetails')->name('load_first_molding_station_details');
     Route::get('/get_first_molding_station_details', 'getFirstMoldingStationDetails')->name('get_first_molding_station_details');
     Route::get('/get_first_molding_station_last_ouput', 'getFirstMoldingStationLastOuput')->name('get_first_molding_station_last_ouput');
+    Route::get('/delete_first_molding_detail', 'deleteFirstMoldingDetail')->name('delete_first_molding_detail');
+    Route::get('/get_operation_names', 'getOperatioNames')->name('get_operation_names');
 
     Route::post('/save_first_molding_station', 'saveFirstMoldingStation')->name('save_first_molding_station');
 });

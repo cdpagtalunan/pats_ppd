@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 use DataTables;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-
+use App\Models\Mimf;
 use App\Models\Station;
 use App\Models\TblDieset;
 use App\Models\FirstMolding;
+
+use Illuminate\Http\Request;
 use App\Models\TblPoReceived;
 use App\Models\FirstMoldingDetail;
 use App\Models\FirstMoldingDevice;
+use Illuminate\Support\Facades\DB;
 use App\Models\FirstStampingProduction;
 use App\Models\FirstMoldingMaterialList;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Requests\FirstMoldingRequest;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\FirstMoldingStationRequest;
 
 
@@ -25,7 +26,7 @@ class FirstMoldingController extends Controller
 {
     public function getFirstMoldingDevices(Request $request)
     {
-        $first_molding_device = FirstMoldingDevice::get();
+        $first_molding_device = FirstMoldingDevice::where('process_type',1)->whereNull('deleted_at')->get();
         foreach ($first_molding_device as $key => $value_first_molding_device) {
             $arr_first_molding_device_id[] =$value_first_molding_device['id'];
             $arr_first_molding_device_value[] =$value_first_molding_device['device_name'];
@@ -232,6 +233,11 @@ class FirstMoldingController extends Controller
     {
         try{
             $tbl_po_received = TblPoReceived::where('OrderNo',$request->pmi_po_no)->get();
+            $tbl_milf = Mimf::where('pmi_po_no',$request->pmi_po_no)->get();
+            //tbl_milf[0]->control_no;
+            //tbl_milf[0]->date_issuance;
+            //tbl_milf[0]->material_type;
+            //tbl_milf[0]->needed_kgs;
 
             if( count($tbl_po_received) == 1){
                 return response()->json( [
@@ -241,6 +247,9 @@ class FirstMoldingController extends Controller
                     'po_balance' => $tbl_po_received[0]->POBalance ,
                     'item_code' => $tbl_po_received[0]->ItemCode ,
                     'item_name' => $tbl_po_received[0]->ItemName ,
+                    'material_type' => $tbl_milf[0]->material_type ,
+                    'virgin_qty' => $tbl_milf[0]->virgin_material ,
+                    'recycled_qty' => $tbl_milf[0]->recycled ,
                 ] );
             }else{
                 return response()->json( [
@@ -414,7 +423,7 @@ class FirstMoldingController extends Controller
         }catch(Exemption $e){
             return $e;
         }
-        
+
     }
 
 

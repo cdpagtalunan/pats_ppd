@@ -452,7 +452,7 @@
                                 </div>
                             </div>
                             <div class="row">
-                            
+
                                 <div class="col-sm-6">
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -515,7 +515,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="ng_count" name="ng_count" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="ng_count" name="ng_count" min="0" step="0.01" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -523,7 +523,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Total Machine Output</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm" id="total_machine_output" name="total_machine_output" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm" id="total_machine_output" name="total_machine_output" min="0" step="0.01" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -533,7 +533,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
                                         </div>
-                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="shipment_output" name="shipment_output" min="0" step="0.01">
+                                        <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="shipment_output" name="shipment_output" min="0" step="0.01" readonly>
                                     </div>
                                 </div>
                                 <div class="col-sm-6">
@@ -541,7 +541,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Material Yield</span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -653,7 +653,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -730,7 +730,7 @@
             <div class="modal-body">
                 <form id="formFirstMoldingStation">
                     @csrf
-                    <div class="row">
+                    <div class="row d-none">
                         <div class="col">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -740,7 +740,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row d-none">
                         <div class="col">
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -889,6 +889,23 @@
                 {{-- hidden_scanner_input --}}
                 <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCodeFirstMolding" name="scan_qr_code" autocomplete="off">
                 <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- /.End Scan QR Modal -->
+
+<!-- Start Scan QR Modal First Molding -->
+<div class="modal fade" id="mdlScanQrCodeFirstMoldingMaterial" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header border-bottom-0 pb-0">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body pt-0">
+                {{-- hidden_scanner_input --}}
+                <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCodeFirstMolding" name="scan_qr_code" autocomplete="off">
+                <div class="text-center text-secondary">Please scan the Material QR code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
             </div>
         </div>
     </div>

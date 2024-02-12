@@ -62,9 +62,9 @@ class IpqcAssemblyController extends Controller
     
     public function view_first_molding_ipqc_data(Request $request){
 
-        if(!isset($request->device_id)){
-            return [];
-        }else{
+        // if(!isset($request->device_id)){
+        //     return [];
+        // }else{
             $first_molding_data = AssemblyRuncard::whereNull('deleted_at')
                                     ->where('first_molding_device_id', $request->device_id)
                                     ->whereIn('status', $request->first_molding_status)
@@ -197,7 +197,7 @@ class IpqcAssemblyController extends Controller
             })
             ->rawColumns(['action','ipqc_status','first_molding_created_at','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
             ->make(true);
-        }
+        // }
     }
 
     // NEW CODE CLARK 02042024 END
