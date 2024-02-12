@@ -16,42 +16,24 @@ use App\Exports\Export;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\MoldingAssyIpqcInspection;
-use App\Models\FirstMolding;
-use App\Models\FirstMoldingDetail;
-use App\Models\FirstMoldingDetailMod;
-
-use App\Models\SecMoldingRuncard;
-use App\Models\SecMoldingRuncardStation;
-use App\Models\SecMoldingRuncardStationMod;
-
 use App\Models\AssemblyRuncard;
 use App\Models\AssemblyRuncardStation;
 use App\Models\AssemblyRuncardStationsMods;
 
-class MoldingAssyIpqcController extends Controller
+class IpqcAssemblyController extends Controller
 {
     // NEW CODE CLARK 02042024
-    public function get_ipqc_data(Request $request){
-        $ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
-                                                ->where('material_name', $request->device_id)
-                                                ->whereNull('deleted_at')
-                                                ->get();
-
-        return response()->json(['ipqc_data' => $ipqc_data]);
-    }
-    // NEW CODE CLARK 02042024
-
-    public function get_device_from_first_molding(Request $request){
-        $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
+    public function get_devices_from_assembly(Request $request){
+        $assembly_devices = AssemblyRuncard::select('device_name')->with('device_details')
                                         ->whereNull('deleted_at')
                                         ->distinct()
                                         ->get();
 
-        return response()->json(['first_molding_devices' => $first_molding_devices]);
+        return response()->json(['assembly_devices' => $assembly_devices]);
     }
 
     public function get_first_molding_data(Request $request){
-        $first_molding_data = FirstMolding::with('firstMoldingDevice')->whereNull('deleted_at')
+        $first_molding_data = AssemblyRuncard::with('firstMoldingDevice')->whereNull('deleted_at')
                                         ->when($request->device_id, function ($query) use ($request){
                                             return $query ->where('first_molding_device_id', $request->device_id);
                                         })
@@ -80,10 +62,10 @@ class MoldingAssyIpqcController extends Controller
     
     public function view_first_molding_ipqc_data(Request $request){
 
-        if(!isset($request->device_id)){
-            return [];
-        }else{
-            $first_molding_data = FirstMolding::whereNull('deleted_at')
+        // if(!isset($request->device_id)){
+        //     return [];
+        // }else{
+            $first_molding_data = AssemblyRuncard::whereNull('deleted_at')
                                     ->where('first_molding_device_id', $request->device_id)
                                     ->whereIn('status', $request->first_molding_status)
                                     ->with(['first_molding_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); },
@@ -215,12 +197,12 @@ class MoldingAssyIpqcController extends Controller
             })
             ->rawColumns(['action','ipqc_status','first_molding_created_at','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
             ->make(true);
-        }
+        // }
     }
 
     // NEW CODE CLARK 02042024 END
 
-    public function add_molding_assy_ipqc_inspection(Request $request){
+    public function add_assembly_ipqc_inspection(Request $request){
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();
@@ -257,6 +239,7 @@ class MoldingAssyIpqcController extends Controller
                                                     'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
                                                     'doc_no_urgent_direction' => $request->doc_no_ud,
                                                     'measdata_attachment'     => $original_filename,
+                                                    'remarks'                 => $request->remarks,
                                                     'status'                  => $status,
                                                     'created_by'              => Auth::user()->id,
                                                     'last_updated_by'         => Auth::user()->id,
@@ -292,6 +275,7 @@ class MoldingAssyIpqcController extends Controller
                         'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
                         'doc_no_urgent_direction' => $request->doc_no_ud,
                         'measdata_attachment'     => $original_filename,
+                        'remarks'                 => $request->remarks,
                         'status'                  => $status,
                         'last_updated_by'         => Auth::user()->id,
                         'updated_at'              => date('Y-m-d H:i:s'),
@@ -303,7 +287,7 @@ class MoldingAssyIpqcController extends Controller
         }
     }
 
-    public function update_molding_assy_ipqc_inspection_status(Request $request){
+    public function update_assembly_ipqc_inspection_status(Request $request){
         date_default_timezone_set('Asia/Manila');
             if($request->cnfrm_ipqc_status == 1){
                 //For Mass Production
@@ -323,7 +307,7 @@ class MoldingAssyIpqcController extends Controller
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
 
-            FirstMolding::where('id', $request->cnfrm_first_molding_id)
+            AssemblyRuncard::where('id', $request->cnfrm_first_molding_id)
             ->update(['status' => $first_molding_status]);
         
             DB::commit();
@@ -331,7 +315,7 @@ class MoldingAssyIpqcController extends Controller
     }
 
     //====================================== DOWNLOAD FILE ======================================
-    public function molding_assy_download_file(Request $request, $id){
+    public function assembly_download_file(Request $request, $id){
         $ipqc_data_for_download = MoldingAssyIpqcInspection::where('id', $id)->first();
         $file =  storage_path() . "/app/public/molding_assy_ipqc_insp_files/" . $ipqc_data_for_download->measdata_attachment;
         return Response::download($file, $ipqc_data_for_download->measdata_attachment);

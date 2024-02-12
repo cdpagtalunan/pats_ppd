@@ -110,15 +110,14 @@ class UserController extends Controller
                 $_SESSION["position"] = Auth::user()->position;
                 $_SESSION["employee_id"] =  Auth::user()->employee_id;
 
+                $request->session()->put('user_id', Auth::user()->id);
+                $request->session()->put('position', Auth::user()->position);
+                $request->session()->put('employee_id', Auth::user()->employee_id);
+
                 if(Auth::user()->is_password_changed == 0){
-                   
-
                     return response()->json(['result' => "2"]);
-
                 }
                 else{
-
-
                     return response()->json(['result' => "1", 'username' => $user_data['username']]);
                 }
             }
@@ -134,6 +133,12 @@ class UserController extends Controller
 
     // Sign Out
     public function sign_out(Request $request){
+        // session_start();
+        // session_unset();
+        // session_destroy();
+        $request->session()->forget('user_id');
+        $request->session()->forget('position');
+        $request->session()->forget('employee_id');
         Auth::logout();
         return response()->json(['result' => "1"]);
     }

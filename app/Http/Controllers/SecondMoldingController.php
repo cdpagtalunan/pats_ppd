@@ -384,10 +384,9 @@ class SecondMoldingController extends Controller
         return response()->json(['data' => $modeOfDefectResult]);
     }
 
-    public function getMachine(Request $request){ // Added Chris to get machine on matrix
+    public function getMachine(Request $request){ // Added by Chris to get machine on matrix
         $machine = DB::connection('mysql')
-        ->select("
-            SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machines.* FROM material_processes
+        ->select("SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machines.* FROM material_processes
             INNER JOIN devices
                 ON devices.id = material_processes.device_id
             INNER JOIN material_process_machines
@@ -479,11 +478,17 @@ class SecondMoldingController extends Controller
     public function getLastShipmentOuput(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
-        // return $data;
-
         $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
-        DB::commit();
         return response()->json(['data' => $getShipmentOuput]);
-        
     }
+
+public function getUser(){
+    $getUser = DB::connection('mysql')
+        ->table('users')
+        ->selectRaw(
+            'users.id,
+            CONCAT(users.firstname, " ", users.lastname) AS operator'
+        )->get();
+    return response()->json(['data' => $getUser]);
+}
 }

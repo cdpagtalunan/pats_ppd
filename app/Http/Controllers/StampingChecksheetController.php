@@ -15,14 +15,13 @@ use App\Models\StampingChecksheetMachineDropdown;
 class StampingChecksheetController extends Controller
 {
     public function view_checksheet(Request $request){
-        session_start();
-
+        // session_start();
         // return $request->month;
         $five_s_checksheet = DB::connection('mysql')
         ->table('stamping5s_checksheets AS a')
         ->join('stamping_checksheet_machine_dropdowns AS b', 'a.machine_id', '=', 'b.id')
         ->select('a.*', 'b.machine_name')
-        ->where('date', 'LIKE', "%$request->month%")
+        // ->where('date', 'LIKE', "%$request->month%")
         ->whereNull('deleted_at')
         ->get();
 
@@ -32,7 +31,7 @@ class StampingChecksheetController extends Controller
             $result .= "<center>";
             $result .= "<button class='btn btn-primary btn-sm btnView' data-id='$five_s_checksheet->id' data-function='0'><i class='fa-solid fa-eye'></i></button>";
             
-            if($five_s_checksheet->status == 0 && in_array( $_SESSION['position'], [0,1,2])){
+            if($five_s_checksheet->status == 0 && in_array( session()->get('position'), [0,1,2])){
                 $result .= "<button class='btn btn-success btn-sm ml-1 btnCheck' data-id='$five_s_checksheet->id'><i class='fa-solid fa-list-check'></i></button>";
             }
             else if($five_s_checksheet->status == 2){
@@ -200,7 +199,7 @@ class StampingChecksheetController extends Controller
     }
 
     public function change_status(Request $request){
-        session_start();
+        
 
         DB::beginTransaction();
         try{
@@ -234,4 +233,10 @@ class StampingChecksheetController extends Controller
 
         return $checksheet_details;
     }
+
+    public function get_session(Request $request){
+        session_start();
+        return session()->all(); 
+    }
+
 }

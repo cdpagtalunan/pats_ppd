@@ -42,6 +42,7 @@
             url: "load_whs_transaction",
             data: function (param){
                 param.firstStamping = "true" //DT for 1st Stamping
+                param.lotNum = $('#txtSearchLotNum').val()
             },
         },
         fixedHeader: true,
@@ -61,6 +62,9 @@
         "serverSide" : true,
         "ajax" : {
             url: "load_whs_details",
+            data: function (param){
+                param.lotNum = $('#txtSearchLotNum').val()
+            },
         },
         fixedHeader: true,
         "columns":[
@@ -81,6 +85,9 @@
         "serverSide" : true,
         "ajax" : {
             url: "load_iqc_inspection",
+            data: function (param){
+                param.lotNum = $('#txtSearchLotNum').val()
+            },
         },
         fixedHeader: true,
         "columns":[

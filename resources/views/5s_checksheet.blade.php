@@ -665,10 +665,10 @@
         });
         $('#formAddChecksheet').submit(function(e){
             e.preventDefault();
-            saveChecksheet('Q121');
+            // saveChecksheet('Q121');
 
-            // $('#modalScanQRSave').modal('show');
-            // $('#modalScanQRSaveText').html('Please Scan Employee ID.')
+            $('#modalScanQRSave').modal('show');
+            $('#modalScanQRSaveText').html('Please Scan Employee ID.')
 
         //    saveChecksheet();
         })

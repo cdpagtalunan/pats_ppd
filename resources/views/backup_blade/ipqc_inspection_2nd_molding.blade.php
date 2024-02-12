@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'First Molding')
+    @section('title', 'Second Molding')
 
     @section('content_page')
 
@@ -41,12 +41,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>In-Process Quality Control (First Molding)</h1>
+                            <h1>In-Process Quality Control (Second Molding)</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                                <li class="breadcrumb-item">First Molding</li>
+                                <li class="breadcrumb-item">Second Molding</li>
                                 <li class="breadcrumb-item active">In-Process Quality Control</li>
                             </ol>
                         </div>
@@ -66,7 +66,7 @@
                                                 <label class="form-label">Device Name:</label>
                                             <div class="input-group mb-3">
                                                 <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Device Name"></i>
-                                                <select class="form-control select2bs5" id="txtSelectFirstMoldingDevice" name="sel_device_name" placeholder="Select Device Name"></select>
+                                                <select class="form-control select2bs5" id="txtSelectSecondMoldingDevice" name="sel_device_name" placeholder="Select Device Name"></select>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -75,12 +75,12 @@
                                                 <input type="text" class="form-control" placeholder="Product Code" aria-label="Partcode" id="txtSearchPartCode" readonly>
                                             </div>
                                         </div>
-                                        {{-- <div class="col-sm-2">
+                                        <div class="col-sm-3">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="Material Name" aria-label="Materialname" id="txtSearchMaterialName" readonly>
                                             </div>
-                                        </div> --}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -95,9 +95,6 @@
                             <div class="card">
                                 <div class="card-header">
                                     <h3 class="card-title">In-Process Quality Control</h3>
-                                </div>
-                                <div class="mt-2 mr-2">
-                                    <button style="float:right;" class="btn btn-primary" id="btnAddIPQCData"><i class="fa-solid fa-plus"></i> Add IPQC Inspection</button>
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
@@ -118,7 +115,7 @@
                                         {{-- Pending Tab --}}
                                         <div class="tab-pane fade show active" id="Pending" role="tabpanel" aria-labelledby="Pending-tab">
                                             <div class="table-responsive">
-                                                <table id="tbl1stMoldingIpqcInspPending" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                <table id="tbl2ndMoldingIpqcInspPending" class="table table-sm table-bordered table-striped table-hover text-center"
                                                     style="width: 100%;">
                                                     <thead>
                                                         <tr>
@@ -137,43 +134,43 @@
                                         </div>
                                         {{-- Completed Tab --}}
                                         <div class="tab-pane fade" id="Completed" role="tabpanel" aria-labelledby="Completed-tab">
-                                                <div class="table-responsive">
-                                                    <table id="tbl1stMoldingIpqcInspCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
-                                                        style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Action</th>
-                                                                <th>IPQC Status</th>
-                                                                <th>Created At</th>
-                                                                <th>PO Number</th>
-                                                                <th>Production Lot#</th>
-                                                                <th>Judgement</th>
-                                                                <th>QC Sample</th>
-                                                                <th>Inspected At</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
+                                            <div class="table-responsive">
+                                                <table id="tbl2ndMoldingIpqcInspCompleted" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>IPQC Status</th>
+                                                            <th>Created At</th>
+                                                            <th>PO Number</th>
+                                                            <th>Production Lot#</th>
+                                                            <th>Judgement</th>
+                                                            <th>QC Sample</th>
+                                                            <th>Inspected At</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
                                         </div>
                                         {{-- For Re-Setup Tab --}}
                                         <div class="tab-pane fade" id="Resetup" role="tabpanel" aria-labelledby="Resetup-tab">
-                                                <div class="table-responsive">
-                                                    <table id="tbl1stMoldingIpqcInspResetup" class="table table-sm table-bordered table-striped table-hover text-center"
-                                                        style="width: 100%;">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Action</th>
-                                                                <th>IPQC Status</th>
-                                                                <th>Created At</th>
-                                                                <th>PO Number</th>
-                                                                <th>Production Lot#</th>
-                                                                <th>Judgement</th>
-                                                                <th>QC Sample</th>
-                                                                <th>Inspected At</th>
-                                                            </tr>
-                                                        </thead>
-                                                    </table>
-                                                </div>
+                                            <div class="table-responsive">
+                                                <table id="tbl2ndMoldingIpqcInspResetup" class="table table-sm table-bordered table-striped table-hover text-center"
+                                                    style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>IPQC Status</th>
+                                                            <th>Created At</th>
+                                                            <th>PO Number</th>
+                                                            <th>Production Lot#</th>
+                                                            <th>Judgement</th>
+                                                            <th>QC Sample</th>
+                                                            <th>Inspected At</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
                                         </div>
                                     </div>
                                     {{-- TABS END --}}
@@ -207,7 +204,7 @@
                         <div class="modal-body">
                             <div class="row d-flex justify-content-center">
                                 <label class="text-secondary mt-2">Are you sure you want to proceed?</label>
-                                <input type="hidden" class="form-control" name="cnfrm_first_molding_id" id="cnfrmtxtFirstMoldingId">
+                                <input type="hidden" class="form-control" name="cnfrm_second_molding_id" id="cnfrmtxtFirstMoldingId">
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_id" id="cnfrmtxtIPQCId">
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_status" id="cnfrmtxtIPQCStatus">
                             </div>
@@ -238,48 +235,36 @@
                         @csrf
                         <div class="modal-body">
                             <input type="hidden" id="txtIpqcId" name="ipqc_id">
-                            <input type="hidden" id="txtFirstMoldingId" name="first_molding_id">
-                            <input type="hidden" id="txtProcessCategory" name="process_category" value="1">
+                            <input type="hidden" id="txtFirstMoldingId" name="second_molding_id">
+                            <input type="hidden" id="txtProcessCategory" name="process_category">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="card">
                                         <div class="card-body">
                                             <div class="form-group">
-                                                <label class="form-label">Production Lot #:</label>
-                                                <div class="input-group mb-2">
-                                                    <div class="input-group-append w-100">
-                                                        <button class="btn btn-sm btn-info" type="button" title="Scan code" id="ScanProductLot">
-                                                            <i class="fa fa-qrcode"></i>
-                                                        </button>
-                                                        <input type="text" class="form-control form-control-sm" name="production_lot" id="txtProductionLot" placeholder="Scan Production Lot" readonly>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="form-group">
                                                 <label class="form-label">PO Number:</label>
-                                                <input type="text" class="form-control form-control-sm" name="po_number" id="txtPoNumber"  placeholder="Auto Generate"readonly>
+                                                <input type="text" class="form-control form-control-sm" name="po_number" id="txtPoNumber" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Part Code:</label>
-                                                <input type="text" class="form-control form-control-sm" name="part_code" id="txtPartCode" placeholder="Auto Generate"readonly>
+                                                <input type="text" class="form-control form-control-sm" name="part_code" id="txtPartCode" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Name:</label>
-                                                <input type="text" class="form-control form-control-sm" name="material_name" id="txtMaterialName" placeholder="Auto Generate" readonly>
+                                                <input type="text" class="form-control form-control-sm" name="material_name" id="txtMaterialName" readonly>
                                             </div>
-                                            {{-- <div class="form-group">
+                                            <div class="form-group">
                                                 <label class="form-label">Production Lot #:</label>
                                                 <input type="text" class="form-control form-control-sm" name="production_lot" id="txtProductionLot" readonly>
-                                            </div> --}}
+                                            </div>
                                             <div class="form-group">
                                                 <label class="form-label">QC Sample:</label>
-                                                {{-- <i class="fa-solid fa-circle-info fa-lg mt-2 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="QC Sample Qty"></i> --}}
-                                                <input type="text" class="form-control form-control-sm" name="qc_samples" id="txtQcSamples">
+                                                <i class="fa-solid fa-circle-info fa-lg mt-2 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="QC Sample Qty"></i>
+                                                <input type="text" class="form-control form-control-sm" name="input" id="txtInput" readonly>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">OK:</label>
-                                                <input type="text" class="form-control form-control-sm" name="ok_samples" id="txtOkSamples"
+                                                <input type="text" class="form-control form-control-sm" name="output" id="txtOutput"
                                                             onkeypress="return event.charCode >= 48 && event.charCode <= 57" required>
                                             </div>
                                             <div class="form-group">
@@ -326,7 +311,6 @@
                                                     <div id="BDrawingDiv" class="input-group-prepend">
                                                     </div>
                                                     <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing">
-                                                        <option>No Selected Material</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -336,7 +320,6 @@
                                                     <div id="InspStandardDiv" class="input-group-prepend">
                                                     </div>
                                                     <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard">
-                                                        <option>No Selected Material</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -346,7 +329,6 @@
                                                     <div id="UDDiv" class="input-group-prepend">
                                                     </div>
                                                     <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud">
-                                                        <option>No Selected Material</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -400,60 +382,12 @@
         </div>
         <!-- /.modal -->
 
-        <!-- Start Scan QR Modal -->
-        <div class="modal fade" id="modalQrScanner" data-form-id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header border-bottom-0 pb-0">
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div class="modal-body pt-0">
-                        <input type="text" id="textQrScanner" class="hidden_scanner_input" class="" autocomplete="off">
-                        <div class="text-center text-secondary">
-                            Please scan Material Lot #
-                            <br><br>
-                            <h1><i class="fa fa-qrcode fa-lg"></i></h1>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /.End Scan QR Modal -->
-
     @endsection
 
     @section('js_content')
         <script type="text/javascript">
             var prodData;
             $(document).ready(function(){
-
-                $('#ScanProductLot').on('click',function (e) {
-                    $('#modalQrScanner').modal('show');
-                    $('#textQrScanner').val('');
-                    setTimeout(() => {
-                        $('#textQrScanner').focus();
-                    }, 500);
-                });
-
-                $('#textQrScanner').keyup(delay(function(e){
-                    const qrScannerValue = $('#textQrScanner').val();
-                    let ScanQrCodeVal = JSON.parse(qrScannerValue)
-                        $('#txtProductionLot').val(ScanQrCodeVal.lot_no);
-                        $('#txtPoNumber').val(ScanQrCodeVal.po);
-                        $('#txtPartCode').val(ScanQrCodeVal.code);
-                        $('#txtMaterialName').val(ScanQrCodeVal.name);
-
-                        let mat_name = ScanQrCodeVal.name;
-                        mat_name = mat_name.replace(/ /g,'');
-
-                        GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
-                        GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
-                        GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
-
-                        $('#modalQrScanner').modal('hide');
-                }, 100));
-                // CLARK NEW CODE
-                
                 let frmIPQCInspectionData = $('#formIPQCInspectionData');
 
                 $( '.select2bs5' ).select2( {
@@ -461,17 +395,18 @@
                 } );
 
                 // NEW CODE CLARK 02042024
+                GetDeviceNameFromSecondMolding($("#txtSelectSecondMoldingDevice"));
 
-                let dt1stMoldingIpqcInspPending = $("#tbl1stMoldingIpqcInspPending").DataTable({
+                let dt2ndMoldingIpqcInspPending = $("#tbl2ndMoldingIpqcInspPending").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_ipqc_fmold_data",
+                        url: "view_second_molding_ipqc_data",
                         data: function(param){
-                        param.material_name =  $("#txtSelectFirstMoldingDevice").val();
+                        param.device_id =  $("#txtSelectSecondMoldingDevice").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
-                        // param.first_molding_status = [0]; //First Molding Status : For IPQC
-                        param.process_category = 1; //Process Category : First Molding
+                        param.second_molding_status = [0]; //First Molding Status : For IPQC
+                        param.process_category = 2; //Process Category : Second Molding
                         }
                     },
                     fixedHeader: true,
@@ -479,25 +414,26 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
-                        { "data" : "request_created_at" },
-                        { "data" : "po_number" },
+                        { "data" : "first_molding_created_at" },
+                        { "data" : "pmi_po_number" },
                         { "data" : "production_lot" },
                         { "data" : "ipqc_judgement" },
-                        { "data" : "qc_samples" },
+                        // { "data" : "qc_samples" }, COMMENT FOR NOW 02042024 waiting data
+                        { "data" : "po_quantity" },
                         { "data" : "ipqc_inspected_date" },
                     ],
                 });
 
-                let dt1stMoldingIpqcInspCompleted = $("#tbl1stMoldingIpqcInspCompleted").DataTable({
+                let dt2ndMoldingIpqcInspCompleted = $("#tbl2ndMoldingIpqcInspCompleted").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_ipqc_fmold_data",
+                        url: "view_second_molding_ipqc_data",
                         data: function(param){
-                        param.material_name =  $("#txtSelectFirstMoldingDevice").val();
+                        param.device_id =  $("#txtSelectSecondMoldingDevice").val();
                         param.ipqc_status = [3]; //Status 3 = Submitted: Judgement - Accepted
-                        // param.first_molding_status = [1, 3]; //First Molding Status : For Mass Prod, Done
-                        param.process_category = 1; //Process Category : First Molding
+                        param.second_molding_status = [1, 3]; //First Molding Status : For Mass Prod, Done
+                        param.process_category = 2; //Process Category : Second Molding
                         }
                     },
                     fixedHeader: true,
@@ -505,25 +441,26 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
-                        { "data" : "request_created_at" },
-                        { "data" : "po_number" },
+                        { "data" : "first_molding_created_at" },
+                        { "data" : "pmi_po_number" },
                         { "data" : "production_lot" },
                         { "data" : "ipqc_judgement" },
-                        { "data" : "qc_samples" },
+                        // { "data" : "qc_samples" }, COMMENT FOR NOW 02042024 waiting data
+                        { "data" : "po_quantity" },
                         { "data" : "ipqc_inspected_date" },
                     ],
                 });
 
-                let dt1stMoldingIpqcInspResetup = $("#tbl1stMoldingIpqcInspResetup").DataTable({
+                let dt2ndMoldingIpqcInspResetup = $("#tbl2ndMoldingIpqcInspResetup").DataTable({
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_ipqc_fmold_data",
+                        url: "view_second_molding_ipqc_data",
                         data: function(param){
-                        param.material_name =  $("#txtSelectFirstMoldingDevice").val();
+                        param.device_id =  $("#txtSelectSecondMoldingDevice").val();
                         param.ipqc_status = [4]; //Status 4 = Submitted: Judgement - Rejected
-                        // param.first_molding_status = [2]; //First Molding Status : For Resetup
-                        param.process_category = 1; //Process Category : First Molding
+                        param.second_molding_status = [2]; //First Molding Status : For Resetup
+                        param.process_category = 2; //Process Category : Second Molding
                         }
                     },
                     fixedHeader: true,
@@ -531,23 +468,22 @@
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "ipqc_status" },
-                        { "data" : "request_created_at" },
-                        { "data" : "po_number" },
+                        { "data" : "first_molding_created_at" },
+                        { "data" : "pmi_po_number" },
                         { "data" : "production_lot" },
                         { "data" : "ipqc_judgement" },
-                        { "data" : "qc_samples" },
+                        // { "data" : "qc_samples" }, COMMENT FOR NOW 02042024 waiting data
+                        { "data" : "po_quantity" },
                         { "data" : "ipqc_inspected_date" },
                     ],
                 });
 
-                GetDeviceNameFromFirstMolding($("#txtSelectFirstMoldingDevice"));
-
-                function GetDeviceNameFromFirstMolding(cboElement){
+                function GetDeviceNameFromSecondMolding(cboElement){
                     let result = '<option value="" disabled selected>-- Select Device Name --</option>';
 
                     $.ajax({
                             type: "get",
-                            url: "get_device_from_first_molding",
+                            url: "get_device_from_second_molding",
                             // data: {
                             //     "stamping_cat" : 1
                             // },
@@ -557,11 +493,11 @@
                                 cboElement.html(result);
                             },
                             success: function(response) {
-                                let fMoldingDevice = response['first_molding_devices'];
+                                let fMoldingDevice = response['second_molding_devices'];
                                 if (fMoldingDevice.length > 0) {
                                         result = '<option value="" disabled selected>-- Select Device Name --</option>';
-                                    for (let index = 0; index < fMoldingDevice.length; index++) {
-                                        result += '<option value="' + fMoldingDevice[index].first_molding_device.device_name + '">'+fMoldingDevice[index].first_molding_device.device_name+'</option>';
+                                    for(let index = 0; index < fMoldingDevice.length; index++) {
+                                        result += '<option value="' + fMoldingDevice[index].device_name + '">'+fMoldingDevice[index].device_name+'</option>';
                                     }
                                 } else {
                                     result = '<option value="0" selected disabled> -- No record found -- </option>';
@@ -575,33 +511,48 @@
                             }
                     });
                 }
-
-                $('#txtSelectFirstMoldingDevice').on('change', function(e){
-                        let searchMatNameFrmFirstMolding = $('#txtSelectFirstMoldingDevice').val();
+                // DITO KANA CLARK
+                $('#txtSelectSecondMoldingDevice').on('change', function(e){
+                        let searchDeviceIdFrmSecondMolding = $('#txtSelectSecondMoldingDevice').val();
                         $.ajax({
                             type: "get",
-                            url: "get_ipqc_data",
+                            url: "get_second_molding_data",
                             data: {
-                                "material_name" : searchMatNameFrmFirstMolding
+                                "device_id" : searchDeviceIdFrmSecondMolding
                             },
                             dataType: "json",
                             success: function (response) {
-                                let fMoldingData = response['ipqc_data'];
+                                const sMoldingData = response['second_molding_data'];
 
-                                $('#txtSelectFirstMoldingDevice').val(fMoldingData[0].material_name);
-                                $('#txtSearchPartCode').val(fMoldingData[0].part_code);
-                                // $('#txtSearchMaterialName').val(fMoldingData[0].material_name);
+                                if(searchDeviceIdFrmSecondMolding == 'CN171P-02#IN-VE'){
+                                    const ContactNameOne = response['second_molding_data'][0].contact_name_lot_number_one;
+                                    const ContactNameSecond = response['second_molding_data'][0].contact_name_lot_number_second;
+                                    let ContactNames = fMoldingContactLotEight +','+ fMoldingContactLotNine +','+ fMoldingContactLotTen;
+                                    $('#txtSearchMaterialName').val(ContactNames);
+                                    console.log(ContactNames);
+                                }else if(searchDeviceIdFrmSecondMolding == 'CN171S-07#IN-VE'){
+                                    const fMoldingContactLotEight = response['second_molding_data'][0].fmolding_lot_eight_id.first_molding_device.contact_name;
+                                    const fMoldingContactLotNine = response['second_molding_data'][0].fmolding_lot_nine_id.first_molding_device.contact_name;
+                                    const fMoldingContactLotTen = response['second_molding_data'][0].fmolding_lot_ten_id.first_molding_device.contact_name;
+                                    let fMoldingContactLots = fMoldingContactLotEight +','+ fMoldingContactLotNine +','+ fMoldingContactLotTen;
+                                    $('#txtSearchMaterialName').val(fMoldingContactLots);
+                                    console.log(fMoldingContactLots);
+                                }
 
-                                // let mat_name = fMoldingData[0].first_molding_device.device_name;
-                                // mat_name = mat_name.replace(/ /g,'');
+                                $('#txtSearchPartCode').val(sMoldingData[0].parts_code);
+                                $('#txtSelectSecondMoldingDevice').val(searchDeviceIdFrmSecondMolding);
+                                // console.log('id', sMoldingData[0].device_id.id);
 
-                                // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
-                                // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
-                                // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+                                let mat_name = sMoldingData[0].device_name;
+                                    mat_name = mat_name.replace(/ /g,'');
 
-                                dt1stMoldingIpqcInspPending.draw();
-                                dt1stMoldingIpqcInspCompleted.draw();
-                                dt1stMoldingIpqcInspResetup.draw();
+                                GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+
+                                dt2ndMoldingIpqcInspPending.draw();
+                                dt2ndMoldingIpqcInspCompleted.draw();
+                                dt2ndMoldingIpqcInspResetup.draw();
                             }
                         });
                     // }
@@ -617,23 +568,18 @@
                     }
                 });
 
-                $(document).on('click', '#btnAddIPQCData',function(e){
-                    $('#modalIpqcInspection').modal('show');
-                });
-                
-                // $(document).on('click', '.btnUpdateIPQCData',function(e){
-                $(document).on('click', '#btnUpdateIPQCData',function(e){
+                $(document).on('click', '.btnUpdateIPQCData',function(e){
                     // console.log('view');
                     e.preventDefault();
                     let ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_molding_id = $(this).attr('first_molding_data-id');
+                    let second_molding_id = $(this).attr('second_molding_data-id');
 
                     $.ajax({
-                        url: "get_first_molding_data",
+                        url: "get_second_molding_data",
                         type: "get",
                         data: {
                             ipqc_id: ipqc_id,
-                            first_molding_id: first_molding_id
+                            second_molding_id: second_molding_id
                         },
                         dataType: "json",
                         beforeSend: function(){
@@ -641,20 +587,38 @@
                         },
                         success: function(response){
                             $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
-                            let first_molding_data = response['first_molding_data'];
+                            let second_molding_data = response['second_molding_data'];
 
                             frmIPQCInspectionData.find('#txtIpqcId').val(ipqc_id);
-                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(first_molding_id);
-                            frmIPQCInspectionData.find('#txtProcessCategory').val(1);// First Molding : STATIC VALUE
+                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(second_molding_id);
+                            frmIPQCInspectionData.find('#txtProcessCategory').val(2);// Second Molding : STATIC VALUE
 
-                            frmIPQCInspectionData.find('#txtPoNumber').val(first_molding_data[0]['pmi_po_no']);
-                            frmIPQCInspectionData.find('#txtPartCode').val(first_molding_data[0]['item_code']);
-                            // frmIPQCInspectionData.find('#txtMaterialName').val(first_molding_data[0].first_molding_device.contact_name);
-                            // frmIPQCInspectionData.find('#txtProductionLot').val(first_molding_data[0]['production_lot']);
+                            frmIPQCInspectionData.find('#txtPoNumber').val(second_molding_data[0].pmi_po_number);
+                            frmIPQCInspectionData.find('#txtPartCode').val(second_molding_data[0].parts_code);
+
+                            // frmIPQCInspectionData.find('#txtMaterialName').val(second_molding_data[0].first_molding_device.contact_name);
+
+                            if(second_molding_data[0]['device_name'] == 'CN171P-02#IN-VE'){
+                                const ContactNameOne = second_molding_data[0].contact_name_lot_number_one;
+                                const ContactNameSecond = second_molding_data[0].contact_name_lot_number_second;
+                                let ContactNames = fMoldingContactLotEight +','+ fMoldingContactLotNine +','+ fMoldingContactLotTen;
+                                $('#txtMaterialName').val(ContactNames);
+                                console.log(ContactNames);
+                            }else if(second_molding_data[0]['device_name'] == 'CN171S-07#IN-VE'){
+                                const fMoldingContactLotEight = second_molding_data[0].fmolding_lot_eight_id.first_molding_device.contact_name;
+                                const fMoldingContactLotNine = second_molding_data[0].fmolding_lot_nine_id.first_molding_device.contact_name;
+                                const fMoldingContactLotTen = second_molding_data[0].fmolding_lot_ten_id.first_molding_device.contact_name;
+                                let fMoldingContactLots = fMoldingContactLotEight +','+ fMoldingContactLotNine +','+ fMoldingContactLotTen;
+                                $('#txtMaterialName').val(fMoldingContactLots);
+                                console.log(fMoldingContactLots);
+                            }
+
+                            frmIPQCInspectionData.find('#txtProductionLot').val(second_molding_data[0]['production_lot']);
+                            // frmIPQCInspectionData.find('#txtInput').val(second_molding_data[0]['qc_samples']); //CLARK COMMENT FOR NOW
 
                             //disabled and readonly
                             frmIPQCInspectionData.find("#frmSaveBtn").prop('hidden', false);
-                            frmIPQCInspectionData.find("#txtOkSamples").prop('disabled', false);
+                            frmIPQCInspectionData.find("#txtOutput").prop('disabled', false);
                             frmIPQCInspectionData.find("#txtJudgement").prop('disabled', false);
                             frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop({hidden:false, disabled:false});
                             frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop({hidden:false, disabled:false});
@@ -670,12 +634,11 @@
                             frmIPQCInspectionData.find("#btnViewInspStdDrawings").prop('disabled', true);
                             frmIPQCInspectionData.find("#btnViewUdDrawings").prop('disabled', true);
 
-                            if(first_molding_data[0]['ipqc_data'] == 0){ //when first_molding_id && ipqc_id is not existing in MoldingAssyIpqc Table //For Insert to MoldingAssyIpqc Table
-
-                                // frmIPQCInspectionData.find('#txtQcSamples').val(first_molding_data[0]['qc_samples']);
-
-                                frmIPQCInspectionData.find("#txtInspectorID").val(first_molding_data[0]['ipqc_inspector_id']);
-                                frmIPQCInspectionData.find("#txtInspectorName").val(first_molding_data[0]['ipqc_inspector_name']);
+                            if(second_molding_data[0]['ipqc_data'] == 0){ //when second_molding_id && ipqc_id is not existing in MoldingAssyIpqc Table //For Insert to MoldingAssyIpqc Table
+                                frmIPQCInspectionData.find('#txtInput').val(5); //STATIC VALUE
+                                
+                                frmIPQCInspectionData.find("#txtInspectorID").val(second_molding_data[0]['ipqc_inspector_id']);
+                                frmIPQCInspectionData.find("#txtInspectorName").val(second_molding_data[0]['ipqc_inspector_name']);
                                 frmIPQCInspectionData.find("#btnReuploadTriggerDiv").addClass("d-none");
                                 frmIPQCInspectionData.find("#btnPartsDrawingAddRow").addClass("d-none");
 
@@ -697,11 +660,11 @@
                                 }
 
                             }else{//For Update to MoldingAssyIpqc Table
-                                let ipqc_data = first_molding_data[0]['first_molding_ipqc'];
+                                let ipqc_data = second_molding_data[0]['second_molding_ipqc'];
                                 console.log('edit ipqc',ipqc_data);
 
-                                // frmIPQCInspectionData.find('#txtQcSamples').val(ipqc_data['input']);
-                                frmIPQCInspectionData.find('#txtOkSamples').val(ipqc_data['output']);
+                                frmIPQCInspectionData.find('#txtInput').val(ipqc_data['input']);
+                                frmIPQCInspectionData.find('#txtOutput').val(ipqc_data['output']);
                                 frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
                                 frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
                                 frmIPQCInspectionData.find('#txtRemarks').val(ipqc_data['remarks']);
@@ -716,7 +679,7 @@
 
                                 frmIPQCInspectionData.find('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
 
-                                let ng_value = frmIPQCInspectionData.find('#txtQcSamples').val() - frmIPQCInspectionData.find('#txtOkSamples').val();
+                                let ng_value = frmIPQCInspectionData.find('#txtInput').val() - frmIPQCInspectionData.find('#txtOutput').val();
                                 frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
 
                                 frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
@@ -740,7 +703,7 @@
                                 frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('required', false);
                                 frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('required', false);
 
-                                let download ='<a href="first_molding_download_file/'+ipqc_data['id']+'">';
+                                let download ='<a href="second_molding_download_file/'+ipqc_data['id']+'">';
                                     download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
                                     download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
                                     download +=         '&nbsp;';
@@ -870,18 +833,18 @@
                     });
                 }
 
-                $('#txtOkSamples').keyup(function(e){
-                    let ng_value = $('#txtQcSamples').val() - $('#txtOkSamples').val();
+                $('#txtOutput').keyup(function(e){
+                    let ng_value = $('#txtInput').val() - $('#txtOutput').val();
                     $('#txtNGQty').val(ng_value);
                 });
 
                 // UPDATE STATUS OF DIESET REQUEST
                 $(document).on('click', '.btnSubmitIPQCData', function(e){
                     let ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_molding_id = $(this).attr('first_molding_data-id');
+                    let second_molding_id = $(this).attr('second_molding_data-id');
                     let ipqc_status = $(this).attr('ipqc_data-status');
 
-                    $("#cnfrmtxtFirstMoldingId").val(first_molding_id);
+                    $("#cnfrmtxtFirstMoldingId").val(second_molding_id);
                     $("#cnfrmtxtIPQCId").val(ipqc_id);
                     $("#cnfrmtxtIPQCStatus").val(ipqc_status);
                     $("#modalConfirmSubmitIPQCInspection").modal('show');
@@ -890,16 +853,16 @@
                 $("#FrmConfirmSubmitIPQCInspection").submit(function(event) {
                     event.preventDefault();
                     $.ajax({
-                        url: "update_first_molding_ipqc_inspection_status",
+                        url: "update_second_molding_ipqc_inspection_status",
                         method: "post",
                         data: $('#FrmConfirmSubmitIPQCInspection').serialize(),
                         dataType: "json",
                         success: function (response) {
                             let result = response['result'];
                             if (result == 'Successful') {
-                                dt1stMoldingIpqcInspPending.draw();
-                                dt1stMoldingIpqcInspCompleted.draw();
-                                dt1stMoldingIpqcInspResetup.draw();
+                                dt2ndMoldingIpqcInspPending.draw();
+                                dt2ndMoldingIpqcInspCompleted.draw();
+                                dt2ndMoldingIpqcInspResetup.draw();
                                 toastr.success('Successful!');
                                 $("#modalConfirmSubmitIPQCInspection").modal('hide');
                             }else{
@@ -932,7 +895,7 @@
                     let formData = new FormData($('#formIPQCInspectionData')[0]);
                     console.log('formdata', formData);
                     $.ajax({
-                        url: "add_first_molding_ipqc_inspection",
+                        url: "add_second_molding_ipqc_inspection",
                         method: "post",
                         data: formData,
                         processData: false,
@@ -946,9 +909,9 @@
                                 toastr.success('Successful!');
                                 $('#modalIpqcInspection').modal('hide');
                                 $('#modalScanQRSave').modal('hide');
-                                dt1stMoldingIpqcInspPending.draw();
-                                dt1stMoldingIpqcInspCompleted.draw();
-                                dt1stMoldingIpqcInspResetup.draw();
+                                dt2ndMoldingIpqcInspPending.draw();
+                                dt2ndMoldingIpqcInspCompleted.draw();
+                                dt2ndMoldingIpqcInspResetup.draw();
                             }
                             else if(result == 'Duplicate'){
                                 toastr.error('Request Already Submitted!');
@@ -970,14 +933,14 @@
                 $(document).on('click', '.btnViewIPQCData',function(e){
                     e.preventDefault();
                     let ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_molding_id = $(this).attr('first_molding_data-id');
+                    let second_molding_id = $(this).attr('second_molding_data-id');
                     // frmIPQCInspectionData
                     $.ajax({
-                        url: "get_first_molding_data",
+                        url: "get_second_molding_data",
                         type: "get",
                         data: {
                             ipqc_id: ipqc_id,
-                            first_molding_id: first_molding_id
+                            second_molding_id: second_molding_id
                         },
                         dataType: "json",
                         beforeSend: function(){
@@ -985,19 +948,34 @@
                         },
                         success: function(response){
                             $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
-                            let first_molding_data = response['first_molding_data'];
-                            let ipqc_data = response['first_molding_data'][0]['first_molding_ipqc'];
+                            let second_molding_data = response['second_molding_data'];
+                            let ipqc_data = response['second_molding_data'][0]['second_molding_ipqc'];
 
                             frmIPQCInspectionData.find('#txtIpqcId').val(ipqc_id);
-                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(first_molding_id);
+                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(second_molding_id);
+                            frmIPQCInspectionData.find('#txtPoNumber').val(second_molding_data[0]['pmi_po_number']);
+                            frmIPQCInspectionData.find('#txtPartCode').val(second_molding_data[0]['parts_code']);
 
-                            frmIPQCInspectionData.find('#txtPoNumber').val(first_molding_data[0]['pmi_po_no']);
-                            frmIPQCInspectionData.find('#txtPartCode').val(first_molding_data[0]['item_code']);
-                            // frmIPQCInspectionData.find('#txtMaterialName').val(first_molding_data[0].first_molding_device.contact_name);
-                            // frmIPQCInspectionData.find('#txtProductionLot').val(first_molding_data[0]['production_lot']);
+                            if(second_molding_data[0]['device_name'] == 'CN171P-02#IN-VE'){
+                                const ContactNameOne = second_molding_data[0].contact_name_lot_number_one;
+                                const ContactNameSecond = second_molding_data[0].contact_name_lot_number_second;
+                                let ContactNames = fMoldingContactLotEight +','+ fMoldingContactLotNine +','+ fMoldingContactLotTen;
+                                $('#txtMaterialName').val(ContactNames);
+                                console.log(ContactNames);
+                            }else if(second_molding_data[0]['device_name'] == 'CN171S-07#IN-VE'){
+                                const fMoldingContactLotEight = second_molding_data[0].fmolding_lot_eight_id.first_molding_device.contact_name;
+                                const fMoldingContactLotNine = second_molding_data[0].fmolding_lot_nine_id.first_molding_device.contact_name;
+                                const fMoldingContactLotTen = second_molding_data[0].fmolding_lot_ten_id.first_molding_device.contact_name;
+                                let fMoldingContactLots = fMoldingContactLotEight +','+ fMoldingContactLotNine +','+ fMoldingContactLotTen;
+                                $('#txtMaterialName').val(fMoldingContactLots);
+                                console.log(fMoldingContactLots);
+                            }
+                            // frmIPQCInspectionData.find('#txtMaterialName').val(second_molding_data[0].first_molding_device.contact_name);
 
-                            // frmIPQCInspectionData.find('#txtQcSamples').val(ipqc_data['input']);
-                            frmIPQCInspectionData.find('#txtOkSamples').val(ipqc_data['output']);
+                            frmIPQCInspectionData.find('#txtProductionLot').val(second_molding_data[0]['production_lot']);
+
+                            frmIPQCInspectionData.find('#txtInput').val(ipqc_data['input']);
+                            frmIPQCInspectionData.find('#txtOutput').val(ipqc_data['output']);
                             frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
                             frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
                             frmIPQCInspectionData.find('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
@@ -1010,10 +988,10 @@
                                 frmIPQCInspectionData.find('input[name="keep_sample"]').prop('checked', false);
                             }
 
-                            let ng_value = frmIPQCInspectionData.find('#txtQcSamples').val() - frmIPQCInspectionData.find('#txtOkSamples').val();
+                            let ng_value = frmIPQCInspectionData.find('#txtInput').val() - frmIPQCInspectionData.find('#txtOutput').val();
                             frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
 
-                            let mat_name = first_molding_data[0].first_molding_device.device_name;
+                            let mat_name = second_molding_data[0].device_name;
                                 mat_name = mat_name.replace(/ /g,'');
 
                             frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
@@ -1022,7 +1000,7 @@
 
                             //disabled and readonly
                             frmIPQCInspectionData.find("#frmSaveBtn").prop('hidden', true);
-                            frmIPQCInspectionData.find("#txtOkSamples").prop('disabled', true);
+                            frmIPQCInspectionData.find("#txtOutput").prop('disabled', true);
                             frmIPQCInspectionData.find("#txtJudgement").prop('disabled', true);
                             frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('disabled', true);
                             frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('disabled', true);
@@ -1035,7 +1013,7 @@
                             frmIPQCInspectionData.find("#txtAddFile").removeAttr('required');
                             frmIPQCInspectionData.find('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
 
-                            let download ='<a href="first_molding_download_file/'+ipqc_data['id']+'">';
+                            let download ='<a href="second_molding_download_file/'+ipqc_data['id']+'">';
                                 download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
                                 download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
                                 download +=         '&nbsp;';

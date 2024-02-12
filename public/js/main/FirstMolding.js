@@ -24,7 +24,7 @@
 
     var inputTotalMachineOuput = 0;
 
-    const getOperationNames = (elementId, valueId = null) => {
+    const getFirstMoldingOperationNames = (elementId, valueId = null) => {
         let result = `<option value="0" selected> N/A </option>`;
         $.ajax({
             url: 'get_operation_names',
@@ -35,7 +35,7 @@
                 elementId.html(result);
             },
             success: function(response){
-                // console.log('getOperationNames',response);
+                // console.log('getFirstMoldingOperationNames',response);
                 // return;
                 result = '';
                 if(response.id.length > 0){
@@ -320,7 +320,7 @@
                     $('#buttonAddFirstMoldingModeOfDefect').prop('disabled',false);
                 }
                 $('#modalFirstMoldingStation').modal('show');
-                getOperationNames(formModal.firstMoldingStation.find('#operator_name'),first_molding_station_detail.operator_name);
+                getFirstMoldingOperationNames(formModal.firstMoldingStation.find('#operator_name'),first_molding_station_detail.operator_name);
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }

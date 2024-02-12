@@ -172,7 +172,7 @@
 
                 getFirstModlingDevices();
 
-                // const getOperationNames = function (){
+                // const getFirstMoldingOperationNames = function (){
                 //     $.ajax({
                 //         type: "GET",
                 //         url: "get_operation_ames",
@@ -481,7 +481,7 @@
                     formModal.firstMoldingStation.find('#station_yield').val('0%');
                     getFirstMoldingStationLastOuput(formModal.firstMolding.find('#first_molding_id').val());
 
-                    getOperationNames(elementId);
+                    getFirstMoldingOperationNames(elementId);
 
                     $('#modalFirstMoldingStation').modal('show');
 

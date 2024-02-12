@@ -35,7 +35,6 @@ class OQCInspectionController extends Controller
         date_default_timezone_set('Asia/Manila');
         
         $prod_details = FirstStampingProduction::with([
-            'oqc_inspection_info',
             'oqc_inspection_info.reel_lot_oqc_inspection_info',
             'oqc_inspection_info.print_lot_oqc_inspection_info',
             'oqc_inspection_info.mod_oqc_inspection_info'
@@ -45,7 +44,6 @@ class OQCInspectionController extends Controller
         ->where('stamping_cat', '1')
         ->orderBy('id', 'DESC')
         ->get();
-
         return DataTables::of($prod_details)
         ->addColumn('action', function($prod_info){
             $result = '<center>';
@@ -462,7 +460,6 @@ class OQCInspectionController extends Controller
         date_default_timezone_set('Asia/Manila');
         
         $prod_second_stamping_details = FirstStampingProduction::with([
-            'oqc_inspection_info',
             'oqc_inspection_info.reel_lot_oqc_inspection_info',
             'oqc_inspection_info.print_lot_oqc_inspection_info',
             'oqc_inspection_info.mod_oqc_inspection_info'
@@ -1006,7 +1003,6 @@ class OQCInspectionController extends Controller
         
         $get_inspector = Auth::user();  
         $first_stamping_production = FirstStampingProduction::with([
-            'stamping_ipqc', 
             'stamping_ipqc.bdrawing_active_doc_info', 
             'stamping_ipqc.ud_drawing_active_doc_info', 
             'stamping_ipqc.insp_std_drawing_active_doc_info', 
@@ -1021,8 +1017,7 @@ class OQCInspectionController extends Controller
         ->where('id', $request->getOqcId)
         ->where('logdel', 0)
         ->get();
-        // return $first_stamping_production;
-        // return $get_oqc_inspection_data;
+
         return response()->json([
             'getInspector'              => $get_inspector,
             'getOqcInspectionData'      => $get_oqc_inspection_data,

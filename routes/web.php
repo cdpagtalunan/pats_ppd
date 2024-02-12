@@ -129,7 +129,7 @@ Route::view('/5s_checksheet','5s_checksheet')->name('5s_checksheet');
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
-    Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
+    // Route::get('/load_whs_transaction', 'loadWhsTransaction')->name('load_whs_transaction');
     Route::post('/sign_in', 'sign_in')->name('sign_in');
     Route::post('/rapidx_sign_in_admin', 'rapidx_sign_in_admin')->name('rapidx_sign_in_admin');
     Route::post('/sign_out', 'sign_out')->name('sign_out');
@@ -221,18 +221,22 @@ Route::controller(StampingController::class)->group(function () {
     Route::get('/get_sublot_by_id', 'get_sublot_by_id')->name('get_sublot_by_id');
 });
 
-// STAMPING CHECKSHEET
-Route::controller(StampingChecksheetController::class)->group(function () {
+Route::middleware('CheckSessionExist')->group(function(){
 
-    // 5S CHECKSHEET
-    Route::post('/save_checksheet', 'save_checksheet')->name('save_checksheet');
-    Route::get('/get_machine_dropdown', 'get_machine_dropdown')->name('get_machine_dropdown');
-    Route::get('/view_checksheet', 'view_checksheet')->name('view_checksheet');
-    Route::post('/change_status', 'change_status')->name('change_status');
-    Route::get('/get_checksheet_data', 'get_checksheet_data')->name('get_checksheet_data');
-    
+    // STAMPING CHECKSHEET
+    Route::controller(StampingChecksheetController::class)->group(function () {
+
+        // 5S CHECKSHEET
+        Route::post('/save_checksheet', 'save_checksheet')->name('save_checksheet');
+        Route::get('/get_machine_dropdown', 'get_machine_dropdown')->name('get_machine_dropdown');
+        Route::get('/view_checksheet', 'view_checksheet')->name('view_checksheet');
+        Route::post('/change_status', 'change_status')->name('change_status');
+        Route::get('/get_checksheet_data', 'get_checksheet_data')->name('get_checksheet_data');
+        
+    });
 });
 
+Route::get('/get_session', [StampingChecksheetController::class, 'get_session'])->name('get_session');
 
 
 // STAMPING -> IPQC CONTROLLER
@@ -259,6 +263,10 @@ Route::controller(IpqcFirstMoldingController::class)->group(function () {
     Route::post('/add_first_molding_ipqc_inspection', 'add_first_molding_ipqc_inspection')->name('add_first_molding_ipqc_inspection');
     Route::post('/update_first_molding_ipqc_inspection_status', 'update_first_molding_ipqc_inspection_status')->name('update_first_molding_ipqc_inspection_status');
     Route::get('/first_molding_download_file/{id}', 'first_molding_download_file')->name('first_molding_download_file');
+    
+    //New Code 02/12/2024
+    Route::get('/view_ipqc_fmold_data', 'view_ipqc_fmold_data')->name('view_ipqc_fmold_data');
+    Route::get('/get_ipqc_data', 'get_ipqc_data')->name('get_ipqc_data');
 });
 
 // SECOND MOLDING / ASSY -> IPQC CONTROLLER
@@ -456,7 +464,7 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::post('/complete_second_molding', 'completeSecondMolding')->name('complete_second_molding');
     Route::get('/get_second_molding_qr_code', 'getSecondMoldingQrCode')->name('get_second_molding_qr_code');
     Route::get('/get_last_shipment_output', 'getLastShipmentOuput')->name('get_last_shipment_output');
-
+    Route::get('/get_user', 'getUser')->name('get_user');
     Route::get('/get_machine', 'getMachine')->name('get_machine');
 });
 /* Second Molding Station Controller */

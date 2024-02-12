@@ -58,7 +58,7 @@
                         <div class="col-12"><!-- Col -->
                             <div class="card card-dark"><!-- General form elements -->
                                 <div class="card-header">
-                                    <h3 class="card-title">Material Issuance Monitoring Form Table</h3>
+                                    <h3 class="card-title">Material Issuance Monitoring Table</h3>
                                 </div>
 
                                 <div class="card-body"><!-- Start Page Content -->
@@ -362,15 +362,15 @@
                                         $('#txtPpsWhseId').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.id)
                                         $('#txtMimfMaterialCode').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.PartNumber)
                                         $('#txtMimfMaterialType').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.MaterialType)
-                                        console.log('object',getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.pps_warehouse_transaction_info[0].Eoh);
                                         $('#txtMimfQuantityFromInventory').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.pps_warehouse_transaction_info[0].Eoh)
                                     }else{
-                                        console.log('ELSE pps_warehouse_info')
+                                        console.log('tbl_dieset->Material != tbl_Warehouse->MaterialType')
                                         $('.clearPPSMIS').val('')
-
                                     }
                                 }else{
-                                    console.log('ELSE pps_dieset_info')
+                                    // toastr.error('The device name "'+getPoReceivedPmiPo[0].ItemName+'" isn`t recognized in the PPS DieSet Module.')
+                                    // toastr.error('The PPS Die-Set Module does not recognize the Device Name "'+getPoReceivedPmiPo[0].ItemName+'".')
+                                    console.log('tbl_POReceived->ItemName != tbl_dieset->DeviceName')
                                     $('.clearDieSet').val('')
                                     $('.clearPPSMIS').val('')
                                 }
@@ -383,7 +383,7 @@
                                     $('#txtMimfVirginMaterial').val(virgin_computation.toFixed(2))
                                     $('#txtMimfRecycled').val(recyled_computation.toFixed(2))
                                 }else{
-                                    console.log('ELSE matrix_info')
+                                    console.log('PPD devices->name != tbl_POReceived->ItemName')
                                     $('.clearMatrix').val('')
 
                                 }
@@ -401,9 +401,19 @@
                 $(document).on('click', '.actionEditMimf', function(e){
                     e.preventDefault()
                     mimfID = $(this).attr('mimf-id')
-                    $('#txtMimfId').val(mimfID)
+                    whseID = $(this).attr('whse-id')
+                    matrixID = $(this).attr('matrix-id')
+                    dieSetID = $(this).attr('dieset-id')
+                    poReceivedID = $(this).attr('po_received-id')
 
-                    GetMimfById(mimfID)
+
+                    $('#txtMimfId').val(mimfID)
+                    $('#txtPpsWhseId').val(whseID)
+                    $('#txtPpdMatrixId').val(matrixID)
+                    $('#txtPpsDiesetId').val(dieSetID)
+                    $('#txtPpsPoReceivedId').val(poReceivedID)
+
+                    GetMimfById(mimfID,whseID,matrixID,dieSetID,poReceivedID)
                 })
 
                 $('#formMimf').submit(function (e) { 
@@ -447,7 +457,7 @@
                                     $('#txtEmployeeNo').val(userDetails.employee_id)
                                     UpdateMimf()
                                 }else{
-                                    toastr.error('ID Number Not Registered!')
+                                    toastr.error('Only PPC Sr. Planner, PPC Planner and PPC Clerk are authorized to save!')
                                 }
                             }
                         })

@@ -12,129 +12,109 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use DataTables;
 use Carbon\Carbon;
-use App\Exports\Export;
-use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\MoldingAssyIpqcInspection;
-use App\Models\FirstMolding;
-use App\Models\FirstMoldingDetail;
-use App\Models\FirstMoldingDetailMod;
-
 use App\Models\SecMoldingRuncard;
 use App\Models\SecMoldingRuncardStation;
 use App\Models\SecMoldingRuncardStationMod;
 
-use App\Models\AssemblyRuncard;
-use App\Models\AssemblyRuncardStation;
-use App\Models\AssemblyRuncardStationsMods;
-
-class MoldingAssyIpqcController extends Controller
+class IpqcSecondMoldingController extends Controller
 {
     // NEW CODE CLARK 02042024
-    public function get_ipqc_data(Request $request){
-        $ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
-                                                ->where('material_name', $request->device_id)
-                                                ->whereNull('deleted_at')
-                                                ->get();
-
-        return response()->json(['ipqc_data' => $ipqc_data]);
-    }
-    // NEW CODE CLARK 02042024
-
-    public function get_device_from_first_molding(Request $request){
-        $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
+    public function get_device_from_second_molding(Request $request){
+        $second_molding_devices = SecMoldingRuncard::select('device_name')
                                         ->whereNull('deleted_at')
                                         ->distinct()
                                         ->get();
 
-        return response()->json(['first_molding_devices' => $first_molding_devices]);
+        return response()->json(['second_molding_devices' => $second_molding_devices]);
     }
 
-    public function get_first_molding_data(Request $request){
-        $first_molding_data = FirstMolding::with('firstMoldingDevice')->whereNull('deleted_at')
+    public function get_second_molding_data(Request $request){
+        $second_molding_data = SecMoldingRuncard::with('device_id','fmolding_lot_eight_id.firstMoldingDevice','fmolding_lot_nine_id.firstMoldingDevice','fmolding_lot_ten_id.firstMoldingDevice')->whereNull('deleted_at')
                                         ->when($request->device_id, function ($query) use ($request){
-                                            return $query ->where('first_molding_device_id', $request->device_id);
+                                            return $query ->where('device_name', $request->device_id);
                                         })
                                         ->when($request->first_molding_id, function ($query) use ($request){
                                                 return $query ->where('id', $request->first_molding_id);
                                         })
                                         ->when($request->ipqc_id, function ($query) use ($request){
-                                            return $query ->with(['first_molding_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); }]);
+                                            return $query ->with(['second_molding_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); }]);
                                         })
                                         ->get();
 
         // mapping
         if($request->ipqc_id == 0){
-            $first_molding_data_mapped = $first_molding_data->map(function ($item){
+            $second_molding_data_mapped = $second_molding_data->map(function ($item){
                 $item->ipqc_data = 0;
                 $item->ipqc_inspector_id = Auth::user()->id;
                 $item->ipqc_inspector_name = Auth::user()->firstname.' '.Auth::user()->lastname;
                 return $item;
             });
         }else{
-            $first_molding_data_mapped = $first_molding_data;
+            $second_molding_data_mapped = $second_molding_data;
         }
 
-        return response()->json(['first_molding_data' => $first_molding_data_mapped]);
+        return response()->json(['second_molding_data' => $second_molding_data_mapped]);
     }
     
-    public function view_first_molding_ipqc_data(Request $request){
+    public function view_second_molding_ipqc_data(Request $request){
 
         if(!isset($request->device_id)){
             return [];
         }else{
-            $first_molding_data = FirstMolding::whereNull('deleted_at')
-                                    ->where('first_molding_device_id', $request->device_id)
-                                    ->whereIn('status', $request->first_molding_status)
-                                    ->with(['first_molding_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); },
-                                            'first_molding_ipqc' => function($query) use ($request) { $query->whereIn('status', $request->ipqc_status); }])
+            $second_molding_data = SecMoldingRuncard::whereNull('deleted_at')
+                                    ->where('device_name', $request->device_id)
+                                    ->whereIn('status', $request->second_molding_status)
+                                    ->with(['second_molding_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); },
+                                            'second_molding_ipqc' => function($query) use ($request) { $query->whereIn('status', $request->ipqc_status)->where('process_category', $request->process_category); }])
                                     ->get();
 
-            return DataTables::of($first_molding_data)
-            ->addColumn('action', function($first_molding_data){
-                if(!isset($first_molding_data->first_molding_ipqc)){
+            return DataTables::of($second_molding_data)
+            ->addColumn('action', function($second_molding_data){
+                if(!isset($second_molding_data->second_molding_ipqc)){
                     $ipqc_id = 0;
                     $ipqc_status = 0;
                 }else{
-                    $ipqc_id = $first_molding_data->first_molding_ipqc->id;
-                    $ipqc_status = $first_molding_data->first_molding_ipqc->status;
+                    $ipqc_id = $second_molding_data->second_molding_ipqc->id;
+                    $ipqc_status = $second_molding_data->second_molding_ipqc->status;
                 }
                 $result = "";
                 $result .= "<center>";
                 if($ipqc_id != 0){ //Exsisting IPQC ID: Ready to view
-                    $result .= "<button class='btn btn-info btn-sm btnViewIPQCData' first_molding_data-id='$first_molding_data->id' ipqc_data-id='$ipqc_id'>
+                    $result .= "<button class='btn btn-info btn-sm btnViewIPQCData' second_molding_data-id='$second_molding_data->id' ipqc_data-id='$ipqc_id'>
                                 <i class='fa-solid fa-eye' data-bs-html='true' title='View IPQC Inspection'></i></button>";
                 }
 
                 if($ipqc_id == 0 || $ipqc_status < 3){ //Not Exsisting IPQC ID or Status less than 3(0 - Pending, 1,2 - Updated): Enabled Updating
                     $result .= "&nbsp";
-                    $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-status='$ipqc_status' first_molding_data-id='$first_molding_data->id' ipqc_data-id='$ipqc_id'>
+                    $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-status='$ipqc_status' second_molding_data-id='$second_molding_data->id' ipqc_data-id='$ipqc_id'>
                                 <i class='fa-solid fa-microscope' data-bs-html='true' title='Proceed to IPQC Inspection'></i></button>";
                 }else if($ipqc_id != 0 && $ipqc_status == 5){ //Exsisting IPQC ID & Status 5(For Resetup): Enabled Updating
                     $result .= "&nbsp";
-                    $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-status='$ipqc_status' first_molding_data-id='$first_molding_data->id' ipqc_data-id='$ipqc_id'>
+                    $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-status='$ipqc_status' second_molding_data-id='$second_molding_data->id' ipqc_data-id='$ipqc_id'>
                                 <i class='fa-solid fa-microscope' data-bs-html='true' title='Proceed to Re-Inspection'></i></button>";
                 }
 
                 if($ipqc_id != 0 && $ipqc_status == 1 ){ //Exsisting IPQC ID & Status 1(Accepted): Ready to Submit
                     $result .= "&nbsp";
-                    $result .= "<button class='btn btn-success btn-sm btnSubmitIPQCData' ipqc_data-status='$ipqc_status' first_molding_data-id='$first_molding_data->id' ipqc_data-id='$ipqc_id'>
+                    $result .= "<button class='btn btn-success btn-sm btnSubmitIPQCData' ipqc_data-status='$ipqc_status' second_molding_data-id='$second_molding_data->id' ipqc_data-id='$ipqc_id'>
                                 <i class='fa-solid fa-circle-check' data-bs-html='true' title='Proceed to Mass Production'></i></button>";
                 }
                 else if($ipqc_id != 0 && $ipqc_status == 2){ //Exsisting IPQC ID & Status 2(Rejected): Ready to Submit
                     $result .= "&nbsp";
-                    $result .= "<button class='btn btn-warning btn-sm btnSubmitIPQCData' ipqc_data-status='$ipqc_status' first_molding_data-id='$first_molding_data->id' ipqc_data-id='$ipqc_id'>
+                    $result .= "<button class='btn btn-warning btn-sm btnSubmitIPQCData' ipqc_data-status='$ipqc_status' second_molding_data-id='$second_molding_data->id' ipqc_data-id='$ipqc_id'>
                                 <i class='fa-solid fa-triangle-exclamation' data-bs-html='true' title='Save Rejected QC Sample'></i></button>";
                 }
                 $result .= "</center>";
                 return $result;
             })
-            ->addColumn('ipqc_status', function ($first_molding_data) {
+            ->addColumn('ipqc_status', function ($second_molding_data) {
                 $result = "";
-                if(!isset($first_molding_data->first_molding_ipqc->status)){
+                if(!isset($second_molding_data->second_molding_ipqc->status)){
                     $status = 0;
                 }else{
-                    $status = $first_molding_data->first_molding_ipqc->status;
+                    $status = $second_molding_data->second_molding_ipqc->status;
                 }
                 switch($status){
                     case 0: //Default Value: Not Yet Inpected or Inserted Data But Not Updated = Not Ready
@@ -158,56 +138,56 @@ class MoldingAssyIpqcController extends Controller
                 }
                 return $result;
             })
-            ->addColumn('first_molding_created_at', function ($first_molding_data) {
+            ->addColumn('first_molding_created_at', function ($second_molding_data) {
                 $result = "";
-                $result = Carbon::parse($first_molding_data->created_at);
+                $result = Carbon::parse($second_molding_data->created_at);
                 return $result;
             })
-            ->addColumn('ipqc_judgement', function ($first_molding_data) {
+            ->addColumn('ipqc_judgement', function ($second_molding_data) {
                 $result = "";
-                if(isset($first_molding_data->first_molding_ipqc->judgement)){
-                    $first_molding_ipqc = $first_molding_data->first_molding_ipqc;
-                    if($first_molding_ipqc->judgement == 'Accepted'){
-                        $result .= "<center><span class='badge badge-pill badge-success'>$first_molding_ipqc->judgement</span></center>";
-                    }else if($first_molding_ipqc->judgement == 'Rejected'){
-                        $result .= "<center><span class='badge badge-pill badge-warning'>$first_molding_ipqc->judgement</span></center>";
+                if(isset($second_molding_data->second_molding_ipqc->judgement)){
+                    $second_molding_ipqc = $second_molding_data->second_molding_ipqc;
+                    if($second_molding_ipqc->judgement == 'Accepted'){
+                        $result .= "<center><span class='badge badge-pill badge-success'>$second_molding_ipqc->judgement</span></center>";
+                    }else if($second_molding_ipqc->judgement == 'Rejected'){
+                        $result .= "<center><span class='badge badge-pill badge-warning'>$second_molding_ipqc->judgement</span></center>";
                     }
                 }else{
                     $result .= '<center><span class="badge badge-pill badge-secondary">Not Yet Inspected</span></center>';
                 }
                 return $result;
             })
-            ->addColumn('ipqc_inspector_name', function ($first_molding_data) {
+            ->addColumn('ipqc_inspector_name', function ($second_molding_data) {
                 $result = "";
-                if(isset($first_molding_data->first_molding_ipqc->ipqc_insp_name)){
-                    $result = $first_molding_data->first_molding_ipqc->ipqc_insp_name->firstname.' '.$first_molding_data->first_molding_ipqc->ipqc_insp_name->lastname;
+                if(isset($second_molding_data->second_molding_ipqc->ipqc_insp_name)){
+                    $result = $second_molding_data->second_molding_ipqc->ipqc_insp_name->firstname.' '.$second_molding_data->second_molding_ipqc->ipqc_insp_name->lastname;
                 }else{
                     $result .= '<center><span class="badge badge-pill badge-secondary">Not Yet Inspected</span></center>';
                 }
                 return $result;
             })
-            ->addColumn('ipqc_document_no', function ($first_molding_data) {
+            ->addColumn('ipqc_document_no', function ($second_molding_data) {
                 $result = "";
-                if(isset($first_molding_data->first_molding_ipqc->ipqc_insp_name)){
-                    $result = $first_molding_data->first_molding_ipqc->document_no;
+                if(isset($second_molding_data->second_molding_ipqc->ipqc_insp_name)){
+                    $result = $second_molding_data->second_molding_ipqc->document_no;
                 }else{
                     $result .= '<center><span class="badge badge-pill badge-secondary">Not Yet Inspected</span></center>';
                 }
                 return $result;
             })
-            ->addColumn('ipqc_measdata_attachment', function ($first_molding_data) {
+            ->addColumn('ipqc_measdata_attachment', function ($second_molding_data) {
                 $result = "";
-                if(isset($first_molding_data->first_molding_ipqc->ipqc_insp_name)){
-                    $result = $first_molding_data->first_molding_ipqc->measdata_attachment;
+                if(isset($second_molding_data->second_molding_ipqc->ipqc_insp_name)){
+                    $result = $second_molding_data->second_molding_ipqc->measdata_attachment;
                 }else{
                     $result .= '<center><span class="badge badge-pill badge-secondary">Not Yet Inspected</span></center>';
                 }
                 return $result;
             })
-            ->addColumn('ipqc_inspected_date', function ($first_molding_data) {
+            ->addColumn('ipqc_inspected_date', function ($second_molding_data) {
                 $result = "";
-                if(isset($first_molding_data->first_molding_ipqc->updated_at)){
-                    $result = $first_molding_data->first_molding_ipqc->updated_at;
+                if(isset($second_molding_data->second_molding_ipqc->updated_at)){
+                    $result = $second_molding_data->second_molding_ipqc->updated_at;
                 }else{
                     $result .= '<center><span class="badge badge-pill badge-secondary">Not Yet Inspected</span></center>';
                 }
@@ -220,7 +200,7 @@ class MoldingAssyIpqcController extends Controller
 
     // NEW CODE CLARK 02042024 END
 
-    public function add_molding_assy_ipqc_inspection(Request $request){
+    public function add_second_molding_ipqc_inspection(Request $request){
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();
@@ -303,16 +283,16 @@ class MoldingAssyIpqcController extends Controller
         }
     }
 
-    public function update_molding_assy_ipqc_inspection_status(Request $request){
+    public function update_second_molding_ipqc_inspection_status(Request $request){
         date_default_timezone_set('Asia/Manila');
             if($request->cnfrm_ipqc_status == 1){
                 //For Mass Production
-                $first_molding_status = 1;
+                $second_molding_status = 1;
                 $ipqc_status = 3;
 
             }else if($request->cnfrm_ipqc_status == 2){
                 //For Re-Setup
-                $first_molding_status = 3;
+                $second_molding_status = 2;
                 $ipqc_status = 4;
             }
 
@@ -323,15 +303,15 @@ class MoldingAssyIpqcController extends Controller
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
 
-            FirstMolding::where('id', $request->cnfrm_first_molding_id)
-            ->update(['status' => $first_molding_status]);
+            SecMoldingRuncard::where('id', $request->cnfrm_second_molding_id)
+            ->update(['status' => $second_molding_status]);
         
             DB::commit();
         return response()->json(['result' => 'Successful']);
     }
 
     //====================================== DOWNLOAD FILE ======================================
-    public function molding_assy_download_file(Request $request, $id){
+    public function second_molding_download_file(Request $request, $id){
         $ipqc_data_for_download = MoldingAssyIpqcInspection::where('id', $id)->first();
         $file =  storage_path() . "/app/public/molding_assy_ipqc_insp_files/" . $ipqc_data_for_download->measdata_attachment;
         return Response::download($file, $ipqc_data_for_download->measdata_attachment);

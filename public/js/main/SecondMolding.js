@@ -235,6 +235,37 @@ const getMachineDropdown = (cboElement, materialName) => {  // chris
     });
 }
 
+const getUser = (elementId) => {
+    let result = `<option value="0" selected> N/A </option>`;
+    $.ajax({
+        url: 'get_user',
+        method: 'get',
+        dataType: 'json',
+        beforeSend: function(){
+            result = `<option value="0" selected disabled> - Loading - </option>`;
+            elementId.html(result);
+        },
+        success: function(response){
+            result = '';
+            // console.log('object ', response['data']);
+            if(response['data'].length > 0){
+                for(let index = 0; index < response['data'].length; index++){
+                    result += `<option value="${response['data'][index].id}">${response['data'][index].operator}</option>`;
+                }
+            }
+            else{
+                result = `<option value="0" selected disabled> - No data found - </option>`;
+            }
+            elementId.html(result);
+        },
+        error: function(data, xhr, status){
+            result = `<option value="0" selected disabled> - Reload Again - </option>`;
+            elementId.html(result);
+            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}
+
 function setDisabledSecondMoldingRuncard(boolean) {
     $('#buttonQrScanMaterialLotNumber').prop('disabled', boolean);
     $('#buttonViewBDrawing').prop('disabled', boolean);

@@ -221,7 +221,7 @@
                                                 <label class="form-label">Shift:</label>
                                                 <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
                                             </div>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
@@ -396,7 +396,7 @@
                             <!-- PO 1 -->
                             <div class="col-sm-12">
                                 <div class="d-none" id="hiddenPreview">
-                                    
+
                                 </div>
                                 <center>
                                     <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br>
@@ -542,7 +542,7 @@
                                         <input type="number" class="form-control form-control-sm" name="sublot_qty_1" id="txtSublotQty_1">
                                     </div>
                                 </div>
-                            
+
                             </div>
                             <div id="divMultipleSublot">
 
@@ -659,6 +659,7 @@
                         }
                     });
                 });
+
                 $('#txtScanPO').on('keyup', function(e){
                     if(e.keyCode == 13){
                         getSecondStampReq($(this).val());
@@ -668,7 +669,7 @@
 
                     }
                 });
-              
+
                 $('#txtTargetOutput').on('keyup', function(e){
                     // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
                     // let ppcTargtOut = 0;
@@ -949,7 +950,7 @@
                     dtDatatableHistory = $("#tblHistorySecondStamp").DataTable({
                         "processing" : true,
                         "serverSide" : true,
-                        "paging": false, 
+                        "paging": false,
                         "searching": false,
                         "info": false,
                         "destroy": true,
@@ -962,12 +963,12 @@
                         },
                         fixedHeader: true,
                         "columns":[
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return meta.row + meta.settings._iDisplayStart + 1;
                                 }
                             },
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return po;
                                 }
@@ -990,7 +991,7 @@
                     printStampCat = $(this).data('stampcat');
                     btnFunction = $(this).data('function');
 
-    
+
                     Swal.fire({
                         // title: "Are you sure?",
                         html: "Data already for mass production. <br> Do you want to re-setup this lot?",
@@ -1006,7 +1007,7 @@
                             scanningFunction = "editProdData";
                         }
                     });
-                    
+
                 });
 
                 $(document).on('click', '.btnAddBatch', function(e){
@@ -1026,7 +1027,7 @@
                 $('#btnAddSublot').on('click', function(e){
                     e.preventDefault();
                     let newCount = Number($('#txtSublotMultipleCounter').val()) + Number(1);
-                    
+
                     if(newCount > 1){
                         $('#btnRemoveSublot').removeClass('d-none');
                     }
@@ -1064,14 +1065,14 @@
 
                 $('#btnRemoveSublot').on('click', function(e){
                     e.preventDefault();
-                    
+
                     let counter = $('#txtSublotMultipleCounter').val();
                     $(`#divMultiple_${counter}`).remove();
 
                     let newCount = counter - 1;
 
                     $('#txtSublotMultipleCounter').val(newCount);
-                    
+
                     if(newCount == 1){
                         $(this).addClass('d-none');
                     }
@@ -1114,9 +1115,9 @@
             });
 
             $(document).on('keyup','#txtScanUserId', function(e){
-                
+
                 if(e.keyCode == 13){
-                    
+
                     if(scanningFunction === "prodData"){ // TO SAVE STAMPING
                         validateUser($(this).val().toUpperCase(), [0,4,1,9], function(result){
                             if(result == true){
@@ -1167,10 +1168,10 @@
                         });
 
                     }
-                  
+
                     setTimeout(() => {
                         $(this).val('');
-                        
+
                     }, 500);
                 }
             });

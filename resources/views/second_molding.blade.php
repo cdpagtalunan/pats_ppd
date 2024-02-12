@@ -459,7 +459,7 @@
                                             <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
                                         </div>
                                         <select type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name" placeholder="Operator Name">
-                                            <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option>
+                                            {{-- <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option> --}}
                                         </select>
                                     </div>
                                 </div>
@@ -576,6 +576,8 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
+
+        
     @endsection
 
     @section('js_content')
@@ -1065,15 +1067,13 @@
                  * to be use in Second Molding Station
                  * Start
                 */
+                getUser($('#textOperatorName'));
                 $('#buttonAddStation').click(function(){
                     let secondMoldingId = $('#textSecondMoldingId', $('#formSecondMolding')).val();
                     $('#textSecondMoldingId', $('#formAddStation')).val(secondMoldingId);
                     $('#labelTotalNumberOfNG', $('#formAddStation')).text(0);
                     $('#labelTotalNumberOfNG', $('#formAddStation')).val(0);
-
-                    /**
-                     * Get last shipment output
-                    */
+                    /* Get last shipment output for the input of next process*/
                     $.ajax({
                         type: "get",
                         url: "get_last_shipment_output",
@@ -1082,7 +1082,6 @@
                         },
                         dataType: "json",
                         success: function (response) {
-                            console.log('get_last_shipment_output ', response['data']);
                             if(response['data'].length > 0){
                                 $('#textInputQuantity', $('#formAddStation')).val(response['data'][0].shipment_output);
                             }

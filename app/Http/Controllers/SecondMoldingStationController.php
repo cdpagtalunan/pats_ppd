@@ -67,7 +67,6 @@ class SecondMoldingStationController extends Controller
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();
-        // return $data;
 
         if(!isset($request->second_molding_station_id)){
             // return 'insert';
@@ -119,29 +118,32 @@ class SecondMoldingStationController extends Controller
                             // return response()->json(['getShipmentOuput' => $getShipmentOuput]);
 
                         if($getShipmentOuput == 1){
-                            // $updateNGAndOutputQuantity = DB::connection('mysql')
-                            //     ->table('sec_molding_runcards')
-                            //     ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
-                            //         'ng_count' => $request->ng_quantity,
-                            //         'shipment_output' => $request->output_quantity,
-                            //     ]);
-
                             $getSecondMoldingRuncardDetails = DB::connection('mysql')
                                 ->table('sec_molding_runcards')
                                 ->where('sec_molding_runcards.id', $request->second_molding_id)
                                 ->whereNull('sec_molding_runcards.deleted_at')
                                 ->groupBy('sec_molding_runcards.id')
-                                ->select(
-                                    'sec_molding_runcards.target_shots',
-                                    'sec_molding_runcards.adjustment_shots',
-                                    'sec_molding_runcards.qc_samples',
-                                    'sec_molding_runcards.prod_samples',
-                                    'sec_molding_runcards.ng_count',
-                                    'sec_molding_runcards.shipment_output',
-                                    'sec_molding_runcards.material_yield',
+                                ->selectRaw('
+                                        @totalMachineOutput := 
+                                            + COALESCE(sec_molding_runcards.target_shots, 0)
+                                            + COALESCE(sec_molding_runcards.adjustment_shots, 0)
+                                            + COALESCE(sec_molding_runcards.qc_samples, 0)
+                                            + COALESCE(sec_molding_runcards.prod_samples, 0)
+                                            + COALESCE(sec_molding_runcards.ng_count, 0)
+                                            + COALESCE(sec_molding_runcards.shipment_output, 0)
+                                        AS totalMachineOutput,
+                                        sec_molding_runcards.shipment_output,
+                                        (sec_molding_runcards.shipment_output / CAST(@totalMachineOutput AS UNSIGNED) * 100) AS materialYield
+                                        ',
+                                    // 'sec_molding_runcards.adjustment_shots',
+                                    // 'sec_molding_runcards.qc_samples',
+                                    // 'sec_molding_runcards.prod_samples',
+                                    // 'sec_molding_runcards.ng_count',
+                                    // 'sec_molding_runcards.shipment_output',
+                                    // 'sec_molding_runcards.material_yield',
                                 )
                                 ->get();
-                            // return response()->json(['getSecondMoldingRuncardDetails' => $getSecondMoldingRuncardDetails]);
+                            return response()->json(['getSecondMoldingRuncardDetails' => $getSecondMoldingRuncardDetails]);
 
                             $totalMachineOutput = $getSecondMoldingRuncardDetails[0]->target_shots 
                                 + $getSecondMoldingRuncardDetails[0]->adjustment_shots 

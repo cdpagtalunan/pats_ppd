@@ -4,7 +4,7 @@
   </script>
 @elseif((isset(Auth::user()->id) && Auth::user()->status == 2) || !isset(Auth::user()->id))
 <!DOCTYPE html>
-<html>
+<html >
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">

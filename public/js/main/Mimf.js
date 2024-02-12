@@ -204,12 +204,16 @@ function UpdateMimf(){
     })
 }
 
-function GetMimfById(mimfID){
+function GetMimfById(mimfID,whseID,matrixID,poReceivedID){
 	$.ajax({
         url: "get_mimf_by_id",
         method: "get",
         data: {
-            'mimfID'    :   mimfID,
+            'mimfID'        :   mimfID,
+            'whseID'        :   whseID,
+            'matrixID'      :   matrixID,
+            'dieSetID'      :   dieSetID,
+            'poReceivedID'  :   poReceivedID
         },
         dataType: "json",
         beforeSend: function(){
@@ -217,11 +221,11 @@ function GetMimfById(mimfID){
         },
 
         success: function(response){
-            let getMimfToEdit            = response['getMimfToEdit']
+            let getMimfToEdit   = response['getMimfToEdit']
             console.log(getMimfToEdit)
             if(getMimfToEdit.length > 0){
                 $('#txtMimfControlNo').val(getMimfToEdit[0].control_no)
-                $('#txtMimfPmiPoNo').val(getMimfToEdit[0].po_no)
+                $('#txtMimfPmiPoNo').val(getMimfToEdit[0].pmi_po_no)
                 $('#dateMimfDateOfInssuance').val(getMimfToEdit[0].date_issuance)
                 $('#txtMimfProdnQuantity').val(getMimfToEdit[0].prodn_qty)
                 $('#txtMimfDeviceCode').val(getMimfToEdit[0].device_code)

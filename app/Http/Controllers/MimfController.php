@@ -21,7 +21,12 @@ class MimfController extends Controller
     public function viewMimf(Request $request){
         date_default_timezone_set('Asia/Manila');
         
-        $get_mimfs = Mimf::all();
+        $get_mimfs = Mimf::with([
+            'pps_po_received_info.matrix_info',
+            'pps_po_received_info.pps_dieset_info.pps_warehouse_info',
+        ])
+        ->where('logdel', 0)
+        ->get();
 
         return DataTables::of($get_mimfs)
         ->addColumn('action', function($get_mimf){
@@ -30,6 +35,10 @@ class MimfController extends Controller
                 <button class="btn btn-dark btn-sm text-center 
                     actionEditMimf" 
                     mimf-id="'. $get_mimf->id .'" 
+                    po_received-id="'. $get_mimf->pps_po_received_info->id .'" 
+                    matrix-id="'. $get_mimf->pps_po_received_info->matrix_info->id .'" 
+                    dieset-id="'. $get_mimf->pps_po_received_info->pps_dieset_info->id .'" 
+                    whse-id="'. $get_mimf->pps_po_received_info->pps_dieset_info->pps_warehouse_info->id .'" 
                     data-bs-toggle="modal" 
                     data-bs-target="#modalMimf" 
                     data-bs-keyboard="false" title="View">
@@ -67,7 +76,7 @@ class MimfController extends Controller
     public function employeeID(Request $request){
         date_default_timezone_set('Asia/Manila');
 
-        $user_details = User::where('employee_id', $request->user_id)->first();
+        $user_details = User::where('employee_id', $request->user_id)->where('position', [0,7,8,10])->first();
         return response()->json(['userDetails' => $user_details]);
     }
 
@@ -106,7 +115,7 @@ class MimfController extends Controller
                     'ppd_matrix_id'     => $request->ppd_matrix_id,
                     'control_no'        => $request->mimf_control_no,
                     'date_issuance'     => $request->mimf_date_issuance,
-                    'po_no'             => $request->mimf_pmi_po_no,
+                    'pmi_po_no'         => $request->mimf_pmi_po_no,
                     'prodn_qty'         => $request->mimf_prodn_quantity,
                     'device_code'       => $request->mimf_device_code,
                     'device_name'       => $request->mimf_device_name,
@@ -163,8 +172,6 @@ class MimfController extends Controller
         // $get_po_received_pmi_po = TblPoReceived::where('OrderNo','LIKE','%'.$request->getValue.'%')->where('logdel', 0)->get();
         $get_po_received_pmi_po = TblPoReceived::with([
             'matrix_info',
-            'pps_dieset_info',
-            'pps_dieset_info.pps_warehouse_info',
             'pps_dieset_info.pps_warehouse_info.pps_warehouse_transaction_info'
         ])
         ->where('OrderNo',$request->getValue)

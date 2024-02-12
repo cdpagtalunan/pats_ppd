@@ -922,9 +922,8 @@
                     }
                 });
 
-                // PRELIMINARY PACKING VALIDATION
-                $('#modalPackingScanLotNumber').on('shown.bs.modal', function () {
-                    $('#txtScanPackingLotNumber').focus();
+                $('#modalScanQRtoReprint').on('shown.bs.modal', function () {
+                    $('#txtScanUserIdtoReprint').focus();
                 });
 
                 $('#txtScanPackingLotNumber').on('keyup', function(e){
