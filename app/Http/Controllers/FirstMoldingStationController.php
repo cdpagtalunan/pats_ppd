@@ -71,7 +71,7 @@ class FirstMoldingStationController extends Controller
     {
         date_default_timezone_set('Asia/Manila');
         try{
-            $is_exist_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)->where('station',$request->station)->exists();
+            $is_exist_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)->where('station',$request->station)->whereNull('deleted_at')->exists();
             if($is_exist_first_molding_detail_station == 1){
                 return response()->json( [ 'result' => 2,'error_msg' => 'Station is already exists' ] ,409);
             }

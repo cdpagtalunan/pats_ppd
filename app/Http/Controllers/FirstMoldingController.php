@@ -233,12 +233,18 @@ class FirstMoldingController extends Controller
     {
         try{
             $tbl_po_received = TblPoReceived::where('OrderNo',$request->pmi_po_no)->get();
-            $tbl_milf = Mimf::where('pmi_po_no',$request->pmi_po_no)->get();
+            // $tbl_milf = Mimf::where('pmi_po_no',$request->pmi_po_no)->get();
+            // if( count ($tbl_milf) == 0 ){
+            //     return response()->json( [
+            //         'result' => 0,
+            //         'result_count' => 0,
+            //         'error_msg' => "Please check this PO in MIMF Module !",
+            //     ] );
+            // }
             //tbl_milf[0]->control_no;
             //tbl_milf[0]->date_issuance;
             //tbl_milf[0]->material_type;
             //tbl_milf[0]->needed_kgs;
-
             if( count($tbl_po_received) == 1){
                 return response()->json( [
                     'result_count' => count($tbl_po_received),
@@ -247,9 +253,9 @@ class FirstMoldingController extends Controller
                     'po_balance' => $tbl_po_received[0]->POBalance ,
                     'item_code' => $tbl_po_received[0]->ItemCode ,
                     'item_name' => $tbl_po_received[0]->ItemName ,
-                    'material_type' => $tbl_milf[0]->material_type ,
-                    'virgin_qty' => $tbl_milf[0]->virgin_material ,
-                    'recycled_qty' => $tbl_milf[0]->recycled ,
+                    // 'material_type' => $tbl_milf[0]->material_type ,
+                    // 'virgin_qty' => $tbl_milf[0]->virgin_material ,
+                    // 'recycled_qty' => $tbl_milf[0]->recycled ,
                 ] );
             }else{
                 return response()->json( [
@@ -388,7 +394,12 @@ class FirstMoldingController extends Controller
     }
 
     public function validateScanFirstMoldingContactLotNum (Request $request){
-        // return 'true'; stamping_productions
+        // return $request->all();
+        // {
+        //     "po_no": "450242795000010",
+        //     "new_lot_no": "EE240116-01Z-1/22",
+        //     "qty": "22"
+        // }
         // return $request->contact_lot_num;
         // FirstStampingProduction::wh
         // DB::beginTransaction();

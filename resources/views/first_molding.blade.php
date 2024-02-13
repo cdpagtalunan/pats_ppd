@@ -209,7 +209,6 @@
                     formModal.firstMolding.find('.form-control').removeClass('is-valid')
                     formModal.firstMolding.find('.form-control').removeClass('is-invalid');
                     formModal.firstMolding.find('.form-control').attr('title', '');
-                    $("#tblFirstMoldingMaterial tbody").empty();
                 })
 
                 $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
@@ -431,41 +430,6 @@
                     formModal.firstMolding.find('#material_yield').val('0%');
                     formModal.firstMolding.find('[type="number"]').val(0);
                     arr.Ctr = 0;
-                    let rowFirstMoldingMaterial = `
-                        <tr>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend">
-                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter="${arr.Ctr}" name="virgin_material[]" required min=1 step="0.01">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="0" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_0" name="virgin_qty[]" required min=1 step="0.01">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="recycle_material_0" name="recycle_material[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="0" type="number" class="form-control form-control-sm" id="recycle_qty_0" name="recycle_qty[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
-                            </td>
-                        </tr>
-                    `;
-                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
-
                     getDiesetDetailsByDeviceName(device_name);
                 });
 
@@ -553,48 +517,10 @@
                     $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal');
                 });
 
-                $('#btnAddFirstMoldingMaterial').click(function (e) {
-                    e.preventDefault();
-                    arr.Ctr ++;
-                    let rowFirstMoldingMaterial = `
-                        <tr>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend">
-                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
-                                    </div>
-                                    <input type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required min=1 step="0.01">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="0" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_qty[]" required min=1 step="0.01">
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="0" type="number" class="form-control form-control-sm" id="recycle_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_qty[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
-                            </td>
-                        </tr>
-                    `;
-                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
-                });
-
                 /**
                  * Add Mode Of Defect
                 */
+
                 $("#buttonAddFirstMoldingModeOfDefect").click(function(){
                     let totalNumberOfMOD = 0;
                     let ngQty = formModal.firstMoldingStation.find('#ng_qty').val();
@@ -743,28 +669,6 @@
                     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
                 });
 
-                // formModal.firstMolding.find('#total_machine_output').keyup(function (e) {
-                //     let inputTotalMachineOuput = $(this).val();
-                //     console.log(inputTotalMachineOuput);
-                //     let differenceOfTotalShipmentOutput = parseFloat(inputTotalMachineOuput) - total;
-                //     let ngCount = formModal.firstMolding.find("#ng_count").val();
-
-
-                //     if( inputTotalMachineOuput == '' | inputTotalMachineOuput < 0 ){
-                //         formModal.firstMolding.find('#shipment_output').val(0);
-                //         formModal.firstMolding.find("#material_yield").val('0%');
-                //         return;
-                //     }
-
-                //     formModal.firstMolding.find('#shipment_output').val(differenceOfTotalShipmentOutput);
-                //     calculateTotalMaterialYield(inputTotalMachineOuput,formModal.firstMolding.find('#shipment_output').val());
-                // });
-
-                formModal.firstMolding.find('.inputVirginQty').keyup(function (e) {
-                    alert('inputVirginQty')
-
-                });
-
                 formModal.firstMolding.submit(function (e) {
                     e.preventDefault();
                     saveFirstMolding();
@@ -777,10 +681,7 @@
 
 
 
-                $("#tblFirstMoldingMaterial").on('click', '.buttonRemoveMaterial', function(){
-                    $(this).closest ('tr').remove();
-                    arr.Ctr --;
-                });
+
 
                 $('#mdlScanQrCodeFirstMoldingMaterial').click(function (e) {
                     e.preventDefault();
