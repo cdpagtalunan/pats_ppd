@@ -207,8 +207,10 @@
                         <div class="modal-body">
                             <div class="row d-flex justify-content-center">
                                 <label class="text-secondary mt-2">Are you sure you want to proceed?</label>
-                                <input type="hidden" class="form-control" name="cnfrm_first_molding_id" id="cnfrmtxtFirstMoldingId">
+                                {{-- <input type="hidden" class="form-control" name="cnfrm_first_molding_id" id="cnfrmtxtFirstMoldingId"> --}}
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_id" id="cnfrmtxtIPQCId">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_production_lot" id="cnfrmtxtIPQCProdLot">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_process_category" id="cnfrmtxtIPQCProcessCat">
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_status" id="cnfrmtxtIPQCStatus">
                             </div>
                         </div>
@@ -466,7 +468,7 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_ipqc_fmold_data",
+                        url: "view_ipqc_data",
                         data: function(param){
                         param.material_name =  $("#txtSelectFirstMoldingDevice").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
@@ -492,7 +494,7 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_ipqc_fmold_data",
+                        url: "view_ipqc_data",
                         data: function(param){
                         param.material_name =  $("#txtSelectFirstMoldingDevice").val();
                         param.ipqc_status = [3]; //Status 3 = Submitted: Judgement - Accepted
@@ -518,7 +520,7 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_ipqc_fmold_data",
+                        url: "view_ipqc_data",
                         data: function(param){
                         param.material_name =  $("#txtSelectFirstMoldingDevice").val();
                         param.ipqc_status = [4]; //Status 4 = Submitted: Judgement - Rejected
@@ -592,12 +594,12 @@
                                 $('#txtSearchPartCode').val(fMoldingData[0].part_code);
                                 // $('#txtSearchMaterialName').val(fMoldingData[0].material_name);
 
-                                // let mat_name = fMoldingData[0].first_molding_device.device_name;
-                                // mat_name = mat_name.replace(/ /g,'');
+                                let mat_name = fMoldingData[0].material_name;
+                                mat_name = mat_name.replace(/ /g,'');
 
-                                // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
-                                // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
-                                // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+                                GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
 
                                 dt1stMoldingIpqcInspPending.draw();
                                 dt1stMoldingIpqcInspCompleted.draw();
@@ -618,22 +620,20 @@
                 });
 
                 $(document).on('click', '#btnAddIPQCData',function(e){
+                    $('#formIPQCInspectionData')[0].reset();
                     $('#modalIpqcInspection').modal('show');
                 });
                 
-                // $(document).on('click', '.btnUpdateIPQCData',function(e){
-                $(document).on('click', '#btnUpdateIPQCData',function(e){
-                    // console.log('view');
+                $(document).on('click', '.btnUpdateIPQCData',function(e){
+                // $(document).on('click', '#btnUpdateIPQCData',function(e){
                     e.preventDefault();
                     let ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_molding_id = $(this).attr('first_molding_data-id');
 
                     $.ajax({
-                        url: "get_first_molding_data",
+                        url: "get_ipqc_data",
                         type: "get",
                         data: {
                             ipqc_id: ipqc_id,
-                            first_molding_id: first_molding_id
                         },
                         dataType: "json",
                         beforeSend: function(){
@@ -641,16 +641,14 @@
                         },
                         success: function(response){
                             $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
-                            let first_molding_data = response['first_molding_data'];
+                            let ipqc_data = response['ipqc_data'][0];
 
                             frmIPQCInspectionData.find('#txtIpqcId').val(ipqc_id);
-                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(first_molding_id);
-                            frmIPQCInspectionData.find('#txtProcessCategory').val(1);// First Molding : STATIC VALUE
-
-                            frmIPQCInspectionData.find('#txtPoNumber').val(first_molding_data[0]['pmi_po_no']);
-                            frmIPQCInspectionData.find('#txtPartCode').val(first_molding_data[0]['item_code']);
-                            // frmIPQCInspectionData.find('#txtMaterialName').val(first_molding_data[0].first_molding_device.contact_name);
-                            // frmIPQCInspectionData.find('#txtProductionLot').val(first_molding_data[0]['production_lot']);
+                            frmIPQCInspectionData.find('#txtProductionLot').val(ipqc_data['production_lot']);
+                            frmIPQCInspectionData.find('#txtPoNumber').val(ipqc_data['po_number']);
+                            frmIPQCInspectionData.find('#txtPartCode').val(ipqc_data['part_code']);
+                            frmIPQCInspectionData.find('#txtMaterialName').val(ipqc_data['material_name']);
+                            frmIPQCInspectionData.find('#txtQcSamples').val(ipqc_data['qc_samples']);
 
                             //disabled and readonly
                             frmIPQCInspectionData.find("#frmSaveBtn").prop('hidden', false);
@@ -661,96 +659,56 @@
                             frmIPQCInspectionData.find("#txtSelectDocNoUD").prop({hidden:false, disabled:false});
                             frmIPQCInspectionData.find("#btnilqcmlink").prop('disabled', false);
                             frmIPQCInspectionData.find('input[name="keep_sample"]').prop('hidden', false);
-
-                            // frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('disabled', false);
-                            // frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('disabled', false);
-                            // frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('disabled', false);
-
                             frmIPQCInspectionData.find("#btnViewBDrawings").prop('disabled', true);
                             frmIPQCInspectionData.find("#btnViewInspStdDrawings").prop('disabled', true);
                             frmIPQCInspectionData.find("#btnViewUdDrawings").prop('disabled', true);
+                            frmIPQCInspectionData.find('input[name="keep_sample"]').attr('disabled', false);
+                            frmIPQCInspectionData.find("#btnReuploadTriggerDiv").removeClass('d-none');
+                            frmIPQCInspectionData.find("#btnReuploadTrigger").removeClass('d-none');
+                            frmIPQCInspectionData.find("#btnReuploadTrigger").prop('checked', false);
+                            frmIPQCInspectionData.find("#btnReuploadTriggerLabel").removeClass('d-none');
+                            frmIPQCInspectionData.find("#txtEditUploadedFile").removeClass('d-none');
+                            frmIPQCInspectionData.find("#txtAddFile").addClass('d-none');
+                            frmIPQCInspectionData.find("#txtAddFile").removeAttr('required');
+                            frmIPQCInspectionData.find("#txtSelectDocumentNo").removeAttr('required');
+                            frmIPQCInspectionData.find("#txtEditUploadedFile").removeAttr('required');
 
-                            if(first_molding_data[0]['ipqc_data'] == 0){ //when first_molding_id && ipqc_id is not existing in MoldingAssyIpqc Table //For Insert to MoldingAssyIpqc Table
+                            frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('required', false);
+                            frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('required', false);
+                            frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('required', false);
 
-                                // frmIPQCInspectionData.find('#txtQcSamples').val(first_molding_data[0]['qc_samples']);
+                            frmIPQCInspectionData.find('#txtOkSamples').val(ipqc_data['ok_samples']);
+                            frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
+                            frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
+                            frmIPQCInspectionData.find('#txtRemarks').val(ipqc_data['remarks']);
 
-                                frmIPQCInspectionData.find("#txtInspectorID").val(first_molding_data[0]['ipqc_inspector_id']);
-                                frmIPQCInspectionData.find("#txtInspectorName").val(first_molding_data[0]['ipqc_inspector_name']);
-                                frmIPQCInspectionData.find("#btnReuploadTriggerDiv").addClass("d-none");
-                                frmIPQCInspectionData.find("#btnPartsDrawingAddRow").addClass("d-none");
-
-                                frmIPQCInspectionData.find("#txtAddFile").removeClass('d-none');
-                                frmIPQCInspectionData.find("#txtAddFile").attr('required', true);
-                                frmIPQCInspectionData.find("#txtEditUploadedFile").addClass('d-none');
-                                frmIPQCInspectionData.find("#download_file").addClass('d-none');
-
-                                frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('required', true);
-                                frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('required', true);
-                                frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('required', true);
-
-                                if(frmIPQCInspectionData.find('#txtKeepSample1').prop('checked')){
-                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', false);
-                                }else if(frmIPQCInspectionData.find('#txtKeepSample2').prop('checked')){
-                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', false);
-                                }else{
-                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('required', true);
-                                }
-
-                            }else{//For Update to MoldingAssyIpqc Table
-                                let ipqc_data = first_molding_data[0]['first_molding_ipqc'];
-                                console.log('edit ipqc',ipqc_data);
-
-                                // frmIPQCInspectionData.find('#txtQcSamples').val(ipqc_data['input']);
-                                frmIPQCInspectionData.find('#txtOkSamples').val(ipqc_data['output']);
-                                frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
-                                frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
-                                frmIPQCInspectionData.find('#txtRemarks').val(ipqc_data['remarks']);
-
-                                if(ipqc_data['keep_sample'] == 1){
-                                    frmIPQCInspectionData.find('#txtKeepSample1').prop('checked', true);
-                                }else if(ipqc_data['keep_sample'] == 2){
-                                    frmIPQCInspectionData.find('#txtKeepSample2').prop('checked', true);
-                                }else{
-                                    frmIPQCInspectionData.find('input[name="keep_sample"]').prop('checked', false);
-                                }
-
-                                frmIPQCInspectionData.find('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
-
-                                let ng_value = frmIPQCInspectionData.find('#txtQcSamples').val() - frmIPQCInspectionData.find('#txtOkSamples').val();
-                                frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
-
-                                frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
-                                frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
-                                frmIPQCInspectionData.find("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
-
-                                frmIPQCInspectionData.find('input[name="keep_sample"]').attr('disabled', false);
-                                frmIPQCInspectionData.find("#btnReuploadTriggerDiv").removeClass('d-none');
-                                frmIPQCInspectionData.find("#btnReuploadTrigger").removeClass('d-none');
-                                frmIPQCInspectionData.find("#btnReuploadTrigger").prop('checked', false);
-                                frmIPQCInspectionData.find("#btnReuploadTriggerLabel").removeClass('d-none');
-                                // }
-                                frmIPQCInspectionData.find("#txtEditUploadedFile").removeClass('d-none');
-                                frmIPQCInspectionData.find("#txtAddFile").addClass('d-none');
-                                frmIPQCInspectionData.find("#txtAddFile").removeAttr('required');
-                                frmIPQCInspectionData.find("#txtSelectDocumentNo").removeAttr('required');
-                                frmIPQCInspectionData.find("#txtEditUploadedFile").removeAttr('required');
-                                frmIPQCInspectionData.find('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
-
-                                frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop('required', false);
-                                frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop('required', false);
-                                frmIPQCInspectionData.find("#txtSelectDocNoUD").prop('required', false);
-
-                                let download ='<a href="first_molding_download_file/'+ipqc_data['id']+'">';
-                                    download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
-                                    download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
-                                    download +=         '&nbsp;';
-                                    download +=         'See Attachment';
-                                    download +='</button>';
-                                    download +='</a>';
-
-                                frmIPQCInspectionData.find('#AttachmentDiv').append(download);
-                                frmIPQCInspectionData.find("#download_file").removeClass('d-none');
+                            if(ipqc_data['keep_sample'] == 1){
+                                frmIPQCInspectionData.find('#txtKeepSample1').prop('checked', true);
+                            }else if(ipqc_data['keep_sample'] == 2){
+                                frmIPQCInspectionData.find('#txtKeepSample2').prop('checked', true);
+                            }else{
+                                frmIPQCInspectionData.find('input[name="keep_sample"]').prop('checked', false);
                             }
+
+                            frmIPQCInspectionData.find('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
+                                let ng_value = frmIPQCInspectionData.find('#txtQcSamples').val() - frmIPQCInspectionData.find('#txtOkSamples').val();
+                            frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
+
+                            frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                            frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
+                            frmIPQCInspectionData.find("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
+                            frmIPQCInspectionData.find('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
+
+                            let download ='<a href="first_molding_download_file/'+ipqc_data['id']+'">';
+                                download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
+                                download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
+                                download +=         '&nbsp;';
+                                download +=         'See Attachment';
+                                download +='</button>';
+                                download +='</a>';
+
+                            frmIPQCInspectionData.find('#AttachmentDiv').append(download);
+                            frmIPQCInspectionData.find("#download_file").removeClass('d-none');
                             $('#modalIpqcInspection').modal('show');
                         },
                         error: function(data, xhr, status){
@@ -761,30 +719,24 @@
 
                 $('#txtSelectDocNoBDrawing').on('change', function() {
                     if($('#txtSelectDocNoBDrawing').val() === null || $('#txtSelectDocNoBDrawing').val() === undefined){
-                        console.log('b drawing', 'disabled');
                         $("#btnViewBDrawings").prop('disabled', true);
                     }else{
-                        console.log('b drawing', 'enabled');
                         $("#btnViewBDrawings").prop('disabled', false);
                     }
                 });
 
                 $('#txtSelectDocNoInspStandard').on('change', function() {
                     if($('#txtSelectDocNoInspStandard').val() === null || $('#txtSelectDocNoInspStandard').val() === undefined){
-                        console.log('b drawing', 'disabled');
                         $("#btnViewInspStdDrawings").prop('disabled', true);
                     }else{
-                        console.log('b drawing', 'enabled');
                         $("#btnViewInspStdDrawings").prop('disabled', false);
                     }
                 });
 
                 $('#txtSelectDocNoUD').on('change', function() {
                     if($('#txtSelectDocNoUD').val() === null || $('#txtSelectDocNoUD').val() === undefined){
-                        console.log('b drawing', 'disabled');
                         $("#btnViewUdDrawings").prop('disabled', true);
                     }else{
-                        console.log('b drawing', 'enabled');
                         $("#btnViewUdDrawings").prop('disabled', false);
                     }
                 });
@@ -870,27 +822,40 @@
                     });
                 }
 
-                $('#txtOkSamples').keyup(function(e){
-                    let ng_value = $('#txtQcSamples').val() - $('#txtOkSamples').val();
-                    $('#txtNGQty').val(ng_value);
+                $('#txtOkSamples, #txtQcSamples').each(function(e){
+                    $(this).keyup(function(e){
+                        let ng_value = $('#txtQcSamples').val() - $('#txtOkSamples').val();
+                        $('#txtNGQty').val(ng_value);
+                    });
                 });
 
                 // UPDATE STATUS OF DIESET REQUEST
                 $(document).on('click', '.btnSubmitIPQCData', function(e){
                     let ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_molding_id = $(this).attr('first_molding_data-id');
-                    let ipqc_status = $(this).attr('ipqc_data-status');
 
-                    $("#cnfrmtxtFirstMoldingId").val(first_molding_id);
-                    $("#cnfrmtxtIPQCId").val(ipqc_id);
-                    $("#cnfrmtxtIPQCStatus").val(ipqc_status);
+                    $.ajax({
+                        type: "get",
+                        url: "get_ipqc_data",
+                        data: {
+                            ipqc_id: ipqc_id,
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            let ipqc_data = response['ipqc_data'][0];
+                            $("#cnfrmtxtIPQCId").val(ipqc_data.id);
+                            $("#cnfrmtxtIPQCProdLot").val(ipqc_data.production_lot);
+                            $("#cnfrmtxtIPQCStatus").val(ipqc_data.status);
+                            $("#cnfrmtxtIPQCProcessCat").val(ipqc_data.process_category);
+                        }
+                    });
+
                     $("#modalConfirmSubmitIPQCInspection").modal('show');
                 });
 
                 $("#FrmConfirmSubmitIPQCInspection").submit(function(event) {
                     event.preventDefault();
                     $.ajax({
-                        url: "update_first_molding_ipqc_inspection_status",
+                        url: "update_ipqc_inspection_status",
                         method: "post",
                         data: $('#FrmConfirmSubmitIPQCInspection').serialize(),
                         dataType: "json",
@@ -970,14 +935,11 @@
                 $(document).on('click', '.btnViewIPQCData',function(e){
                     e.preventDefault();
                     let ipqc_id = $(this).attr('ipqc_data-id');
-                    let first_molding_id = $(this).attr('first_molding_data-id');
-                    // frmIPQCInspectionData
                     $.ajax({
-                        url: "get_first_molding_data",
+                        url: "get_ipqc_data",
                         type: "get",
                         data: {
                             ipqc_id: ipqc_id,
-                            first_molding_id: first_molding_id
                         },
                         dataType: "json",
                         beforeSend: function(){
@@ -985,22 +947,23 @@
                         },
                         success: function(response){
                             $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
-                            let first_molding_data = response['first_molding_data'];
-                            let ipqc_data = response['first_molding_data'][0]['first_molding_ipqc'];
+                            // let first_molding_data = response['first_molding_data'];
+                            let ipqc_data = response['ipqc_data'][0];
 
-                            frmIPQCInspectionData.find('#txtIpqcId').val(ipqc_id);
-                            frmIPQCInspectionData.find('#txtFirstMoldingId').val(first_molding_id);
-
-                            frmIPQCInspectionData.find('#txtPoNumber').val(first_molding_data[0]['pmi_po_no']);
-                            frmIPQCInspectionData.find('#txtPartCode').val(first_molding_data[0]['item_code']);
-                            // frmIPQCInspectionData.find('#txtMaterialName').val(first_molding_data[0].first_molding_device.contact_name);
-                            // frmIPQCInspectionData.find('#txtProductionLot').val(first_molding_data[0]['production_lot']);
+                            frmIPQCInspectionData.find('#txtIpqcId').val(ipqc_data['id']);
+                            // frmIPQCInspectionData.find('#txtFirstMoldingId').val(first_molding_id);
+                            frmIPQCInspectionData.find('#txtProductionLot').val(ipqc_data['production_lot']);
+                            frmIPQCInspectionData.find('#txtPoNumber').val(ipqc_data['po_number']);
+                            frmIPQCInspectionData.find('#txtPartCode').val(ipqc_data['part_code']);
+                            frmIPQCInspectionData.find('#txtMaterialName').val(ipqc_data['material_name']);
+                            frmIPQCInspectionData.find('#txtQcSamples').val(ipqc_data['qc_samples']);
 
                             // frmIPQCInspectionData.find('#txtQcSamples').val(ipqc_data['input']);
-                            frmIPQCInspectionData.find('#txtOkSamples').val(ipqc_data['output']);
+                            frmIPQCInspectionData.find('#txtOkSamples').val(ipqc_data['ok_samples']);
                             frmIPQCInspectionData.find('#txtJudgement').val(ipqc_data['judgement']);
                             frmIPQCInspectionData.find('#txtInspectorID').val(ipqc_data['ipqc_insp_name']['id']);
                             frmIPQCInspectionData.find('#txtInspectorName').val(ipqc_data['ipqc_insp_name']['firstname'] +' '+ ipqc_data['ipqc_insp_name']['lastname']);
+                            frmIPQCInspectionData.find('#txtRemarks').val(ipqc_data['remarks']);
 
                             if(ipqc_data['keep_sample'] == 1){
                                 frmIPQCInspectionData.find('#txtKeepSample1').prop('checked', true);
@@ -1012,9 +975,6 @@
 
                             let ng_value = frmIPQCInspectionData.find('#txtQcSamples').val() - frmIPQCInspectionData.find('#txtOkSamples').val();
                             frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
-
-                            let mat_name = first_molding_data[0].first_molding_device.device_name;
-                                mat_name = mat_name.replace(/ /g,'');
 
                             frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
                             frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');

@@ -144,6 +144,15 @@
                             </ul>
                         </li>
                     @endif
+
+                    
+                    {{-- <li class="nav-item">
+                        <a href="{{ route("press_stamping_kyori_machine_checksheet") }}" class="nav-link">
+                            <i class="fa-solid fa-list-check"></i>
+                            <p>Press Stamping Checksheet</p>
+                        </a>
+                    </li> --}}
+
                     @if (in_array(Auth::user()->position, [0,1,4,11]))
                         <li class="nav-header mt-3"><strong>STAMPING</strong></li>
                         <li class="nav-item has-treeview">
@@ -169,10 +178,24 @@
                                 </li>
                             </ul>
                         </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route("press_stamping_machine_checksheet") }}" class="nav-link">
+                                <i class="fa-solid fa-list-check"></i>
+                                <p>Press Stamping Machine Checksheet</p>
+                            </a>
+                        </li>
+
                         <li class="nav-item">
                             <a href="{{ route("5s_checksheet") }}" class="nav-link">
                                 <i class="fa-solid fa-list-check"></i>
                                 <p>5S Checksheet</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route("stamping_history") }}" class="nav-link">
+                                <i class="fa-solid fa-bookmark"></i>
+                                <p>Stamping History</p>
                             </a>
                         </li>
                     @endif

@@ -79,7 +79,7 @@
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
+                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -584,6 +584,12 @@
                         }
                 });
 
+                $('#txtSearchPONum').on('keyup', function(){
+                    dtFinalPackingDetails.draw();
+                    dtPrelimPackingDetails.draw();
+                });
+
+
                 // PRELIMINARY PACKING VALIDATION
                 $(document).on('click', '.btnValidatePrelimPackingDetails', function(e){
                     e.preventDefault();
@@ -1007,6 +1013,7 @@
                         }
                         // $(this).val('');
                 });
+
 
             });
 

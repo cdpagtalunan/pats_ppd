@@ -90,7 +90,7 @@ class StampingChecksheetController extends Controller
                 'checksheet_A_2_3' => $request->checkA2_3,
                 'checksheet_A_2_4' => $request->checkA2_4,
                 'checksheet_A_3_1' => $request->checkA3_1,
-                'created_by'       => Auth::user()->id,
+                'created_by'       => session()->get('user_id'),
                 'created_at'       => NOW()
             );
 
@@ -205,7 +205,7 @@ class StampingChecksheetController extends Controller
         try{
             $update_array = array(
                 'status' => $request->status,
-                'checked_by' => $_SESSION['user_id']
+                'checked_by' => session()->get('user_id')
             );
             if($request->status != 1){
                 $update_array['dis_remarks'] = $request->remarks;
@@ -236,7 +236,8 @@ class StampingChecksheetController extends Controller
 
     public function get_session(Request $request){
         session_start();
-        return session()->all(); 
+        return view('index');
+        // return session()->all();
     }
 
 }

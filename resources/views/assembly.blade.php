@@ -87,7 +87,7 @@
                                 <!-- Start Page Content -->
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        <button class="btn btn-primary" id="btnAddAssemblyRuncard"><i class="fa-solid fa-plus"></i> Add</button>
+                                        <button class="btn btn-primary" id="btnAddAssemblyRuncard"><i class="fa-solid fa-plus"></i> Add Assembly Runcard</button>
                                     </div> <br><br>
                                     <div class="table-responsive">
                                         <!-- style="max-height: 600px; overflow-y: auto;" -->

@@ -200,34 +200,34 @@ function AddProdnHistory() {
                     $("#opt_name").attr('title', JsonObject['error']['opt_id']);
                 }
 
-                if (JsonObject['error']['shots'] === undefined) {
-                    $("#shots").removeClass('is-invalid');
-                    $("#shots").attr('title', '');
-                } else {
-                    $("#shots").addClass('is-invalid');
-                    $("#shots").attr('title', JsonObject['error']['shots']);
-                }
-                if (JsonObject['error']['prodn_etime'] === undefined) {
-                    $("#prodn_etime").removeClass('is-invalid');
-                    $("#prodn_etime").attr('title', '');
-                } else {
-                    $("#prodn_etime").addClass('is-invalid');
-                    $("#prodn_etime").attr('title', JsonObject['error']['prodn_etime']);
-                }
-                if (JsonObject['error']['qc_id'] === undefined) {
-                    $("#qc_name").removeClass('is-invalid');
-                    $("#qc_name").attr('title', '');
-                } else {
-                    $("#qc_name").addClass('is-invalid');
-                    $("#qc_name").attr('title', JsonObject['error']['qc_id']);
-                }
-                if (JsonObject['error']['material_lot'] === undefined) {
-                    $("#material_lotno").removeClass('is-invalid');
-                    $("#material_lotno").attr('title', '');
-                } else {
-                    $("#material_lotno").addClass('is-invalid');
-                    $("#material_lotno").attr('title', JsonObject['error']['material_lot']);
-                }
+                // if (JsonObject['error']['shots'] === undefined) {
+                //     $("#shots").removeClass('is-invalid');
+                //     $("#shots").attr('title', '');
+                // } else {
+                //     $("#shots").addClass('is-invalid');
+                //     $("#shots").attr('title', JsonObject['error']['shots']);
+                // }
+                // if (JsonObject['error']['prodn_etime'] === undefined) {
+                //     $("#prodn_etime").removeClass('is-invalid');
+                //     $("#prodn_etime").attr('title', '');
+                // } else {
+                //     $("#prodn_etime").addClass('is-invalid');
+                //     $("#prodn_etime").attr('title', JsonObject['error']['prodn_etime']);
+                // }
+                // if (JsonObject['error']['qc_id'] === undefined) {
+                //     $("#qc_name").removeClass('is-invalid');
+                //     $("#qc_name").attr('title', '');
+                // } else {
+                //     $("#qc_name").addClass('is-invalid');
+                //     $("#qc_name").attr('title', JsonObject['error']['qc_id']);
+                // }
+                // if (JsonObject['error']['material_lot'] === undefined) {
+                //     $("#material_lotno").removeClass('is-invalid');
+                //     $("#material_lotno").attr('title', '');
+                // } else {
+                //     $("#material_lotno").addClass('is-invalid');
+                //     $("#material_lotno").attr('title', JsonObject['error']['material_lot']);
+                // }
 
 
 
@@ -243,6 +243,31 @@ function AddProdnHistory() {
             $("#ibtnSubmitIcon").removeClass('fa fa-spinner fa-pulse');
             $("#btnSubmit").removeAttr('disabled');
             $("#ibtnSubmitIcon").addClass('fa fa-check');
+        }
+    });
+}
+
+const getFirstModlingDevicesForHistory = () => {
+    $.ajax({
+        type: "GET",
+        url: "get_first_molding_devices_for_history",
+        data: "data",
+        dataType: "json",
+        success: function (response) {
+            let first_molding_device_id = response['id'];
+            let device_name = response['value'];
+            let result = '';
+
+            if(response['id'].length > 0){
+                result = '<option selected disabled> --- Select --- </option>';
+                for(let index = 0; index < first_molding_device_id.length; index++){
+                    result += '<option value="' +first_molding_device_id[index]+'">'+device_name[index]+'</option>';
+                }
+            }
+            else{
+                result = '<option value="0" selected disabled> No record found </option>';
+            }
+            $('select[name="global_device_name"]').html(result);
         }
     });
 }

@@ -166,7 +166,6 @@
         <!--- Modal modalLotNum-->
         @include('component.modal')
 
-
         <div class="modal fade" id="modalModeOfDefect" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-md">
                 <div class="modal-content">
@@ -248,13 +247,12 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-                
+            /*
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
-                
-                    dataTable.iqcInspection.draw();
 
+                    dataTable.iqcInspection.draw();
                 });
                 $('a[href="#menu2"]').click(function (e) {
                     e.preventDefault();
@@ -294,7 +292,7 @@
                         $('#modalLotNum').modal('hide');
                     }
                 });
-
+            */
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 

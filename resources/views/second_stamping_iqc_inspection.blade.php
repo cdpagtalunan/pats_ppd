@@ -237,7 +237,7 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-
+            /*
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
@@ -283,7 +283,7 @@
                         $('#modalLotNum').modal('hide');
                     }
                 });
-
+            */
                 $(tbl.iqcWhsDetails).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 

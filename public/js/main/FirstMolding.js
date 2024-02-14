@@ -99,48 +99,13 @@
             success: function (response) {
 
                 let data = response['first_molding'][0];
-                let first_molding_material_list = data.first_molding_material_lists;
-
-
-                for (let i = 0; i < first_molding_material_list.length; i++) {
-                    console.log(first_molding_material_list[i].virgin_material);
-                    console.log('arr.Ctr',arr.Ctr);
-                    let rowFirstMoldingMaterial = `
-                        <tr>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial_${arr.Ctr}" btn-counter = "${arr.Ctr}"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                        <input value="${first_molding_material_list[i].virgin_material}" type="text" class="form-control form-control-sm" id="virgin_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_material[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="${first_molding_material_list[i].virgin_qty}" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="virgin_qty[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                        <input value="${first_molding_material_list[i].recycle_material}" type="text" class="form-control form-control-sm" id="recycle_material_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_material[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="input-group input-group-sm mb-3">
-                                    <input value="${first_molding_material_list[i].recycle_qty}" type="number" class="form-control form-control-sm" id="recycle_qty_${arr.Ctr}" input-counter ="${arr.Ctr}" name="recycle_qty[]" required>
-                                </div>
-                            </td>
-                            <td>
-                                <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
-                            </td>
-                        </tr>
-                    `;
-                    $("#tblFirstMoldingMaterial tbody").append(rowFirstMoldingMaterial);
-                }
-
+                // let first_molding_material_list = data.first_molding_material_lists;
+                // if(first_molding_material_list.lenght != 0){
+                // formModal.firstMolding.find('#virgin_material').val(first_molding_material_list[0].virgin_material);
+                // formModal.firstMolding.find('#virgin_qty').val(first_molding_material_list[0].virgin_qty);
+                // formModal.firstMolding.find('#recycle_material').val(first_molding_material_list[0].recycle_material);
+                // formModal.firstMolding.find('#recycle_qty').val(first_molding_material_list[0].recycle_qty);
+                // }
                 formModal.firstMolding.find('#first_molding_id').val(data.id);
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
@@ -419,14 +384,16 @@
             dataType: "json",
             success: function (response) {
                 if(response['result'] === 1){
-                    let shipmentOutput = formModal.firstMoldingStation.find('#output').val();
-                    let ngCount = formModal.firstMoldingStation.find('#ng_qty').val();
-                    let firstMoldingId = formModal.firstMoldingStation.find('#first_molding_id').val();
+                    let total_machine_output = response.total_machine_output;
+                    let shipment_output = response.shipment_output;
+                    let station = response.station;
 
-                    // if(station == 8){ // id 8-Machine 1st Overmold  in Rev | id 5-Machine 1st Overmold in Live, need to change id to live
-                    //Save the updated shipment out, machine output and ng to First Molding Table
-                    updateFirstMoldingShipmentMachineOuput(firstMoldingId,shipmentOutput,ngCount);
-                    // }
+                    if(station == 7){ // nmodify Station id 7- Camera Inspection , need to change id to live
+                        formModal.firstMolding.find('#shipment_output').val(shipment_output);
+                        formModal.firstMolding.find('#ng_count').val(response.ng_count);
+                        formModal.firstMolding.find('#total_machine_output').val(total_machine_output);
+                        calculateTotalMaterialYield (total_machine_output,shipment_output);
+                    }
 
                     $('#modalFirstMoldingStation').modal('hide');
                     formModal.firstMoldingStation[0].reset();
@@ -437,6 +404,16 @@
                         title: "Saved Successfully !",
                         showConfirmButton: false,
                         timer: 1500
+                    });
+                }else{
+                    $('#modalFirstMoldingStation').modal('hide');
+                    formModal.firstMoldingStation[0].reset();
+                    Swal.fire({
+                        position: "center",
+                        icon: "error",
+                        title: response.error_msg,
+                        showConfirmButton: false,
+                        timer: 3000
                     });
                 }
             },error: function (data, xhr, status){
@@ -457,7 +434,7 @@
                         icon: "error",
                         title: "Warning: The Station is already exists !",
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 3000
                     });
                     $('#modalFirstMoldingStation').modal('hide');
 
@@ -665,21 +642,32 @@
     }
 
     const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo){
+        let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
+        // if(scanFirstMoldingContactLotNo.length < 0){
+        //     Swal.fire({
+        //         position: "center",
+        //         icon: "warning",
+        //         title: `${scanFirstMoldingContactLotNo}This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
+        //         showConfirmButton: false,
+        //         timer: 3000
+        //     });
+        //     return;
+        // }
         $.ajax({
             type: "GET",
-            url: "validate_scan_first_molding_contact_lot_num",
-            data: {"contact_lot_num" : scanFirstMoldingContactLotNo},
+            url: "validate_scan_first_molding_contact_lot_num", //nmodify
+            data: {"contact_lot_num" :contactLotNo },
             dataType: "json",
             success: function (response) {
                 console.log(response);
                 if(response.result == 1){
-                    formModal.firstMolding.find('#contact_lot_number').val(scanFirstMoldingContactLotNo);
+                    formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
                     toastr.success('Scanned Successfully !')
                 }else{
                     Swal.fire({
                         position: "center",
                         icon: "warning",
-                        title: "This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !",
+                        title: `${contactLotNo} This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
                         showConfirmButton: false,
                         timer: 3000
                     });

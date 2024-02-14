@@ -12,14 +12,35 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
 use DataTables;
 use Carbon\Carbon;
+use App\Exports\Export;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\MoldingAssyIpqcInspection;
 use App\Models\FirstMolding;
 use App\Models\FirstMoldingDetail;
 use App\Models\FirstMoldingDetailMod;
 
-class IpqcFirstMoldingController extends Controller
-{  
+use App\Models\SecMoldingRuncard;
+use App\Models\SecMoldingRuncardStation;
+use App\Models\SecMoldingRuncardStationMod;
+
+use App\Models\AssemblyRuncard;
+use App\Models\AssemblyRuncardStation;
+use App\Models\AssemblyRuncardStationsMods;
+
+class MoldingAssyIpqcController extends Controller
+{
+    // NEW CODE CLARK 02042024
+    public function get_ipqc_data(Request $request){
+        $ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
+                                                ->where('material_name', $request->device_id)
+                                                ->whereNull('deleted_at')
+                                                ->get();
+
+        return response()->json(['ipqc_data' => $ipqc_data]);
+    }
+    // NEW CODE CLARK 02042024
+
     public function get_device_from_first_molding(Request $request){
         $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
                                         ->whereNull('deleted_at')
@@ -58,6 +79,7 @@ class IpqcFirstMoldingController extends Controller
     }
     
     public function view_first_molding_ipqc_data(Request $request){
+
         if(!isset($request->device_id)){
             return [];
         }else{
@@ -198,7 +220,7 @@ class IpqcFirstMoldingController extends Controller
 
     // NEW CODE CLARK 02042024 END
 
-    public function add_first_molding_ipqc_inspection(Request $request){
+    public function add_molding_assy_ipqc_inspection(Request $request){
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();
@@ -281,7 +303,7 @@ class IpqcFirstMoldingController extends Controller
         }
     }
 
-    public function update_first_molding_ipqc_inspection_status(Request $request){
+    public function update_molding_assy_ipqc_inspection_status(Request $request){
         date_default_timezone_set('Asia/Manila');
             if($request->cnfrm_ipqc_status == 1){
                 //For Mass Production
@@ -290,7 +312,7 @@ class IpqcFirstMoldingController extends Controller
 
             }else if($request->cnfrm_ipqc_status == 2){
                 //For Re-Setup
-                $first_molding_status = 2;
+                $first_molding_status = 3;
                 $ipqc_status = 4;
             }
 
@@ -309,7 +331,7 @@ class IpqcFirstMoldingController extends Controller
     }
 
     //====================================== DOWNLOAD FILE ======================================
-    public function first_molding_download_file(Request $request, $id){
+    public function molding_assy_download_file(Request $request, $id){
         $ipqc_data_for_download = MoldingAssyIpqcInspection::where('id', $id)->first();
         $file =  storage_path() . "/app/public/molding_assy_ipqc_insp_files/" . $ipqc_data_for_download->measdata_attachment;
         return Response::download($file, $ipqc_data_for_download->measdata_attachment);
@@ -322,4 +344,5 @@ class IpqcFirstMoldingController extends Controller
           ),
           'Packing List.xlsx');
     }
+
 }

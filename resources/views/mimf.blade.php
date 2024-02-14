@@ -346,6 +346,7 @@
                         },
                         success: function(response){
                             let getPoReceivedPmiPo = response['getPoReceivedPmiPo']
+                            let totalBalance = response['totalBalance']
                             let kgs = 0;
                             if(getPoReceivedPmiPo.length > 0){
                                 $('#txtPpsPoReceivedId').val(getPoReceivedPmiPo[0].id)
@@ -354,7 +355,8 @@
                                 $('#txtMimfDeviceName').val(getPoReceivedPmiPo[0].ItemName)
                                 
                                 if(getPoReceivedPmiPo[0].pps_dieset_info != null){
-                                    kgs = (getPoReceivedPmiPo[0].OrderQty*getPoReceivedPmiPo[0].pps_dieset_info.ShotWgt*getPoReceivedPmiPo[0].pps_dieset_info.NoOfCav/1000).toFixed(2)
+                                    // kgs = (getPoReceivedPmiPo[0].OrderQty*getPoReceivedPmiPo[0].pps_dieset_info.ShotWgt*getPoReceivedPmiPo[0].pps_dieset_info.NoOfCav/1000).toFixed(2)
+                                    kgs = (getPoReceivedPmiPo[0].OrderQty*getPoReceivedPmiPo[0].pps_dieset_info.ShotWgt/1000/getPoReceivedPmiPo[0].pps_dieset_info.NoOfCav).toFixed(2)
                                     $('#txtPpsDiesetId').val(getPoReceivedPmiPo[0].pps_dieset_info.id)
                                     $('#txtMimfNeededKgs').val(kgs)
 
@@ -362,7 +364,7 @@
                                         $('#txtPpsWhseId').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.id)
                                         $('#txtMimfMaterialCode').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.PartNumber)
                                         $('#txtMimfMaterialType').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.MaterialType)
-                                        $('#txtMimfQuantityFromInventory').val(getPoReceivedPmiPo[0].pps_dieset_info.pps_warehouse_info.pps_warehouse_transaction_info[0].Eoh)
+                                        $('#txtMimfQuantityFromInventory').val(totalBalance)
                                     }else{
                                         console.log('tbl_dieset->Material != tbl_Warehouse->MaterialType')
                                         $('.clearPPSMIS').val('')

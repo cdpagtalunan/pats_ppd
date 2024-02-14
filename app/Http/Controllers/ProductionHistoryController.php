@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use DataTables;
-use App\Models\ProductionHistory;
 use Illuminate\Http\Request;
+use App\Models\ProductionHistory;
+use App\Models\FirstMoldingDevice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -124,6 +125,7 @@ class ProductionHistoryController extends Controller
 
     public function add_prodn_history(Request $request){
 
+        return $request->all();
         if($request->prodn_history_id != ""){
             $validation = array(
                 'shots' => ['required'],
@@ -164,7 +166,7 @@ class ProductionHistoryController extends Controller
 
             try{
                 // $operator = implode($request->opt_name, ', ');
-
+                // return $request->all();
                 $add_process_array = array(
                     'fkid_molding_devices' => $request->global_device_name_id,
                     'status' => 0,
@@ -249,6 +251,18 @@ class ProductionHistoryController extends Controller
         ");
 
         return response()->json(['machine' => $machine]);
+    }
+
+    public function get_first_molding_devices_for_history(Request $request){
+        $first_molding_device = FirstMoldingDevice::whereNull('deleted_at')->get();
+        foreach ($first_molding_device as $key => $value_first_molding_device) {
+            $arr_first_molding_device_id[] =$value_first_molding_device['id'];
+            $arr_first_molding_device_value[] =$value_first_molding_device['device_name'];
+        }
+        return response()->json([
+            'id'    =>  $arr_first_molding_device_id,
+            'value' =>  $arr_first_molding_device_value
+        ]);
     }
 
 }

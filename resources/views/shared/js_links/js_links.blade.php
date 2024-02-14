@@ -61,6 +61,7 @@
 <!-- STAMPING JS -->
 <script src="{{ asset('public/js/main/Stamping.js') }}" async></script>
 <script src="{{ asset('public/js/main/StampingChecksheet.js') }}" async></script>
+<script src="{{ asset('public/js/main/StampingHistory.js') }}" async></script>
 
 <!-- PACKING LIST JS -->
 <script src="{{ asset('public/js/main/CustomerDetails.js') }}" async></script>
@@ -84,7 +85,11 @@
 {{-- Production History --}}
 <script src="@php echo asset("public/js/main/ProductionHistory.js?".date("YmdHis")) @endphp"></script>
 
+{{-- PPC --}}
 <script src="@php echo asset("public/js/main/Mimf.js?".date("YmdHis")) @endphp"></script>
+
+{{-- PressStampingMachineChecksheet --}}
+<script src="@php echo asset("public/js/main/PressStampingMachineChecksheet.js?".date("YmdHis")) @endphp"></script>
 
 
 

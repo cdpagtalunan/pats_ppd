@@ -25,61 +25,44 @@ class UserController extends Controller
 {
     public function rapidx_sign_in_admin(Request $request)
     {
-        // $user_data = array(
-        //     'username' => $request->get('username'),
-        //     // 'password' => $request->get('password'),
-        //     'user_stat' => "1"
-        // );
         $user_data = $request->all();
-            // return $user_data;
-
         $validator = Validator::make($request->all(), [
             'username' => 'required',
-            // 'password' => 'required'
         ]);
 
         if ($validator->passes()) {
-            // if ($request->password == 'rapidx_admin') {
+            $user_info = RapidxUser::where('username', $request->username)->first();
+            // return $user_info;
+            if ($user_info != null) {
+                session_start();
+                $_SESSION["rapidx_user_id"] = $user_info->id;
+                $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
+                $_SESSION["rapidx_username"] = $user_info->username;
+                $_SESSION["rapidx_name"] = $user_info->name;
+                $_SESSION["rapidx_email"] = $user_info->email;
+                $_SESSION["rapidx_department_id"] = $user_info->department_id;
+                $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
 
-                $user_info = RapidxUser::where('username', $request->username)->first();
-                // return $user_info;
-                if ($user_info != null) {
-                    session_start();
-                    $_SESSION["rapidx_user_id"] = $user_info->id;
-                    $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
-                    // $_SESSION["rapidx_username"] = $user_info->username;
-                    $_SESSION["rapidx_name"] = $user_info->name;
-                    $_SESSION["rapidx_email"] = $user_info->email;
-                    $_SESSION["rapidx_department_id"] = $user_info->department_id;
-                    $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
+                $user_accesses = RapidXUserAccess::on('rapidx')->where('user_id', $user_info->id)
+                    ->where('user_access_stat', 1)
+                    ->get();
 
-                    $user_accesses = RapidXUserAccess::on('rapidx')->where('user_id', $user_info->id)
-                        ->where('user_access_stat', 1)
-                        ->get();
-
-                    $arr_user_accesses = [];
-                    for ($index = 0; $index < count($user_accesses); $index++) {
-                        // $arr_user_accesses['module_id'] = $user_accesses[$index]->module_id;
-                        // $arr_user_accesses['user_level_id'] = $user_accesses[$index]->user_level_id;
-                        array_push($arr_user_accesses, array(
-                            'module_id' => $user_accesses[$index]->module_id,
-                            'user_level_id' => $user_accesses[$index]->user_level_id
-                        ));
-                    }
-
-                    $_SESSION["rapidx_user_accesses"] = $arr_user_accesses;
-
-                  
-
-                    return response()->json([
-                        'result' => "1",
-                    ]);
-                } else {
-                    return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+                $arr_user_accesses = [];
+                for ($index = 0; $index < count($user_accesses); $index++) {
+                    array_push($arr_user_accesses, array(
+                        'module_id' => $user_accesses[$index]->module_id,
+                        'user_level_id' => $user_accesses[$index]->user_level_id
+                    ));
                 }
-            // } else {
-            //     return response()->json(['result' => "0", 'error' => 'Login Failed!']);
-            // }
+
+                $_SESSION["rapidx_user_accesses"] = $arr_user_accesses;
+
+                return response()->json([
+                    'result' => "1",
+                ]);
+            } else {
+                return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+            }
         } else {
             return response()->json(['result' => "0", 'error' => $validator->messages()]);
         }
@@ -122,7 +105,6 @@ class UserController extends Controller
                 }
             }
             else{
-
                 return response()->json(['result' => "0", 'error_message' => 'Login Failed!', 'error' => $validator->messages()]);
             }
         }

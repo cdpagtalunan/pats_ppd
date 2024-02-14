@@ -255,24 +255,28 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
+                                            <div id="divContactLotNumbers">
+                                                <input type="hidden" class="form-control form-control-sm" id="textContactLotNumberChecking" name="contact_lot_number_checking">
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="textContactLotNumberOne" value="N/A" readonly name="contact_name_lot_number_one" placeholder="C/T Name/Lot #">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberOne" form-value="formContactLotNumberOne"><i class="fa fa-qrcode"></i></button>
+                                                    </div>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="textContactLotNumberOne" value="N/A" readonly name="contact_name_lot_number_one" placeholder="C/T Name/Lot #">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberOne" form-value="formContactLotNumberOne"><i class="fa fa-qrcode"></i></button>
+                                                <div class="input-group input-group-sm mb-3">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="textContactLotNumberSecond" value="N/A" readonly name="contact_name_lot_number_second" placeholder="C/T Name/Lot #">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberSecond" form-value="formContactLotNumberSecond"><i class="fa fa-qrcode"></i></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="input-group input-group-sm mb-3">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="textContactLotNumberSecond" value="N/A" readonly name="contact_name_lot_number_second" placeholder="C/T Name/Lot #">
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanContactLotNumberSecond" form-value="formContactLotNumberSecond"><i class="fa fa-qrcode"></i></button>
-                                                </div>
-                                            </div>
+                                            
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">ME Name/Lot #</span>
@@ -468,10 +472,11 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
-                                    <div class="input-group-prepend w-50">
-                                        <span class="input-group-text w-100" id="basic-addon1">Input</span>
-                                    </div>
-                                    <input type="number" class="form-control form-control-sm" id="textInputQuantity" name="input_quantity" min="0" value="0">
+                                        <span class="input-group-text w-50" id="basic-addon1">Input</span>
+                                        <input type="number" class="form-control form-control-sm w-25" id="textInputQuantity" name="input_quantity" min="0" value="0">
+                                        <div class="input-group-text w-25">
+                                            <input type="checkbox" id="checkPartial" value="1" name="partial" title=""><label class="form-check-label" for="checkPartial">&nbsp;Partial</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -592,23 +597,35 @@
                 });
 
                 /**
-                 * Validation for CN171S/CN171P
+                 * Validation for CN171S-07#IN-VE/CN171P-02#IN-VE/CN171S-02#MO-VE
                  * Start
                 */
                 $('#buttonAddSecondMolding').on('click', function(e){
                     let poNumber = $('#textSearchPMIPONumber').val();
                     let materialName = $('#textSearchMaterialName').val();
-                    let materialNameSubstring = materialName.substring(0,6);
+                    // let materialNameSubstring = materialName.substring(0,6);
                     
                     if(poNumber != "" && materialName != ""){
                         getMachineDropdown($('#selMachineNumber'), materialName); // Added Chris to get Data on matrix machine
                         getPOReceivedByPONumber(poNumber);
-                        if(materialNameSubstring == 'CN171S'){
+                        $('#divMaterialLotNumbers').removeClass('d-none');
+                        $('#divContactLotNumbers').removeClass('d-none');
+                        if(materialName == 'CN171S-07#IN-VE'){
+                            console.log('CN171S-07#IN-VE');
                             $('#divMaterialLotNumbers').removeClass('d-none');
                             $('#textMaterialLotNumberChecking').val(1);
-                        }else if (materialNameSubstring == 'CN171P'){
+                            $('#textDrawingNumber').val('B137229-001');
+                        }else if (materialName == 'CN171P-02#IN-VE'){
+                            console.log('CN171P-02#IN-VE');
                             $('#divMaterialLotNumbers').addClass('d-none');
-                            $('#textMaterialLotNumberChecking').val(0);
+                            $('#textMaterialLotNumberChecking').val(2);
+                            $('#textDrawingNumber').val('B137236-001');
+                        }else if (materialName == 'CN171S-02#MO-VE'){
+                            console.log('CN171S-02#MO-VE');
+                            $('#divMaterialLotNumbers').addClass('d-none');
+                            $('#divContactLotNumbers').addClass('d-none');
+                            $('#textContactLotNumberChecking').val(3);
+                            $('#textDrawingNumber').val('B137232-001');
                         }
                         $('#buttonAddStation').prop('disabled', true);
                         setDisabledSecondMoldingRuncard(false);
@@ -621,7 +638,7 @@
                     }
                 });
                 /**
-                 * Validation for CN171S/CN171P
+                 * Validation for CN171S-07#IN-VE/CN171P-02#IN-VE/CN171S-02#MO-VE
                  * End
                 */
 
@@ -947,7 +964,6 @@
                         dataType: "json",
                         success: function (response) {
                             let responseData = response['data'];
-                            let responseDataIPQCSecondMolding = response['dataIPQCSecondMolding'];
                             if(response['data'].length > 0){
                                 let machineArray = responseData[0].machine_number.split(" , "); // Added by Chris
                                 $('#textSecondMoldingId', $('#formSecondMolding')).val(responseData[0].id);
@@ -985,14 +1001,9 @@
                                 $('#shipment_output', $('#formSecondMolding')).val(responseData[0].shipment_output);
                                 $('#shipment_output', $('#formSecondMolding')).css({'color': 'green', 'font-weight': 'bold'});
                                 responseData[0].material_yield != null ? $('#material_yield', $('#formSecondMolding')).val(`${responseData[0].material_yield}%`) : '';
-                                
-                                console.log('responseDataIPQCSecondMolding ', responseDataIPQCSecondMolding);
-                                if(responseDataIPQCSecondMolding.length > 0){
-                                    $('#buttonAddStation').prop('disabled', false);
-                                }else{
-                                    $('#buttonAddStation').prop('disabled', true);
-                                }
+
                                 dataTablesSecondMoldingStation.draw();
+                                $('#buttonAddStation').prop('disabled', false);
                             }
                         }
                     });
@@ -1015,6 +1026,7 @@
                     getMachineDropdown($('#selMachineNumber'), materialName);
                     getSecondMoldingById(id);
                     getMaterialProcessStation();
+                    $('#buttonAddStation').prop('disabled', false);
                 });
 
                 $("#tableSecondMolding").on('click', '.actionViewSecondMolding', function(){
@@ -1113,7 +1125,10 @@
                                     getSecondMoldingById(response['second_molding_id']);
                                     dataTablesSecondMoldingStation.draw();
                                     $('#modalSecondMoldingStation').modal('hide');
-                                }else if(response['sessionError']){
+                                }else if(response['checkIfStationExist']){
+                                    toastr.warning('Station already exist!');
+                                }
+                                else if(response['sessionError']){
                                     toastr.error('Session Expired. Please re-login again.');
                                 }
                                 else{

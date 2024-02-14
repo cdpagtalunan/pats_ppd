@@ -46,10 +46,17 @@ class SecondMoldingController extends Controller
     }
 
     public function getRevisionNumberBasedOnDrawingNumber(Request $request){
+        if($request->doc_title == 'CN171S-07#IN-VE' || $request->doc_title == 'CN171P-02#IN-VE'){
+            $query = "AND doc_title = '$request->doc_title'";
+        }
+        else if($request->doc_title == 'CN171S-02#MO-VE'){
+            $query = "LIKE '%$request->doc_title%'";
+        }
+        
         return DB::connection('mysql_rapid_acdcs')->select("SELECT * FROM tbl_active_docs
                 WHERE doc_no = '$request->doc_number'
-                AND doc_title = '$request->doc_title'
                 AND doc_type = '$request->doc_type'
+                $query
         ");
     }
 
@@ -70,13 +77,6 @@ class SecondMoldingController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             switch ($row->status) {
-                case 0:
-                    $result .= "
-                        <center>
-                            <button class='btn btn-info btn-sm mr-1 actionViewSecondMolding' data-bs-toggle='modal' data-bs-target='#modalSecondMolding' second-molding-id='$row->id'><i class='fa-solid fa-eye'></i></button>
-                        </center>
-                    ";
-                    break;
                 case 1:
                     $result .= "
                         <center>
@@ -109,13 +109,6 @@ class SecondMoldingController extends Controller
         ->addColumn('status', function($row){
             $result = '';
             switch ($row->status) {
-                case 0:
-                    $result .= "
-                        <center>
-                            <span class='badge rounded-pill bg-info'> For IPQC 2nd Molding </span>
-                        </center>
-                    ";
-                    break;
                 case 1:
                     $result .= "
                         <center>
@@ -187,13 +180,22 @@ class SecondMoldingController extends Controller
                 $rules['lot_number_nine_first_molding_id'] = 'required';
                 $rules['lot_number_ten'] = 'required';
                 $rules['lot_number_ten_first_molding_id'] = 'required';
-            }else{
+            }else if($request->material_lot_number_checking == 2){
                 $rules['lot_number_eight'] = '';
                 $rules['lot_number_eight_first_molding_id'] = '';
                 $rules['lot_number_nine'] = '';
                 $rules['lot_number_nine_first_molding_id'] = '';
                 $rules['lot_number_ten'] = '';
                 $rules['lot_number_ten_first_molding_id'] = '';
+            }else{
+                $rules['lot_number_eight']                  = '';
+                $rules['lot_number_eight_first_molding_id'] = '';
+                $rules['lot_number_nine']                   = '';
+                $rules['lot_number_nine_first_molding_id']  = '';
+                $rules['lot_number_ten']                    = '';
+                $rules['lot_number_ten_first_molding_id']   = '';
+                $rules['contact_name_lot_number_one']       = '';
+                $rules['contact_name_lot_number_second']    = '';
             }
 
             $validator = Validator::make($data, $rules);
@@ -236,7 +238,7 @@ class SecondMoldingController extends Controller
                         'shipment_output' => $request->shipment_output,
                         'material_yield' => $request->material_yield,
 
-                        // 'status' => 1,
+                        'status' => 1,
                         'created_by' => Auth::user()->id,
                         'created_at' => date('Y-m-d H:i:s'),
                     ]);
@@ -283,14 +285,24 @@ class SecondMoldingController extends Controller
                 $rules['lot_number_nine_first_molding_id'] = 'required';
                 $rules['lot_number_ten'] = 'required';
                 $rules['lot_number_ten_first_molding_id'] = 'required';
-            }else{
+            }else if($request->material_lot_number_checking == 2){
                 $rules['lot_number_eight'] = '';
                 $rules['lot_number_eight_first_molding_id'] = '';
                 $rules['lot_number_nine'] = '';
                 $rules['lot_number_nine_first_molding_id'] = '';
                 $rules['lot_number_ten'] = '';
                 $rules['lot_number_ten_first_molding_id'] = '';
+            }else{
+                $rules['lot_number_eight']                  = '';
+                $rules['lot_number_eight_first_molding_id'] = '';
+                $rules['lot_number_nine']                   = '';
+                $rules['lot_number_nine_first_molding_id']  = '';
+                $rules['lot_number_ten']                    = '';
+                $rules['lot_number_ten_first_molding_id']   = '';
+                $rules['contact_name_lot_number_one']       = '';
+                $rules['contact_name_lot_number_second']    = '';
             }
+
             $validator = Validator::make($data, $rules);
             if ($validator->fails()) {
                 return response()->json(['validationHasError' => true, 'error' => $validator->messages()]);
@@ -330,7 +342,8 @@ class SecondMoldingController extends Controller
                         'total_machine_output' => $request->total_machine_output,
                         'shipment_output' => $request->shipment_output,
                         'material_yield' => $request->material_yield,
-
+                        'status' => 1,
+                        
                         'last_updated_by' => Auth::user()->id,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
@@ -353,14 +366,14 @@ class SecondMoldingController extends Controller
         ");
 
         // For Clark confirmation
-        $moldingAssyIpqcInspectionResult = DB::connection('mysql')
-        ->select("SELECT * FROM molding_assy_ipqc_inspections
-                    WHERE fk_molding_assy_id = '$request->second_molding_id'
-                    AND process_category = '2'
-                    AND status = '3'
-                    LIMIT 1
-        ");
-        return response()->json(['data' => $secondMoldingResult, 'dataIPQCSecondMolding' => $moldingAssyIpqcInspectionResult]);
+        // $moldingAssyIpqcInspectionResult = DB::connection('mysql')
+        // ->select("SELECT * FROM molding_assy_ipqc_inspections
+        //             WHERE fk_molding_assy_id = '$request->second_molding_id'
+        //             AND process_category = '2'
+        //             AND status = '3'
+        //             LIMIT 1
+        // ");
+        return response()->json(['data' => $secondMoldingResult]);
     }
 
     public function getMaterialProcessStation(Request $request){
@@ -478,6 +491,8 @@ class SecondMoldingController extends Controller
     public function getLastShipmentOuput(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
+        // $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
+        
         $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
         return response()->json(['data' => $getShipmentOuput]);
     }
@@ -489,6 +504,4 @@ public function getUser(){
             'users.id,
             CONCAT(users.firstname, " ", users.lastname) AS operator'
         )->get();
-    return response()->json(['data' => $getUser]);
-}
-}
+    return response()->json(['data' => $getUs

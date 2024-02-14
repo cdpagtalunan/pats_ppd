@@ -20,48 +20,33 @@ use App\Models\FirstMoldingDetailMod;
 
 class IpqcFirstMoldingController extends Controller
 {   
-    // NEW CODE CLARK 02/12/2024
+    //================================= GET FIRST MOLDINNG DEVICE FOR FILTERING =========================
+    public function get_device_from_first_molding(Request $request){
+        $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
+                                        ->whereNull('deleted_at')
+                                        ->distinct()
+                                        ->get();
+
+        return response()->json(['first_molding_devices' => $first_molding_devices]);
+    }
+
+    //================================= GET IPQC BY MATERIAL NAME/ID DATA ==================================
     public function get_ipqc_data(Request $request){
         $ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
-                                                ->where('material_name', $request->material_name)
-                                                ->where('logdel', 0)
-                                                ->get();
+                                            ->when($request->material_name, function ($query) use ($request){
+                                                return $query ->where('material_name', $request->material_name);
+                                            })
+                                            ->when($request->ipqc_id, function ($query) use ($request){
+                                                return $query ->where('id', $request->ipqc_id);
+                                            })
+                                            ->where('logdel', 0)
+                                            ->get();
 
         return response()->json(['ipqc_data' => $ipqc_data]);
     }
-
-    public function get_view_ipqc_data(Request $request){
-        $view_ipqc_data = FirstMolding::with('firstMoldingDevice')->whereNull('deleted_at')
-                                        ->when($request->device_id, function ($query) use ($request){
-                                            return $query ->where('first_molding_device_id', $request->device_id);
-                                        })
-                                        ->when($request->first_molding_id, function ($query) use ($request){
-                                                return $query ->where('id', $request->first_molding_id);
-                                        })
-                                        ->when($request->ipqc_id, function ($query) use ($request){
-                                            return $query ->with(['first_molding_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); }]);
-                                        })
-                                        ->get();
-
-        // mapping
-        if($request->ipqc_id == 0){
-            $view_ipqc_data_mapped = $view_ipqc_data->map(function ($item){
-                $item->ipqc_data = 0;
-                $item->ipqc_inspector_id = Auth::user()->id;
-                $item->ipqc_inspector_name = Auth::user()->firstname.' '.Auth::user()->lastname;
-                return $item;
-            });
-        }else{
-            $view_ipqc_data_mapped = $view_ipqc_data;
-        }
-
-        return response()->json(['view_ipqc_data' => $view_ipqc_data_mapped]);
-    }
     
+    //================================== VIEW IPQC DATA IN DATATABLES =====================================
     public function view_ipqc_fmold_data(Request $request){
-        if(!isset($request->material_name)){
-            return [];
-        }else{
             $view_ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
                                     ->where('material_name', $request->material_name)
                                     ->whereIn('status', $request->ipqc_status)
@@ -93,7 +78,7 @@ class IpqcFirstMoldingController extends Controller
                 }
                 else if($view_ipqc_data->status == 2){ //Exsisting IPQC ID & Status 2(Rejected): Ready to Submit
                     $result .= "&nbsp";
-                    $result .= "<button class='btn btn-warning btn-sm btnSubmitIPQCData' ipqc_data-status='$view_ipqc_data->status' ipqc_data-id='$view_ipqc_data->id'>
+                    $result .= "<button class='btn btn-warning btn-sm btnSubmitIPQCData' ipqc_data-status='$view_ipqc_data->status' ipqc_data-id='$view_ipqc_data->id' ipqc_data-prod_lot='$view_ipqc_data->production_lot'>
                                 <i class='fa-solid fa-triangle-exclamation' data-bs-html='true' title='Save Rejected QC Sample'></i></button>";
                 }
                 $result .= "</center>";
@@ -160,22 +145,9 @@ class IpqcFirstMoldingController extends Controller
             })
             ->rawColumns(['action','ipqc_status','request_created_at','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
             ->make(true);
-        }
     }
 
-    // NEW CODE CLARK 02/12/2024
-    
-    public function get_device_from_first_molding(Request $request){
-        $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
-                                        ->whereNull('deleted_at')
-                                        ->distinct()
-                                        ->get();
-
-        return response()->json(['first_molding_devices' => $first_molding_devices]);
-    }
-
-    // NEW CODE CLARK 02042024 END
-
+    //====================================== ADD/UPDATE IPQC DATA FOR FIRST MOLDING =========================
     public function add_first_molding_ipqc_inspection(Request $request){
         date_default_timezone_set('Asia/Manila');
         session_start();
@@ -192,36 +164,38 @@ class IpqcFirstMoldingController extends Controller
                 return response()->json(['validation' => 'hasError', 'error' => $validator->messages()]);
             }else {
                 $original_filename = $request->file('uploaded_file')->getClientOriginalName();
-                    if($request->judgement == "Accepted"){
-                        $status = 1;
-                    }else if($request->judgement == "Rejected"){
-                        $status = 2;
-                    }
-                    Storage::putFileAs('public/molding_assy_ipqc_insp_files', $request->uploaded_file,  $original_filename);
-                    MoldingAssyIpqcInspection::insert(['fk_molding_assy_id'     => $request->first_molding_id,
-                                                    'process_category'        => $request->process_category,
-                                                    'po_number'               => $request->po_number,
-                                                    'part_code'               => $request->part_code,
-                                                    'material_name'           => $request->material_name,
-                                                    'production_lot'          => $request->production_lot,
-                                                    'judgement'               => $request->judgement,
-                                                    'qc_samples'              => $request->qc_samples,
-                                                    'ok_samples'              => $request->ok_samples,
-                                                    'ipqc_inspector_name'     => $request->inspector_id,
-                                                    'keep_sample'             => $request->keep_sample,
-                                                    'doc_no_b_drawing'        => $request->doc_no_b_drawing,
-                                                    'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
-                                                    'doc_no_urgent_direction' => $request->doc_no_ud,
-                                                    'measdata_attachment'     => $original_filename,
-                                                    'status'                  => $status,
-                                                    'created_by'              => Auth::user()->id,
-                                                    'last_updated_by'         => Auth::user()->id,
-                                                    'created_at'              => date('Y-m-d H:i:s'),
-                                                    'updated_at'              => date('Y-m-d H:i:s'),
-                    ]);
+                if($request->judgement == "Accepted"){
+                    $status = 1;
+                }else if($request->judgement == "Rejected"){
+                    $status = 2;
+                }
 
-                    DB::commit();
-                    return response()->json(['result' => 'Insert Successful']);
+                Storage::putFileAs('public/molding_assy_ipqc_insp_files', $request->uploaded_file,  $original_filename);
+                MoldingAssyIpqcInspection::insert(['fk_molding_assy_id'     => $request->first_molding_id,
+                                                'process_category'        => $request->process_category,
+                                                'po_number'               => $request->po_number,
+                                                'part_code'               => $request->part_code,
+                                                'material_name'           => $request->material_name,
+                                                'production_lot'          => $request->production_lot,
+                                                'judgement'               => $request->judgement,
+                                                'qc_samples'              => $request->qc_samples,
+                                                'ok_samples'              => $request->ok_samples,
+                                                'ipqc_inspector_name'     => $request->inspector_id,
+                                                'keep_sample'             => $request->keep_sample,
+                                                'doc_no_b_drawing'        => $request->doc_no_b_drawing,
+                                                'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
+                                                'doc_no_urgent_direction' => $request->doc_no_ud,
+                                                'measdata_attachment'     => $original_filename,
+                                                'status'                  => $status,
+                                                'remarks'                 => $request->remarks,
+                                                'created_by'              => Auth::user()->id,
+                                                'last_updated_by'         => Auth::user()->id,
+                                                'created_at'              => date('Y-m-d H:i:s'),
+                                                'updated_at'              => date('Y-m-d H:i:s'),
+                ]);
+
+                DB::commit();
+                return response()->json(['result' => 'Insert Successful']);
             }
         }else{
             if(isset($request->uploaded_file)){
@@ -253,21 +227,22 @@ class IpqcFirstMoldingController extends Controller
                         'doc_no_urgent_direction' => $request->doc_no_ud,
                         'measdata_attachment'     => $original_filename,
                         'status'                  => $status,
+                        'remarks'                 => $request->remarks,
                         'last_updated_by'         => Auth::user()->id,
                         'updated_at'              => date('Y-m-d H:i:s'),
                     ]);
 
-                DB::commit();
-                return response()->json(['result' => 'Update Successful']);
-                // }
+            DB::commit();
+            return response()->json(['result' => 'Update Successful']);
         }
     }
 
+    //====================================== UPDATE IPQC STATUS FOR FIRST MOLDING =========================
     public function update_first_molding_ipqc_inspection_status(Request $request){
         date_default_timezone_set('Asia/Manila');
             if($request->cnfrm_ipqc_status == 1){
                 //For Mass Production
-                $first_molding_status = 1;
+                // $first_molding_status = 1;
                 $ipqc_status = 3;
 
             }else if($request->cnfrm_ipqc_status == 2){
@@ -282,10 +257,12 @@ class IpqcFirstMoldingController extends Controller
                         'last_updated_by'     => Auth::user()->id,
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
-
-            FirstMolding::where('id', $request->cnfrm_first_molding_id)
-            ->update(['status' => $first_molding_status]);
         
+            if($request->cnfrm_ipqc_status == 2){
+                FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                ->update(['status' => $first_molding_status]);
+            }
+
             DB::commit();
         return response()->json(['result' => 'Successful']);
     }
@@ -295,13 +272,5 @@ class IpqcFirstMoldingController extends Controller
         $ipqc_data_for_download = MoldingAssyIpqcInspection::where('id', $id)->first();
         $file =  storage_path() . "/app/public/molding_assy_ipqc_insp_files/" . $ipqc_data_for_download->measdata_attachment;
         return Response::download($file, $ipqc_data_for_download->measdata_attachment);
-    }
-
-    public function excel(Request $month)
-    {
-      return Excel::download(new Export(
-
-          ),
-          'Packing List.xlsx');
     }
 }

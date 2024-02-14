@@ -41,6 +41,7 @@ const redirectToACDCSDrawing = (docNo, docTitle, docType)  => {
 
 const getPOReceivedByPONumber = (poNumber) => {
     $.ajax({
+        async: false,
         type: "get",
         url: "get_po_received_by_po_number",
         data: {

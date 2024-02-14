@@ -639,7 +639,7 @@
                                 <div class="col-sm-12">
                                     <div class="table-responsive">
                                         <div class="d-flex justify-content-end">
-                                            <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button>
+                                            {{-- <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button> --}}
                                         </div>
                                         <br>
                                         <table class="table table-sm" id="tblFirstMoldingMaterial">
@@ -653,7 +653,37 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-
+                                                <tr>
+                                                    <td>
+                                                        <div class="input-group input-group-sm mb-3">
+                                                            <div class="input-group-prepend">
+                                                                <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial"><i class="fa fa-qrcode w-100"></i></button>
+                                                            </div>
+                                                            <input type="text" class="form-control form-control-sm" id="virgin_material" name="virgin_material[]" required min=1 step="0.01">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group input-group-sm mb-3">
+                                                            <input value="0" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty" name="virgin_qty[]" required min=1 step="0.01">
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group input-group-sm mb-3">
+                                                                <div class="input-group-prepend">
+                                                                    <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                                                </div>
+                                                                <input type="text" class="form-control form-control-sm" id="recycle_material" name="recycle_material[]" required>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="input-group input-group-sm mb-3">
+                                                            <input value="0" type="number" class="form-control form-control-sm" id="recycle_qty" name="recycle_qty[]" required>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -778,7 +808,7 @@
                                     <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
                                 </div>
                                 <select type="text" class="form-control form-control-sm" id="operator_name" name="operator_name" placeholder="Station">
-                                <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option>
+                                {{-- <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option> --}}
                                 </select>
                                 {{-- <input type="text" class="form-control form-control-sm" id="operator_name" name="operator_name"> --}}
                             </div>
@@ -787,10 +817,15 @@
                     <div class="row">
                         <div class="col">
                             <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend w-50">
-                                <span class="input-group-text w-100" id="basic-addon1">Input</span>
-                            </div>
-                            <input type="number" class="form-control form-control-sm" id="input" name="input" min="0" step="0.01">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Input</span>
+                                </div>
+                                <input type="number" class="form-control form-control-sm" id="input" name="input" min="0" step="0.01">
+                                <div class="input-group-text">
+                                    <input type="checkbox" value="1" id="is_partial" name="is_partial">
+                                    {{-- <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input"> --}}
+                                 </div>
+                                <input type="text" class="form-control form-control-sm" placeholder="Partial?" id="input" name="input" disabled>
                             </div>
                         </div>
                     </div>

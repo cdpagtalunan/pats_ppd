@@ -26,6 +26,7 @@ class MimfController extends Controller
             'pps_po_received_info.pps_dieset_info.pps_warehouse_info',
         ])
         ->where('logdel', 0)
+        ->orderBy('control_no', 'DESC')
         ->get();
 
         return DataTables::of($get_mimfs)
@@ -177,6 +178,24 @@ class MimfController extends Controller
         ->where('OrderNo',$request->getValue)
         ->where('logdel', 0)
         ->get();
-        return response()->json(['getPoReceivedPmiPo'  => $get_po_received_pmi_po]);
+
+        $in = 0;
+        $out = 0;
+        $total_balanace = 0;
+        
+        if(count($get_po_received_pmi_po) > 0){
+            if($get_po_received_pmi_po[0]->pps_dieset_info != null){
+                if ($get_po_received_pmi_po[0]->pps_dieset_info->pps_warehouse_info != null) {
+                    for($i=0; $i < count($get_po_received_pmi_po[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info); $i++) { 
+                        $in += $get_po_received_pmi_po[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info[$i]->In;
+                        $out += $get_po_received_pmi_po[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info[$i]->Out;
+                    }
+                    $total_balanace = number_format($in-$out, 2, '.', '');
+                    // $total_balanace = filter_var($in-$out, FILTER_SANITIZE_NUMBER_INT);
+                }
+            }
+        }
+        // return count($get_po_received_pmi_po[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info);
+        return response()->json(['getPoReceivedPmiPo'  => $get_po_received_pmi_po, 'totalBalance' => $total_balanace]);
     }
 }

@@ -67,11 +67,105 @@ class FirstMoldingStationController extends Controller
     //     }
     // }
 
+// public function saveFirstMoldingStation(FirstMoldingStationRequest $request)
+    // {
+    //     date_default_timezone_set('Asia/Manila');
+    //     // return $request->is_partial;
+    //     try{
+    //         $is_exist_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+    //         ->where('station',$request->station)
+    //         ->where('is_partial',0)
+    //         ->whereNull('deleted_at')
+    //         ->exists();
+    //         if($is_exist_first_molding_detail_station == 1){
+    //             return response()->json( [ 'result' => 2,'error_msg' => 'Station is already exists' ] ,409);
+    //         }
+    //         if( isset($request->first_molding_detail_id) ){
+    //             $first_molding_detail_id = FirstMoldingDetail::where('id',$request->first_molding_detail_id)
+    //             ->update([
+    //                 'first_molding_id' => $request->first_molding_id,
+    //                 'station' => $request->station,
+    //                 'date' => $request->date,
+    //                 'operator_name' => $request->operator_name,
+    //                 'input' => $request->input,
+    //                 'ng_qty' => $request->ng_qty,
+    //                 'output' => $request->output,
+    //                 'yield' => $request->station_yield,
+    //                 'is_partial'=> isset($request->is_partial) ? $request->is_partial : 0 ,
+    //                 'remarks' => $request->remarks,
+    //                 'updated_at' => date('Y-m-d H:i:s'),
+    //             ]);
+    //             $first_molding_detail_id = $request->first_molding_detail_id;
+    //         }else{
+    //             // return 'add';
+    //             $get_first_molding_detail_id = FirstMoldingDetail::insertGetId([
+    //                 'first_molding_id' => $request->first_molding_id,
+    //                 'station' => $request->station,
+    //                 'date' => $request->date,
+    //                 'operator_name' => $request->operator_name,
+    //                 'input' => $request->input,
+    //                 'ng_qty' => $request->ng_qty,
+    //                 'output' => $request->output,
+    //                 'yield' => $request->station_yield,
+    //                 'is_partial'=> isset($request->is_partial) ? $request->is_partial : 0 ,
+    //                 'remarks' => $request->remarks,
+    //                 'created_at' => date('Y-m-d H:i:s'),
+    //             ]);
+    //             $first_molding_detail_id = $get_first_molding_detail_id;
+    //         }
+
+    //         // $is_first_molding_station = FirstMoldingDetail::where('id',$first_molding_detail_id)->where(['station',8])->count();
+
+    //         return response()->json( [ 'result' => 1 ] );
+    //         /*
+    //             TODO: Save Auto Prod Lot
+    //             TODO: Multiple Resin Lot Number Virgin at Recycle
+    //         */
+    //         if(isset($request->mod_id)){
+    //             // FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
+    //             //     'deleted_at' => date('Y-m-d H:i:s')
+    //             // ]);
+    //             $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
+
+    //             foreach ( $request->mod_id as $key => $value_mod_id) {
+    //                 FirstMoldingDetailMod::insert([
+    //                     'first_molding_detail_id'   => $first_molding_detail_id,
+    //                     'defects_info_id'           => $request->mod_id[$key],
+    //                     'mod_quantity'              => $request->mod_quantity[$key],
+    //                     // 'last_updated_by'           => $request->mod_quantity[$key],
+    //                     'created_at'                => date('Y-m-d H:i:s')
+    //                 ]);
+    //             }
+    //         }else{
+    //             if(FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->exists()){
+    //                 // FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
+    //                 //     'deleted_at' => date('Y-m-d H:i:s')
+    //                 // ]);
+    //                 $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
+    //             }
+    //         }
+    //     } catch (\Throwable $th) {
+    //         return $th;
+    //     }
+// }
+
     public function saveFirstMoldingStation(FirstMoldingStationRequest $request)
     {
         date_default_timezone_set('Asia/Manila');
+        // return $request->is_partial;
+        DB::beginTransaction();
         try{
-            $is_exist_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)->where('station',$request->station)->whereNull('deleted_at')->exists();
+            $arr_ng_qty = [];
+            $arr_output = [];
+            $arr_input = [];
+            $arr_visual_output = [];
+            $arr_total_machine_output = [];
+
+            $is_exist_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+            ->where('station',$request->station)
+            ->where('is_partial',0)
+            ->whereNull('deleted_at')
+            ->exists();
             if($is_exist_first_molding_detail_station == 1){
                 return response()->json( [ 'result' => 2,'error_msg' => 'Station is already exists' ] ,409);
             }
@@ -87,6 +181,7 @@ class FirstMoldingStationController extends Controller
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
                     'yield' => $request->station_yield,
+                    'is_partial'=> isset($request->is_partial) ? $request->is_partial : 0 ,
                     'remarks' => $request->remarks,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
@@ -102,24 +197,20 @@ class FirstMoldingStationController extends Controller
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
                     'yield' => $request->station_yield,
+                    'is_partial'=> isset($request->is_partial) ? $request->is_partial : 0 ,
                     'remarks' => $request->remarks,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
                 $first_molding_detail_id = $get_first_molding_detail_id;
             }
 
-            // $is_first_molding_station = FirstMoldingDetail::where('id',$first_molding_detail_id)->where(['station',8])->count();
-
-            return response()->json( [ 'result' => 1 ] );
             /*
                 TODO: Save Auto Prod Lot
                 TODO: Multiple Resin Lot Number Virgin at Recycle
             */
             if(isset($request->mod_id)){
-                // FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->update([
-                //     'deleted_at' => date('Y-m-d H:i:s')
-                // ]);
-                $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
+                
+                $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); 
 
                 foreach ( $request->mod_id as $key => $value_mod_id) {
                     FirstMoldingDetailMod::insert([
@@ -138,7 +229,91 @@ class FirstMoldingStationController extends Controller
                     $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
                 }
             }
+            /*
+                TODO: Check if the station is 7 = Camera Inspection
+                TODO: Check if the input of the Sum Camera Inspection Input is greater than Ouput of the Visual Inspection
+                TODO: else if Sum Camera Inspection Input is equal Ouput of the Visual Inspection, Save the Shipment out, ng count, total machine code to First Molding Table
+            */
+            // $station_is_exist = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)->whereNull('deleted_at')->count();
+            
+            // if($request->station == 8){
+                
+            // }
+            if($request->station == 7){ //nmodify Station is equal Camera Inspection
+                // Read all NG QTY from First Molding Details Table
+                $arr_first_molding_station_by_first_molding_id = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                                                                                            ->where('station',7) //nmodify Station is equal Camera Inspection
+                                                                                            ->whereNull('deleted_at')->get(['ng_qty','output','input']);
+                foreach ($arr_first_molding_station_by_first_molding_id as $key => $value) {
+                    $arr_ng_qty [] = $value->ng_qty;
+                    $arr_output [] = $value->output;
+                    $arr_input [] = $value->input;
+                }
+                // Calculate the NG QTY then save to First Molding Table
+                $sum_ng_qty = array_sum($arr_ng_qty);
+                $sum_output = array_sum($arr_output);
+                $sum_input = array_sum($arr_input);
+
+                $arr_output_of_visual_inspection = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                                                                                            ->where('station',6) //nmodify Station is equal Visual Inspection
+                                                                                            ->whereNull('deleted_at')->get(['output']);
+                foreach ($arr_output_of_visual_inspection as $key => $value_output_of_visual_inspection) {
+                    $arr_visual_output [] = $value_output_of_visual_inspection->output;
+                }
+                $sum_visual_output = array_sum($arr_visual_output);
+                //Check if the input of the Sum Camera Inspection Input is greater than Ouput of the Visual Inspection
+                if($sum_input > $sum_visual_output){
+                    DB::rollback();
+                    return response()->json([
+                        "result" => 0,
+                        "error_msg" => "Camera Inspection input is greater than Visual Inspection Output",
+                        "shipment_output" => $sum_output,
+                    ]);
+                }
+                //if Sum Camera Inspection Input is equal Ouput of the Visual Inspection, Save the Shipment out, ng count, total machine code to First Molding Table
+                if($sum_input == $sum_visual_output){
+
+                    $update_first_molding = FirstMolding::where('id',$request->first_molding_id)->update([
+                        'shipment_output' => $sum_output,
+                        'ng_count' => $sum_ng_qty
+                    ]);
+                    // Calculate the total machine output then save to First Molding Table
+                    $get_first_molding_by_id = FirstMolding::findOrFail($request->first_molding_id);
+
+                    $arr_total_machine_output = [
+                        $get_first_molding_by_id['target_shots'],
+                        $get_first_molding_by_id['adjustment_shots'],
+                        $get_first_molding_by_id['ng_count'],
+                        $get_first_molding_by_id['qc_samples'],
+                        $get_first_molding_by_id['prod_samples'],
+                        $get_first_molding_by_id['shipment_output'],
+                    ];
+                    $sum_total_machine_output =array_sum($arr_total_machine_output);
+
+                    $update_first_molding_total_machine_output = FirstMolding::where('id',$request->first_molding_id)->update([
+                        'total_machine_output' => $sum_total_machine_output,
+                    ]);
+                    DB::commit();
+                    return response()->json([
+                        "result" => 1,
+                        "station" => $request->station,
+                        "shipment_output" => $sum_output,
+                        "ng_count" => $sum_ng_qty,
+                        "total_machine_output" => $sum_total_machine_output,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            return response()->json( [
+                'result' => 1,
+                "station" => $request->station,
+                "shipment_output" => 0,
+                "ng_count" => 0,
+                "total_machine_output" => "0%",
+            ] );
         } catch (\Throwable $th) {
+            DB::rollback();
             return $th;
         }
     }
@@ -157,13 +332,32 @@ class FirstMoldingStationController extends Controller
     }
 
     public function getFirstMoldingStationLastOuput (Request $request){
-        $first_molding_detail = FirstMoldingDetail::where('first_molding_id',$request->first_molding_station_last_ouput)->orderBy('id','DESC')->get(['id','first_molding_id','output']);
+        $arr_output_qty= [];
+        $first_molding_detail = FirstMoldingDetail::where('first_molding_id',$request->first_molding_station_last_ouput)
+                                                    ->whereNull('deleted_at')
+                                                    ->orderBy('id','DESC')->get(['id','station','first_molding_id','output','is_partial']);
+
+        if($first_molding_detail[0]->is_partial == 1){
+            $first_molding_detail = FirstMoldingDetail::where('first_molding_id',$request->first_molding_station_last_ouput)
+                                                        ->where('station',$first_molding_detail[0]->station)
+                                                        ->whereNull('deleted_at')->get(['id','station','first_molding_id','output','is_partial']);
+            foreach ($first_molding_detail as $key => $value) {
+                $arr_output_qty[] = $value->output;
+            }
+            $last_output = array_sum($arr_output_qty);
+        }else{
+            $first_molding_detail = FirstMoldingDetail::where('first_molding_id',$request->first_molding_station_last_ouput)
+                                                    ->whereNull('deleted_at')
+                                                    ->orderBy('id','DESC')->get(['id','station','first_molding_id','output','is_partial']);
+            $last_output = $first_molding_detail[0]->output;
+        }
+
         $is_exist = count($first_molding_detail);
         if(  $is_exist > 0 ){
             return response()->json( [
                 'first_molding_station_id' => $first_molding_detail[0]->id,
                 'first_molding_id' => $first_molding_detail[0]->first_molding_id,
-                'first_molding_station_last_output' => $first_molding_detail[0]->output,
+                'first_molding_station_last_output' => $last_output,
                 'first_molding_detail_count' => $is_exist,
             ] );
         }else{
