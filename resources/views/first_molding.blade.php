@@ -247,7 +247,28 @@
                         }
                     });
                 });
+                $('#modalMaterialLotNum').on('shown.bs.modal', function () {
+                    $('#txtLotNum').focus();
+                    const mdlScanQrCode = document.querySelector("#modalMaterialLotNum");
+                    const inptQrCode = document.querySelector("#txtLotNum");
+                    let focus = false;
 
+                    mdlScanQrCode.addEventListener("mouseover", () => {
+                        if (inptQrCode === document.activeElement) {
+                            focus = true;
+                        } else {
+                            focus = false;
+                        }
+                    });
+
+                    mdlScanQrCode.addEventListener("click", () => {
+                        if (focus) {
+                            inptQrCode.focus()
+                        }
+                    });
+                });
+
+                //txtLotNum mdlScanQrCodeFirstMoldingMaterial
                 dt.firstMolding = table.FirstMoldingDetails.DataTable({
                     "processing" : true,
                     "serverSide" : true,
@@ -413,11 +434,9 @@
 
                     popup.close();
 
-                    });
+                });
 
-
-
-                    $('#btnAddFirstMolding').click(function (e) {
+                $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
                     let device_name = $('#global_input_device_name').val();
                     dt.firstMoldingStation.draw()
@@ -488,6 +507,18 @@
                             });
                         }
                     });
+                });
+                const isPartial = function (){
+                    alert('dsadas')
+                }
+
+                formModal.firstMoldingStation.find('#is_partial').change(function (e) {
+                    e.preventDefault();
+                    if ($(this).prop('checked')) {
+                        formModal.firstMoldingStation.find('#input').prop('readonly',false);
+                    }else{
+                        formModal.firstMoldingStation.find('#input').prop('readonly',true);
+                    }
                 });
 
                 $('#tableFirstMoldingStationMOD').on('keyup','.textMODQuantity', function (e) {
@@ -621,6 +652,16 @@
                     }
                 });
 
+                $('#txtLotNum').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        let scanFirstMoldingMaterialLotNo = $(this).val()
+                        console.log(('scanFirstMoldingMaterialLotNo',scanFirstMoldingMaterialLotNo));
+                        $('#virgin_material').val(scanFirstMoldingMaterialLotNo);
+                        $(this).val('');
+                        $('#modalMaterialLotNum').modal('hide');
+                    }
+                });
+
                 formModal.firstMoldingStation.find('#input').keyup(function (e) {
                     totalOutput($(this).val(),formModal.firstMoldingStation.find("#ng_qty").val());
                     totalStationYield($(this).val(),formModal.firstMoldingStation.find("#output").val());
@@ -679,19 +720,10 @@
                     savefirstMoldingStation();
                 });
 
-
-
-
-
-                $('#mdlScanQrCodeFirstMoldingMaterial').click(function (e) {
+                $('#btnScanQrFirstMoldingVirginMaterial').click(function (e){
                     e.preventDefault();
-                    // mdlScanQrCodeFirstMoldingMaterial
+                    $('#modalMaterialLotNum').modal('show');
                 });
-
-
-
-
-
 
             });
         </script>

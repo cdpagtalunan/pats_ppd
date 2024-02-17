@@ -608,6 +608,14 @@
             dataType: "json",
             success: function (response) {
                 let station_input_qty = response['first_molding_station_last_output'];
+                let first_molding_detail_count = response.first_molding_detail_count;
+                console.log('response.first_molding_detail_count',response.first_molding_detail_count);
+                if(first_molding_detail_count){
+                    formModal.firstMoldingStation.find('#input').prop('readonly',true);
+                }else{
+                    formModal.firstMoldingStation.find('#input').prop('readonly',false);
+                }
+                //first_molding_detail_count
                 let station_ng_qty = formModal.firstMoldingStation.find('#ng_qty').val();
                 formModal.firstMoldingStation.find('#input').val(station_input_qty);
                 totalOutput(station_input_qty,station_ng_qty);

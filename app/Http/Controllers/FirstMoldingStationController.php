@@ -148,7 +148,30 @@ class FirstMoldingStationController extends Controller
     //         return $th;
     //     }
 // }
+    public function getVisualInputMachineOutput(FirstMoldingStationRequest $request){
+        $arr_data = [];
+        // Read all NG QTY from First Molding Details Table
+        $arr_first_molding_station_visual_input = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                                                                            ->where('station',6) //nmodify Station is equal Visual Inspection
+                                                                            ->whereNull('deleted_at')->get(['input']);
+        
+        foreach ($arr_first_molding_station_visual_input as $key => $value) {
+            $_visual_input [] = $value->input;
+        }
+        // Calculate the NG QTY then save to First Molding Table
+        $sum_visual_input = array_sum($_visual_input);
 
+        $get_arr_machine_output = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                            ->where('station',8) //nmodify Station is equal Machine 1st Overmold
+                            ->whereNull('deleted_at')->get(['output']);
+        foreach ($get_arr_machine_output as $key => $value_output) {
+            $arr_machine_output [] = $value_output->output;
+        }
+
+        $sum_machine_output = array_sum($arr_machine_output);
+        // return $arr_data[$sum_visual_input,$sum_machine_output];
+        //Check if the input of the Sum Camera Inspection Input is greater than Ouput of the Visual Inspection
+}
     public function saveFirstMoldingStation(FirstMoldingStationRequest $request)
     {
         date_default_timezone_set('Asia/Manila');
@@ -238,7 +261,6 @@ class FirstMoldingStationController extends Controller
             if($request->station == 6){ //nmodify Station is equal Visual Inspection
                 // Machine 1st Overmold Station is the first station
                 if($first_molding_detail_count <= 1){
-                    // return 'true';
                     DB::rollback();
                     return response()->json([
                         "result" => 0,
@@ -246,29 +268,26 @@ class FirstMoldingStationController extends Controller
                     ]);
                 }
                 // Read all NG QTY from First Molding Details Table
-                $arr_first_molding_station_by_first_molding_id = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                $arr_first_molding_station_visual_input = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
                                                                                     ->where('station',6) //nmodify Station is equal Visual Inspection
-                                                                                    ->whereNull('deleted_at')->get(['ng_qty','output','input']);
-                foreach ($arr_first_molding_station_by_first_molding_id as $key => $value) {
-                    $arr_ng_qty [] = $value->ng_qty;
-                    $arr_output [] = $value->output;
-                    $arr_input [] = $value->input;
+                                                                                    ->whereNull('deleted_at')->get(['input']);
+                
+                foreach ($arr_first_molding_station_visual_input as $key => $value) {
+                    $_visual_input [] = $value->input;
                 }
                 // Calculate the NG QTY then save to First Molding Table
-                $sum_ng_qty = array_sum($arr_ng_qty);
-                $sum_output = array_sum($arr_output);
-                $sum_input = array_sum($arr_input);
+                $sum_visual_input = array_sum($_visual_input);
 
-                $get_arr_output = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                $get_arr_machine_output = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
                                     ->where('station',8) //nmodify Station is equal Machine 1st Overmold
                                     ->whereNull('deleted_at')->get(['output']);
-                foreach ($get_arr_output as $key => $value_output) {
-                    $arr_visual_output [] = $value_output->output;
+                foreach ($get_arr_machine_output as $key => $value_output) {
+                    $arr_machine_output [] = $value_output->output;
                 }
 
-                $sum_visual_output = array_sum($arr_visual_output);
+                $sum_machine_output = array_sum($arr_machine_output);
                 //Check if the input of the Sum Camera Inspection Input is greater than Ouput of the Visual Inspection
-                if($sum_input > $sum_visual_output){
+                if($sum_visual_input > $sum_machine_output){
                     DB::rollback();
                     return response()->json([
                     "result" => 0,
@@ -276,7 +295,7 @@ class FirstMoldingStationController extends Controller
                     ]);
                 }
             }
-            DB::rollback();
+            // DB::rollback();
             /*
                 TODO: Check if the station is 7 = Camera Inspection
                 TODO: Check if the input of the Sum Camera Inspection Input is greater than Ouput of the Visual Inspection
@@ -294,7 +313,6 @@ class FirstMoldingStationController extends Controller
                 }
                 // Check if the Visual Inspection is not exist, the Camera Inspection cannot be saved.
                 if($first_molding_detail_visual_inspection_count == 0){
-                    // return 'true';
                     DB::rollback();
                     return response()->json([
                         "result" => 0,
@@ -302,11 +320,15 @@ class FirstMoldingStationController extends Controller
                     ]);
                 }
                 // Read all NG QTY from First Molding Details Table
+                $arr_first_molding_station_ng_qty = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                                                                                            ->whereNull('deleted_at')->get(['ng_qty']);
                 $arr_first_molding_station_by_first_molding_id = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
                                                                                             ->where('station',7) //nmodify Station is equal Camera Inspection
                                                                                             ->whereNull('deleted_at')->get(['ng_qty','output','input']);
+                foreach ($arr_first_molding_station_ng_qty as $key => $value_first_molding_station_ng_qty) {
+                    $arr_ng_qty [] = $value_first_molding_station_ng_qty->ng_qty;
+                }
                 foreach ($arr_first_molding_station_by_first_molding_id as $key => $value) {
-                    $arr_ng_qty [] = $value->ng_qty;
                     $arr_output [] = $value->output;
                     $arr_input [] = $value->input;
                 }

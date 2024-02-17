@@ -38,9 +38,9 @@ use App\Http\Controllers\DailyChecksheetController;
 use App\Http\Controllers\ExportTraceabilityReportController;
 
 
-use App\Http\Controllers\IpqcFirstMoldingController;
-use App\Http\Controllers\IpqcSecondMoldingController;
-use App\Http\Controllers\IpqcAssemblyController;
+// use App\Http\Controllers\IpqcFirstMoldingController;
+// use App\Http\Controllers\IpqcSecondMoldingController;
+// use App\Http\Controllers\IpqcAssemblyController;
 use App\Http\Controllers\MoldingAssyIpqcController;
 
 
@@ -262,64 +262,49 @@ Route::controller(StampingIpqcController::class)->group(function () {
     Route::get('/export/{CtrlNo}', 'excel')->name('export');
 });
 
-// FIRST MOLDING -> IPQC CONTROLLER
-Route::controller(IpqcFirstMoldingController::class)->group(function () {
-    // FIRST MOLDING
-    Route::get('/view_first_molding_ipqc_data', 'view_first_molding_ipqc_data')->name('view_first_molding_ipqc_data');
-    Route::get('/get_device_from_first_molding', 'get_device_from_first_molding')->name('get_device_from_first_molding');
-    Route::get('/get_first_molding_data', 'get_first_molding_data')->name('get_first_molding_data');
-    Route::post('/add_first_molding_ipqc_inspection', 'add_first_molding_ipqc_inspection')->name('add_first_molding_ipqc_inspection');
-    Route::post('/update_first_molding_ipqc_inspection_status', 'update_first_molding_ipqc_inspection_status')->name('update_first_molding_ipqc_inspection_status');
-    Route::get('/first_molding_download_file/{id}', 'first_molding_download_file')->name('first_molding_download_file');
-});
+// // FIRST MOLDING -> IPQC CONTROLLER
+// Route::controller(IpqcFirstMoldingController::class)->group(function () {
+//     // FIRST MOLDING
+//     Route::get('/view_first_molding_ipqc_data', 'view_first_molding_ipqc_data')->name('view_first_molding_ipqc_data');
+//     Route::get('/get_device_from_first_molding', 'get_device_from_first_molding')->name('get_device_from_first_molding');
+//     Route::get('/get_first_molding_data', 'get_first_molding_data')->name('get_first_molding_data');
+//     Route::post('/add_first_molding_ipqc_inspection', 'add_first_molding_ipqc_inspection')->name('add_first_molding_ipqc_inspection');
+//     Route::post('/update_first_molding_ipqc_inspection_status', 'update_first_molding_ipqc_inspection_status')->name('update_first_molding_ipqc_inspection_status');
+//     Route::get('/first_molding_download_file/{id}', 'first_molding_download_file')->name('first_molding_download_file');
+// });
 
-// SECOND MOLDING / ASSY -> IPQC CONTROLLER
-Route::controller(IpqcSecondMoldingController::class)->group(function () {
-    // SECOND MOLDING
-    Route::get('/view_second_molding_ipqc_data', 'view_second_molding_ipqc_data')->name('view_second_molding_ipqc_data');
-    Route::get('/get_device_from_second_molding', 'get_device_from_second_molding')->name('get_device_from_second_molding');
-    Route::get('/get_second_molding_data', 'get_second_molding_data')->name('get_second_molding_data');
-    Route::post('/add_second_molding_ipqc_inspection', 'add_second_molding_ipqc_inspection')->name('add_second_molding_ipqc_inspection');
-    Route::post('/update_second_molding_ipqc_inspection_status', 'update_second_molding_ipqc_inspection_status')->name('update_second_molding_ipqc_inspection_status');
-    Route::get('/second_molding_download_file/{id}', 'second_molding_download_file')->name('second_molding_download_file');
-});
+// // SECOND MOLDING / ASSY -> IPQC CONTROLLER
+// Route::controller(IpqcSecondMoldingController::class)->group(function () {
+//     // SECOND MOLDING
+//     Route::get('/view_second_molding_ipqc_data', 'view_second_molding_ipqc_data')->name('view_second_molding_ipqc_data');
+//     Route::get('/get_device_from_second_molding', 'get_device_from_second_molding')->name('get_device_from_second_molding');
+//     Route::get('/get_second_molding_data', 'get_second_molding_data')->name('get_second_molding_data');
+//     Route::post('/add_second_molding_ipqc_inspection', 'add_second_molding_ipqc_inspection')->name('add_second_molding_ipqc_inspection');
+//     Route::post('/update_second_molding_ipqc_inspection_status', 'update_second_molding_ipqc_inspection_status')->name('update_second_molding_ipqc_inspection_status');
+//     Route::get('/second_molding_download_file/{id}', 'second_molding_download_file')->name('second_molding_download_file');
+// });
 
-//ASSEMBLE -> IPQC CONTROLLER
-Route::controller(IpqcAssemblyController::class)->group(function () {
-    // ASSEMBLY
-    Route::get('/view_assembly_ipqc_data', 'view_assembly_ipqc_data')->name('view_assembly_ipqc_data');
-    Route::get('/get_devices_from_assembly', 'get_devices_from_assembly')->name('get_devices_from_assembly');
-    Route::get('/get_assembly_data', 'get_assembly_data')->name('get_assembly_data');
-    Route::post('/add_assembly_ipqc_inspection', 'add_assembly_ipqc_inspection')->name('add_assembly_ipqc_inspection');
-    Route::post('/update_assembly_ipqc_inspection_status', 'update_assembly_ipqc_inspection_status')->name('update_assembly_ipqc_inspection_status');
-    Route::get('/assembly_download_file/{id}', 'assembly_download_file')->name('assembly_download_file');
-});
+// //ASSEMBLE -> IPQC CONTROLLER
+// Route::controller(IpqcAssemblyController::class)->group(function () {
+//     // ASSEMBLY
+//     Route::get('/view_assembly_ipqc_data', 'view_assembly_ipqc_data')->name('view_assembly_ipqc_data');
+//     Route::get('/get_devices_from_assembly', 'get_devices_from_assembly')->name('get_devices_from_assembly');
+//     Route::get('/get_assembly_data', 'get_assembly_data')->name('get_assembly_data');
+//     Route::post('/add_assembly_ipqc_inspection', 'add_assembly_ipqc_inspection')->name('add_assembly_ipqc_inspection');
+//     Route::post('/update_assembly_ipqc_inspection_status', 'update_assembly_ipqc_inspection_status')->name('update_assembly_ipqc_inspection_status');
+//     Route::get('/assembly_download_file/{id}', 'assembly_download_file')->name('assembly_download_file');
+// });
 
 // 
-//MOLDING TO ASSEMBLY -> IPQC CONTROLLER
+//FIRST MOLDING -> SECOND MOLDING -> ASSEMBLY IPQC CONTROLLER
 Route::controller(MoldingAssyIpqcController::class)->group(function () {
-    
-    Route::get('/get_device_from_first_molding', 'get_device_from_first_molding')->name('get_device_from_first_molding');
-    Route::get('/get_device_from_second_molding', 'get_device_from_second_molding')->name('get_device_from_second_molding');
-    Route::get('/get_devices_from_assembly', 'get_devices_from_assembly')->name('get_devices_from_assembly');
-
-    // Route::get('/view_first_molding_ipqc_data', 'view_first_molding_ipqc_data')->name('view_first_molding_ipqc_data');
-    // Route::get('/get_first_molding_data', 'get_first_molding_data')->name('get_first_molding_data');
-    // Route::post('/add_first_molding_ipqc_inspection', 'add_first_molding_ipqc_inspection')->name('add_first_molding_ipqc_inspection');
-    // Route::post('/update_first_molding_ipqc_inspection_status', 'update_first_molding_ipqc_inspection_status')->name('update_first_molding_ipqc_inspection_status');
-    // Route::get('/first_molding_download_file/{id}', 'first_molding_download_file')->name('first_molding_download_file');
-
-
-    Route::get('/view_assembly_ipqc_data', 'view_assembly_ipqc_data')->name('view_assembly_ipqc_data');
-    Route::get('/get_assembly_data', 'get_assembly_data')->name('get_assembly_data');
+    Route::get('/get_devices_from_ipqc', 'get_devices_from_ipqc')->name('get_devices_from_ipqc');
+    Route::get('/verify_production_lot', 'verify_production_lot')->name('verify_production_lot');
+    Route::get('/view_ipqc_data', 'view_ipqc_data')->name('view_ipqc_data');
+    Route::get('/get_ipqc_data', 'get_ipqc_data')->name('get_ipqc_data');
     Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
     Route::post('/update_ipqc_inspection_status', 'update_ipqc_inspection_status')->name('update_ipqc_inspection_status');
-    // Route::get('/assembly_download_file/{id}', 'assembly_download_file')->name('assembly_download_file');
-
-     //New Code 02/12/2024
-     Route::get('/view_ipqc_data', 'view_ipqc_data')->name('view_ipqc_data');
-     Route::get('/get_ipqc_data', 'get_ipqc_data')->name('get_ipqc_data');
-    Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
+    Route::get('/download_file/{id}', 'download_file')->name('download_file');
 });
 
 Route::controller(PdfController::class)->group(function () {
@@ -495,8 +480,9 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::post('/complete_second_molding', 'completeSecondMolding')->name('complete_second_molding');
     Route::get('/get_second_molding_qr_code', 'getSecondMoldingQrCode')->name('get_second_molding_qr_code');
     Route::get('/get_last_shipment_output', 'getLastShipmentOuput')->name('get_last_shipment_output');
-    Route::get('/get_user', 'getUser')->name('get_user');
+    Route::get('/get_user_for_second_molding', 'getUser')->name('get_user_for_second_molding');
     Route::get('/get_machine', 'getMachine')->name('get_machine');
+    Route::get('/get_dieset_details_by_device_name_second_molding', 'getDiesetDetailsByDeviceNameSecondMolding')->name('get_dieset_details_by_device_name_second_molding');
 });
 /* Second Molding Station Controller */
 Route::controller(SecondMoldingStationController::class)->group(function () {
@@ -517,6 +503,8 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/get_data_from_matrix', 'get_data_from_matrix')->name('get_data_from_matrix');
     Route::get('/chk_device_prod_lot_from_first_molding', 'chk_device_prod_lot_from_first_molding')->name('chk_device_prod_lot_from_first_molding');
     Route::get('/chk_device_prod_lot_from_sec_molding', 'chk_device_prod_lot_from_sec_molding')->name('chk_device_prod_lot_from_sec_molding');
+    Route::post('/update_assy_runcard_status', 'update_assy_runcard_status')->name('update_assy_runcard_status');
+    Route::get('/get_assembly_qr_code', 'get_assembly_qr_code')->name('get_assembly_qr_code');
     // Route::get('/chck_existing_stations', 'chck_existing_stations')->name('chck_existing_stations'); //CLARK DITO KANA
 });
 
@@ -568,10 +556,11 @@ Route::controller(MimfController::class)->group(function () {
 Route::controller(StampingHistoryController::class)->group(function () {
     Route::get('/view_stamping_history', 'viewStampingHistory')->name('view_stamping_history');
     Route::get('/get_stamping_prodn_material_name', 'getStampingProdnMaterialName')->name('get_stamping_prodn_material_name');
-    // Route::get('/employee_id', 'employeeID')->name('employee_id');
-    // Route::post('/update_mimf', 'updateMimf')->name('update_mimf');
-    // Route::get('/get_mimf_by_id', 'getMimfById')->name('get_mimf_by_id');
-    // Route::get('/get_pmi_po', 'getPmiPoFromPoReceived')->name('get_pmi_po');
+    Route::get('/get_user', 'getPatsPpdUser')->name('get_user');
+    Route::get('/get_previous_shot_accumulated_by_partname', 'getPreviousShotAccumulatedByPartName')->name('get_previous_shot_accumulated_by_partname');
+    Route::get('/employee_id', 'employeeID')->name('employee_id');
+    Route::post('/update_stamping_history', 'updateStampingHistory')->name('update_stamping_history');
+    Route::get('/get_stamping_history_by_id', 'getStampingHistoryById')->name('get_stamping_history_by_id');
 });
 
 /* PRESS STAMPING MACHINE CHHECKSHEET */
@@ -579,4 +568,13 @@ Route::controller(DailyChecksheetController::class)->group(function () {
     Route::get('/view_daily_checksheet', 'viewDailyChecksheet')->name('view_daily_checksheet');
     Route::get('/get_daily_checksheet_data', 'getDailyChecksheetData')->name('get_daily_checksheet_data');
     Route::post('/add_daily_checksheet', 'addDailyChecksheet')->name('add_daily_checksheet');
-})
+    Route::post('/update_status_checked_by', 'updateStatusCheckedBy')->name('update_status_checked_by');
+    Route::post('/update_status_conformed_by', 'updateStatusConformedBy')->name('update_status_conformed_by');
+    
+    //WEEKLY 
+    Route::get('/get_weekly_machine', 'getWeeklyMachine')->name('get_weekly_machine');
+    Route::get('/view_weekly_checksheet', 'viewWeeklyChecksheet')->name('view_weekly_checksheet');
+    Route::post('/add_weekly_checksheet', 'addWeeklyChecksheet')->name('add_weekly_checksheet');
+    Route::get('/get_weekly_checksheet_data', 'getWeeklyChecksheetData')->name('get_weekly_checksheet_data');
+});
+
