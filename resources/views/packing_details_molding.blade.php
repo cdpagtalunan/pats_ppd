@@ -99,7 +99,7 @@
                                     <div style="float: right;">
                                     </div>
 
-                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active" id="Packing-tab" data-bs-toggle="tab" href="#packingTab" role="tab" aria-controls="packingTab" aria-selected="true">Packing Data</a>
                                         </li>
@@ -107,9 +107,12 @@
                                             <a class="nav-link" id="Received-tab" data-bs-toggle="tab" href="#moldingReceived" role="tab" aria-controls="moldingReceived" aria-selected="false">Molding Received</a>
                                         </li> --}}
                                     </ul>
-
                                     <div class="tab-content" id="myTabContent">
                                         <div class="tab-pane fade show active" id="packingTab" role="tabpanel" aria-labelledby="packingTab-tab"><br>
+                                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#modalPackingScanLotNumber" id="btnPackingScanLotNumber"><i
+                                                class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
+                                            </button><br><br>
                                             <div class="table-responsive">
                                                 <table id="tblPackingDetailsForEndorsement" class="table table-sm table-bordered table-striped table-hover"
                                                     style="width: 100%;">
@@ -259,6 +262,21 @@
                 </form>
             </div>
             <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+     <!-- MODALS -->
+     <div class="modal fade" id="modalPackingScanLotNumber">
+        <div class="modal-dialog modal-dialog-center">
+            <div class="modal-content modal-sm">
+                <div class="modal-body">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanPackingLotNumber" name="scan_packing_lot_number" autocomplete="off">
+                    <div class="text-center text-secondary"><span id="modalScanPackingIdText">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
     </div>
@@ -448,37 +466,37 @@
                     ],
                 });
 
-                 dtPackingDetailsE = $("#tblPackingDetailsEndorsed").DataTable({
-                    "processing"    : false,
-                    "serverSide"    : true,
-                    "destroy"       : true,
-                    "ajax" : {
-                        url: "view_packing_details_e",
-                        data: function (param){
-                            param.po_no = $("#txtSearchPONum").val();
-                        },
-                    },
+                //  dtPackingDetailsE = $("#tblPackingDetailsEndorsed").DataTable({
+                //     "processing"    : false,
+                //     "serverSide"    : true,
+                //     "destroy"       : true,
+                //     "ajax" : {
+                //         url: "view_packing_details_e",
+                //         data: function (param){
+                //             param.po_no = $("#txtSearchPONum").val();
+                //         },
+                //     },
 
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "stamping_production_info.part_code"},
-                        { "data" : "stamping_production_info.material_name"},
-                        { "data" : "stamping_production_info.prod_lot_no"},
-                        { "data" : "stamping_production_info.ship_output"},
-                        { "data" : "first_molding_info.endorsedby" },
-                        { "data" : "first_molding_info.date_endorsed"},
-                        { "data" : "first_molding_info.receivedby"},
-                        { "data" : "first_molding_info.date_received" },
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": "_all"},
-                        {
-                            "targets": [5,6,7,8],
-                            "data": null,
-                            "defaultContent": "---"
-                        },
-                    ],
-                });
+                //     "columns":[
+                //         { "data" : "action", orderable:false, searchable:false },
+                //         { "data" : "stamping_production_info.part_code"},
+                //         { "data" : "stamping_production_info.material_name"},
+                //         { "data" : "stamping_production_info.prod_lot_no"},
+                //         { "data" : "stamping_production_info.ship_output"},
+                //         { "data" : "first_molding_info.endorsedby" },
+                //         { "data" : "first_molding_info.date_endorsed"},
+                //         { "data" : "first_molding_info.receivedby"},
+                //         { "data" : "first_molding_info.date_received" },
+                //     ],
+                //     "columnDefs": [
+                //         {"className": "dt-center", "targets": "_all"},
+                //         {
+                //             "targets": [5,6,7,8],
+                //             "data": null,
+                //             "defaultContent": "---"
+                //         },
+                //     ],
+                // });
 
                 let rowCount;
                 let dataStatus;
@@ -535,6 +553,40 @@
                     ],
                 });
 
+                $('#modalPackingScanLotNumber').on('shown.bs.modal', function () {
+                    $('#txtScanPackingLotNumber').focus();
+                });
+
+                $('#txtScanPackingLotNumber').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        try{
+                            scannedItem = JSON.parse($(this).val());
+                            // console.log('scannedItem', scannedItem);
+                            $('#tblPackingDetailsForEndorsement tbody tr').each(function(index, tr){
+                                let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+
+                                let powerOff = $(this).find('td:nth-child(1)').children();
+
+                                console.log('scannedItem', scannedItem['production_lot_no']);
+                                console.log('lot_no', lot_no);
+                                console.log('powerOff', powerOff);
+
+                                if(scannedItem['production_lot_no'] === lot_no){
+                                    $(tr).addClass('checked-ok');
+                                    powerOff.removeAttr('style');
+                                    $('#modalPackingScanLotNumber').modal('hide');
+                                }
+                                // console.log(lot_no);
+                            })
+                        }
+                        catch (e){
+                            toastr.error('Invalid Sticker');
+                            console.log(e);
+                        }
+                        $(this).val('');
+                    }
+                });
+
 
                 $('#modalVerifyData').on('shown.bs.modal', function () {
                     $('#txtScanVerifyData').focus();
@@ -546,15 +598,18 @@
                         try{
                             // alert('hehe');
                             scannedItem = JSON.parse($(this).val());
-                            console.log('scannedItem', scannedItem['sublot_counter']);
+                            console.log('scannedItem', scannedItem);
                             if(scannedItem['cat'] == 2){
                                 $('#tblViewSublotDetails tbody tr').each(function(index, tr){
                                     let second_stamping_sub_lot = $(tr).find('td:eq(0)').text().trim().toUpperCase();
+                                    let second_stamping_prod_lot = $(tr).find('td:eq(3)').text().trim().toUpperCase();
                                     // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
 
                                     let powerOff = $(this).find('td:nth-child(1)').children();
 
-                                    if(scannedItem['sublot_counter'].substring(0,1) == second_stamping_sub_lot){
+                                    // 
+
+                                    if(scannedItem['sublot_counter'].substring(0,1) == second_stamping_sub_lot && scannedItem['production_lot_no'] === second_stamping_prod_lot){
                                         $(tr).addClass('checked-ok');
                                         let id = $(this).attr('id');
                                         if(!idsOfSubLotDetails.includes(id)){
@@ -605,9 +660,11 @@
                 $('#txtScanPackerId').on('keyup', function(e){
                     let toScanEmpId =  $('#txtScanPackerId').val();
                     let toScanMoldingId   =  $('#txtMoldingId').val();
+                    let stampingDetailsId   =  $('#txtStampingDetailsId').val();
                     let scannedEmpId = {
                     'scanned_emp_id' : toScanEmpId,
-                    'molding_id'     : toScanMoldingId
+                    'molding_id'     : toScanMoldingId,
+                    'stamping_details_id'     : stampingDetailsId
                     }
                     if(e.keyCode == 13){
                         if(moldingId != null){

@@ -236,7 +236,7 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->getColumnDimension('BI')->setWidth(10);
                 $event->sheet->getColumnDimension('BJ')->setWidth(10);
                 $event->sheet->getColumnDimension('BK')->setWidth(10);
-                $event->sheet->getColumnDimension('BL')->setWidth(10);
+                // $event->sheet->getColumnDimension('BL')->setWidth(10);
 
                 $event->sheet->setCellValue('A1', $stamping_data[0]->material_name .' Parts Lot Management Record');
                 $event->sheet->getDelegate()->mergeCells('A1:BL1');
@@ -269,15 +269,15 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->getDelegate()->getStyle('V3:W3')->applyFromArray($hv_center);
                 $event->sheet->getDelegate()->getStyle('V3:W3')->applyFromArray($arial_font12_bold);
 
-                $event->sheet->getDelegate()->mergeCells('X3:AA3');
+                $event->sheet->getDelegate()->mergeCells('X3:Z3');
                 $event->sheet->setCellValue('X3',"OQC");
-                $event->sheet->getDelegate()->getStyle('X3:AA3')->applyFromArray($hv_center);
-                $event->sheet->getDelegate()->getStyle('X3:AA3')->applyFromArray($arial_font12_bold);
+                $event->sheet->getDelegate()->getStyle('X3:Z3')->applyFromArray($hv_center);
+                $event->sheet->getDelegate()->getStyle('X3:Z3')->applyFromArray($arial_font12_bold);
 
-                $event->sheet->getDelegate()->mergeCells('AB3:AE3');
-                $event->sheet->setCellValue('AB3',"PACKING");
-                $event->sheet->getDelegate()->getStyle('AB3:AE3')->applyFromArray($hv_center);
-                $event->sheet->getDelegate()->getStyle('AB3:AE3')->applyFromArray($arial_font12_bold);
+                $event->sheet->getDelegate()->mergeCells('AA3:AE3');
+                $event->sheet->setCellValue('AA3',"PACKING");
+                $event->sheet->getDelegate()->getStyle('AA3:AE3')->applyFromArray($hv_center);
+                $event->sheet->getDelegate()->getStyle('AA3:AE3')->applyFromArray($arial_font12_bold);
 
                 $event->sheet->getDelegate()->mergeCells('AF3:AI3');
                 $event->sheet->setCellValue('AF3',"WAREHOUSE");
@@ -299,15 +299,15 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->getDelegate()->getStyle('BB3:BC3')->applyFromArray($hv_center);
                 $event->sheet->getDelegate()->getStyle('BB3:BC3')->applyFromArray($arial_font12_bold);
 
-                $event->sheet->getDelegate()->mergeCells('BD3:BG3');
+                $event->sheet->getDelegate()->mergeCells('BD3:BF3');
                 $event->sheet->setCellValue('BD3',"OQC");
-                $event->sheet->getDelegate()->getStyle('BD3:BG3')->applyFromArray($hv_center);
-                $event->sheet->getDelegate()->getStyle('BD3:BG3')->applyFromArray($arial_font12_bold);
+                $event->sheet->getDelegate()->getStyle('BD3:BF3')->applyFromArray($hv_center);
+                $event->sheet->getDelegate()->getStyle('BD3:BF3')->applyFromArray($arial_font12_bold);
 
-                $event->sheet->getDelegate()->mergeCells('BH3:BL3');
-                $event->sheet->setCellValue('BH3',"PACKING");
-                $event->sheet->getDelegate()->getStyle('BH3:BL3')->applyFromArray($hv_center);
-                $event->sheet->getDelegate()->getStyle('BH3:BL3')->applyFromArray($arial_font12_bold);
+                $event->sheet->getDelegate()->mergeCells('BG3:BK3');
+                $event->sheet->setCellValue('BG3',"PACKING");
+                $event->sheet->getDelegate()->getStyle('BG3:BK3')->applyFromArray($hv_center);
+                $event->sheet->getDelegate()->getStyle('BG3:BK3')->applyFromArray($arial_font12_bold);
 
 
                 $event->sheet->setCellValue('A4',"Operator Name");
@@ -371,9 +371,9 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->setCellValue('BG4',"2nd Press Yield");
                 $event->sheet->setCellValue('BH4',"Packer");
                 $event->sheet->setCellValue('BI4',"Packing Date");
-                $event->sheet->setCellValue('BJ4',"Discrepancy");
-                $event->sheet->setCellValue('BK4',"Total Shipment Output");
-                $event->sheet->setCellValue('BL4',"Shipment Date");
+                // $event->sheet->setCellValue('BJ4',"Discrepancy");
+                $event->sheet->setCellValue('BJ4',"Total Shipment Output");
+                $event->sheet->setCellValue('BK4',"Shipment Date");
 
 
                 
@@ -483,11 +483,18 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                         }
 
                         if (isset($stamping_data[$i]->oqc_details)) {
-                            
                             $event->sheet->setCellValue('BD'.$start_col, $stamping_data[$i]->oqc_details->inspector);
                             $event->sheet->setCellValue('BE'.$start_col, $stamping_data[$i]->oqc_details->date_inspected);
                             $event->sheet->setCellValue('BF'.$start_col, $stamping_data[$i]->oqc_details->num_of_defects);
                             $event->sheet->setCellValue('BG'.$start_col, ("=(AZ".$start_col."-BF".$start_col.")/AZ".$start_col.""));
+
+                            if (isset($stamping_data[$i]->oqc_details->first_molding_info)){
+                                $second_molding_packing_date = substr($stamping_data[$i]->oqc_details->first_molding_info->date_counted,0,10);
+
+                                $event->sheet->setCellValue('BH'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->user_validated_by_info->firstname);
+                                $event->sheet->setCellValue('BI'.$start_col, $second_molding_packing_date);
+                                $event->sheet->setCellValue('BJ'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->shipment_output);
+                            }
                         }
 
                     }

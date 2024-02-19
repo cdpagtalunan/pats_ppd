@@ -484,6 +484,6 @@ Route::view('/production_history','production_history')->name('production_histor
 
 //EXPORT CN171 REPORT
 Route::controller(ExportTraceabilityReportController::class)->group(function () {
-    Route::get('/export_cn171_traceability_report/{po_number}', 'exportCN171TraceabilityReport')->name('export_cn171_traceability_report');
+    Route::get('/export_cn171_traceability_report/{po_number}/{date_from}/{date_to}', 'exportCN171TraceabilityReport')->name('export_cn171_traceability_report');
 });
 // Route::get('/export_cn171_traceability_report/{po_number}', 'ExportTraceabilityReportController@export_cn171_traceability_report');

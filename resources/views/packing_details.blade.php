@@ -359,7 +359,7 @@
                         <div class="col-sm-12">
                             <strong>Final Packing Details</strong>
 
-                            <button class="btn btn-primary" data-bs-toggle="modal" style="float: right;"
+                            <button disabled class="btn btn-primary" data-bs-toggle="modal" style="float: right;"
                                 data-bs-target="#modalValidateFinalPackingDetails" id="btnScanLotNumber"><i
                                     class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
                             </button>
@@ -397,7 +397,7 @@
     </div>
     <!-- /.modal -->
 
-
+    
     <!-- MODALS -->
     <div class="modal fade" id="modalValidateFinalPackingDetails">
         <div class="modal-dialog modal-dialog-center">
@@ -462,7 +462,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
-
+    
         <!-- MODALS -->
         <div class="modal fade" id="modalScanQRtoReprint">
             <div class="modal-dialog center">
@@ -540,7 +540,7 @@
 
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status" },
+                        { "data" : "status"},
                         { "data" : "packing_ctrl_no"},
                         { "data" : "po"},
                     ],
@@ -637,7 +637,7 @@
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
-                            }
+                            } 
                         });
                         $(this).val('');
                     }
@@ -645,7 +645,7 @@
                 // FINAL PACKING VIEW PER PACKING LIST
                 let rowCount;
                 let dataStatus;
-                let finalPackingDetailsCtrlNo;
+                let finalPackingDetailsCtrlNo; 
                 $(document).on('click', '.btnViewFinalPackingDetails', function(e){
                     e.preventDefault();
                     finalPackingDetailsCtrlNo =  $(this).attr('data-ctrl-no');
@@ -654,9 +654,9 @@
                     if(dataStatus == 0 || dataStatus == 1){
                         $('#btnScanLotNumber').removeAttr('disabled');
                     }
-
+                    
                     // console.log(finalPackingDetailsCtrlNo);
-
+                      
                     $('#txtFinalPackingCtrlId').val(finalPackingDetailsCtrlNo);
                     $('#modalViewFinalPackingDetails').modal('show');
 
@@ -666,7 +666,7 @@
                         // rowCount = rowCount - 1;
                         // console.log('rowCount', rowCount);
                     }, 500);
-
+                    
                 });
 
                 let dtViewFinalPackingDetailsForValidation = $("#tblViewFinalPackingDetails").DataTable({
@@ -721,11 +721,11 @@
                             // alert('haha');
                             scannedItem = JSON.parse($(this).val());
                             $('#tblViewFinalPackingDetails tbody tr').each(function(index, tr){
-
+                                
                                 let lot_no = $(tr).find('td:eq(3)').text().trim().toUpperCase();
                                 // let removeClassDNoneButton = $(this).find('td:nth-child(1)').children().children();
                                 console.log('scannedItem', scannedItem);
-
+                                
                                 if(scannedItem['production_lot_no'] === lot_no){
                                     $(tr).addClass('checked-ok');
                                     let id = $(this).attr('id');
@@ -734,6 +734,7 @@
                                     }
                                     // console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
                                     // removeClassDNoneButton.removeAttr('style')
+                                    $('#modalValidateFinalPackingDetails').modal('hide');
                                 }
 
                                 let scannedRow = dtViewFinalPackingDetailsForValidation.$('tr.checked-ok');
@@ -742,8 +743,6 @@
                                     console.log('selectedCount', scannedRow.length);
                                     if (scannedRow.length == rowCount) {
                                         $('#btnValidatePackingDetails').removeAttr('disabled');
-                                        $('#modalValidateFinalPackingDetails').modal('hide');
-
                                     }
                                 // Otherwise, if no rows are selected
                                 }
@@ -768,8 +767,8 @@
                     e.preventDefault();
                     console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
                 });
-
-                let validateUser = [];
+                
+                let validatedUser = [];
                 $(document).on('keypress', '#txtPackerId', function(e){
                     let toScanId =  $('#txtPackerId').val();
                     let dataScanned = {
@@ -780,13 +779,13 @@
                     }
                     if(e.keyCode == 13){
                         if(dataStatus == 0 ){
-                            validateUser = [4,9];
+                            validatedUser = [4,9];
                         }else{
-                            validateUser = [2,5];
+                            validatedUser = [2,5];
                         }
-                        console.log('validateUser', validateUser);
+                        console.log('validatedUser', validatedUser);
                         // return;
-                        validateUser($(this).val().toUpperCase(), validateUser, function(result){
+                        validateUser($(this).val().toUpperCase(), validatedUser, function(result){
                             if(result == true){
                                 e.preventDefault();
                                 let data1 = $('#formFinalPackingScanOperatorId').serialize() + '&' + $.param(dataScanned);
@@ -811,10 +810,10 @@
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
-                            }
+                            } 
                         });
                         $(this).val('');
-                    }
+                    }    
                 });
 
                 //printing of sticker
@@ -850,6 +849,10 @@
                         dtFinalPackingDetails.draw();
                         dtPrelimPackingDetails.draw();
                     }
+                });
+
+                $('#modalScanQRSave').on('shown.bs.modal', function () {
+
                 });
 
                 $('#btnGeneratePackingDetailsQr').on('click', function(){
@@ -901,7 +904,8 @@
 
                 $(document).on('keyup','#txtScanUserIdtoReprint', function(e){
                     if(e.keyCode == 13){
-                        if(scanningFunction === "reprintPackingQr"){
+                        console.log(scanningFunction);
+                        if(scanningFunction == "reprintPackingQr"){
                             validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                                 console.log(result);
                                 if(result == true){
@@ -923,9 +927,8 @@
                     }
                 });
 
-                // PRELIMINARY PACKING VALIDATION
-                $('#modalPackingScanLotNumber').on('shown.bs.modal', function () {
-                    $('#txtScanPackingLotNumber').focus();
+                $('#modalScanQRtoReprint').on('shown.bs.modal', function () {
+                    $('#txtScanUserIdtoReprint').focus();
                 });
 
                 $('#txtScanPackingLotNumber').on('keyup', function(e){
@@ -979,7 +982,7 @@
                     'scan_id' : toScanQcId
                     }
                         if(e.keyCode == 13){
-                            validateUser($(this).val().toUpperCase(), [2,5], function(result){
+                            validateUser($(this).val().toUpperCase(), [2,5], function(result){    
                                 if(result == true){
                                     // alert('true');
                                     e.preventDefault();
@@ -1003,7 +1006,7 @@
                                 }
                                 else{ // Error Handler
                                     toastr.error('User not authorize!');
-                                }
+                                } 
 
                             });
                         }

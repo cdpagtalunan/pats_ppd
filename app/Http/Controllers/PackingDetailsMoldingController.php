@@ -45,12 +45,12 @@ class PackingDetailsMoldingController extends Controller
                     $id = $packing_details->first_molding_info->id;
                     if($packing_details->first_molding_info->status == 0){
                         // $result .= "<button class='btn btn-warning btn-sm btnQCScanMoldingID' style='display: none;' data-id='".$packing_details->first_molding_info->id."'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
-                        $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
+                        $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' style='display: none;' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
                     }else if($packing_details->first_molding_info->status == 1){
                         $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
                     }
                 }else{
-                    $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
+                    $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' style='display: none;' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
 
                 }
                 return $result;
@@ -167,15 +167,32 @@ class PackingDetailsMoldingController extends Controller
 
         $data = $request->all();
 
-        // return $data;
+        // $sublot_details = StampingProductionSublot::with(['stamping_info'])
+        // ->where('stamp_prod_id', $request->stamping_details_id)
+        // ->get();
 
-        $array = [
-            'checkedby'             => $request->scanned_emp_id,
-            'date_checked'          => date('Y-m-d H:i:s'),
-            'status'                => 1,
-        ];
+        // return $sublot_details;
+        $packing_details = FirstStampingProduction::
+            where('id', $request->stamping_details_id)
+            ->where('stamping_cat', 2)
+            ->get();
 
-        PackingDetailsMolding::where('id', $request->molding_id)->update($array);
+        // return $packing_details;
+
+        for ($i=0; $i <count($packing_details) ; $i++) { 
+            $shipment_output = $packing_details[$i]->ship_output;
+
+            $array = [
+                'checkedby'             => $request->scanned_emp_id,
+                'shipment_output'       => $shipment_output,
+                'date_checked'          => date('Y-m-d H:i:s'),
+                'status'                => 1,
+            ];
+            PackingDetailsMolding::where('id', $request->molding_id)->update($array);
+        }
+
+       
+
 
         return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
     }

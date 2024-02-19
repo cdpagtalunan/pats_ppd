@@ -33,3 +33,6 @@
 
 <!-- Custom CSS -->
 <link rel="stylesheet" href="{{ asset('public/css/custom.css') }}">
+
+<!-- Datepicker -->
+<link rel="stylesheet" href="{{ asset('public/css/datepicker.css') }}">
