@@ -55,7 +55,7 @@
                             <a href="{{ route('materialprocess') }}" class="nav-link">
                                 <i class="fas fa-list-ol"> </i>
                                 <p>
-                                    Material Process
+                                    Matrix
                                 </p>
                             </a>
                         </li>
@@ -144,8 +144,15 @@
                             </ul>
                         </li>
                     @endif
-                    @if (in_array(Auth::user()->position, [0,1,4,9,11]))
-                        <li class="nav-header mt-3"><strong>PRODUCTION</strong></li>
+                    {{-- <li class="nav-item">
+                        <a href="{{ route("press_stamping_kyori_machine_checksheet") }}" class="nav-link">
+                            <i class="fa-solid fa-list-check"></i>
+                            <p>Press Stamping Checksheet</p>
+                        </a>
+                    </li> --}}
+
+                    @if (in_array(Auth::user()->position, [0,1,4,11]))
+                        <li class="nav-header mt-3"><strong>STAMPING</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 {{-- <i class="fa-solid fa-box-open"> </i> --}}
@@ -168,8 +175,26 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route("press_stamping_machine_checksheet") }}" class="nav-link">
+                                <i class="fa-solid fa-list-check"></i>
+                                <p>Press Stamping Machine Checksheet</p>
+                            </a>
+                        </li>
 
+                        <li class="nav-item">
+                            <a href="{{ route("5s_checksheet") }}" class="nav-link">
+                                <i class="fa-solid fa-list-check"></i>
+                                <p>5S Checksheet</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route("stamping_history") }}" class="nav-link">
+                                <i class="fa-solid fa-bookmark"></i>
+                                <p>Stamping History</p>
+                            </a>
                         </li>
                     @endif
 
@@ -230,6 +255,19 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('Material_Issuance_Monitoring_Form') }}" class="nav-link">
+                                <i class="fa-solid fa-person-chalkboard"></i>                                
+                                <p>Material Issuance</p>
+                                <p class="ml-4">Monitoring Form</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route("pats_shipment_con") }}" class="nav-link">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <p>Shipment Confimation</p>
+                            </a>
                         </li>
                     @endif
 
@@ -361,12 +399,6 @@
                             </div>
                         </a>
                         <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route("pats_shipment_con") }}" class="nav-link">
-                                    <i class="far fa-circle nav-icon ml-2"> </i>
-                                    <p>Shipment Confimation</p>
-                                </a>
-                            </li>
                             <li class="nav-item">
                                 <a href="{{ route("ppts_oqc_inspection") }}" class="nav-link">
                                     <i class="far fa-circle nav-icon ml-2"> </i>

@@ -11,12 +11,14 @@ use App\Models\StampingIpqc;
 use Illuminate\Http\Request;
 
 use App\Models\MaterialProcess;
+use App\Models\SecMoldingRuncard;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\FirstStampingProduction;
 use App\Models\StampingProductionSublot;
 use App\Models\StampingProductionHistory;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class StampingController extends Controller
 {
@@ -29,7 +31,7 @@ class StampingController extends Controller
         ->where('po_num', $request->po)
         ->where('stamping_cat', $request->stamp_cat)
         ->get();
-        
+
 
         return DataTables::of($stamping_data)
         ->addColumn('action', function($stamping_data){
@@ -41,49 +43,56 @@ class StampingController extends Controller
             */
             $result .= "<button class='btn btn-dark btn-sm btnViewProdData' title='View Data'  data-id='$stamping_data->id' data-function='0' data-stampcat='$stamping_data->stamping_cat'><i class='fa-solid fa-eye'></i></button>";
 
-            if($stamping_data->status == 1){
-                $result .= "<button class='btn btn-warning btn-sm btnMassProd ml-1' title='Proceed Mass Production' 
-                data-id='$stamping_data->id' 
-                data-function='1' 
+            if($stamping_data->status == 0){
+                $result .= "<button class='btn btn-primary btn-sm btnPrintIPQC ml-1' title='Print QR Code'
+                data-id='$stamping_data->id'
+                data-stampcat='$stamping_data->stamping_cat'>
+                    <i class='fa-solid fa-print'></i>
+                    </button>";
+            }
+            else if($stamping_data->status == 1){
+                $result .= "<button class='btn btn-warning btn-sm btnMassProd ml-1' title='Proceed Mass Production'
+                data-id='$stamping_data->id'
+                data-function='1'
                 data-stampcat='$stamping_data->stamping_cat'>
                     <i class='fa-solid fa-up-right-from-square'></i>
                 </button>";
-                $result .= "<button class='btn btn-secondary btn-sm btnEditProdData ml-1' title='Edit'  
-                data-id='$stamping_data->id' data-function='3' 
+                $result .= "<button class='btn btn-secondary btn-sm btnEditProdData ml-1' title='Edit'
+                data-id='$stamping_data->id' data-function='3'
                 data-stampcat='$stamping_data->stamping_cat'>
                     <i class='fa-solid fa-pen-to-square'></i>
                 </button>";
-            
+
             }
             else if($stamping_data->status == 2){ // DONE; For Printing of sticker
-                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData ml-1' title='Print QR Code' 
-                data-id='$stamping_data->id' 
-                data-printcount='$stamping_data->print_count' 
+                $result .= "<button class='btn btn-primary btn-sm btnPrintProdData ml-1' title='Print QR Code'
+                data-id='$stamping_data->id'
+                data-printcount='$stamping_data->print_count'
                 data-stampcat='$stamping_data->stamping_cat'>
                     <i class='fa-solid fa-print'></i>
                     </button>";
             }
             else if ($stamping_data->status == 3){ // For Resetup
-                $result .= "<button class='btn btn-danger btn-sm btnViewResetup ml-1' title='See Re-setup' 
-                data-id='$stamping_data->id' data-function='2' 
+                $result .= "<button class='btn btn-danger btn-sm btnViewResetup ml-1' title='See Re-setup'
+                data-id='$stamping_data->id' data-function='2'
                 data-stampcat='$stamping_data->stamping_cat'>
                     <i class='fa-solid fa-repeat'></i>
                 </button>";
             }
             else if ($stamping_data->status == 4){ // For Batching; For 2nd Stamping only
-                $result .= "<button class='btn btn-success btn-sm ml-1 btnAddBatch' title='Add Sublot' 
-                data-id='$stamping_data->id' 
+                $result .= "<button class='btn btn-success btn-sm ml-1 btnAddBatch' title='Add Sublot'
+                data-id='$stamping_data->id'
                 data-po='$stamping_data->po_num'
-                data-lotno='$stamping_data->prod_lot_no' 
+                data-lotno='$stamping_data->prod_lot_no'
                 data-shipout='$stamping_data->ship_output'>
                     <i class='fa-solid fa-layer-group'></i>
                 </button>";
             }
 
             if(count($stamping_data->first_stamping_history) > 0){
-                $result .= "<button class='btn btn-info btn-sm btnViewHistory ml-1' 
-                data-id='$stamping_data->id' 
-                data-po='$stamping_data->po_num' 
+                $result .= "<button class='btn btn-info btn-sm btnViewHistory ml-1'
+                data-id='$stamping_data->id'
+                data-po='$stamping_data->po_num'
                 title='See History'>
                     <i class='fa-solid fa-clock-rotate-left'></i>
                 </button>";
@@ -118,7 +127,7 @@ class StampingController extends Controller
             $result .= "<center>";
             $exploded_mat_no = explode(', ', $stamping_data->material_lot_no);
 
-            for ($i=0; $i <  count($exploded_mat_no); $i++) { 
+            for ($i=0; $i <  count($exploded_mat_no); $i++) {
                 $result .= "$exploded_mat_no[$i]";
             }
 
@@ -139,7 +148,7 @@ class StampingController extends Controller
     public function save_prod_data(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
-     
+
         if(isset($request->id)){
             if($request->status == 2){
                 $validation = array(
@@ -161,7 +170,7 @@ class StampingController extends Controller
                     'mat_yield'        => ['required'],
                 );
             }
-           
+
         }
         else{
             if($request->stamp_cat == 1){
@@ -202,12 +211,12 @@ class StampingController extends Controller
                     'adj_pins'      => ['required'],
                     'qc_samp'       => ['required'],
                     'material_no'       => ['required'],
-                   
+
                 );
             }
-           
+
         }
-        
+
 
         $validator = Validator::make($data, $validation);
 
@@ -294,7 +303,7 @@ class StampingController extends Controller
                         FirstStampingProduction::where('id', $request->id)
                         ->update($insert_array_mass_prod);
                     }
-                    
+
                     DB::commit();
                 }
                 else{
@@ -342,11 +351,11 @@ class StampingController extends Controller
                         // $prod_array['actual_qty'] = $request->act_qty;
                         $prod_array['target_output'] = $request->target_output;
                     }
-    
+
                     FirstStampingProduction::insert($prod_array);
                     DB::commit();
                 }
-                
+
 
                 return response()->json([
                     'result' => 1,
@@ -395,12 +404,14 @@ class StampingController extends Controller
             $qrcode = QrCode::format('png')
             ->size(250)->errorCorrection('H')
             ->generate($prod_data);
-    
+
             $QrCode = "data:image/png;base64," . base64_encode($qrcode);
 
             $data[] = array(
-                'img' => $QrCode, 
-                'text' =>  "<strong>$prod_data->po</strong><br>
+                'img' => $QrCode,
+                'text' =>  "
+                <strong>1st Stamping</strong><br>
+                <strong>$prod_data->po</strong><br>
                 <strong>$prod_data->code</strong><br>
                 <strong>$prod_name</strong><br>
                 <strong>$prod_data->production_lot_no</strong><br>
@@ -420,13 +431,15 @@ class StampingController extends Controller
 
                 $qrcode = QrCode::format('png')
                 ->size(250)->errorCorrection('H')
-                ->generate($prod_data);
-                
+                ->generate(json_encode($prod_data));
+
                 $QrCode = "data:image/png;base64," . base64_encode($qrcode);
 
                 $data[] = array(
-                    'img' => $QrCode, 
-                    'text' =>  "<strong>$prod_data->po</strong><br>
+                    'img' => $QrCode,
+                    'text' =>  "
+                    <strong>2nd Stamping</strong><br>
+                    <strong>$prod_data->po</strong><br>
                     <strong>$prod_data->qty</strong><br>
                     <strong>$prod_data->code</strong><br>
                     <strong>$prod_name</strong><br>
@@ -443,7 +456,7 @@ class StampingController extends Controller
         }
 
         $label = "
-            <table class='table table-sm table-borderless' style='width: 100%;'> 
+            <table class='table table-sm table-borderless' style='width: 100%;'>
                 <tr>
                     <td>PO No.:</td>
                     <td>$prod_data->po</td>
@@ -486,7 +499,7 @@ class StampingController extends Controller
         ->where('name', $request->name)
         ->where('status', 1)
         ->first();
-        
+
         if(isset($device)){
 
             $mat_process = MaterialProcess::with([
@@ -597,12 +610,12 @@ class StampingController extends Controller
 
         $po_details = DB::connection('mysql')
         ->select("
-            SELECT 
+            SELECT
             a.po_num,
-            a.po_qty, 
-            a.part_code, 
-            a.material_name, 
-            a.drawing_no, 
+            a.po_qty,
+            a.part_code,
+            a.material_name,
+            a.drawing_no,
             a.drawing_rev
             FROM `stamping_productions` as a
             INNER JOIN `receiving_details` as b ON a.id = b.prod_id
@@ -627,7 +640,7 @@ class StampingController extends Controller
         $ctrl_count = DB::connection('mysql')
         ->select("SELECT MAX(ctrl_counter) as ctrl FROM stamping_productions WHERE `created_at` LIKE '%$date%' AND `stamping_cat` = 2");
 
-        
+
 
         $ctrl_counter = $ctrl_count[0]->ctrl + 1;
         return response()->json([
@@ -642,7 +655,7 @@ class StampingController extends Controller
 
     public function save_sublot(Request $request){
         DB::beginTransaction();
-        
+
         try{
             for ($x=1; $x <= $request->sublot_counter; $x++) {
                 StampingProductionSublot::insert([
@@ -671,10 +684,71 @@ class StampingController extends Controller
         $stamping_sub_lots = FirstStampingProduction::with([
             'second_stamping_sublots'
         ])->where('id', $request->id)
-        ->first();
+        ->firstOrFail();
 
         return response()->json([
             'stampSubLot' => $stamping_sub_lots
         ]);
+    }
+
+    public function get_matrix_for_mat_validation(Request $request){
+        $matrix_details = DB::connection('mysql')
+        ->table('material_processes')
+        ->join('devices', 'material_processes.device_id', '=', 'devices.id')
+        ->join('processes', 'material_processes.process', '=', 'processes.id')
+        ->join('material_process_materials', 'material_process_materials.mat_proc_id', '=', 'material_processes.id')
+        ->select('material_process_materials.material_type', 'material_process_materials.material_code', 'devices.code', 'devices.name', 'processes.process_name')
+        ->where('processes.process_name', $request->process_name)
+        ->where('devices.name', $request->device_name)
+        ->get();
+
+        return response()->json(['data' => $matrix_details]);
+    }
+
+    public function print_qr_for_ipqc(Request $request){
+
+        $stamping_details = FirstStampingProduction::where('id', $request->id)
+        ->first(['po_num', 'part_code', 'material_name', 'prod_lot_no']);
+
+
+        $qrcode = QrCode::format('png')
+        ->size(250)->errorCorrection('H')
+        // ->mergeString(Storage::get('/public/Untitled-removebg-preview.png'), .5)
+        ->generate($stamping_details);
+
+        $QrCode = "data:image/png;base64," . base64_encode($qrcode);
+
+        $data[] = array(
+            'img' => $QrCode,
+            'text' => "
+            <strong>For IPQC</strong><br>
+            <strong>$stamping_details->po_num</strong><br>
+            <strong>$stamping_details->part_code</strong><br>
+            <strong>$stamping_details->material_name</strong><br>
+            <strong>$stamping_details->prod_lot_no</strong><br>"
+        );
+
+        $label = "
+        <table class='table table-sm table-borderless' style='width: 100%;'>
+            <tr>
+                <td>PO No.:</td>
+                <td>$stamping_details->po_num</td>
+            </tr>
+            <tr>
+                <td>Material Code:</td>
+                <td>$stamping_details->part_code</td>
+            </tr>
+            <tr>
+                <td>Material Name:</td>
+                <td>$stamping_details->material_name</td>
+            </tr>
+            <tr>
+                <td>Production Lot #:</td>
+                <td>$stamping_details->prod_lot_no</td>
+            </tr>
+        </table>
+        ";
+
+        return response()->json(['qrCode' => $QrCode, 'label_hidden' => $data, 'label' => $label, 'stampingDetails' => $stamping_details]);
     }
 }

@@ -19,8 +19,7 @@ use App\Models\FirstMoldingDetail;
 use App\Models\FirstMoldingDetailMod;
 
 class IpqcFirstMoldingController extends Controller
-{
-    // NEW CODE CLARK 02042024
+{  
     public function get_device_from_first_molding(Request $request){
         $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
                                         ->whereNull('deleted_at')
@@ -59,7 +58,6 @@ class IpqcFirstMoldingController extends Controller
     }
     
     public function view_first_molding_ipqc_data(Request $request){
-
         if(!isset($request->device_id)){
             return [];
         }else{
@@ -67,7 +65,7 @@ class IpqcFirstMoldingController extends Controller
                                     ->where('first_molding_device_id', $request->device_id)
                                     ->whereIn('status', $request->first_molding_status)
                                     ->with(['first_molding_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); },
-                                            'first_molding_ipqc' => function($query) use ($request) { $query->whereIn('status', $request->ipqc_status)->where('process_category', $request->process_category); }])
+                                            'first_molding_ipqc' => function($query) use ($request) { $query->whereIn('status', $request->ipqc_status); }])
                                     ->get();
 
             return DataTables::of($first_molding_data)

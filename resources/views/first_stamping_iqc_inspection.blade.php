@@ -37,6 +37,7 @@
             
         </style>
 
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -77,12 +78,24 @@
                                             <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
                                         </div>
                                     </div> --}}
+                                    
+                                   {{-- <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Lot Number</label>
+                                            <div class="input-group mb-3">
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLotNum"><i class="fa-solid fa-qrcode"></i></button>
+                                                {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchLotNum" value="450244133600010"> --}}
+                                                <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
+                                            </div>
+                                        </div>
+                                    </div> --}}
+
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
-                                            <a class="nav-link active" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">On-going</a>
+                                            <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">On-going</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Inspected</a>
+                                            <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Inspected</a>
                                         </li>
                                     </ul>
                                     <br>
@@ -160,6 +173,7 @@
         </div>
 
         <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
+        <!--- Modal modalLotNum-->
         @include('component.modal')
 
         <div class="modal fade" id="modalModeOfDefect" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
@@ -259,7 +273,52 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
+            /*
+                $('a[href="#menu1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
 
+                    dataTable.iqcInspection.draw();
+                });
+                $('a[href="#menu2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    dataTable.iqcInspected.draw();
+                });
+
+                $('#modalLotNum').on('shown.bs.modal', function () {
+                    $('#txtLotNum').focus();
+                    const mdlScanLotNum = document.querySelector("#modalLotNum");
+                    const inptScanLotNum = document.querySelector("#txtLotNum");
+                    let focus = false
+
+                    mdlScanLotNum.addEventListener("mouseover", () => {
+                        if (inptScanLotNum === document.activeElement) {
+                            focus = true
+                        } else {
+                            focus = false
+                        }
+                    });
+
+                    mdlScanLotNum.addEventListener("click", () => {
+                        if (focus) {
+                            inptScanLotNum.focus()
+                        }
+                    });
+                });
+
+                $('#txtLotNum').on('keyup', function(e){
+
+                    if(e.keyCode == 13){
+                        // getSecondStampReq($(this).val());
+                        $('#txtSearchLotNum').val($(this).val());
+                        dataTable.iqcInspection.draw();
+                        dataTable.iqcInspected.draw();
+                        $('#txtLotNum').val('');
+                        $('#modalLotNum').modal('hide');
+                    }
+                });
+            */
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
@@ -348,7 +407,7 @@
                         form.iqcInspection.find('#fileIqcCocDownload').removeClass('d-none',true);
                     }
                 });
-                
+
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){
                         // console.log($(this).val());

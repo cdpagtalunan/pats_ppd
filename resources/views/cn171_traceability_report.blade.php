@@ -98,11 +98,25 @@
 
                 // console.log(date_from);
                 // console.log(date_to);
-                $('#modalExportTraceabilityReport').modal('hide');
-
                 window.location.href = `export_cn171_traceability_report/${po_number}/${date_from}/${date_to}`;
-                $('#modalExportTraceabilityReportLive').modal('hide');
+                $('#modalExportTraceabilityReport').modal('hide');
             });
+
+            // $('#modalExportTraceabilityReport').on('hide.bs.modal', function () {
+            //         console.log('Hide export modal')
+            //         $('#searchPONumber').val('');
+            //         $('#txtViewDatePickerFrom').val('');
+            //         $('#txtViewDatePickerTo').val('');
+            // });
+
+            $(document).on('click','#modalExportTraceability',function(e){
+                $('#searchPONumber').val("");
+                $('#txtViewDatePickerFrom').val("");
+                $('#txtViewDatePickerTo').val("");
+                $('#modalExportTraceabilityReport').attr('data-formid', '').modal('show');
+            });
+
+        });
 
             $(document).on('click','#modalExportTraceability',function(e){
                 $('#searchPONumber').val("");

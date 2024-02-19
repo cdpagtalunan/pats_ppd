@@ -507,6 +507,8 @@
                     // console.log(moldingId);
                     dataStatus =  $(this).attr('data-status');
 
+                    console.log(dataStatus);
+
                     if(dataStatus == 0 || dataStatus == null){
                         $('#btnVerifyScanLotNumber').removeAttr('disabled');
                     }

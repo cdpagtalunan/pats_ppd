@@ -20,6 +20,10 @@ use App\Models\ReceivingDetails;
 class ExportTraceabilityReportController extends Controller
 {
     public function exportCN171TraceabilityReport(Request $request){
+
+        // return $request->date_from; 
+        // return $request->date_to;
+
         $stamping_data = FirstStampingProduction::with([
             'receiving_info',
             'receiving_info.iqc_info',

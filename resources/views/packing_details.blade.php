@@ -79,7 +79,7 @@
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
+                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -404,8 +404,8 @@
             <div class="modal-content modal-sm">
                 <div class="modal-body">
                     {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanLotNumber" name="scan_lot_number" autocomplete="off" value='{"po_no":"450244133600010","po_qty":"2400","mat_name":"CT 6009-VE","lot_no":"C240123-0101MZ-2","drawing_no":"B139312-001","del_bal":"2500","no_of_cuts":"1","mat_quality":"test"}'> --}}
-                    {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off"> --}}
-                    <input type="text" class="w-100 " id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off">
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off">
+                    {{-- <input type="text" class="w-100 " id="txtScanFinalPackingDetails" name="scan_lot_number" autocomplete="off"> --}}
                     <div class="text-center text-secondary"><span id="txtScanLotNumber">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                 </div>
             </div>
@@ -423,8 +423,8 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="packing_details_id" id="txtPackingDetailsId">
-                        {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtPackerId" name="scan_packer_id" autocomplete="off"> --}}
-                        <input type="text" class="scanner w-100" id="txtPackerId" name="scan_packer_id" autocomplete="off">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtPackerId" name="scan_packer_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100" id="txtPackerId" name="scan_packer_id" autocomplete="off"> --}}
                         <div class="text-center text-secondary"><span id="modalScanQRSaveText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </form>
@@ -584,6 +584,12 @@
                         }
                 });
 
+                $('#txtSearchPONum').on('keyup', function(){
+                    dtFinalPackingDetails.draw();
+                    dtPrelimPackingDetails.draw();
+                });
+
+
                 // PRELIMINARY PACKING VALIDATION
                 $(document).on('click', '.btnValidatePrelimPackingDetails', function(e){
                     e.preventDefault();
@@ -651,7 +657,7 @@
                     finalPackingDetailsCtrlNo =  $(this).attr('data-ctrl-no');
                     dataStatus =  $(this).attr('data-status');
 
-                    if(dataStatus == 0 || dataStatus == 1){
+                    if(dataStatus == 0 || dataStatus == 1 || dataStatus == 2){
                         $('#btnScanLotNumber').removeAttr('disabled');
                     }
                     
@@ -1012,6 +1018,7 @@
                         }
                         // $(this).val('');
                 });
+
 
             });
 

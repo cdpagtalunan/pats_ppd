@@ -143,12 +143,12 @@ const submitProdData = async (scannedId, form, stampCat) => {
                     $('#txtActQty', form).attr('title', response['error']['act_qty']);
                 }
                 if(response['error']['material_no'] === undefined){
-                    $('#txtMaterialLot_0', form).removeClass('is-invalid');
-                    $('#txtMaterialLot_0', form).attr('title', '');
+                    $('#txtMaterialLot', form).removeClass('is-invalid');
+                    $('#txtMaterialLot', form).attr('title', '');
                 }
                 else{
-                    $('#txtMaterialLot_0', form).addClass('is-invalid');
-                    $('#txtMaterialLot_0', form).attr('title', response['error']['material_no']);
+                    $('#txtMaterialLot', form).addClass('is-invalid');
+                    $('#txtMaterialLot', form).attr('title', response['error']['material_no']);
                 }
                 if(response['error']['remarks'] === undefined){
                     $('#txtRemarks', form).removeClass('is-invalid');
@@ -261,7 +261,7 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
                 $('#txtNoCut').val(response['no_of_cuts'])
             }
 
-            $(`#txtMaterialLot_0`).val(response['material_lot_no']);
+            $(`#txtMaterialLot`).val(response['material_lot_no']);
 
             if(btnFunction == 0){ // Viewing
                 $('#saveProdData').hide();
@@ -346,13 +346,14 @@ const printProdData = async (id, stampCat) => {
         type: "get",
         url: "print_qr_code",
         data: {
-            "id" : id,
-            "stamp_cat" : stampCat
+            "id"       : id,
+            "stamp_cat": stampCat
         },
         dataType: "json",
         success: function (response) {
             response['label_hidden'][0]['id'] = id;
-            console.log(response['label_hidden']);
+          
+            console.log(response['label_hidden'][0]);
             for(let x = 0; x < response['label_hidden'].length; x++){
                 let dataToAppend = `
                 <img class='hiddnQr' src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
@@ -563,11 +564,63 @@ const getSublotById = (id) => {
 
         },
         error: function(data, xhr, status){
+            // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            toastr.error('No Data Exist')
+        }
+    });
+}
+
+const validateScannedMaterial = (deviceName, MaterialName, process, callback) => {
+    $.ajax({
+        type: "get",
+        url: "get_matrix_for_mat_validation",
+        data: {
+            'device_name' : deviceName,
+            'material_name' : MaterialName,
+            'process_name' : process
+        },
+        dataType: "json",
+        success: function (response) {
+            let value
+            if(response['data'].length > 0){
+                
+            }
+            else{
+                value = false;
+            }
+
+            callback(true);
+        },
+        error: function(data, xhr, status){
             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
         }
     });
 }
 
+const printQrForIPQC = (id, stampCat) => {
+    $.ajax({
+        type: "get",
+        url: "print_qr_for_ipqc",
+        data: {
+            "id" : id,
+            "stamp_cat" : stampCat
+        },
+        dataType: "json",
+        success: function (response) {
+            response['label_hidden'][0]['id'] = id;
+            response['label_hidden'][0]['stampCat'] = stampCat;
+            $("#img_barcode_PO").attr('src', response['qrCode']);
+            $("#img_barcode_PO_text").html(response['label']);
+            img_barcode_PO_text_hidden = response['label_hidden'];
+            $('#modalPrintQr').modal('show');
+        }
+    });
+}
+
+/*
+    * This is common script for first and second stamping
+    * For Scanning of operator ID for valueing in operator name field
+*/
 let operatorArray = [];
 $('#btnScanOperator').on('click', function(){
     $('#modalScanSelOp').modal('show');
@@ -588,4 +641,12 @@ $('#txtScanOpId').on('keyup', function(e){
 
         $(this).val('');
     }
+});
+
+
+$(document).on('click', '.btnPrintIPQC', function(e){
+    let id = $(this).data('id');
+    let stampCat = $(this).data('stampcat');
+
+    printQrForIPQC(id, stampCat)
 });

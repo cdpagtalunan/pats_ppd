@@ -5,8 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PrintLot extends Model
+class ProductionHistoryPartsMat extends Model
 {
-    protected $table = "print_lots";
+    use HasFactory;
+
+    protected $table = "production_history_parts_mats";
     protected $connection = "mysql";
 }

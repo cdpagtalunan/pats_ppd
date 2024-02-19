@@ -221,7 +221,7 @@
                                                 <label class="form-label">Shift:</label>
                                                 <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
                                             </div>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
@@ -241,11 +241,16 @@
                                                     <input type="number" class="form-control form-control-sm" name="no_tray" id="txtNoTray" placeholder="No. of Tray" readonly>
                                                 </div>
                                             </div>
-                                           
+
+                                            <label class="form-label">Material Lot No.:</label>
+                                            <div class="input-group mb-1">
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly required>
+                                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                            </div>
 
                                             <div class="form-group">
                                                 <label class="form-label">Input Pins:</label>
-                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins">
+                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins" readonly>
                                             </div>
                                             {{-- <div class="form-group">
                                                 <label class="form-label">Actual Quantity:</label>
@@ -324,11 +329,11 @@
                                                 <input type="text" class="form-control" id="txtProdLotView" readonly>
                                             </div>
 
-                                            <label class="form-label">Material Lot No.:</label>
+                                            {{-- <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot_0" readonly required>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly required>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="form-group d-none" id="divRemarks">
                                                 <label class="form-label">Remarks:</label>
@@ -391,7 +396,7 @@
                             <!-- PO 1 -->
                             <div class="col-sm-12">
                                 <div class="d-none" id="hiddenPreview">
-                                    
+
                                 </div>
                                 <center>
                                     <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br>
@@ -537,7 +542,7 @@
                                         <input type="number" class="form-control form-control-sm" name="sublot_qty_1" id="txtSublotQty_1">
                                     </div>
                                 </div>
-                            
+
                             </div>
                             <div id="divMultipleSublot">
 
@@ -560,8 +565,8 @@
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body pt-0">
-                        {{-- <input type="text" class="w-100 hidden_scanner_input" id="txtScanOpId" name="" autocomplete="off"> --}}
-                        <input type="text" class="w-100" id="txtScanOpId" name="" autocomplete="off">
+                        <input type="text" class="w-100 hidden_scanner_input" id="txtScanOpId" name="" autocomplete="off">
+                        {{-- <input type="text" class="w-100" id="txtScanOpId" name="" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan operator ID.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>
@@ -654,6 +659,7 @@
                         }
                     });
                 });
+
                 $('#txtScanPO').on('keyup', function(e){
                     if(e.keyCode == 13){
                         getSecondStampReq($(this).val());
@@ -663,7 +669,7 @@
 
                     }
                 });
-              
+
                 $('#txtTargetOutput').on('keyup', function(e){
                     // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
                     // let ppcTargtOut = 0;
@@ -846,46 +852,49 @@
                         * this event will trigger after closing the tab of printing
                     */
                     popup.addEventListener("beforeunload", function (e) {
-                        changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        if(img_barcode_PO_text_hidden[0]['stampCat'] == undefined){
+
+                            changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        }
                     });
 
                     popup.close();
 
                 });
 
-                $('#btnAddMatNo').on('click', function(e){
-                    e.preventDefault();
-                    let newCount = Number($('#multipleCounter').val()) + Number(1);
-                    if(newCount > 0){
-                        $('#btnRemoveMatNo').removeClass('d-none');
-                    }
-                    $('#multipleCounter').val(newCount);
-                    let inputGroup = `
-                            <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
-                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
-                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
-                            </div>
-                    `;
-                    $('#divMultipleMatLot').append(inputGroup)
-                });
+                // $('#btnAddMatNo').on('click', function(e){
+                //     e.preventDefault();
+                //     let newCount = Number($('#multipleCounter').val()) + Number(1);
+                //     if(newCount > 0){
+                //         $('#btnRemoveMatNo').removeClass('d-none');
+                //     }
+                //     $('#multipleCounter').val(newCount);
+                //     let inputGroup = `
+                //             <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
+                //                 <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
+                //                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                //             </div>
+                //     `;
+                //     $('#divMultipleMatLot').append(inputGroup)
+                // });
 
-                $('#btnRemoveMatNo').on('click', function(e){
-                    e.preventDefault();
-                    let counter = $('#multipleCounter').val();
+                // $('#btnRemoveMatNo').on('click', function(e){
+                //     e.preventDefault();
+                //     let counter = $('#multipleCounter').val();
 
-                    $(`#divInput_${counter}`).remove();
+                //     $(`#divInput_${counter}`).remove();
 
-                    let newCount = $('#multipleCounter').val() - 1;
-                    $('#multipleCounter').val(newCount)
+                //     let newCount = $('#multipleCounter').val() - 1;
+                //     $('#multipleCounter').val(newCount)
 
-                    if(newCount == 0){
-                        $('#btnRemoveMatNo').addClass('d-none');
-                    }
-                });
+                //     if(newCount == 0){
+                //         $('#btnRemoveMatNo').addClass('d-none');
+                //     }
+                // });
 
                 $(document).on('click', '.btnQr', function(){
-                    multipleMatId = $(this).offsetParent().children().attr('id');
-                    console.log($(this).offsetParent().children().attr('id'));
+                    // multipleMatId = $(this).offsetParent().children().attr('id');
+                    // console.log($(this).offsetParent().children().attr('id'));
                     $('#modalScanQr').modal('show');
                     $('#modalScanQr').on('shown.bs.modal', function () {
                         $('#txtScanQrCode').focus();
@@ -897,7 +906,8 @@
                     if(e.keyCode == 13){
                         try{
                             scannedItem = JSON.parse($(this).val());
-                            $(`#${multipleMatId}`).val(scannedItem['new_lot_no']);
+                            $(`#txtMaterialLot`).val(scannedItem['new_lot_no']);
+                            $(`#txtInptPins`).val(scannedItem['qty']);
                             $('#modalScanQr').modal('hide');
                         }
                         catch (e){
@@ -940,7 +950,7 @@
                     dtDatatableHistory = $("#tblHistorySecondStamp").DataTable({
                         "processing" : true,
                         "serverSide" : true,
-                        "paging": false, 
+                        "paging": false,
                         "searching": false,
                         "info": false,
                         "destroy": true,
@@ -953,12 +963,12 @@
                         },
                         fixedHeader: true,
                         "columns":[
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return meta.row + meta.settings._iDisplayStart + 1;
                                 }
                             },
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return po;
                                 }
@@ -981,7 +991,7 @@
                     printStampCat = $(this).data('stampcat');
                     btnFunction = $(this).data('function');
 
-    
+
                     Swal.fire({
                         // title: "Are you sure?",
                         html: "Data already for mass production. <br> Do you want to re-setup this lot?",
@@ -997,7 +1007,7 @@
                             scanningFunction = "editProdData";
                         }
                     });
-                    
+
                 });
 
                 $(document).on('click', '.btnAddBatch', function(e){
@@ -1017,7 +1027,7 @@
                 $('#btnAddSublot').on('click', function(e){
                     e.preventDefault();
                     let newCount = Number($('#txtSublotMultipleCounter').val()) + Number(1);
-                    
+
                     if(newCount > 1){
                         $('#btnRemoveSublot').removeClass('d-none');
                     }
@@ -1055,14 +1065,14 @@
 
                 $('#btnRemoveSublot').on('click', function(e){
                     e.preventDefault();
-                    
+
                     let counter = $('#txtSublotMultipleCounter').val();
                     $(`#divMultiple_${counter}`).remove();
 
                     let newCount = counter - 1;
 
                     $('#txtSublotMultipleCounter').val(newCount);
-                    
+
                     if(newCount == 1){
                         $(this).addClass('d-none');
                     }
@@ -1102,34 +1112,12 @@
                     getSublotById(stampingId);
                 });
 
-                // let operatorArray = [];
-                // $('#btnScanOperator').on('click', function(){
-                //     $('#modalScanSelOp').modal('show');
-                //     operatorArray = [];
-                //     $('#selOperator').val(operatorArray).trigger('change');
-
-                // });
-
-                // $('#modalScanSelOp').on('shown.bs.modal', function () {
-                //     $('#txtScanOpId').focus();
-                // });
-
-                // $('#txtScanOpId').on('keyup', function(e){
-                //     if(e.keyCode == 13){
-                //         operatorArray.push($(this).val());
-                //         console.log(operatorArray);
-                //         $('#selOperator').val(operatorArray).trigger('change');
-
-                //         $(this).val('');
-                //     }
-                // });
-
             });
 
             $(document).on('keyup','#txtScanUserId', function(e){
-                
+
                 if(e.keyCode == 13){
-                    
+
                     if(scanningFunction === "prodData"){ // TO SAVE STAMPING
                         validateUser($(this).val().toUpperCase(), [0,4,1,9], function(result){
                             if(result == true){
@@ -1180,10 +1168,10 @@
                         });
 
                     }
-                  
+
                     setTimeout(() => {
                         $(this).val('');
-                        
+
                     }, 500);
                 }
             });

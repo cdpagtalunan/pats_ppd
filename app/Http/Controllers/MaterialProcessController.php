@@ -265,7 +265,8 @@ class MaterialProcessController extends Controller
                             'mat_proc_id'   => $material_process_id,
                             'machine_code' => $exploded_machine[0],
                             'machine_name' => $exploded_machine[1],
-                            'created_by'    => Auth::user()->id
+                            'created_by'    => Auth::user()->id,
+                            'created_at'    => NOW()
                         ]);
                     }
                 }
@@ -277,7 +278,8 @@ class MaterialProcessController extends Controller
                             'mat_proc_id'   => $material_process_id,
                             'material_code' => $exploded_material[0],
                             'material_type' => $exploded_material[1],
-                            'created_by'    => Auth::user()->id
+                            'created_by'    => Auth::user()->id,
+                            'created_by'    => NOW()
                         ]);
                     }
                 }
@@ -286,7 +288,8 @@ class MaterialProcessController extends Controller
                     for ($j=0; $j < count($request->station); $j++) { 
                         MaterialProcessStation::insert([
                             'mat_proc_id'   => $material_process_id,
-                            'station_id' => $request->station[$j]
+                            'station_id' => $request->station[$j],
+                            'created_at'    => NOW()
                         ]);
                     }
                 }

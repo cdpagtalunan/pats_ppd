@@ -76,7 +76,17 @@ class DeviceController extends Controller
 
                 return $result;
             })
-            ->rawColumns(['label', 'action', 'process_name'])
+            ->addColumn('virgin', function($device){
+                $result = "";
+                $result .= "$device->virgin_percent%";
+                return $result;
+            })
+            ->addColumn('recycle', function($device){
+                $result = "";
+                $result .= "$device->recycle_percent%";
+                return $result;
+            })
+            ->rawColumns(['label', 'action', 'process_name', 'virgin', 'recycle'])
             ->make(true);
     }
 
@@ -88,37 +98,62 @@ class DeviceController extends Controller
         if(!isset($request->id)){
             $validation = array(
                     // 'name' => ['required', 'string', 'max:255', 'unique:devices'],
-                'name' => ['required', 'string', 'max:255'],
-                'code' => ['required', 'string', 'max:255', 'unique:devices']
+                'name' => ['required', 'string', 'max:255', 'unique:devices'],
+                'code' => ['required', 'string', 'max:255', 'unique:devices'],
+                'virgin' => ['required', 'string', 'max:255'],
+                'recycled' => ['required', 'string', 'max:255'],
+                'process' => ['required', 'string', 'max:255']
             );
         }
         else{
             $validation = array(
-                // 'name' => ['required', 'string', 'max:255', 'unique:devices'],
                 'name' => ['required', 'string', 'max:255'],
-                'code' => ['required', 'string', 'max:255']
+                'code' => ['required', 'string', 'max:255'],
+                'virgin' => ['required', 'string', 'max:255'],
+                'recycled' => ['required', 'string', 'max:255'],
+                'process' => ['required', 'string', 'max:255']
+
             );
         }
         $validator = Validator::make($data, $validation);
 
         if ($validator->fails()) {
-            return response()->json(['result' => '0', 'error' => $validator->messages()]);
+            return response()->json(['result' => '0', 'error' => $validator->messages(), 'msg' => 'Saving Failed!']);
         }
         else{
             DB::beginTransaction();
 
             try{
                 $device_array = array(
-                    'code'                      => $request->code,
-                    'name'                      => $request->name,
-                    'process'                   => $request->process,
+                    'code'            => $request->code,
+                    'name'            => $request->name,
+                    'process'         => $request->process,
+                    'virgin_percent'  => $request->virgin,
+                    'recycle_percent' => $request->recycled,
 
                 );
                 if(isset($request->id)){
-                    $device_array['last_updated_by'] = Auth::user()->id;
+                    // , 'name' => $request->name, 
+                    $exist = DB::connection('mysql')
+                    ->select("
+                        SELECT * FROM `devices`
+                            WHERE `status` = 1
+                            AND `id` <> :id
+                            AND (`code` = :code
+                            OR  `name` = :name)
+                            LIMIT 0,1
+                    ", ['code' => $request->code, 'name' => $request->name,'id' => $request->id]);
 
-                    Device::where('id', $request->id)
-                    ->update($device_array);
+                    if(count($exist) > 0){
+                        return response()->json(['result' => 0, 'error' => $validator->messages(), 'msg' => 'Record already exist!']);
+                    }
+                    else{
+                        $device_array['last_updated_by'] = Auth::user()->id;
+
+                        Device::where('id', $request->id)
+                        ->update($device_array);
+                    }
+                   
                 }
                 else{
                     $device_array['created_by'] = Auth::user()->id;

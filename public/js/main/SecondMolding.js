@@ -4,12 +4,20 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         $(`#${formId}`)[0].reset();
         console.log(`modalId ${modalId}`);
         console.log(`formId ${formId}`);
-        $(`#${formId}`).find('select').val(0).trigger('change');  // chris to reset the select machine
+        $(`#${formId}`).find('#selMachineNumber').val(0).trigger('change');  // chris to reset the select machine
         // Remove invalid & title validation
         $('div').find('input').removeClass('is-invalid');
         $("div").find('input').attr('title', '');
 
         $("#tableSecondMoldingStationMOD tbody").html(''); // Clear Mode of Defect table
+        $('#textStation').prop('disabled', false);
+        $('#textDate').prop('disabled', false);
+        $('#textOperatorName').prop('disabled', false);
+        $('#textInputQuantity').prop('disabled', false);
+        $('#textOutputQuantity').prop('disabled', false);
+        $('#textRemarks').prop('disabled', false);
+        $('#buttonAddModeOfDefect').prop('disabled', false);
+        $('#buttonSaveSecondMoldingStation').prop('disabled', false);
     });
 }
 
@@ -41,6 +49,7 @@ const redirectToACDCSDrawing = (docNo, docTitle, docType)  => {
 
 const getPOReceivedByPONumber = (poNumber) => {
     $.ajax({
+        async: false,
         type: "get",
         url: "get_po_received_by_po_number",
         data: {
@@ -54,13 +63,26 @@ const getPOReceivedByPONumber = (poNumber) => {
                 $('#textSearchPOQuantity').val(response[0]['OrderQty']);
                 $('#textDeviceName', $('#formSecondMolding')).val(response[0]['ItemName']);
                 $('#textPartsCode', $('#formSecondMolding')).val(response[0]['ItemCode']);
-                $('#textPONumber', $('#formSecondMolding')).val(response[0]['OrderNo']);
-                $('#textPMIPONumber', $('#formSecondMolding')).val(response[0]['ProductPONo']);
+                $('#textPMIPONumber', $('#formSecondMolding')).val(response[0]['OrderNo']);
+                $('#textPONumber', $('#formSecondMolding')).val(response[0]['ProductPONo']);
                 $('#textPoQuantity', $('#formSecondMolding')).val(response[0]['OrderQty']);
+
                 let poQuantity = parseFloat(response[0]['OrderQty']);
-                let poQuantityPercentage = parseFloat(poQuantity * 5 * 0.05);
-                let requiredOutput = (poQuantity * 5) + poQuantityPercentage;
-                $('#textRequiredOutput', $('#formSecondMolding')).val(requiredOutput.toFixed(2));
+                let usage = 1;
+                let poQuantityPercentage = parseFloat(poQuantity * usage * 0.05);
+                let requiredOutput = (poQuantity * usage) + poQuantityPercentage;
+                $('#textRequiredOutput').val(requiredOutput.toFixed(2));
+                
+                /**
+                 * Computation of Target Output with Usage allowance
+                 */
+                // let poQuantity = parseFloat(response[0]['OrderQty']);
+                // let poQuantityPercentage = parseFloat(poQuantity * 5 * 0.05);
+                // let requiredOutput = (poQuantity * 5) + poQuantityPercentage;
+                // $('#textRequiredOutput', $('#formSecondMolding')).val(requiredOutput.toFixed(2));
+
+
+                
             }
             else{
                 toastr.error('No PO Found')
@@ -209,7 +231,7 @@ const getMachineDropdown = (cboElement, materialName) => {  // chris
         dataType: "json",
         success: function (response) {
             let result = '';
-            console.log(response['machine']);
+            // console.log(response['machine']);
             if(response['machine'].length > 0){
                 for(let index = 0; index < response['machine'].length; index++){
                     result += `<option value="${response['machine'][index].machine_name}">${response['machine'][index].machine_name}</option>`;
@@ -218,6 +240,83 @@ const getMachineDropdown = (cboElement, materialName) => {  // chris
 
             cboElement.html(result);
 
+        }
+    });
+}
+
+const getUser = (elementId) => {
+    let result = `<option value="0" selected> N/A </option>`;
+    $.ajax({
+        url: 'get_user_for_second_molding',
+        method: 'get',
+        dataType: 'json',
+        beforeSend: function(){
+            result = `<option value="0" selected disabled> - Loading - </option>`;
+            elementId.html(result);
+        },
+        success: function(response){
+            result = '';
+            console.log('object ', response['data']);
+            if(response['data'].length > 0){
+                for(let index = 0; index < response['data'].length; index++){
+                    result += `<option value="${response['data'][index].id}">${response['data'][index].operator}</option>`;
+                }
+            }
+            else{
+                result = `<option value="0" selected disabled> - No data found - </option>`;
+            }
+            elementId.html(result);
+        },
+        error: function(data, xhr, status){
+            result = `<option value="0" selected disabled> - Reload Again - </option>`;
+            elementId.html(result);
+            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}
+
+function setDisabledSecondMoldingRuncard(boolean) {
+    $('#buttonQrScanMaterialLotNumber').prop('disabled', boolean);
+    $('#buttonViewBDrawing').prop('disabled', boolean);
+    $('#textProductionLot').prop('disabled', boolean);
+    $('#buttonQrScanMaterialLotNumberEight').prop('disabled', boolean);
+    $('#buttonQrScanMaterialLotNumberNine').prop('disabled', boolean);
+    $('#buttonQrScanMaterialLotNumberTen').prop('disabled', boolean);
+    $('#buttonQrScanContactLotNumberOne').prop('disabled', boolean);
+    $('#buttonQrScanContactLotNumberSecond').prop('disabled', boolean);
+    $('#buttonQrScanMELotNumberOne').prop('disabled', boolean);
+    $('#buttonQrScanMELotNumberSecond').prop('disabled', boolean);
+    $('#buttonSaveSecondMoldingData').prop('disabled', boolean);
+    $('#adjustment_shots').prop('disabled', boolean);
+    $('#qc_samples').prop('disabled', boolean);
+    $('#prod_samples').prop('disabled', boolean);
+    $('#ng_count').prop('disabled', boolean);
+    $('#total_machine_output').prop('disabled', boolean);
+    $('#shipment_output').prop('disabled', boolean);
+    $('#buttonSubmitSecondMolding').prop('disabled', boolean);
+}
+
+const getDiesetDetailsByDeviceNameSecondMolding = (deviceName) => {
+    $.ajax({
+        type: "GET",
+        url: "get_dieset_details_by_device_name_second_molding",
+        data: {
+            "device_name" : deviceName
+        },
+        dataType: "json",
+        success: function (response) {
+            let dateNow = new Date();
+            let twoDigitYear = dateNow.getFullYear().toString().substr(-2);
+            console.log(`twoDigitYear ${twoDigitYear}`);
+            
+            let twoDigitMonth = (dateNow.getMonth() + 1).toString().padStart(2, "0");
+            console.log(`twoDigitMonth ${twoDigitMonth}`);
+            
+            let twoDigitDay = String(dateNow.getDate()).padStart(2, '0');
+            console.log(`twoDigitDay ${twoDigitDay}`);
+
+            let revNo = response['rev_no'];
+            $('#textProductionLot', $('#formSecondMolding')).val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
         }
     });
 }

@@ -69,7 +69,16 @@
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
-                                    <br><br>
+                                    <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Lot Number</label>
+                                            <div class="input-group mb-3">
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLotNum"><i class="fa-solid fa-qrcode"></i></button>
+                                                {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchLotNum" value="450244133600010"> --}}
+                                                <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {{-- TABS --}}
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
@@ -150,6 +159,7 @@
                 </div>
             </section>
         </div>
+        <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
         <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
         @include('component.modal')
 
@@ -239,8 +249,7 @@
             <!-- /.modal-dialog -->
         </div>
         <!-- /.modal -->
-
-
+        
     @endsection
     @section('js_content')
         <script type="text/javascript">
@@ -250,7 +259,53 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
+            /*
+                $('a[href="#menu1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    $('#txtLotNum').attr('is_inspected','false');
+                    dataTable.iqcInspection.draw();
 
+                });
+                $('a[href="#menu2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    $('#txtLotNum').attr('is_inspected','true');
+                    dataTable.iqcInspected.draw();
+                });
+
+                $('#modalLotNum').on('shown.bs.modal', function () {
+                    $('#txtLotNum').focus();
+                    const mdlScanLotNum = document.querySelector("#modalLotNum");
+                    const inptScanLotNum = document.querySelector("#txtLotNum");
+                    let focus = false
+
+                    mdlScanLotNum.addEventListener("mouseover", () => {
+                        if (inptScanLotNum === document.activeElement) {
+                            focus = true
+                        } else {
+                            focus = false
+                        }
+                    });
+
+                    mdlScanLotNum.addEventListener("click", () => {
+                        if (focus) {
+                            inptScanLotNum.focus()
+                        }
+                    });
+                });
+
+                $('#txtLotNum').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        scannedLotNumber = JSON.parse($(this).val()).new_lot_no;
+                        $('#txtSearchLotNum').val(scannedLotNumber);
+                        dataTable.iqcInspection.draw();
+                        dataTable.iqcInspected.draw();
+                        $('#txtLotNum').val('');
+                        $('#modalLotNum').modal('hide');
+                    }
+                });
+            */
                 $(tbl.iqcWhsDetails).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 

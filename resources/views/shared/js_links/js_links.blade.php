@@ -20,6 +20,9 @@
 
 <script src="{{ asset('public/template/sweetalert/js/sweetalert2.min.js') }}"></script>
 
+<!-- Bootstrap Datetimepicker -->
+<script src="{{ asset('public/template/datetimepicker/js/datetimepicker.js') }}"></script>
+
 <!-- Datepicker -->
 <script src="{{ asset('public/js/bootstrap-datepicker.min.js') }}"></script>
 
@@ -27,6 +30,9 @@
 <script src="{{ asset('public/js/jquery.smartWizard.min.js') }}"></script>
 
 <script src="{{ asset('public/template/moment/moment.min.js') }}"></script>
+
+<script src="{{ asset('public/template/jquerymask/js/jquery.mask.min.js') }}"></script> <!-- Added by jd -->
+
 
 <!-- Custom JS -->
 <script>
@@ -40,7 +46,7 @@
         "onclick": null,
         "showDuration": "300",
         "hideDuration": "3000",
-        "timeOut": "3000",
+        "timeOut": "5000",
         "extendedTimeOut": "3000",
         "showEasing": "swing",
         "hideEasing": "linear",
@@ -50,28 +56,30 @@
     };
 </script>
 
-<script src="{{ asset('public/js/main/Common.js?') }}" async></script>
-<script src="{{ asset('public/js/main/User.js?') }}" async></script>
+<script src="{{ asset('public/js/main/Common.js') }}" async></script>
+<script src="{{ asset('public/js/main/User.js') }}" async></script>
 
-<script src="{{ asset('public/js/main/UserLevel.js?') }}" async></script>
-<script src="{{ asset('public/js/main/Device.js?') }}" async></script>
-<script src="{{ asset('public/js/main/MaterialProcess.js?') }}" async></script>
-<script src="{{ asset('public/js/main/OqcInspection.js?') }}" async></script>
+<script src="{{ asset('public/js/main/UserLevel.js') }}" async></script>
+<script src="{{ asset('public/js/main/Device.js') }}" async></script>
+<script src="{{ asset('public/js/main/MaterialProcess.js') }}" async></script>
+<script src="{{ asset('public/js/main/OqcInspection.js') }}" async></script>
 
-
-<script src="{{ asset('public/js/main/Stamping.js?') }}" async></script>
+<!-- STAMPING JS -->
+<script src="{{ asset('public/js/main/Stamping.js') }}" async></script>
+<script src="{{ asset('public/js/main/StampingChecksheet.js') }}" async></script>
+<script src="{{ asset('public/js/main/StampingHistory.js') }}" async></script>
 
 <!-- PACKING LIST JS -->
-<script src="{{ asset('public/js/main/CustomerDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/CarrierDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/LoadingPortDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/DestinationPortDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/PackingList.js?') }}" async></script>
-<script src="{{ asset('public/js/main/ReceivingDetails.js?') }}" async></script>
-<script src="{{ asset('public/js/main/PackingDetails.js?') }}" async></script>
+<script src="{{ asset('public/js/main/CustomerDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/CarrierDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/LoadingPortDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/DestinationPortDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/PackingList.js') }}" async></script>
+<script src="{{ asset('public/js/main/ReceivingDetails.js') }}" async></script>
+<script src="{{ asset('public/js/main/PackingDetails.js') }}" async></script>
 
 {{-- IQC --}}
-<script src="{{ asset('public/js/main/IqcInspection.js?') }}"></script>
+<script src="{{ asset('public/js/main/IqcInspection.js') }}" async></script>
 
 {{-- MOLDING --}}
 <script src="@php echo asset("public/js/main/FirstMolding.js?".date("YmdHis")) @endphp"></script>
@@ -82,6 +90,12 @@
 
 {{-- Production History --}}
 <script src="@php echo asset("public/js/main/ProductionHistory.js?".date("YmdHis")) @endphp"></script>
+
+{{-- PPC --}}
+<script src="@php echo asset("public/js/main/Mimf.js?".date("YmdHis")) @endphp"></script>
+
+{{-- PressStampingMachineChecksheet --}}
+<script src="@php echo asset("public/js/main/PressStampingMachineChecksheet.js?".date("YmdHis")) @endphp"></script>
 
 
 

@@ -17,7 +17,7 @@ function AddDevice(){
                 toastr.success('Device was succesfully saved!');
             }
             else{
-                toastr.error('Saving Device Failed!');
+                toastr.error(`${JsonObject['msg']}`);
 
                 if(JsonObject['error']['name'] === undefined){
                     $("#txtAddDeviceName").removeClass('is-invalid');
@@ -99,7 +99,10 @@ function GetDeviceByIdToEdit(deviceId){
                 $("#txtDeviceId").val(result.id);
                 $("#txtAddDeviceCode").val(result.code);
                 $("#txtAddDeviceName").val(result.name);
-                // $("#selStampStep").val(result.stamping_process_code).trigger('change');
+
+                $("#txtVirginPerc").val(result.virgin_percent);
+                $("#txtRecycledPerc").val(result.recycle_percent);
+
                 if(result.process == 0){ // * Stamping
                     $('#stamping').prop('checked', true);
                 }

@@ -1052,7 +1052,7 @@
                                     $('#txtEmployeeNo').val(userDetails.employee_id)
                                     UpdateOqcInspection()
                                 }else{
-                                    toastr.error('ID Number Not Registered!')
+                                    toastr.error('Only QC supervisors and inspectors are authorized to save!')
                                 }
                             }
                         })

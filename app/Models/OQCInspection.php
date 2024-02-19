@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 // use App\Models\WbsOqcInspection;
 use App\Models\User;
-use App\Models\ReelLot;
-use App\Models\PrintLot;
 use App\Models\PackingDetails;
 use App\Models\PreliminaryPacking;
+use App\Models\OqcInspectionReelLot;
+use App\Models\OqcInspectionPrintLot;
 use App\Models\PackingDetailsMolding;
 use App\Models\FirstStampingProduction;
 use App\Models\OqcInspectionModeOfDefect;
@@ -24,15 +24,15 @@ class OQCInspection extends Model
     //     return $this->hasOne(WbsOqcInspection::class, '','');
     // }
 
-    public function reel_lot_oqc_inspection_info(){
-        return $this->hasMany(ReelLot::class, 'oqc_inspection_id','id');
+    public function reel_lot_oqc_inspection_details(){
+        return $this->hasMany(OqcInspectionReelLot::class, 'oqc_inspection_id','id');
     }
 
-    public function print_lot_oqc_inspection_info(){
-        return $this->hasMany(PrintLot::class, 'oqc_inspection_id','id');
+    public function print_lot_oqc_inspection_details(){
+        return $this->hasMany(OqcInspectionPrintLot::class, 'oqc_inspection_id','id');
     }
 
-    public function mod_oqc_inspection_info(){
+    public function mod_oqc_inspection_details(){
         return $this->hasMany(OqcInspectionModeOfDefect::class, 'oqc_inspection_id','id');
     }
 
@@ -59,6 +59,6 @@ class OQCInspection extends Model
     public function prodn_info(){
         return $this->hasOne(User::class, 'id', 'countedby');
     }
-
+    
 
 }
