@@ -950,6 +950,7 @@
 
                 $('#formIPQCInspectionData').submit(function(e){
                     e.preventDefault();
+                    // AddIpqcInspection()
                     $('#modalScanQRSave').modal('show');
                 });
 

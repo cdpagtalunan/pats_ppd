@@ -857,6 +857,10 @@
                     }
                 });
 
+                $('#modalScanQRSave').on('shown.bs.modal', function () {
+
+                });
+
                 $('#btnGeneratePackingDetailsQr').on('click', function(){
                         popup = window.open();
                         // console.log(img_barcode_PO_text_hidden);
@@ -906,7 +910,8 @@
 
                 $(document).on('keyup','#txtScanUserIdtoReprint', function(e){
                     if(e.keyCode == 13){
-                        if(scanningFunction === "reprintPackingQr"){
+                        console.log(scanningFunction);
+                        if(scanningFunction == "reprintPackingQr"){
                             validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                                 console.log(result);
                                 if(result == true){

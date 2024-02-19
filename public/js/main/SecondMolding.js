@@ -8,7 +8,7 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         // Remove invalid & title validation
         $('div').find('input').removeClass('is-invalid');
         $("div").find('input').attr('title', '');
-        
+
         $("#tableSecondMoldingStationMOD tbody").html(''); // Clear Mode of Defect table
         $('#textStation').prop('disabled', false);
         $('#textDate').prop('disabled', false);

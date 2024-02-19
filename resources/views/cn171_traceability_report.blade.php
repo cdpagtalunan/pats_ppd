@@ -14,7 +14,7 @@
 
 
            <!-- MODALS -->
-        <div class="modal fade" id="modalExportTraceabilityReport">
+        <div class="modal fade" id="modalExportTraceabilityReport" data-bs-backdrop="static">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header bg-dark">
@@ -98,7 +98,6 @@
 
                 // console.log(date_from);
                 // console.log(date_to);
-                
                 window.location.href = `export_cn171_traceability_report/${po_number}/${date_from}/${date_to}`;
                 $('#modalExportTraceabilityReport').modal('hide');
             });
@@ -119,8 +118,14 @@
 
         });
 
-    
+            $(document).on('click','#modalExportTraceability',function(e){
+                $('#searchPONumber').val("");
+                $('#txtViewDatePickerFrom').val("");
+                $('#txtViewDatePickerTo').val("");
+                $('#modalExportTraceabilityReport').attr('data-formid', '').modal('show');
+            });
 
+        });
 
     </script>
 @endsection

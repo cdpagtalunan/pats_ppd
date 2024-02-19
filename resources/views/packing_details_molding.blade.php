@@ -662,9 +662,11 @@
                 $('#txtScanPackerId').on('keyup', function(e){
                     let toScanEmpId =  $('#txtScanPackerId').val();
                     let toScanMoldingId   =  $('#txtMoldingId').val();
+                    let stampingDetailsId   =  $('#txtStampingDetailsId').val();
                     let scannedEmpId = {
                     'scanned_emp_id' : toScanEmpId,
-                    'molding_id'     : toScanMoldingId
+                    'molding_id'     : toScanMoldingId,
+                    'stamping_details_id'     : stampingDetailsId
                     }
                     if(e.keyCode == 13){
                         if(moldingId != null){
