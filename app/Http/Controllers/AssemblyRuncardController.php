@@ -16,6 +16,8 @@ use App\Models\AssemblyRuncardStationsMods;
 
 use App\Models\Process;
 use App\Models\Device;
+// use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use QrCode;
 
 class AssemblyRuncardController extends Controller
 {
@@ -102,11 +104,16 @@ class AssemblyRuncardController extends Controller
     }
 
     public function get_assembly_runcard_data(Request $request){
-        $assembly_runcard_data = AssemblyRuncard::when($request->assy_runcard_station_id, function ($with_query) use ($request){
-                                                    return $with_query-> with(['assembly_runcard_station.station_name','assembly_runcard_station.user','assembly_runcard_station' => function($station_id_query) use ($request){
-                                                            return $station_id_query->where('id', $request->assy_runcard_station_id); 
-                                                        }]);
-                                                })
+        // $assembly_runcard_data = AssemblyRuncard::when($request->assy_runcard_station_id, function ($with_query) use ($request){
+        //                                             return $with_query-> with(['assembly_runcard_station.station_name','assembly_runcard_station.user','assembly_runcard_station' => function($station_id_query) use ($request){
+        //                                                     return $station_id_query->where('id', $request->assy_runcard_station_id); 
+        //                                                 }]);
+        //                                         })
+        //                                         ->whereNull('deleted_at')
+        //                                         ->where('id', $request->assy_runcard_id)
+        //                                         ->get();
+
+        $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name','assembly_runcard_station.user'])
                                                 ->whereNull('deleted_at')
                                                 ->where('id', $request->assy_runcard_id)
                                                 ->get();
@@ -138,18 +145,36 @@ class AssemblyRuncardController extends Controller
                 $result = '';
                 $result .= "
                     <center>
-                        <button class='btn btn-primary btn-sm mr-1 btnUpdateAssemblyRuncardData' assembly_runcard-id='$row->id'><i class='fa-solid fa-pen-to-square'></i></button>
-                    </center>
-                ";
+                        <button class='btn btn-primary btn-sm mr-1 btnUpdateAssemblyRuncardData' assembly_runcard-id='$row->id'>
+                            <i class='fa-solid fa-pen-to-square'></i>
+                        </button>";
+
+                if($row->status == 1){
+                    $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' id='btnPrintAssemblyRuncard'>
+                                    <i class='fa-solid fa-print' disabled></i>
+                                </button>";
+                }
+                $result .= "</center>";
+                
                 return $result;
             })
-            ->addColumn('status', function($row){
-                $result = '';
-                $result .= "
-                    <center>
-                        <span class='badge rounded-pill bg-info'> On-going </span>
-                    </center>
-                ";
+            ->addColumn('status', function ($row){
+                $result = "";
+                
+                switch($row->status){
+                    case 0: //Pending
+                        $result .= '<center><span class="badge badge-pill badge-info">For Station Process</span></center>';
+                        break;
+                    case 1: //Mass Prod
+                        $result .= '<center><span class="badge badge-pill badge-primary">For Mass Production</span></center>';
+                        break;
+                    case 2: //Resetup
+                        $result .= '<center><span class="badge badge-pill badge-warning">For Re-setup</span></center>';
+                        break;
+                    case 3: //Done
+                        $result .= '<center><span class="badge badge-pill badge-success">Done</span></center>';
+                        break;
+                }
                 return $result;
             })
             ->rawColumns(['action','status'])
@@ -397,30 +422,97 @@ class AssemblyRuncardController extends Controller
     //     return response()->json(['assembly_runcard_data' => $assembly_runcard_data]);
     // }
 
-    // public function update_assy_runcard_status(Request $request){
-    //     date_default_timezone_set('Asia/Manila');
-    //     // session_start();
-    //         if($request->stamping_ipqc_status == 1){
-    //             //For Mass Production
-    //             $fs_prod_status = 1;
-    //             $ipqc_status = 3;
+    public function update_assy_runcard_status(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        // session_start();
+        AssemblyRuncard::where('id', $request->runcard_id)
+                    ->update([
+                        'status'              => 1,
+                        'last_updated_by'     => Auth::user()->id,
+                        'updated_at'          => date('Y-m-d H:i:s'),
+                    ]);
 
-    //         }else if($request->stamping_ipqc_status == 2){
-    //             //For Re-Setup
-    //             $fs_prod_status = 3;
-    //             $ipqc_status = 4;
-    //         }
-    //         StampingIpqc::where('id', $request->stamping_ipqc_id)
-    //                 ->update([
-    //                     'status'              => $ipqc_status,
-    //                     'last_updated_by'     => Auth::user()->id,
-    //                     'updated_at'          => date('Y-m-d H:i:s'),
-    //                 ]);
+        AssemblyRuncardStation::where('assembly_runcards_id', $request->runcard_id)
+                    ->update([
+                        'status' => 1,
+                        'last_updated_by'     => Auth::user()->id,
+                        'updated_at'          => date('Y-m-d H:i:s'),
+                    ]);
 
-    //             FirstStampingProduction::where('id', $request->fs_productions_id)
-    //             ->update(['status' => $fs_prod_status]);
+                    DB::commit();
+        return response()->json(['result' => 1]);
+    }
 
-    //                 DB::commit();
-    //     return response()->json(['result' => 'Successful']);
-    // }
+    public function get_assembly_qr_code (Request $request)
+    {
+        $assembly = AssemblyRuncard::where('id',$request->runcard_id)
+                                    ->whereNull('deleted_at')
+                                    ->first([
+                                        'po_number',
+                                        // 'parts_code',
+                                        'device_name',
+                                        'production_lot',
+                                        'po_quantity',
+                                    ]);
+
+        // return $assembly;
+
+        $qrcode = QrCode::format('png')
+        ->size(250)->errorCorrection('H')
+        ->generate(json_encode($assembly));
+
+        $qr_code = "data:image/png;base64," . base64_encode($qrcode);
+
+        $data[] = array(
+            'img' => $qr_code,
+            'text' =>  "<strong>$assembly->po_number</strong><br>
+            <strong>$assembly->po_quantity</strong><br>
+            <strong>$assembly->device_name</strong><br>
+            <strong>$assembly->production_lot</strong><br>
+            <strong>$assembly->production_lot</strong><br>
+            <strong>$assembly->production_lot</strong><br>
+            "
+        );
+        // <strong>$assembly->qty</strong><br>
+        // <strong>$assembly->output_qty</strong><br>
+
+        $label = "
+            <table class='table table-sm table-borderless' style='width: 100%;'>
+                <tr>
+                    <td>PO No.:</td>
+                    <td>$assembly->po_number</td>
+                </tr>
+                <tr>
+                    <td>Material Code:</td>
+                    <td>$assembly->po_quantity</td>
+                </tr>
+                <tr>
+                    <td>Material Name:</td>
+                    <td>$assembly->device_name</td>
+                </tr>
+                <tr>
+                    <td>Production Lot #:</td>
+                    <td>$assembly->production_lot</td>
+                </tr>
+                <tr>
+                    <td>Shipment Output:</td>
+                    <td>$assembly->production_lot</td>
+                </tr>
+                <tr>
+                    <td>PO Quantity:</td>
+                    <td>$assembly->production_lot</td>
+                </tr>
+            </table>
+        ";
+        // <tr>
+        //     <td>Shipment Output:</td>
+        //     <td>$assembly->output_qty</td>
+        // </tr>
+        // <tr>
+        //     <td>PO Quantity:</td>
+        //     <td>$assembly->qty</td>
+        // </tr>
+
+        return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'assembly_data' => $assembly]);
+    }
 }

@@ -10,6 +10,14 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         $("div").find('input').attr('title', '');
         
         $("#tableSecondMoldingStationMOD tbody").html(''); // Clear Mode of Defect table
+        $('#textStation').prop('disabled', false);
+        $('#textDate').prop('disabled', false);
+        $('#textOperatorName').prop('disabled', false);
+        $('#textInputQuantity').prop('disabled', false);
+        $('#textOutputQuantity').prop('disabled', false);
+        $('#textRemarks').prop('disabled', false);
+        $('#buttonAddModeOfDefect').prop('disabled', false);
+        $('#buttonSaveSecondMoldingStation').prop('disabled', false);
     });
 }
 
@@ -239,7 +247,7 @@ const getMachineDropdown = (cboElement, materialName) => {  // chris
 const getUser = (elementId) => {
     let result = `<option value="0" selected> N/A </option>`;
     $.ajax({
-        url: 'get_user',
+        url: 'get_user_for_second_molding',
         method: 'get',
         dataType: 'json',
         beforeSend: function(){
@@ -248,7 +256,7 @@ const getUser = (elementId) => {
         },
         success: function(response){
             result = '';
-            // console.log('object ', response['data']);
+            console.log('object ', response['data']);
             if(response['data'].length > 0){
                 for(let index = 0; index < response['data'].length; index++){
                     result += `<option value="${response['data'][index].id}">${response['data'][index].operator}</option>`;
@@ -286,4 +294,29 @@ function setDisabledSecondMoldingRuncard(boolean) {
     $('#total_machine_output').prop('disabled', boolean);
     $('#shipment_output').prop('disabled', boolean);
     $('#buttonSubmitSecondMolding').prop('disabled', boolean);
+}
+
+const getDiesetDetailsByDeviceNameSecondMolding = (deviceName) => {
+    $.ajax({
+        type: "GET",
+        url: "get_dieset_details_by_device_name_second_molding",
+        data: {
+            "device_name" : deviceName
+        },
+        dataType: "json",
+        success: function (response) {
+            let dateNow = new Date();
+            let twoDigitYear = dateNow.getFullYear().toString().substr(-2);
+            console.log(`twoDigitYear ${twoDigitYear}`);
+            
+            let twoDigitMonth = (dateNow.getMonth() + 1).toString().padStart(2, "0");
+            console.log(`twoDigitMonth ${twoDigitMonth}`);
+            
+            let twoDigitDay = String(dateNow.getDate()).padStart(2, '0');
+            console.log(`twoDigitDay ${twoDigitDay}`);
+
+            let revNo = response['rev_no'];
+            $('#textProductionLot', $('#formSecondMolding')).val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
+        }
+    });
 }

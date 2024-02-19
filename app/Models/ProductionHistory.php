@@ -21,4 +21,8 @@ class ProductionHistory extends Model
         return $this->hasOne(User::class, 'id', 'qc_id');
     }
 
+    public function prod_history_parts_mat_details(){
+        return $this->hasMany(ProductionHistoryPartsMat::class, 'prod_history_id', 'id');
+    }
+
 }

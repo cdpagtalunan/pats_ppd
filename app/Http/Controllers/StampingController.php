@@ -18,6 +18,7 @@ use App\Models\FirstStampingProduction;
 use App\Models\StampingProductionSublot;
 use App\Models\StampingProductionHistory;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class StampingController extends Controller
 {
@@ -712,6 +713,7 @@ class StampingController extends Controller
 
         $qrcode = QrCode::format('png')
         ->size(250)->errorCorrection('H')
+        // ->mergeString(Storage::get('/public/Untitled-removebg-preview.png'), .5)
         ->generate($stamping_details);
 
         $QrCode = "data:image/png;base64," . base64_encode($qrcode);

@@ -414,3 +414,10 @@ body {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+/* .select2-search .select2-search--inline{
+  width: 0 !important;
+} */
+.select2-container--bootstrap-5 .select2-search.select2-search--inline {
+  width: 0 !important;
+}

@@ -14,9 +14,10 @@ class FirstMoldingDetail extends Model
 {
     use HasFactory;
 
-    // public function firstMoldingDetailMods(){
-    //     return $this->hasMany(FirstMoldingDetailMod::class)->whereNull('deleted_at');
-    // }
+    public function belongsToFirstMolding(){
+        return $this->hasOne(FirstMolding::class,'id','first_molding_id')->whereNull('deleted_at');
+    }
+
     // public function defectsInfo(){
     //     return $this->hasOne(defectsInfo::class)->whereNull('deleted_at');
     // }

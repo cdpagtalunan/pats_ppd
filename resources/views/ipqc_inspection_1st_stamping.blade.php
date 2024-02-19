@@ -1021,9 +1021,13 @@
                                 // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
                                 // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
-                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
-                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
-                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
+                                GetBDrawingFromACDCS(trimmed_mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
+                                GetInspStandardFromACDCS(trimmed_mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
+                                GetUDFromACDCS(trimmed_mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
+
+                                // $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                                // $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
+                                // $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
 
                                 $('input[name="keep_sample"]').attr('disabled', false);
                                 $("#btnReuploadTriggerDiv").removeClass('d-none');
@@ -1075,7 +1079,7 @@
                     GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
                 };
 
-                function GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+                function GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo = null){
                     let result = '<option value="" disabled selected>--Select Document No.--</option>';
 
                     $.ajax({
@@ -1106,6 +1110,9 @@
                                 result = '<option value="0" selected disabled> -- No record found -- </option>';
                             }
                             cboElement.html(result);
+                            if(IpqcDocumentNo != null){
+                                cboElement.val(IpqcDocumentNo).trigger('change');
+                            }
                         },
                         error: function(data, xhr, status) {
                             result = '<option value="0" selected disabled> -- Reload Again -- </option>';

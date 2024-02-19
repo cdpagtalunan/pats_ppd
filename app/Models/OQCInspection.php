@@ -24,15 +24,15 @@ class OQCInspection extends Model
     //     return $this->hasOne(WbsOqcInspection::class, '','');
     // }
 
-    public function reel_lot_oqc_inspection_info(){
+    public function reel_lot_oqc_inspection_details(){
         return $this->hasMany(OqcInspectionReelLot::class, 'oqc_inspection_id','id');
     }
 
-    public function print_lot_oqc_inspection_info(){
+    public function print_lot_oqc_inspection_details(){
         return $this->hasMany(OqcInspectionPrintLot::class, 'oqc_inspection_id','id');
     }
 
-    public function mod_oqc_inspection_info(){
+    public function mod_oqc_inspection_details(){
         return $this->hasMany(OqcInspectionModeOfDefect::class, 'oqc_inspection_id','id');
     }
 

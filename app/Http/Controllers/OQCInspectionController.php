@@ -35,9 +35,9 @@ class OQCInspectionController extends Controller
         date_default_timezone_set('Asia/Manila');
         
         $prod_details = FirstStampingProduction::with([
-            'oqc_inspection_info.reel_lot_oqc_inspection_info',
-            'oqc_inspection_info.print_lot_oqc_inspection_info',
-            'oqc_inspection_info.mod_oqc_inspection_info'
+            'oqc_inspection_info.reel_lot_oqc_inspection_details',
+            'oqc_inspection_info.print_lot_oqc_inspection_details',
+            'oqc_inspection_info.mod_oqc_inspection_details'
         ])
         ->where('po_num', $request->poNo)
         ->where('status', '2')
@@ -256,18 +256,18 @@ class OQCInspectionController extends Controller
         })
 
         ->addColumn('mod', function($prod_info){
-            $get_oqc_inspection_per_row = OQCInspection::with(['mod_oqc_inspection_info'])->where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_per_row = OQCInspection::with(['mod_oqc_inspection_details'])->where('fs_productions_id', $prod_info->id)->where('logdel', 0)->get();
             $result = '<center>';
             if(count($get_oqc_inspection_per_row) > 0){
                 if($get_oqc_inspection_per_row[0]->judgement == 'Reject'){
-                    for ($i=0; $i < count($get_oqc_inspection_per_row[0]->mod_oqc_inspection_info); $i++) { 
-                        $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_info[$i]->mod." \n ";
+                    for ($i=0; $i < count($get_oqc_inspection_per_row[0]->mod_oqc_inspection_details); $i++) { 
+                        $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_details[$i]->mod." \n ";
                     }
                 }else{
                     $result .= 'N/A';
                 }
             }
-            // $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_info;
+            // $result .= $get_oqc_inspection_per_row[0]->mod_oqc_inspection_details;
             $result .= '</center>';
             return $result;
         })
@@ -378,7 +378,7 @@ class OQCInspectionController extends Controller
         
         $oqc_details = OQCInspection::with([
             'stamping_production_info',
-            'mod_oqc_inspection_info'
+            'mod_oqc_inspection_details'
         ])
         ->where('fs_productions_id', $request->poNoById)
         ->where('logdel', 0)
@@ -417,8 +417,8 @@ class OQCInspectionController extends Controller
         ->addColumn('mod', function($oqc_info){
             $result = '<center>';
                 if($oqc_info->judgement == 'Reject'){
-                    for ($i=0; $i < count($oqc_info->mod_oqc_inspection_info); $i++) { 
-                        $result .= $oqc_info->mod_oqc_inspection_info[$i]->mod." \n ";
+                    for ($i=0; $i < count($oqc_info->mod_oqc_inspection_details); $i++) { 
+                        $result .= $oqc_info->mod_oqc_inspection_details[$i]->mod." \n ";
                     }
                 }else{
                     $result .= 'N/A';
@@ -460,9 +460,9 @@ class OQCInspectionController extends Controller
         date_default_timezone_set('Asia/Manila');
         
         $prod_second_stamping_details = FirstStampingProduction::with([
-            'oqc_inspection_info.reel_lot_oqc_inspection_info',
-            'oqc_inspection_info.print_lot_oqc_inspection_info',
-            'oqc_inspection_info.mod_oqc_inspection_info'
+            'oqc_inspection_info.reel_lot_oqc_inspection_details',
+            'oqc_inspection_info.print_lot_oqc_inspection_details',
+            'oqc_inspection_info.mod_oqc_inspection_details'
         ])
         ->where('po_num', $request->poNo)
         ->where('status', '2')
@@ -685,18 +685,18 @@ class OQCInspectionController extends Controller
         })
 
         ->addColumn('mod', function($prod_second_stamping_info){
-            $get_oqc_inspection_second_stamping_per_row = OQCInspection::with(['mod_oqc_inspection_info'])->where('fs_productions_id', $prod_second_stamping_info->id)->where('logdel', 0)->get();
+            $get_oqc_inspection_second_stamping_per_row = OQCInspection::with(['mod_oqc_inspection_details'])->where('fs_productions_id', $prod_second_stamping_info->id)->where('logdel', 0)->get();
             $result = '<center>';
             if(count($get_oqc_inspection_second_stamping_per_row) > 0){
                 if($get_oqc_inspection_second_stamping_per_row[0]->judgement == 'Reject'){
-                    for ($i=0; $i < count($get_oqc_inspection_second_stamping_per_row[0]->mod_oqc_inspection_info); $i++) { 
-                        $result .= $get_oqc_inspection_second_stamping_per_row[0]->mod_oqc_inspection_info[$i]->mod." \n ";
+                    for ($i=0; $i < count($get_oqc_inspection_second_stamping_per_row[0]->mod_oqc_inspection_details); $i++) { 
+                        $result .= $get_oqc_inspection_second_stamping_per_row[0]->mod_oqc_inspection_details[$i]->mod." \n ";
                     }
                 }else{
                     $result .= 'N/A';
                 }
             }
-            // $result .= $get_oqc_inspection_second_stamping_per_row[0]->mod_oqc_inspection_info;
+            // $result .= $get_oqc_inspection_second_stamping_per_row[0]->mod_oqc_inspection_details;
             $result .= '</center>';
             return $result;
         })
@@ -1010,9 +1010,9 @@ class OQCInspectionController extends Controller
         ->where('id', $request->getProdId)
         ->get();
         $get_oqc_inspection_data = OQCInspection::with([
-            'reel_lot_oqc_inspection_info',
-            'print_lot_oqc_inspection_info',
-            'mod_oqc_inspection_info'
+            'reel_lot_oqc_inspection_details',
+            'print_lot_oqc_inspection_details',
+            'mod_oqc_inspection_details'
         ])
         ->where('id', $request->getOqcId)
         ->where('logdel', 0)

@@ -37,6 +37,14 @@
             text-align: center;
             vertical-align: middle;
         }
+
+        .hidden_scanner_input{
+                position: absolute;
+                opacity: 0;
+            }
+            textarea{
+                resize: none;
+            }
     </style>
   <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -78,28 +86,82 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="row mb-2">
-                                        <div class="col-sm-12">
-                                            <button type="button" class="btn btn-primary float-end" id="addChecksheet" >Add Daily Checksheet</button>
-                                        </div>
+                                    <div>
+                                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" id="Daily-tab" data-bs-toggle="tab" href="#dailyChecksheetTab" role="tab" aria-controls="dailyChecksheetTab" aria-selected="true">Daily Checksheet</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="Weekly-tab" data-bs-toggle="tab" href="#weeklyChecksheet" role="tab" aria-controls="weeklyChecksheet" aria-selected="false">Weekly Checksheet</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" id="Monthky-tab" data-bs-toggle="tab" href="#monthlyChecksheet" role="tab" aria-controls="monthlyChecksheet" aria-selected="false">Monthly Checksheet</a>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-sm-12">
+                                    <div class="tab-content" id="myTabContent">
+
+                                        <div class="tab-pane fade show active" id="dailyChecksheetTab" role="tabpanel" aria-labelledby="dailyChecksheetTab-tab"><br>
+                                            <div class="col-sm-12">
+                                                <button type="button" class="btn btn-primary float-end" id="addDailyCheckSheet" >Add Daily Checksheet</button>
+                                            </div><br><br>
                                             <div class="table-responsive">
-                                                <!-- style="max-height: 600px; overflow-y: auto;" -->
-                                                <table id="tblDailyChecksheet" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                                <table id="tblDailyChecksheet" class="table table-sm table-bordered table-striped table-hover"
+                                            style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Action</th>
+                                                        <th>Status</th>
+                                                        <th>Date</th>
+                                                        <th>Machine</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="tab-pane fade show" id="weeklyChecksheet" role="tabpanel" aria-labelledby="weeklyChecksheet-tab"><br>
+                                            <div class="col-sm-12">
+                                                <button type="button" class="btn btn-primary float-end" id="addWeeklyChecksheet" >Add Weekly Checksheet</button>
+                                            </div><br><br>
+                                            <div class="table-responsive">
+                                                <table id="tblWeeklyChecksheet" class="table table-sm table-bordered table-striped table-hover"
+                                                style="width: 100%;">
                                                     <thead>
                                                         <tr>
                                                             <th>Action</th>
                                                             <th>Status</th>
-                                                            <th>Date</th>
+                                                            <th>Month</th>
+                                                            <th>Week</th>
                                                             <th>Machine</th>
-                                                            {{-- <th>Shift</th> --}}
                                                         </tr>
                                                     </thead>
+                                                    <tbody></tbody>
                                                 </table>
                                             </div>
                                         </div>
+
+                                        <div class="tab-pane fade show" id="monthlyChecksheet" role="tabpanel" aria-labelledby="monthlyChecksheet-tab"><br>
+                                            <div class="col-sm-12">
+                                                <button type="button" class="btn btn-primary float-end" id="addMonthlyChecksheet" >Add Monthly Checksheet</button>
+                                            </div><br><br>
+                                            <div class="table-responsive">
+                                                <table id="tblMonthlyChecksheet" class="table table-sm table-bordered table-striped table-hover"
+                                                style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Action</th>
+                                                            <th>Status</th>
+                                                            <th>Month</th>
+                                                            <th>Machine</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </div>
                         </div>
@@ -112,7 +174,7 @@
         <!-- /.content -->
     </div>
 
-    <div class="modal fade" id="modalAddChecksheet" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modalAddDailyChecksheet" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl-custom">
             <div class="modal-content">
                 <div class="modal-header">
@@ -121,7 +183,7 @@
                 </div>
                 <form id="formAddDailyChecksheet">
                     @csrf
-                    <input type="hidden" id="txtDailyCheckSheetId" name="daily_checksheet_id">
+                    <input type="hidden" id="txtDailyChkSheetId" name="daily_checksheet_id">
                     <div class="modal-body">
                         <div class="card">
                             <div class="card-body">
@@ -131,13 +193,12 @@
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">UNIT NO</span>
                                             </div>
-                                            {{-- <input type="text" class="form-control form-control-sm" value="3" id="txtUnitNo" name="unit_no" readonly> --}}
-                                            <select class="form-control form-control-sm" name="unit_no" id="txtunitNo">
+                                            <select class="form-control form-control-sm"  id="txtunitNo" name="unit_no">
                                                 <option value="" selected disabled>--Select--</option>
-                                                <option value="01">01</option>
-                                                <option value="02">02</option>
-                                                <option value="03">03</option>
-                                                <option value="04">04</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
                                             </select>
                                         </div>
                                     </div>
@@ -208,7 +269,7 @@
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">CONFORMED BY (QC)</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtConformedBy" name="conformed_by" readonly>
+                                            <input type="text" class="form-control form-control-sm" id="txtConformedByQC" name="conformed_by_qc" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -290,7 +351,7 @@
                                                         <label> </label><br>
                                                         <label>0.4 ~ 0.6</label>
                                                         <div class="form-group">
-                                                            <input type="text" name="actual_measurement" id="txtActualMeasurement">
+                                                            <input type="text" name="actual_measurement" id="txtActualMeasurement" autocomplete="off">
                                                         </div>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
@@ -322,7 +383,7 @@
                                                         <label> </label><br>
                                                         <label>1.7 ~ 2.5</label>
                                                         <div class="form-group">
-                                                            <input type="text" name="actual_measurement2" id="txtActualMeasurement2">
+                                                            <input type="text" name="actual_measurement2" id="txtActualMeasurement2" autocomplete="off">
                                                         </div>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
@@ -692,10 +753,351 @@
                             <i class="fa fa-check"></i>
                             Save
                         </button>
+                        <button hidden type="button" id="btnCheck" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Check
+                        </button>
+                        <button hidden type="button" id="btnConform" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Conform
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
+    </div>
+
+    <div class="modal fade" id="modalScanEngineeringId">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <form id="formUpdateEngineeringStatus">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtDailyChkSheetId" name="daily_checksheet_id">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanEngineeringId" name="engineering_scanned_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtScanEngineeringId" name="engineering_scanned_id" autocomplete="off"> --}}
+                        <div class="text-center text-secondary"><span id="modalScanEngineeringIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </form>
+
+            </div>
+        <!-- /.modal-content -->
+        </div>
+            <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modalScanQcId">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <form id="formUpdateQcStatus">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtDailyChkSheetId" name="daily_checksheet_id">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQcId" name="qc_scanned_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtScanQcId" name="qc_scanned_id" autocomplete="off"> --}}
+                        <div class="text-center text-secondary"><span id="modalScanQcIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </form>
+
+            </div>
+        <!-- /.modal-content -->
+        </div>
+            <!-- /.modal-dialog -->
+    </div>
+
+    
+    <div class="modal fade" id="modalAddWeeklyChecksheet" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl-custom">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Press Stamping Machine Checksheet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formAddWeeklyChecksheet">
+                    @csrf
+                    <input type="hidden" id="txtWeeklyChkSheetId" name="weekly_checksheet_id">
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">UNIT NO</span>
+                                            </div>
+                                            <select class="form-control form-control-sm"  id="txtWeeklyUnitNo" name="weekly_unit_no">
+                                                <option value="" selected disabled>--Select--</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Division</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyCheckDiv" name="weekly_division" value="Operations Division" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Month</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyMonth" name="weekly_month" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Machine</span>
+                                            </div>
+                                            <select class="form-control select2bs4" id="selWeeklyMachine" name="machine_weekly" required></select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">AREA</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyArea" name="machine_area_weekly" value="Stamping" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">CONFORMED BY</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyConformedBy" name="conformed_by_weekly" value="H. De Guzman" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">CONDUCTED BY (OPERATOR)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyConductedBy" name="conducted_by_weekly" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">CHECKED BY (ENGINEER)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyCheckedBy" name="checked_by_weekly" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">CONFORMED BY (QC)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyConformedByQC" name="conformed_by_qc_weekly" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Date/Time</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeeklyCheckDate" name="date_weekly" readonly>
+                                            <input type="hidden" class="form-control form-control-sm" id="txtWeeklyCheckTime" name="time_weekly" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-4">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Week</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtWeek" name="week" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            {{-- <div class="card-header p-2">
+                                                <h6>A.1 Machines & Equipments</h6>
+                                            </div> --}}
+                                            <div class="card-body" >
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <label>W1</label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>W2</label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>W3</label> 
+                                                        </div>  
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" required value="1" name="result_w1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" required value="2" name="result_w1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" required value="1" name="result_w2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" required value="2" name="result_w2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" required value="1" name="result_w3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" required value="2" name="result_w3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label style="display: flex; justify-content: center; align-items: center;">WEEKLY CHECKPOINTS</label>
+                                                        W1. PRESSURE SWITCH FOR PNEUMATICS<br>
+                                                        W2. PRESSURE SWITCH FOR LUBE OIL<br>
+                                                        W3. PRESSURE SWITCH FOR DIE HEIGHT LOCK <br><br><br>
+
+                                                        {{-- <label style="display: flex; justify-content: center; align-items: center;">MONTHLY CHECKPOINTS</label>
+                                                        M1. SUCTION FILTER (NO CLOGGED IN OIL TANK)<br>
+                                                        M2. HYDRAULIC SYSTEM (NO OIL LEAKAGE)<br>
+                                                        M3. WIRING CONNECTIONS (FIRMLY TIGHTENED)<br>
+                                                        M4. ELECTRICAL BOX (NO INGRESS OF OIL,WATER,DUST)<br>
+                                                        M5. LIMIT SWITCH (NO DEFORMATION) --}}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="btnWeeklySave" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Save
+                        </button>
+                        <button hidden type="button" id="btnWeeklyCheck" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Check
+                        </button>
+                        <button hidden type="button" id="btnWeeklyConform" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Conform
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalScanQrSaveWeekly">
+        <div class="modal-dialog modal-dialog-center">
+          <div class="modal-content modal-sm ">
+            {{-- <div class="modal-header">
+              <h4 class="modal-title"><i class="fa fa-user"></i> Logout</h4>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div> --}}
+            <div class="modal-body">
+              {{-- hidden_scanner_input --}}
+              {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_qr_code" autocomplete="off"> --}}
+              <input type="text" class="w-100 hidden_scanner_input" id="txtScanUserIdWeekly" name="scan_id_weekly" autocomplete="off">
+              <div class="text-center text-secondary"><span id="modalScanQrSaveWeeklyText">Please scan employee ID.</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
+      <div class="modal fade" id="modalWeeklyScanEngineeringId">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <form id="formUpdateWeeklyEngineeringStatus">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtWeeklyChkSheetId" name="weekly_checksheet_id">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtWeeklyScanEngineeringId" name="engineering_scanned_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtWeeklyScanEngineeringId" name="engineering_scanned_id" autocomplete="off"> --}}
+                        <div class="text-center text-secondary"><span id="modalWeeklyScanEngineeringIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </form>
+
+            </div>
+        <!-- /.modal-content -->
+        </div>
+            <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modalWeeklylScanQcId">
+        <div class="modal-dialog center">
+            <div class="modal-content modal-sm">
+                <form id="formUpdateWeeklyQcStatus">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" id="txtWeeklyChkSheetId" name="weekly_checksheet_id">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQcWeeklyId" name="qc_scanned_weekly_id" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtScanQcWeeklyId" name="qc_scanned_weekly_id" autocomplete="off"> --}}
+                        <div class="text-center text-secondary"><span id="modalWeeklylScanQcIdText">Please scan Employee ID</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </form>
+
+            </div>
+        <!-- /.modal-content -->
+        </div>
+            <!-- /.modal-dialog -->
     </div>
 
 @endsection
@@ -705,6 +1107,7 @@
 <script>
     var dtDailyChecksheet;
     var checkSheetfunction;
+    var dtWeeklyChecksheet;
     
 
     $(document).ready(function(e){
@@ -731,15 +1134,35 @@
                 { "data": "action" },
                 { "data": "status" },
                 { "data": "date" },
-                { "data": "machine_id" },
+                { "data": "machine_details.machine_name" },
             ],
            
         });
 
+        dtWeeklyChecksheet = $("#tblWeeklyChecksheet").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "view_weekly_checksheet",
+                data: function (param) {
+                    param.month = $("#selMonth").val();
+                }
+            },
+            fixedHeader: true,
+            "columns": [
+                { "data": "action" },
+                { "data": "status" },
+                { "data": "month" },
+                { "data": "week" },
+                { "data": "machine_details.machine_name" },
+            ],
+        });
+
+
         $(".datepicker").on('change', function(){
             dtDailyChecksheet.draw();
         });
-        $('#addChecksheet').on('click', function(){
+        $('#addDailyCheckSheet').on('click', function(){
             // let date = moment().format('MM-DD-YYYY');
             let date = moment().format('YYYY-MM-DD');
             let time = moment().format('kk:mm');
@@ -757,29 +1180,25 @@
             $('#txtMonth').val(month)
             
 
-            $('#modalAddChecksheet').modal('show');
+            $('#modalAddDailyChecksheet').modal('show');
             
         });
 
         $('#formAddDailyChecksheet').submit(function(e){
             e.preventDefault();
-            // saveChecksheet('Q121');
 
             $('#modalScanQRSave').modal('show');
             $('#modalScanQRSaveText').html('Please Scan Employee ID.')
 
-        //    saveChecksheet();
         })
 
         $(document).on('keyup','#txtScanUserId', function(e){
             if(e.keyCode == 13){
                 validateUser($(this).val().toUpperCase(), [0,1,4,9,11], function(result){
                     if(result == true){
-                        console.log('dito');
                         saveDailyChecksheet($('#txtScanUserId').val());
                     }
                     else{ // Error Handler
-                        console.log('tanga');
                         toastr.error('User not authorize!');
                     }
                     $('#txtScanUserId').val('');
@@ -788,72 +1207,318 @@
 
         });
 
-        $(document).on('click', '.btnCheck', function(e){
-            let id = $(this).data('id');
-            let tokin = "{{ csrf_token() }}";
+        let dailyCheckSheetId;
+        let dailyCheckSheetStatus;
 
-            Swal.fire({
-                title: "Do you want to approve this checklist?",
-                icon: "question",
-                showDenyButton: true,
-                showCancelButton: true,
-                confirmButtonText: "Approve",
-                confirmButtonColor: "#17bf39",
-                denyButtonText: `Disapprove`
-            }).then((result) => {
-
-                if (result.isConfirmed) {
-                    changeStatusChecksheet(1, id, tokin);
-                }
-                else if (result.isDenied) {
-                    Swal.fire({
-                        title: 'Input Remarks',
-                        html: '<textarea id="disapproveRemarks" rows="5" class="form-control" placeholder="Enter text here..."></textarea>',
-                        showCancelButton: true,
-                        confirmButtonText: 'Submit',
-                        preConfirm: () => {
-                            const textareaValue = $.trim($('#disapproveRemarks').val());
-                            if (!textareaValue) {
-                                Swal.showValidationMessage('Remarks cannot be empty!');
-                            }
-                            return textareaValue;
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            const remarks = result.value;
-                            changeStatusChecksheet(2, id, tokin, remarks);
-
-                        }
-                    });
-                    
-                }
-            });
-        });
-
+        
         $(document).on('click', '.btnView', function(e){
-            let id = $(this).data('id');
-            checkSheetfunction = $(this).data('function');
+            dailyCheckSheetStatus = $(this).data('status')
+            dailyCheckSheetId = $(this).data('id');
 
-            console.log(checkSheetfunction);
+            $('#txtDailyChkSheetId').val(dailyCheckSheetId)
 
-            getChecksheet(id, checkSheetfunction);
+            getDailyChecksheet(dailyCheckSheetId, dailyCheckSheetStatus);
+
         });
 
-        $(document).on('click', '.btnEdit', function(e){
-            let id = $(this).data('id');
-            checkSheetfunction = $(this).data('function');
-            console.log(checkSheetfunction);
-            
-            getChecksheet(id, checkSheetfunction);
+        $(document).on('click', '#btnCheck', function(e){
+            e.preventDefault();
+            $('#modalScanEngineeringId').modal('show');
         });
 
-        $("#modalAddChecksheet").on('hidden.bs.modal', function () {
-            console.log('hidden.bs.modal');
+        $('#modalScanEngineeringId').on('shown.bs.modal', function () {
+            $('#txtScanEngineeringId').focus();
+        });
+
+        $('#formUpdateEngineeringStatus').submit(function(e){
+            e.preventDefault();
+        });
+
+        $('#txtScanEngineeringId').on('keyup', function(e){
+            e.preventDefault();
+                let toScanEmpId =  $('#txtScanEngineeringId').val();
+                let checksheetId   =  $('#txtDailyChkSheetId').val();
+                let scannedEmpId = {
+                'scanned_emp_id' : toScanEmpId,
+                'daily_checksheet_id' : checksheetId
+                }
+            if(e.keyCode == 13){
+                validateUser($(this).val().toUpperCase(), [0,9], function(result){
+                    // alert('asdasdasd');
+                    if(result == true){
+                        let data2 = $('#formUpdateEngineeringStatus').serialize()+ '&' + $.param(scannedEmpId);
+                            $.ajax({
+                                type: "post",
+                                url: "update_status_checked_by",
+                                data: data2,
+                                dataType: "json",
+                                success: function (response) {
+                                    if(response['validation'] == 1){
+                                        toastr.error('Saving data failed!');
+
+                                    }else if(response['result'] == 0){
+                                        toastr.success('Validation Succesful!');
+                                        $("#formUpdateEngineeringStatus")[0].reset();
+                                        $("#formAddDailyChecksheet")[0].reset();
+                                        $('#modalAddDailyChecksheet').modal('hide');
+                                        $('#modalScanEngineeringId').modal('hide');
+                                        dtDailyChecksheet.draw();
+                                    }
+                                }
+                            });
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+                    $('#txtScanEngineeringId').val('');
+                });
+                $(this).val('');
+            }
+        });
+
+        $(document).on('click', '#btnConform', function(e){
+            e.preventDefault();
+            $('#modalScanQcId').modal('show');
+        });
+
+        $('#modalScanQcId').on('shown.bs.modal', function () {
+            $('#txtScanQcId').focus();
+        });
+
+        $('#formUpdateQcStatus').submit(function(e){
+            e.preventDefault();
+        });
+
+        $('#txtScanQcId').on('keyup', function(e){
+            e.preventDefault();
+                let toScanEmpId =  $('#txtScanQcId').val();
+                let checksheetId   =  $('#txtDailyChkSheetId').val();
+                let scannedEmpId = {
+                'scanned_qc_id' : toScanEmpId,
+                'daily_checksheet_id' : checksheetId
+                }
+            if(e.keyCode == 13){
+                validateUser($(this).val().toUpperCase(), [0,2,5], function(result){
+                    // alert('asdasdasd');
+                    if(result == true){
+                        let data2 = $('#formUpdateQcStatus').serialize()+ '&' + $.param(scannedEmpId);
+                            $.ajax({
+                                type: "post",
+                                url: "update_status_conformed_by",
+                                data: data2,
+                                dataType: "json",
+                                success: function (response) {
+                                    if(response['validation'] == 1){
+                                        toastr.error('Saving data failed!');
+
+                                    }else if(response['result'] == 0){
+                                        toastr.success('Validation Succesful!');
+                                        $("#formUpdateQcStatus")[0].reset();
+                                        $('#modalAddDailyChecksheet').modal('hide');
+                                        $("#formAddDailyChecksheet")[0].reset();
+                                        $('#modalScanQcId').modal('hide');
+                                        dtDailyChecksheet.draw();
+                                    }
+                                }
+                            });
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+                    $('#txtScanQcId').val('');
+                });
+                $(this).val('');
+            }
+        });
+
+        $("#modalAddDailyChecksheet").on('hidden.bs.modal', function () {
+            // console.log('hidden.bs.modal');
             $('#formAddDailyChecksheet')[0].reset();
             $('#txtDailyCheckSheetId').val('');
             $('input', $('#formAddDailyChecksheet')).prop('disabled', false);
             $('select', $('#formAddDailyChecksheet')).prop('disabled', false);
             $('#btnSave').show();
+        });
+
+        // WEEKLY
+
+        $('#addWeeklyChecksheet').on('click', function(){
+            // let date = moment().format('MM-DD-YYYY');
+            let date = moment().format('YYYY-MM-DD');
+            let time = moment().format('kk:mm');
+            let month = moment().format('MM');
+
+            var dated = new Date();
+            var weekOfMonth = (0 | dated.getDate() / 7)+1;
+
+            console.log(weekOfMonth);
+
+            getMachineForChecksheet($('#selWeeklyMachine'));
+
+            $('#txtWeek').val(weekOfMonth)
+            $('#txtWeeklyCheckDate').val(date)
+            $('#txtWeeklyCheckTime').val(time)
+            $('#txtWeeklyMonth').val(month)
+            
+            $('#modalAddWeeklyChecksheet').modal('show');
+            
+        });
+
+        
+        $('#formAddWeeklyChecksheet').submit(function(e){
+            e.preventDefault();
+
+            $('#modalScanQrSaveWeekly').modal('show');
+            $('#modalScanQrSaveWeeklyText').html('Please Scan Employee ID.')
+        })
+
+        $(document).on('keyup','#txtScanUserIdWeekly', function(e){
+            if(e.keyCode == 13){
+                validateUser($(this).val().toUpperCase(), [0,1,4,9,11], function(result){
+                    if(result == true){
+                        console.log('pasok');
+                        saveWeeklyChecksheet($('#txtScanUserIdWeekly').val());
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+                    $('#txtScanUserIdWeekly').val('');
+                });
+            }
+        });
+
+        let weeklyChecksheetStatus;
+        let weeklyChecksheetId
+
+        $(document).on('click', '.btnViewWeeklyChecksheet', function(e){
+            weeklyChecksheetStatus = $(this).data('status')
+            weeklyChecksheetId = $(this).data('id');
+
+            $('#txtWeeklyChkSheetId').val(weeklyChecksheetId)
+
+            // setTimeout(() => {
+                getWeeklyChecksheet(weeklyChecksheetId, weeklyChecksheetStatus);
+            // }, 1000);
+
+        });
+
+        $("#modalAddWeeklyChecksheet").on('hidden.bs.modal', function () {
+            // console.log('hidden.bs.modal');
+            $('#formAddWeeklyChecksheet')[0].reset();
+            $('#txtWeeklyCheckSheetId').val('');
+            $('input', $('#formAddWeeklyChecksheet')).prop('disabled', false);
+            $('select', $('#formAddWeeklyChecksheet')).prop('disabled', false);
+            $('#btnWeeklySave').show();
+        });
+
+        $(document).on('click', '#btnWeeklyCheck', function(e){
+            e.preventDefault();
+            $('#modalWeeklyScanEngineeringId').modal('show');
+        });
+
+        $('#modalWeeklyScanEngineeringId').on('shown.bs.modal', function () {
+            $('#txtWeeklyScanEngineeringId').focus();
+        });
+
+        $('#formUpdateWeeklyEngineeringStatus').submit(function(e){
+            e.preventDefault();
+        });
+
+        $('#txtWeeklyScanEngineeringId').on('keyup', function(e){
+            e.preventDefault();
+                let toScanWeeklyEmpId =  $('#txtWeeklyScanEngineeringId').val();
+                let weeklyChecksheetId   =  $('#txtWeeklyChkSheetId').val();
+                let scannedEmpWeekly = {
+                'engineering_scanned_id' : toScanWeeklyEmpId,
+                'weekly_checksheet_id' : weeklyChecksheetId
+                }
+            if(e.keyCode == 13){
+                validateUser($(this).val().toUpperCase(), [0,9], function(result){
+                    // alert('asdasdasd');
+                    if(result == true){
+                        let data2 = $('#formUpdateWeeklyEngineeringStatus').serialize()+ '&' + $.param(scannedEmpWeekly);
+                            $.ajax({
+                                type: "post",
+                                url: "update_status_weekly_check",
+                                data: data2,
+                                dataType: "json",
+                                success: function (response) {
+                                    if(response['validation'] == 1){
+                                        toastr.error('Saving data failed!');
+
+                                    }else if(response['result'] == 0){
+                                        toastr.success('Validation Succesful!');
+                                        $("#formUpdateWeeklyEngineeringStatus")[0].reset();
+                                        $("#formAddWeeklyChecksheet")[0].reset();
+                                        $('#modalAddWeeklyChecksheet').modal('hide');
+                                        $('#modalWeeklyScanEngineeringId').modal('hide');
+                                        dtWeeklyChecksheet.draw();
+                                    }
+                                }
+                            });
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+                    $('#txtWeeklyScanEngineeringId').val('');
+                });
+                $(this).val('');
+            }
+        });
+
+        $(document).on('click', '#btnWeeklyConform', function(e){
+            e.preventDefault();
+            $('#modalWeeklylScanQcId').modal('show');
+        });
+
+        $('#modalWeeklylScanQcId').on('shown.bs.modal', function () {
+            $('#txtScanQcWeeklyId').focus();
+        });
+
+        $('#formUpdateWeeklyQcStatus').submit(function(e){
+            e.preventDefault();
+        });
+
+        $('#txtScanQcWeeklyId').on('keyup', function(e){
+            e.preventDefault();
+                let toScanEmpId =  $('#txtScanQcWeeklyId').val();
+                let checksheetId   =  $('#txtWeeklyChkSheetId').val();
+                let scannedEmpId = {
+                'qc_scanned_weekly_id' : toScanEmpId,
+                'weekly_checksheet_id' : checksheetId
+                }
+            if(e.keyCode == 13){
+                validateUser($(this).val().toUpperCase(), [0,2,5], function(result){
+                    // alert('asdasdasd');
+                    if(result == true){
+                        let data2 = $('#formUpdateWeeklyQcStatus').serialize()+ '&' + $.param(scannedEmpId);
+                            $.ajax({
+                                type: "post",
+                                url: "update_status_weekly_conformed",
+                                data: data2,
+                                dataType: "json",
+                                success: function (response) {
+                                    if(response['validation'] == 1){
+                                        toastr.error('Saving data failed!');
+
+                                    }else if(response['result'] == 0){
+                                        toastr.success('Validation Succesful!');
+                                        $("#formUpdateWeeklyQcStatus")[0].reset();
+                                        $('#modalAddWeeklyChecksheet').modal('hide');
+                                        $("#formAddWeeklyChecksheet")[0].reset();
+                                        $('#modalWeeklylScanQcId').modal('hide');
+                                        dtWeeklyChecksheet.draw();
+                                    }
+                                }
+                            });
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+                    $('#txtScanQcWeeklyId').val('');
+                });
+                $(this).val('');
+            }
         });
 
     })

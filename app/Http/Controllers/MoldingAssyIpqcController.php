@@ -17,20 +17,85 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Models\MoldingAssyIpqcInspection;
 use App\Models\FirstMolding;
-use App\Models\FirstMoldingDetail;
-use App\Models\FirstMoldingDetailMod;
-
 use App\Models\SecMoldingRuncard;
-use App\Models\SecMoldingRuncardStation;
-use App\Models\SecMoldingRuncardStationMod;
-
 use App\Models\AssemblyRuncard;
-use App\Models\AssemblyRuncardStation;
-use App\Models\AssemblyRuncardStationsMods;
 
 class MoldingAssyIpqcController extends Controller
 {
+    //================================= GET FIRST MOLDINNG DEVICE FOR FILTERING =========================
+    public function get_device_from_first_molding(Request $request){
+        $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
+                                        ->whereNull('deleted_at')
+                                        ->distinct()
+                                        ->get();
+
+        return response()->json(['first_molding_devices' => $first_molding_devices]);
+    }
+
+    //================================= GET SECOND MOLDINNG DEVICE FOR FILTERING =========================
+    public function get_device_from_second_molding(Request $request){
+        $second_molding_devices = SecMoldingRuncard::select('device_name')
+                                        ->whereNull('deleted_at')
+                                        ->distinct()
+                                        ->get();
+
+        return response()->json(['second_molding_devices' => $second_molding_devices]);
+    }
+
+    //================================= GET ASSEMBLY DEVICE FOR FILTERING =========================
+    public function get_devices_from_assembly(Request $request){
+        $assembly_devices = AssemblyRuncard::select('device_name')->with('device_details')
+                                        ->whereNull('deleted_at')
+                                        ->distinct()
+                                        ->get();
+
+        return response()->json(['assembly_devices' => $assembly_devices]);
+    }
+
     // ###################################### COMMON FUNCTIONS FOR IPQC #################################### //
+    //================================= GET ASSEMBLY DEVICE NAME FOR FILTERING =========================
+    public function get_devices_from_ipqc(Request $request){
+        $ipqc_device_name = MoldingAssyIpqcInspection::select('material_name')
+                                        ->distinct()
+                                        ->where('process_category', $request->process_category)
+                                        ->where('logdel', 0)
+                                        ->get();
+
+        return response()->json(['ipqc_device_name' => $ipqc_device_name]);
+    }
+
+    //================================= VERIFY PRODUCTION LOT =========================
+    public function verify_production_lot(Request $request){
+        if($request->process_category == 1){
+            $result = FirstMolding::with(['firstMoldingDevice' => function($query) use ($request) { $query->where('device_name', $request->device_name); }])
+                                                    ->where('production_lot', $request->production_lot)
+                                                    ->whereNull('deleted_at')
+                                                    ->get();
+              
+        }else if($request->process_category == 2){
+            $result = SecMoldingRuncard::with(['device_id' => function($query) use ($request) { $query->where('name', $request->device_name); }])
+                                                    ->where('device_name', $request->device_name)
+                                                    ->where('production_lot', $request->production_lot)
+                                                    ->whereNull('deleted_at')
+                                                    ->get();
+
+        }else if($request->process_category == 3){
+            $result = AssemblyRuncard::where('device_name', $request->device_name)
+                                        ->where('production_lot', $request->production_lot)
+                                        ->whereNull('deleted_at')
+                                        ->get();
+        }
+
+        if($result->isEmpty()){
+        // if($result->isEmpty()){
+            $production_lot = '';
+        }else{
+            $production_lot = $result[0]->production_lot;
+        }
+        // return $production_lot;
+        return response()->json(['production_lot' => $production_lot]);
+    }
+
     //================================= GET IPQC BY MATERIAL NAME/ID DATA ==================================
     public function get_ipqc_data(Request $request){
         $ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
@@ -237,25 +302,7 @@ class MoldingAssyIpqcController extends Controller
             return response()->json(['result' => 'Update Successful']);
         }
     }
-
-    //====================================== DOWNLOAD FILE ======================================
-    public function first_molding_download_file(Request $request, $id){
-        $ipqc_data_for_download = MoldingAssyIpqcInspection::where('id', $id)->first();
-        $file =  storage_path() . "/app/public/molding_assy_ipqc_insp_files/" . $ipqc_data_for_download->measdata_attachment;
-        return Response::download($file, $ipqc_data_for_download->measdata_attachment);
-    }
-
-    // ############################### FUNCTIONS FOR FIRST MOLDING IPQC ##################################### //
-    //================================= GET FIRST MOLDINNG DEVICE FOR FILTERING =========================
-    public function get_device_from_first_molding(Request $request){
-        $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
-                                        ->whereNull('deleted_at')
-                                        ->distinct()
-                                        ->get();
-
-        return response()->json(['first_molding_devices' => $first_molding_devices]);
-    }
-
+    
     //====================================== UPDATE IPQC STATUS FOR FIRST MOLDING =========================
     public function update_ipqc_inspection_status(Request $request){
         date_default_timezone_set('Asia/Manila');
@@ -265,7 +312,7 @@ class MoldingAssyIpqcController extends Controller
 
             }else if($request->cnfrm_ipqc_status == 2){
                 //For Re-Setup
-                $prod_lot_table_status = 2;
+                $prod_lot_tbl_status = 2;
                 $ipqc_status = 4;
             }
 
@@ -275,16 +322,17 @@ class MoldingAssyIpqcController extends Controller
                         'last_updated_by'     => Auth::user()->id,
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
+
             if($request->cnfrm_ipqc_status == 2){ //IF STATUS IS SUBMIT-REJECTED JUDGEMENT
                 if($request->cnfrm_ipqc_process_category == 1){ //UPDATE FIRST MOLDING STATUS
                     FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $first_molding_status]);
+                        ->update(['status' => $prod_lot_tbl_status]);
                 }else if($request->cnfrm_ipqc_process_category == 2){ //UPDATE SECOND MOLDING STATUS
                     SecMoldingRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $second_molding_status]);
+                        ->update(['status' => $prod_lot_tbl_status]);
                 }else if($request->cnfrm_ipqc_process_category == 3){ //UPDATE ASSEMBLY STATUS
                     AssemblyRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $first_molding_status]);
+                        ->update(['status' => $prod_lot_tbl_status]);
                 }
             }
 
@@ -292,16 +340,43 @@ class MoldingAssyIpqcController extends Controller
         return response()->json(['result' => 'Successful']);
     }
 
-    // ############################### FUNCTIONS FOR SECOND MOLDING IPQC ##################################### //
-    //================================= GET SECOND MOLDINNG DEVICE FOR FILTERING =========================
-    public function get_device_from_second_molding(Request $request){
-        $second_molding_devices = SecMoldingRuncard::select('device_name')
-                                        ->whereNull('deleted_at')
-                                        ->distinct()
-                                        ->get();
-
-        return response()->json(['second_molding_devices' => $second_molding_devices]);
+    
+    //====================================== DOWNLOAD FILE ======================================
+    public function download_file(Request $request, $id){
+        $ipqc_data_for_download = MoldingAssyIpqcInspection::where('id', $id)->first();
+        $file =  storage_path() . "/app/public/molding_assy_ipqc_insp_files/" . $ipqc_data_for_download->measdata_attachment;
+        return Response::download($file, $ipqc_data_for_download->measdata_attachment);
     }
+
+    //  //====================================== UPDATE IPQC STATUS FOR FIRST MOLDING =========================
+    //  public function update_first_molding_ipqc_inspection_status(Request $request){
+    //     date_default_timezone_set('Asia/Manila');
+    //         if($request->cnfrm_ipqc_status == 1){
+    //             //For Mass Production
+    //             // $first_molding_status = 1;
+    //             $ipqc_status = 3;
+
+    //         }else if($request->cnfrm_ipqc_status == 2){
+    //             //For Re-Setup
+    //             $first_molding_status = 2;
+    //             $ipqc_status = 4;
+    //         }
+
+    //         MoldingAssyIpqcInspection::where('id', $request->cnfrm_ipqc_id)
+    //                 ->update([
+    //                     'status'              => $ipqc_status,
+    //                     'last_updated_by'     => Auth::user()->id,
+    //                     'updated_at'          => date('Y-m-d H:i:s'),
+    //                 ]);
+        
+    //         if($request->cnfrm_ipqc_status == 2){
+    //             FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
+    //             ->update(['status' => $first_molding_status]);
+    //         }
+
+    //         DB::commit();
+    //     return response()->json(['result' => 'Successful']);
+    // }
 
     // //================================= UPDATE IPQC STATUS FOR SECOND MOLDING =============================
     // public function update_second_molding_ipqc_inspection_status(Request $request){
@@ -330,18 +405,7 @@ class MoldingAssyIpqcController extends Controller
     //         DB::commit();
     //     return response()->json(['result' => 'Successful']);
     // }
-
-    // ############################### FUNCTIONS FOR SECOND MOLDING IPQC ##################################### //
-    //================================= GET ASSEMBLY DEVICE FOR FILTERING =========================
-    public function get_devices_from_assembly(Request $request){
-        $assembly_devices = AssemblyRuncard::select('device_name')->with('device_details')
-                                        ->whereNull('deleted_at')
-                                        ->distinct()
-                                        ->get();
-
-        return response()->json(['assembly_devices' => $assembly_devices]);
-    }
-
+    
     // //================================= UPDATE IPQC STATUS FOR ASSEMBLY =============================
     // public function update_assembly_ipqc_inspection_status(Request $request){
     //     date_default_timezone_set('Asia/Manila');

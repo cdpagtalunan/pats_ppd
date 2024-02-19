@@ -29,6 +29,7 @@ class FirstMoldingRequest extends FormRequest
             'production_lot'=>'required',
             'production_lot_extension'=>'required',
             // 'contact_name'=>'required',
+            'shift'=>'required',
             'revision_no'=>'required',
             'drawing_no'=>'required',
             'machine_no'=>'required',

@@ -99,7 +99,7 @@
             </section><!-- /.Content -->
         </div><!-- /.Content-wrapper -->       
                 
-        <!-- Start OQC Inspection Modal -->
+        <!-- Start MIMF Modal -->
         <div class="modal fade" id="modalMimf" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -120,7 +120,7 @@
                         <input type="hidden" class="col-2" id="txtEmployeeNo" name="employee_no">
                         
                         <div class="modal-body">
-                            <div class="row"><!-- Start Row OQC Data -->
+                            <div class="row"><!-- Start Row MIMF Data -->
                                 <div class="col-sm-6 mt-3">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
@@ -237,7 +237,7 @@
                                         <input type="text" class="form-control" id="txtCreatedBy" name="created_by" value="@php echo Auth::user()->firstname.' '.Auth::user()->lastname; @endphp" readonly>
                                     </div>
                                 </div>
-                            </div><!-- /.End Row OQC Data -->
+                            </div><!-- /.End Row MIMF Data -->
 
                             <div class="col-12 input-group">
                                 <div class="col-6 mt-3">
@@ -253,7 +253,7 @@
                     </form>
                 </div>
             </div>
-        </div><!-- /.End OQC Inspection Modal -->
+        </div><!-- /.End MIMF Modal -->
 
         <!-- Start Scan Modal -->
         <div class="modal fade" id="mdlScanEmployeeID" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

@@ -35,6 +35,14 @@ class FirstMoldingController extends Controller
             'id'    =>  $arr_first_molding_device_id,
             'value' =>  $arr_first_molding_device_value
         ]);
+        // return $first_molding = DB::connection('mysql')
+        // ->select('
+        //         SELECT  material_processes.*,devices.name,processes.process_name
+        //         FROM material_processes
+        //         RIGHT JOIN devices ON devices.id = material_processes.process
+        //         WHERE material_processes.status = 0
+        //         ORDER BY material_processes.id DESC
+        // ');
     }
 
     public function getFirstMoldingDevicesById(Request $request)
@@ -221,7 +229,7 @@ class FirstMoldingController extends Controller
     public function firstMoldingUpdateStatus(Request $request)
     {
         try{
-            FirstMolding::where('id',$request->first_molding_id)->update(['status' => 1]);
+            FirstMolding::where('id',$request->first_molding_id)->update(['status' => 3]);
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
             return $th;
@@ -234,18 +242,19 @@ class FirstMoldingController extends Controller
         try{
             $tbl_po_received = TblPoReceived::where('OrderNo',$request->pmi_po_no)->get();
             $tbl_milf = Mimf::where('pmi_po_no',$request->pmi_po_no)->get();
-            // if( count ($tbl_milf) == 0 ){
-            //     return response()->json( [
-            //         'result' => 0,
-            //         'result_count' => 0,
-            //         'error_msg' => "Please check this PO in MIMF Module !",
-            //     ] );
-            // }
+            if( count ($tbl_po_received) == 0 || count($tbl_milf) == 0){
+                return response()->json( [
+                    'result' => 0,
+                    'result_count' => 0,
+                    'error_msg' => "Please check this PO in MIMF Module !",
+                ]
+            );
+            }
             //tbl_milf[0]->control_no;
             //tbl_milf[0]->date_issuance;
             //tbl_milf[0]->material_type;
             //tbl_milf[0]->needed_kgs;
-            if( count($tbl_po_received) == 1){
+            if( count($tbl_po_received) > 0 && count($tbl_milf) > 0 ){
                 return response()->json( [
                     'result_count' => count($tbl_po_received),
                     'po_no' => $tbl_po_received[0]->ProductPONo ,
@@ -253,9 +262,9 @@ class FirstMoldingController extends Controller
                     'po_balance' => $tbl_po_received[0]->POBalance ,
                     'item_code' => $tbl_po_received[0]->ItemCode ,
                     'item_name' => $tbl_po_received[0]->ItemName ,
-                    // 'material_type' => $tbl_milf[0]->material_type ,
-                    // 'virgin_qty' => $tbl_milf[0]->virgin_material ,
-                    // 'recycled_qty' => $tbl_milf[0]->recycled ,
+                    'material_type' => $tbl_milf[0]->material_type ,
+                    'virgin_qty' => $tbl_milf[0]->virgin_material ,
+                    'recycled_qty' => $tbl_milf[0]->recycled ,
                 ] );
             }else{
                 return response()->json( [
@@ -419,17 +428,24 @@ class FirstMoldingController extends Controller
         // }
         try{
             $stamping_prod = FirstStampingProduction::where('prod_lot_no',$request->contact_lot_num)->whereNull('deleted_at')->get(['status']);
-            $current_status = $stamping_prod[0]->status;
-            if($current_status == 2 || $current_status == 4){
-                return response()->json([
-                    "result" => 1,
-                    "stamping_prodn_status" => $current_status,
-                ]);
+            if( count($stamping_prod) > 0 ){
+                $current_status = $stamping_prod[0]->status;
+                if($current_status == 2 || $current_status == 4){
+                    return response()->json([
+                        "result" => 1,
+                        "stamping_prodn_status" => $current_status,
+                    ]);
+                }else{
+                    return response()->json([
+                        "result" => 2,
+                        "stamping_prodn_status" => $current_status,
+                    ]);
+                }
             }else{
                 return response()->json([
-                    "result" => 2,
-                    "stamping_prodn_status" => $current_status,
-                ]);
+                    "result" => 0,
+                    "error_msg" => "Invalid Prodn Lot Number",
+                ],500);
             }
         }catch(Exemption $e){
             return $e;

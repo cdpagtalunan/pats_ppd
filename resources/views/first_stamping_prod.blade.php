@@ -481,8 +481,8 @@
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="modal-body pt-0">
-                        {{-- <input type="text" class="w-100 hidden_scanner_input" id="txtScanOpId" name="" autocomplete="off"> --}}
-                        <input type="text" class="w-100" id="txtScanOpId" name="" autocomplete="off">
+                        <input type="text" class="w-100 hidden_scanner_input" id="txtScanOpId" name="" autocomplete="off">
+                        {{-- <input type="text" class="w-100" id="txtScanOpId" name="" autocomplete="off"> --}}
                         <div class="text-center text-secondary">Please scan operator ID.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
                     </div>
                 </div>

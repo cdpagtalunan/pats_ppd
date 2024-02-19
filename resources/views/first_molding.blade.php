@@ -32,6 +32,15 @@
             #colDevice, #colMaterialProcess{
                 transition: .5s;
             }
+            .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+                font-size: .75rem;
+                padding: .0em 0.55vmax;
+                margin-bottom: 0px;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--multiple{
+                pointer-events: none;
+            }
         </style>
 
         <!-- Content Wrapper. Contains page content -->
@@ -158,11 +167,639 @@
             </div><!-- /.modal-dialog -->
         </div>
 
-    @include('component.modal')
-    <!--- Go to component/modal.blade.php -->
-    <!--- modalSaveIqcInspection formSaveIqcInspection -->
-    <!--- modalFirstMolding formFirstMolding -->
-    <!--- modalFirstMoldingStation formFirstMoldingStation -->
+    {{-- @include('component.modal') --}}
+    <div class="modal fade" id="modalFirstMolding" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered modal-xl-custom">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"><i class="fa fa-plus"></i> Add Data</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="formFirstMolding" autocomplete="off">
+                    @csrf
+                    <div class="modal-body">
+
+
+                        <div class="row">
+                            <div class="col-sm-6 border px-4">
+                                <div class="py-3">
+                                    <span class="badge badge-secondary">1.</span> Runcard Details
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="radioIQC" value="0" disabled>
+                                    <label class="form-check-label" for="radioIQC">For Quali</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="radioMassProd" value="1" disabled>
+                                    <label class="form-check-label" for="radioMassProd">For Mass Production</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="status" id="radioResetup" value="2" disabled>
+                                    <label class="form-check-label" for="radioResetup">For Re-quali</label>
+                                </div>
+                                <div class="input-group input-group-sm mb-3 d-none">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">First Molding Id </span>
+                                    </div>
+                                    <input class="form-control form-control-sm" type="text" id="first_molding_id" name="first_molding_id">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                                            </div>
+                                            <select class="form-select form-control-sm" id="first_molding_device_id" name="first_molding_device_id" >
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
+                                            </div>
+                                            <input value="2E240130-" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot">
+                                            <input value="M-7:30-11:30" type="text" class="form-control form-control-sm" id="production_lot_extension" name="production_lot_extension" placeholder="7:30-11:30">
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Contact Name: </span>
+                                            </div>
+                                            <input value="25" type="text" class="form-control form-control-sm" id="contact_name" name="contact_name" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">Drawing No</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="drawing_no" name="drawing_no">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Contact Lot #</span>
+                                            </div>
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Dieset No.: </span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="dieset_no" name="dieset_no">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Shift </span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="shift" name="shift" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Machine #</span>
+                                            </div>
+                                            <select type="text" class="form-control form-control-sm" id="machine_no" name="machine_no" placeholder="Machine #" sytle="width:100%">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">25 Shots </span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm sumTotalMachineOutput" id="target_shots" name="target_shots" value="25" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Adjustment Shots</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="adjustment_shots" name="adjustment_shots" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="qc_samples" name="qc_samples" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Prod Samples</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="prod_samples" name="prod_samples" min="0" step="0.01">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="ng_count" name="ng_count" min="0" step="0.01" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Total Machine Output</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="total_machine_output" name="total_machine_output" min="0" step="0.01" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                            <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="shipment_output" name="shipment_output" min="0" step="0.01" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Material Yield 
+                                                    &nbsp; <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) * 100"></i> 
+                                                </span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
+                                            </div>
+                                            <input value="PR2310089320" type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Target Output 
+                                                    &nbsp; <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(PO Qty * Usage)"></i> 
+                                                </span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="required_output" name="required_output" min="0" step="0.01" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="po_no" name="po_no" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">PO Qty</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="po_qty" name="po_qty" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Item Code</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="item_code" name="item_code" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Item Name</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="item_name" name="item_name" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 d-none">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Target For S/O</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="po_target" name="po_target" min="0" step="0.01" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Variance</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="po_balance" name="po_balance" min="0" step="0.01" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                                            </div>
+                                            <textarea class="form-control form-control-sm" id="remarks" name="remarks" rows="5"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Created At</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="created_at" name="created_at" readonly="true" placeholder="Auto generated">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive">
+                                            <div class="d-flex justify-content-end">
+                                                {{-- <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button> --}}
+                                            </div>
+                                            <br>
+                                            <table class="table table-sm" id="tblFirstMoldingMaterial">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 35%;">Virgin Material</th>
+                                                        <th style="width: 10%;">Virgin Qty</th>
+                                                        {{-- <th style="width: 35%;">Recycled Material</th> --}}
+                                                        <th style="width: 10%;">Recycled Qty</th>
+                                                        {{-- <th style="width: 10%;">Action</th> --}}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <div class="input-group-prepend">
+                                                                    <button type="button" class="btn btn-dark" id="btnScanQrFirstMoldingVirginMaterial"><i class="fa fa-qrcode w-100"></i></button>
+                                                                </div>
+                                                                <input type="text" class="form-control form-control-sm" id="virgin_material" name="virgin_material[]" required min=1 step="0.01">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min=1 step="0.01" type="number" class="form-control form-control-sm inputVirginQty" id="virgin_qty" name="virgin_qty[]" required min=1 step="0.01">
+                                                            </div>
+                                                        </td>
+                                                        <td class="d-none">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                    <div class="input-group-prepend">
+                                                                        <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
+                                                                    </div>
+                                                                    <input type="text" class="form-control form-control-sm" id="recycle_material" name="recycle_material[]">
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min=1 step="0.01" type="number" class="form-control form-control-sm" id="recycle_qty" name="recycle_qty[]" required>
+                                                            </div>
+                                                        </td>
+                                                        {{-- <td>
+                                                            <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                                        </td> --}}
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-sm btn-success" type="submit" id="btnRuncardDetails">
+                                                <i class="fa-solid fa-floppy-disk"></i> Save
+                                            </button>
+                                            {{-- <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button> --}}
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+            </form>
+
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="col border px-4 border">
+                                    <div class="py-3">
+                                        <div style="float: left;">
+                                            <span class="badge badge-secondary">2.</span> Stations
+                                        </div>
+                                        <div style="float: right;">
+                                            <button class="btn btn-primary btn-sm" type="button" id="btnFirstMoldingStation" disabled>
+                                                <i class="fa fa-plus" ></i> Add Station
+                                            </button>
+                                        </div>
+                                        <div class="table-responsive">
+                                            <table class="table table-sm small table-bordered table-hover" id="tblFirstMoldingStationDetails" style="width: 100%;">
+                                                <thead>
+                                                    <tr class="bg-light">
+                                                        <th></th>
+                                                        <!-- <th></th> -->
+                                                        <th>Station</th>
+                                                        <th>Date</th>
+                                                        <th>Name</th>
+                                                        <th>Input</th>
+                                                        <th>NG Qty</th>
+                                                        <th>Output</th>
+                                                        <th>Remarks</th>
+                                                        <th>Created Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6; white-space: nowrap;">Total Count:</th>
+                                                        <th style="border-top: 1px solid #dee2e6" title="Total NG Count of Station" class="text-danger"></th>
+                                                        <th style="border-top: 1px solid #dee2e6" title="Total Visual Inspection" class="text-success"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="button" id="btnSubmitFirstMoldingStation" class="btn btn-primary" disabled><i class="fa fa-check"></i> Submit</button>
+                    </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modalFirstMoldingStation" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content modal-lg">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-object-group text-info"></i> Stations</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="formFirstMoldingStation">
+                        @csrf
+                        <div class="row d">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">First Molding Id</span>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm" id="first_molding_id" name="first_molding_id">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row d">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">First Molding Detail Id</span>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm" id="first_molding_detail_id" name="first_molding_detail_id">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Station</span>
+                                    </div>
+                                    <select type="text" class="form-control form-control-sm" id="station" name="station" placeholder="Station">
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Date</span>
+                                    </div>
+                                    <input type="date" class="form-control form-control-sm" id="date" name="date" value="<?php echo date('Y-m-d'); ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
+                                    </div>
+                                    <select type="text" class="form-control form-control-sm" id="operator_name" name="operator_name" placeholder="Station">
+                                    {{-- <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option> --}}
+                                    </select>
+                                    {{-- <input type="text" class="form-control form-control-sm" id="operator_name" name="operator_name"> --}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Input</span>
+                                    </div>
+                                    <input type="number" class="form-control form-control-sm" id="input" name="input" min="0" step="0.01" readonly>
+                                    <div class="input-group-text">
+                                        <input type="checkbox" value="1" id="is_partial" name="is_partial">
+                                     </div>
+                                    <input type="text" class="form-control form-control-sm" placeholder="Partial?" id="input" name="input" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">NG Qty</span>
+                                </div>
+                                <input type="number" class="form-control form-control-sm" id="ng_qty" name="ng_qty" min="0" value="0" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Output</span>
+                                </div>
+                                <input type="number" class="form-control form-control-sm" id="output" name="output" min="0" step="0.01" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Yield</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="station_yield" name="station_yield" step="0.01" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-50">
+                                    <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                                </div>
+                                <input type="text" class="form-control form-control-sm" id="remarks" name="remarks">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                <div class="table-responsive">
+                                    <div class="d-flex justify-content-between">
+
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <label>Total No. of NG: <span id="labelTotalNumberOfNG" style="color: red;">0</span>
+                                            <label>
+                                                &nbsp;<li class="fa-solid fa-thumbs-down" id="labelIsTally" style="color: red;"></li>
+                                            </label>
+                                        </label>
+                                        <button type="button" id="buttonAddFirstMoldingModeOfDefect" class="btn btn-sm btn-info" title="Add MOD" disabled><i class="fa fa-plus"></i> Add MOD</button>
+                                    </div>
+                                    <br>
+                                    <table class="table table-sm" id="tableFirstMoldingStationMOD">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 55%;">Mode of Defect</th>
+                                                <th style="width: 15%;">QTY</th>
+                                                <th style="width: 10%;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success" id="buttonFirstMoldingStation">Save</button>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Scan QR mdlScanQrCodeFirstMolding -->
+    <div class="modal fade" id="mdlScanQrCodeFirstMolding" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body pt-0">
+                    {{-- hidden_scanner_input --}}
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCodeFirstMolding" name="scan_qr_code" autocomplete="off">
+                    <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.End Scan QR Modal -->
+
+    <!-- Start Scan QR MmdlScanQrCodeFirstMoldingMaterial -->
+    <div class="modal fade" id="mdlScanQrCodeFirstMoldingMaterial" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body pt-0">
+                    {{-- hidden_scanner_input --}}
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCodeFirstMolding" name="scan_qr_code" autocomplete="off">
+                    <div class="text-center text-secondary">Please scan the Material QR code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.End Scan QR Modal -->
+
+    {{-- Modal Scan modalMaterialLotNum --}}
+    <div class="modal fade" id="modalMaterialLotNum" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    {{-- <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button> --}}
+                </div>
+                <div class="modal-body pt-2">
+                    {{-- hidden_scanner_input --}}
+                    <input type="text" class="w-100 hidden_scanner_input" id="txtLotNum"  autocomplete="off" is_inspected="false">
+                    {{-- <input type="text" class="scanner w-100" id="txtScanPO"  autocomplete="off"> --}}
+                    {{-- <input type="text" class="scanner w-100" id="txtScanQrCode" name="scan_qr_code" autocomplete="off"> --}}
+                    <div class="text-center text-secondary">Please scan Lot Number.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     @endsection
 
@@ -171,31 +808,19 @@
             $(document).ready(function () {
 
                 getFirstModlingDevices();
-
-                // const getFirstMoldingOperationNames = function (){
-                //     $.ajax({
-                //         type: "GET",
-                //         url: "get_operation_ames",
-                //         data: "data",
-                //         dataType: "json",
-                //         success: function (response) {
-
-                //         }
-                //     });
-                // }
-
+                // $('#production_lot_extension').mask('00:00-00:00', {reverse: false});
 
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
                     formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMoldingStation.find('#first_molding_id').val('');
                     formModal.firstMolding.find('#contact_lot_number').val('');
                     // formModal.firstMolding.find('#production_lot').val('');
+                    formModal.firstMolding.find('#shift').val('');
                     formModal.firstMolding.find('#remarks').val('');
                     formModal.firstMolding.find('#dieset_no').val('');
                     formModal.firstMolding.find('#production_lot_extension').val('');
                     formModal.firstMolding.find('#pmi_po_no').val('');
                     formModal.firstMolding.find('#machine_no').val('');
-                    formModal.firstMolding.find('#pmi_po_no').val('');
                     formModal.firstMolding.find('#po_no').val('');
                     formModal.firstMolding.find('#item_code').val('');
                     formModal.firstMolding.find('#item_name').val('');
@@ -209,6 +834,8 @@
                     formModal.firstMolding.find('.form-control').removeClass('is-valid')
                     formModal.firstMolding.find('.form-control').removeClass('is-invalid');
                     formModal.firstMolding.find('.form-control').attr('title', '');
+                    formModal.firstMolding.find('#virgin_material').val('');
+
                 })
 
                 $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
@@ -313,7 +940,26 @@
                         { "data" : "output" },
                         { "data" : "remarks" },
                         { "data" : "created_at" },
-                    ]
+                    ],
+                    footerCallback: function (row, data, start, end, display) {
+                        // console.log('data ', data);
+                        let api = this.api();
+
+                        let countNGQuantity = 0;
+                        let countVisualInspectionQuantity = 0;
+                        if(data.length > 0){
+                            for (let index = 0; index < data.length; index++) {
+                                // console.log('station', data[index].station);
+                                countNGQuantity += parseInt(data[index].ng_qty);
+                                if(data[index].station == 7){ //nmodify Station is equal Camera Inspection
+                                    countVisualInspectionQuantity += parseInt(data[index].output);
+                                }
+                            }
+                        }
+                        // console.log('countNGQuantity ', countNGQuantity);
+                        $(api.column(5).footer()).html(`${countNGQuantity}`)
+                        $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
+                    }
                 });
 
                 table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
@@ -326,7 +972,7 @@
 
                     Swal.fire({
                         // title: "Are you sure?",
-                        text: "Are you sure you want to submit this process",
+                        text: "Are you sure you want to delete this process?",
                         icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
@@ -450,6 +1096,16 @@
                     formModal.firstMolding.find('[type="number"]').val(0);
                     arr.Ctr = 0;
                     getDiesetDetailsByDeviceName(device_name);
+
+                    // OPERATOR SHIFT
+                    // $time_now = moment().format('LT');
+                    $time_now = moment().format('HH:mm:ss');
+                    if($time_now >= '7:30:00' || $time_now <= '19:29:00'){
+                        $('#shift').val('A');
+                    }
+                    else{
+                        $('#shift').val('B');
+                    }
                 });
 
                 $('#btnFirstMoldingStation').click(function (e) {
@@ -457,8 +1113,8 @@
                     let elementId = formModal.firstMoldingStation.find('#operator_name');
 
                     $('#buttonFirstMoldingStation').prop('disabled',false);
-                    $('#buttonAddFirstMoldingModeOfDefect').prop('disabled',false);
 
+                    formModal.firstMoldingStation.find('#buttonAddFirstMoldingModeOfDefect').prop('disabled',true);
                     formModal.firstMoldingStation.find('#first_molding_id').val( formModal.firstMolding.find('#first_molding_id').val() );
                     formModal.firstMoldingStation.find('[type="number"]').val(0)
                     formModal.firstMoldingStation.find('#station_yield').val('0%');
@@ -474,7 +1130,7 @@
                     e.preventDefault();
                     Swal.fire({
                         // title: "Are you sure?",
-                        text: "Are you sure you want to submit this process",
+                        text: "Are you sure you want to submit this process ?",
                         icon: "warning",
                         showCancelButton: true,
                         confirmButtonColor: "#3085d6",
@@ -482,29 +1138,10 @@
                         confirmButtonText: "Yes"
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            $.ajax({
-                                type: "GET",
-                                url: "first_molding_update_status",
-                                data: {
-                                    "first_molding_id" : formModal.firstMolding.find("#first_molding_id").val(),
-                                },
-                                dataType: "json",
-                                success: function (response) {
-                                    if(response['result'] === 1){
-                                        $('#modalFirstMolding').modal('hide');
-                                        dt.firstMolding.draw();
-                                        Swal.fire({
-                                            position: "center",
-                                            icon: "success",
-                                            title: "Submitted Successfully !",
-                                            showConfirmButton: false,
-                                            timer: 1500
-                                        });
-                                    }
-                                },error: function (data, xhr, status){
-                                    toastr.error(`Error: ${data.status}`);
-                                }
-                            });
+                            /* 
+                            TODO : Scan Emp ID
+                            */
+                            firstMoldingUpdateStatus();
                         }
                     });
                 });
@@ -527,7 +1164,6 @@
 
                     $('#tableFirstMoldingStationMOD .textMODQuantity').each(function() {
                         if($(this).val() === null || $(this).val() === ""){
-                            $("#tableFirstMoldingStationMOD tbody").empty();
                             $("#labelTotalNumberOfNG").text(parseInt(0));
                         }
                         totalNumberOfMOD += parseInt($(this).val());
@@ -535,12 +1171,12 @@
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
 
-                formModal.firstMolding.find('#pmi_po_no').on('keyup',function (e) {
-                    e.preventDefault();
-                    let  deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
-
-                    getPmiPoReceivedDetails( $(this).val(),deviceId);
-
+                formModal.firstMolding.find('#pmi_po_no').on('keydown',function (e) {
+                    if(e.keyCode == 13){
+                        e.preventDefault();
+                        let  deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
+                        getPmiPoReceivedDetails( $(this).val(),deviceId);
+                    }
                 });
 
                 $('#btnScanQrFirstMolding').click(function (e) {
@@ -638,27 +1274,31 @@
                 });
 
                 $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
-                    if(e.keyCode == 13){
-                        let scanFirstMoldingContactLotNo = $(this).val()
-                        console.log((scanFirstMoldingContactLotNo));
-                        // let explodedMat = scanFirstMoldingContactLotNo.split(' $|| ');
-                        // $('#txtMaterialLot_0').val(explodedMat[0]);
-                        // $('#txtMaterialLotQty').val(explodedMat[1]);
-
-                        // // console.log(explodedMat);
-                        validateScanFirstMoldingContactLotNum(scanFirstMoldingContactLotNo);
-                        $(this).val('');
+                    let scanFirstMoldingContactLotNo = $(this).val()
+                    try {
+                        if(e.keyCode == 13){
+                            validateScanFirstMoldingContactLotNum(scanFirstMoldingContactLotNo);
+                        }
+                    } catch (error) {
+                        // console.log(error);
+                        toastr.error(`${scanFirstMoldingContactLotNo} Invalid Prodn Lot Number. Please Check to 2nd Stamping Module !`)
+                        $('#txtScanQrCodeFirstMolding').val('');
                         $('#mdlScanQrCodeFirstMolding').modal('hide');
                     }
                 });
 
                 $('#txtLotNum').on('keyup', function(e){
-                    if(e.keyCode == 13){
-                        let scanFirstMoldingMaterialLotNo = $(this).val()
-                        console.log(('scanFirstMoldingMaterialLotNo',scanFirstMoldingMaterialLotNo));
-                        $('#virgin_material').val(scanFirstMoldingMaterialLotNo);
-                        $(this).val('');
-                        $('#modalMaterialLotNum').modal('hide');
+                    try {
+                            if(e.keyCode == 13){
+                            let scanFirstMoldingMaterialLotNo = $(this).val()
+                            let arrFirstMoldingMaterialLotNo = scanFirstMoldingMaterialLotNo.split("|");
+
+                            $('#virgin_material').val(arrFirstMoldingMaterialLotNo[0]);
+                            $(this).val('');
+                            $('#modalMaterialLotNum').modal('hide');
+                        }
+                    }catch (error) {
+                        console.log(error);
                     }
                 });
 
@@ -699,7 +1339,6 @@
 
                 });
 
-                /* */
                 formModal.firstMolding.find('.sumTotalMachineOutput').keyup(function (e) {
                     let arr = document.getElementsByClassName('sumTotalMachineOutput');
                     inputTotalMachineOuput=0;
@@ -710,9 +1349,26 @@
                     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
                 });
 
+
+                $('#txtScanUserId').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        // console.log($(this).val());
+                        validateUser($(this).val(), [0], function(result){
+                            if(result == true){
+                                saveFirstMolding();
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+                        });
+                        $(this).val('');
+                    }
+                });
+
                 formModal.firstMolding.submit(function (e) {
                     e.preventDefault();
-                    saveFirstMolding();
+                    $('#modalScanQRSave').modal('show');
+
                 });
 
                 formModal.firstMoldingStation.submit(function (e) {
@@ -723,6 +1379,13 @@
                 $('#btnScanQrFirstMoldingVirginMaterial').click(function (e){
                     e.preventDefault();
                     $('#modalMaterialLotNum').modal('show');
+                });
+
+                formModal.firstMolding.on('keydown', function(e) {
+                    var keyCode = e.keyCode || e.which;
+                    if (keyCode === 13) {
+                        e.preventDefault();
+                    }
                 });
 
             });

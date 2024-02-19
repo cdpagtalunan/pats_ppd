@@ -576,5 +576,7 @@ Route::controller(DailyChecksheetController::class)->group(function () {
     Route::get('/view_weekly_checksheet', 'viewWeeklyChecksheet')->name('view_weekly_checksheet');
     Route::post('/add_weekly_checksheet', 'addWeeklyChecksheet')->name('add_weekly_checksheet');
     Route::get('/get_weekly_checksheet_data', 'getWeeklyChecksheetData')->name('get_weekly_checksheet_data');
+    Route::post('/update_status_weekly_check', 'updateWeeklyStatusCheckedBy')->name('update_status_weekly_check');
+    Route::post('/update_status_weekly_conformed', 'updateWeeklyStatusConformedBy')->name('update_status_weekly_conformed');
 });
 

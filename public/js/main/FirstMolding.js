@@ -99,17 +99,13 @@
             success: function (response) {
 
                 let data = response['first_molding'][0];
-                // let first_molding_material_list = data.first_molding_material_lists;
-                // if(first_molding_material_list.lenght != 0){
-                // formModal.firstMolding.find('#virgin_material').val(first_molding_material_list[0].virgin_material);
-                // formModal.firstMolding.find('#virgin_qty').val(first_molding_material_list[0].virgin_qty);
-                // formModal.firstMolding.find('#recycle_material').val(first_molding_material_list[0].recycle_material);
-                // formModal.firstMolding.find('#recycle_qty').val(first_molding_material_list[0].recycle_qty);
-                // }
+                let first_molding_material_list = data.first_molding_material_lists[0];
+                
                 formModal.firstMolding.find('#first_molding_id').val(data.id);
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
                 formModal.firstMolding.find('#production_lot_extension').val(data.production_lot_extension);
+                formModal.firstMolding.find('#shift').val(data.shift);
                 formModal.firstMolding.find('#machine_no').val(data.machine_no);
                 formModal.firstMolding.find('#dieset_no').val(data.dieset_no);
                 formModal.firstMolding.find('#drawing_no').val(data.drawing_no);
@@ -129,6 +125,10 @@
                 formModal.firstMolding.find('#required_output').val(data.required_output);
                 formModal.firstMolding.find('#created_at').val(data.created_at);
                 formModal.firstMolding.find('#remarks').val(data.remarks);
+
+                formModal.firstMolding.find('#virgin_material').val(first_molding_material_list.virgin_material);
+                formModal.firstMolding.find('#virgin_qty').val(first_molding_material_list.virgin_qty);
+                formModal.firstMolding.find('#recycle_qty').val(first_molding_material_list.recycle_qty);
 
                 // console.log('status',data.status)
                 // console.log('view_data',view_data);
@@ -525,7 +525,10 @@
                     formModal.firstMolding.find('#item_code').val(response.item_code);
                     formModal.firstMolding.find('#item_name').val(response.item_name);
                     formModal.firstMolding.find('#required_output').val(productOfPoNumber);
+                    formModal.firstMolding.find('#virgin_qty').val(response.virgin_qty);
+                    formModal.firstMolding.find('#recycle_qty').val(response.recycled_qty);
                 }else{
+                    toastr.error(response.error_msg)
                     formModal.firstMolding.find('#po_no').val('');
                     formModal.firstMolding.find('#po_qty').val('');
                     formModal.firstMolding.find('#po_target').val('');
@@ -533,6 +536,9 @@
                     formModal.firstMolding.find('#po_balance').val('');
                     formModal.firstMolding.find('#item_code').val('');
                     formModal.firstMolding.find('#item_name').val('');
+                    formModal.firstMolding.find('#required_output').val('');
+                    formModal.firstMolding.find('#virgin_qty').val('');
+                    formModal.firstMolding.find('#recycle_qty').val('');
                 }
             }
         });
@@ -591,7 +597,7 @@
                         result = `<option value="0" selected disabled> - No data found - </option>`;
                     }
 
-                cboElement.html(result);
+                cboElement.append(result);
             },error: function(data, xhr, status){
                 result = `<option value="0" selected disabled> - Reload Again - </option>`;
                 cboElement.html(result);
@@ -609,6 +615,7 @@
             success: function (response) {
                 let station_input_qty = response['first_molding_station_last_output'];
                 let first_molding_detail_count = response.first_molding_detail_count;
+                let is_partial = response.is_partial;
                 console.log('response.first_molding_detail_count',response.first_molding_detail_count);
                 if(first_molding_detail_count){
                     formModal.firstMoldingStation.find('#input').prop('readonly',true);
@@ -675,13 +682,53 @@
                     Swal.fire({
                         position: "center",
                         icon: "warning",
-                        title: `${contactLotNo} This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
+                        title: `${contactLotNo}: This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
                         showConfirmButton: false,
                         timer: 3000
                     });
                 }
+                $('#txtScanQrCodeFirstMolding').val('');
+                $('#mdlScanQrCodeFirstMolding').modal('hide');
+            },error: function (data, xhr, status){
+                let errors = data.responseJSON.errors ;
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: `${contactLotNo}: Invalid Prodn Lot Number. Please Check to 2nd Stamping Module ! !`,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                $('#txtScanQrCodeFirstMolding').val('');
+                $('#mdlScanQrCodeFirstMolding').modal('hide');
+
             }
         });
     }
 
+    const firstMoldingUpdateStatus = function (){
+        $.ajax({
+            type: "GET",
+            url: "first_molding_update_status",
+            data: {
+                "first_molding_id" : formModal.firstMolding.find("#first_molding_id").val(),
+            },
+            dataType: "json",
+            success: function (response) {
+                if(response['result'] === 1){
+                    $('#modalFirstMolding').modal('hide');
+                    dt.firstMolding.draw();
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "Submitted Successfully !",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                }
+            },error: function (data, xhr, status){
+                toastr.error(`Error: ${data.status}`);
+            }
+        });
+    }
+    
 // })

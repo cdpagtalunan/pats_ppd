@@ -110,7 +110,7 @@ function AddProdnHistory() {
                 // $("#btnSubmit").removeAttr('disabled');
                 // $("#ibtnSubmitIcon").addClass('fa fa-check');
 
-                ProductionHistory.draw();
+                // ProductionHistory.draw();
                 toastr.success('Production History was succesfully saved!');
             }
             else {
@@ -254,14 +254,14 @@ const getFirstModlingDevicesForHistory = () => {
         data: "data",
         dataType: "json",
         success: function (response) {
-            let first_molding_device_id = response['id'];
-            let device_name = response['value'];
+            let first_molding_device_data = response['data'];
+            // let device_name = response['value'];
             let result = '';
 
-            if(response['id'].length > 0){
+            if(first_molding_device_data.length > 0){
                 result = '<option selected disabled> --- Select --- </option>';
-                for(let index = 0; index < first_molding_device_id.length; index++){
-                    result += '<option value="' +first_molding_device_id[index]+'">'+device_name[index]+'</option>';
+                for(let index = 0; index < first_molding_device_data.length; index++){
+                    result += '<option value="' +first_molding_device_data[index]['id']+'">'+first_molding_device_data[index]['device_name']+'</option>';
                 }
             }
             else{
@@ -271,3 +271,116 @@ const getFirstModlingDevicesForHistory = () => {
         }
     });
 }
+
+const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => { 
+    // 0= viewing, 1-edit
+    /*
+        * firstMoldingDevId => for viewing purposes only.
+        * check getFirstMoldingDeviceById() on blade for reference 
+    */  
+    $.ajax({
+        type: "get",
+        url: "get_prodn_history_by_id",
+        data: {
+            "id" : pId
+        },
+        dataType: "json",
+        beforeSend: function(){
+            if(btnFunction == 0){ 
+                console.log(btnFunction);
+                $('#prodn_stime', $('#formProductionHistory')).prop('readonly', true);
+                $('#standard_para_date', $('#formProductionHistory')).prop('readonly', true);
+                $('#act_cycle_time', $('#formProductionHistory')).prop('readonly', true);
+                $('#shot_weight', $('#formProductionHistory')).prop('readonly', true);
+                $('#product_weight', $('#formProductionHistory')).prop('readonly', true);
+                $('#screw_most_fwd', $('#formProductionHistory')).prop('readonly', true);
+                $('#ccd_setting_s1', $('#formProductionHistory')).prop('readonly', true);
+                $('#ccd_setting_s2', $('#formProductionHistory')).prop('readonly', true);
+                $('#ccd_setting_ng', $('#formProductionHistory')).prop('readonly', true);
+                $('#changes_para', $('#formProductionHistory')).prop('readonly', true);
+                $('#shots', $('#formProductionHistory')).prop('disabled', true);
+                $('#remarks', $('#formProductionHistory')).prop('disabled', true);
+                $('#prodn_etime', $('#formProductionHistory')).prop('disabled', true);
+                $('#machine_no', $('#formProductionHistory')).prop('disabled', true);
+                $('#btnScanQrMaterialLotNo', $('#formProductionHistory')).prop('disabled', true);
+                $('#btnScanQrPMaterialLotNo', $('#formProductionHistory')).prop('disabled', true);
+                $('#btnSubmit',  $('#formProductionHistory')).hide();
+                $('.divBtnMultiples').attr('style', 'display: none !important');
+                
+            }
+        },
+        success: function (data) {
+            let prodPartsMat;
+            $('#prodn_history_id').val(pId);
+            $('#prodn_date').val(data['prodHistory']['prodn_date']);
+            $('#prodn_stime').val(data['prodHistory']['prodn_stime']);
+            $('#shift').val(data['prodHistory']['shift']);
+            $('#machine_no').val(data['prodHistory']['machine_no']);
+            $('#standard_para_date').val(data['prodHistory']['standard_para_date']);
+            $('#standard_para_attach').val(data['prodHistory']['standard_para_attach']);
+            $('#act_cycle_time').val(data['prodHistory']['act_cycle_time']);
+            $('#shot_weight').val(data['prodHistory']['shot_weight']);
+            $('#product_weight').val(data['prodHistory']['product_weight']);
+            $('#screw_most_fwd').val(data['prodHistory']['screw_most_fwd']);
+            $('#ccd_setting_s1').val(data['prodHistory']['ccd_setting_s1']);
+            $('#ccd_setting_s2').val(data['prodHistory']['ccd_setting_s2']);
+            $('#ccd_setting_ng').val(data['prodHistory']['ccd_setting_ng']);
+            $('#changes_para').val(data['prodHistory']['changes_para']);
+            $("#remarks").val(data['prodHistory']['remarks']).trigger('change');
+            $('#opt_name').val(data['prodHistory']['operator_info']['firstname']+' '+data['prodHistory']['operator_info']['lastname']);
+            $('#opt_id').val(data['prodHistory']['opt_id']);
+
+            if (data['prodHistory']['qc_info'] != null){
+                $('#qc_name').val(data['prodHistory']['qc_info']['firstname']+' '+data['prodHistory']['qc_info']['lastname']);
+            }else{
+                $('#qc_name').val('');
+            }
+            $('#qc_id').val(data['prodHistory']['qc_id']);
+
+            $('#shots').val(data['prodHistory']['shots']);
+            $('#prodn_etime').val(data['prodHistory']['prodn_etime']);
+
+            $('#material_lotno').val(data['prodHistory']['material_lot']);
+
+            $('#shots').prop('readonly',false);
+            $('#prodn_etime').prop('readonly',false);
+
+            $('#btnScanQrQCID').prop('disabled',false);
+            $('#btnScanQrMaterialLotNo').prop('disabled',false);
+            $('#btnScanQrPMaterialLotNo').prop('disabled',false);
+
+            if(data['prodHistoryPartMat'].length != 0){
+                if(firstMoldingDevId == 4 || firstMoldingDevId == 5){ // CN171P-02#IN-VE, CN171S-07#IN-VE
+                    prodPartsMat = data['prodHistory']['prod_history_parts_mat_details'];
+                    for(let x = 0; x < data['prodHistoryPartMat'].length; x++){
+                        for(let y = 1; y < data['prodHistoryPartMat'][x]['count_pm']; y++){ // for clicking the add btn for multiple
+                            $(`#btnAddPmLotNo${data['prodHistoryPartMat'][x]['pm_group']}`).click();
+                        }
+    
+                        for(let z = 0; z < data['collection'][data['prodHistoryPartMat'][x]['pm_group']].length; z++){
+                            // pmat_lot_no-2_0_0
+                            let data1 = data['collection'][data['prodHistoryPartMat'][x]['pm_group']][z];
+                            console.log(`pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`);
+                            $(`#pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`).val(data1['pm_lot_no']);
+                        }
+    
+                    }
+                }
+                else{
+                    for(let x = 0; x < data['collection'][1].length; x++){
+                        if(x != $('#pmLot1Counter').val()){
+                            $('#btnAddPmLotNo1').click();
+                        }
+    
+                        $(`#pmat_lot_no_${x}`).val(data['collection'][1][x]['pm_lot_no']);
+                    }
+                }
+            }
+            
+
+            $('#modalProductionHistory').modal('show');
+
+        }
+    });
+}
+

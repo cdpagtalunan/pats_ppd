@@ -21,7 +21,7 @@ class StampingChecksheetController extends Controller
         ->table('stamping5s_checksheets AS a')
         ->join('stamping_checksheet_machine_dropdowns AS b', 'a.machine_id', '=', 'b.id')
         ->select('a.*', 'b.machine_name')
-        // ->where('date', 'LIKE', "%$request->month%")
+        ->where('date', 'LIKE', "%$request->month%")
         ->whereNull('deleted_at')
         ->get();
 

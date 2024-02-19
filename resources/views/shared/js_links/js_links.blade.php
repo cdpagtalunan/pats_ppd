@@ -20,6 +20,9 @@
 
 <script src="{{ asset('public/template/sweetalert/js/sweetalert2.min.js') }}"></script>
 
+<!-- Bootstrap Datetimepicker -->
+<script src="{{ asset('public/template/datetimepicker/js/datetimepicker.js') }}"></script>
+
 <!-- Datepicker -->
 <script src="{{ asset('public/js/bootstrap-datepicker.min.js') }}"></script>
 
@@ -27,6 +30,9 @@
 <script src="{{ asset('public/js/jquery.smartWizard.min.js') }}"></script>
 
 <script src="{{ asset('public/template/moment/moment.min.js') }}"></script>
+
+<script src="{{ asset('public/template/jquerymask/js/jquery.mask.min.js') }}"></script> <!-- Added by jd -->
+
 
 <!-- Custom JS -->
 <script>

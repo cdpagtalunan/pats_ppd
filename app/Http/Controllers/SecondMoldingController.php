@@ -492,16 +492,49 @@ class SecondMoldingController extends Controller
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
         // $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
-        
-        $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
-        return response()->json(['data' => $getShipmentOuput]);
+
+        $getShipmentOuputOfNonVisualInspection = DB::connection('mysql')
+            ->table('sec_molding_runcard_stations')
+            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+            ->where('station', '!=', 6) // 6-Visual Inspection
+            ->orderBy('id', 'desc') // get last station
+            ->select(
+                'sec_molding_runcard_stations.output_quantity',
+                'sec_molding_runcard_stations.station'
+                )
+            ->get();
+
+        $getShipmentOuputOfVisualInspection = DB::connection('mysql')
+            ->table('sec_molding_runcard_stations')
+            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+            ->where('station', 6) // 1-Machine Final Overmold, 7-Camera Inspection
+            ->select(
+                'sec_molding_runcard_stations.output_quantity',
+                'sec_molding_runcard_stations.station'
+                )
+            ->get();
+        return response()->json(['data' => $getShipmentOuputOfNonVisualInspection, 'getShipmentOuputOfVisualInspection' => $getShipmentOuputOfVisualInspection]);
     }
 
-public function getUser(){
-    $getUser = DB::connection('mysql')
-        ->table('users')
-        ->selectRaw(
-            'users.id,
-            CONCAT(users.firstname, " ", users.lastname) AS operator'
-        )->get();
-    return response()->json(['data' => $getUs
+    public function getUser(){
+        $getUser = DB::connection('mysql')
+            ->table('users')
+            ->select(
+                'users.id',
+                DB::raw('CONCAT(users.firstname, " ", users.lastname) AS operator')
+            )->get();
+        return response()->json(['data' => $getUser]);
+    }
+
+    public function getDiesetDetailsByDeviceNameSecondMolding (Request $request){
+        $device_name = $request->device_name;
+        $tbl_dieset = DB::connection('mysql_rapid_stamping_dmcms')
+        ->select('SELECT * FROM `tbl_device` WHERE `device_name` LIKE "'.$device_name.'" ');
+
+        return response()->json( [
+            'drawing_no' => $tbl_dieset[0]->drawing_no,
+            'rev_no' => $tbl_dieset[0]->rev,
+        ] );
+
+    }
+}

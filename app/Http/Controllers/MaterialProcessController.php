@@ -289,7 +289,7 @@ class MaterialProcessController extends Controller
                         MaterialProcessStation::insert([
                             'mat_proc_id'   => $material_process_id,
                             'station_id' => $request->station[$j],
-                            'created_by'    => NOW()
+                            'created_at'    => NOW()
                         ]);
                     }
                 }

@@ -217,10 +217,9 @@
                                                 <input type="text" class="form-control form-control-sm" id="textRevisionNumber" name="revision_number" placeholder="Auto generated" readonly>
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="textProductionLot" name="production_lot" placeholder="Production Lot">
+                                                <span class="input-group-text w-50">Production Lot</span>
+                                                <input type="text" class="form-control form-control-sm w-25" id="textProductionLot" readonly name="production_lot" placeholder="Production Lot">
+                                                <input type="text" class="form-control datetimepicker w-25" id="textProductionLotTime" placeholder="07:30-04:30" name="textProductionLotTime">
                                             </div>
                                             <div id="divMaterialLotNumbers">
                                                 <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking">
@@ -382,6 +381,18 @@
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                        <th style="border-top: 1px solid #dee2e6; white-space: nowrap;">Total Count:</th>
+                                                        <th style="border-top: 1px solid #dee2e6" title="Total NG Count of Station" class="text-danger"></th>
+                                                        <th style="border-top: 1px solid #dee2e6" title="Total Visual Inspection" class="text-success"></th>
+                                                        <th style="border-top: 1px solid #dee2e6"></th>
+                                                    </tr>
+                                                </tfoot>
                                             </table>
                                         </div>
                                     </div>
@@ -473,10 +484,10 @@
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
                                         <span class="input-group-text w-50" id="basic-addon1">Input</span>
-                                        <input type="number" class="form-control form-control-sm w-25" id="textInputQuantity" name="input_quantity" min="0" value="0">
-                                        <div class="input-group-text w-25">
+                                        <input type="number" class="form-control form-control-sm w-50" id="textInputQuantity" name="input_quantity" min="0" value="0">
+                                        {{-- <div class="input-group-text w-25">
                                             <input type="checkbox" id="checkPartial" value="1" name="partial" title=""><label class="form-check-label" for="checkPartial">&nbsp;Partial</label>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -588,6 +599,7 @@
     @section('js_content')
         <script>
             $(document).ready(function(){
+                $('#textProductionLotTime').mask('00:00-00:00', {reverse: false});
                 let dataTablesSecondMolding, dataTablesSecondMoldingStation;
                 $(document).on('keypress', '#textSearchPMIPONumber', function(e){
                     if(e.keyCode == 13){
@@ -632,6 +644,7 @@
                         $('#modalSecondMolding').modal('show');
                         dataTablesSecondMoldingStation.draw();
                         getMaterialProcessStation();
+                        getDiesetDetailsByDeviceNameSecondMolding(materialName);
                     }
                     else{
                         toastr.error('Please input PO.')
@@ -1068,6 +1081,25 @@
                         { "data" : "output_quantity" },
                         { "data" : "remarks" },
                     ],
+                    footerCallback: function (row, data, start, end, display) {
+                        console.log('data ', data);
+                        let api = this.api();
+
+                        let countNGQuantity = 0;
+                        let countVisualInspectionQuantity = 0;
+                        if(data.length > 0){
+                            for (let index = 0; index < data.length; index++) {
+                                countNGQuantity += parseInt(data[index].ng_quantity);
+                                if(data[index].station_name == "Visual Inspection"){
+                                    countVisualInspectionQuantity += parseInt(data[index].output_quantity);
+                                }
+                            }
+                        }
+                        console.log('countNGQuantity ', countNGQuantity);
+                        $(api.column(5).footer()).html(`${countNGQuantity}`)
+                        $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
+                    }
+
                 });
                 /**
                  * DataTables of Second Molding Station
@@ -1079,6 +1111,16 @@
                  * to be use in Second Molding Station
                  * Start
                 */
+                $('#checkPartial').on('change',function (e) { 
+                    if($('#checkPartial').is(':checked')){
+                        console.log('checked');
+                        $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
+                    }else{
+                        console.log('not checked');
+                        $('#textInputQuantity', $('#formAddStation')).prop('readonly', true);
+                    }
+                });
+                
                 getUser($('#textOperatorName'));
                 $('#buttonAddStation').click(function(){
                     let secondMoldingId = $('#textSecondMoldingId', $('#formSecondMolding')).val();
@@ -1094,9 +1136,23 @@
                         },
                         dataType: "json",
                         success: function (response) {
-                            if(response['data'].length > 0){
-                                $('#textInputQuantity', $('#formAddStation')).val(response['data'][0].shipment_output);
+                            if(response['getShipmentOuputOfVisualInspection'].length > 0){
+                                console.log('object 1 ', response['getShipmentOuputOfVisualInspection'][0].output_quantity);
+                                $('#textInputQuantity', $('#formAddStation')).val(response['getShipmentOuputOfVisualInspection'][0].output_quantity).trigger('keyup');
+                            }else{
+                                if(response['data'].length > 0){
+                                    console.log('object 2 ', response['data'][0].station);
+                                    $('#textInputQuantity', $('#formAddStation')).val(response['data'][0].output_quantity).trigger('keyup');
+                                    if(response['data'].length == 2){
+                                        $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
+                                    }else{
+                                        $('#textInputQuantity', $('#formAddStation')).prop('readonly', true);
+                                    }
+                                }
                             }
+                            
+
+                            
                         }
                     });
                 });
@@ -1127,6 +1183,8 @@
                                     $('#modalSecondMoldingStation').modal('hide');
                                 }else if(response['checkIfStationExist']){
                                     toastr.warning('Station already exist!');
+                                }else if(response['stationOutputQuantityIsHigher']){
+                                    toastr.warning('Station input quantity is higher than the last');
                                 }
                                 else if(response['sessionError']){
                                     toastr.error('Session Expired. Please re-login again.');
@@ -1349,6 +1407,7 @@
                 function getSecondMoldingStationById(id){
                     $.ajax({
                         type: "get",
+                        async: false,
                         url: "get_second_molding_station_by_id",
                         data: {
                             second_molding_station_id: id,
@@ -1430,6 +1489,24 @@
                     getMaterialProcessStation();
                     getSecondMoldingStationById(secondMoldingStationId);
                 });
+
+                $("#tableStation").on('click', '.actionViewSecondMoldingStation', function(){
+                    secondMoldingStationId = $(this).attr('second-molding-station-id');
+                    getMaterialProcessStation();
+                    getSecondMoldingStationById(secondMoldingStationId);
+                    $('#textStation').prop('disabled', true);
+                    $('#textDate').prop('disabled', true);
+                    $('#textOperatorName').prop('disabled', true);
+                    $('#textInputQuantity').prop('disabled', true);
+                    $('#textOutputQuantity').prop('disabled', true);
+                    $('#textRemarks').prop('disabled', true);
+                    $('#buttonAddModeOfDefect').prop('disabled', true);
+                    $('#buttonSaveSecondMoldingStation').prop('disabled', true);
+
+                    $('#tableSecondMoldingStationMOD .buttonRemoveMOD, .textMODQuantity, .selectMOD').each(function() {
+                        $(this).prop('disabled', true);
+                    });
+                });
                 /**
                  * Edit of Second Molding Station to be use in Update
                  * End
@@ -1441,22 +1518,22 @@
                 */
                 $('#buttonSubmitSecondMolding').click(function(){
                     console.log(`buttonSubmitSecondMolding clicked`);
-                    // $.ajax({
-                    //     type: "POST",
-                    //     url: "complete_second_molding",
-                    //     data: {
-                    //         'second_molding_id': $('#textSecondMoldingId').val(),
-                    //         "_token": "{{ csrf_token() }}",
-                    //     },
-                    //     dataType: "json",
-                    //     success: function (response) {
-                    //         if(!response.hasError){
-                    //             toastr.success('Successfully saved');
-                    //             dataTablesSecondMolding.draw();
-                    //             $('#modalSecondMolding').modal('hide');
-                    //         }
-                    //     }
-                    // });
+                    $.ajax({
+                        type: "POST",
+                        url: "complete_second_molding",
+                        data: {
+                            'second_molding_id': $('#textSecondMoldingId').val(),
+                            "_token": "{{ csrf_token() }}",
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            if(!response.hasError){
+                                toastr.success('Successfully saved');
+                                dataTablesSecondMolding.draw();
+                                $('#modalSecondMolding').modal('hide');
+                            }
+                        }
+                    });
                 });
                 /**
                  * Complete Second Molding for Assembly

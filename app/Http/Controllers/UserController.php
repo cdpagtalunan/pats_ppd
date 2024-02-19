@@ -96,6 +96,7 @@ class UserController extends Controller
                 $request->session()->put('user_id', Auth::user()->id);
                 $request->session()->put('position', Auth::user()->position);
                 $request->session()->put('employee_id', Auth::user()->employee_id);
+                $request->session()->put('email', Auth::user()->email);
 
                 if(Auth::user()->is_password_changed == 0){
                     return response()->json(['result' => "2"]);
@@ -121,6 +122,7 @@ class UserController extends Controller
         $request->session()->forget('user_id');
         $request->session()->forget('position');
         $request->session()->forget('employee_id');
+        $request->session()->forget('email');
         Auth::logout();
         return response()->json(['result' => "1"]);
     }

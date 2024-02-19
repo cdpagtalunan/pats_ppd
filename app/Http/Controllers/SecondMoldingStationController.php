@@ -54,7 +54,8 @@ class SecondMoldingStationController extends Controller
             $result = '';
             $result .= "
                 <center>
-                    <button type='button' class='btn btn-primary btn-sm mr-1 actionEditSecondMoldingStation' data-bs-toggle='modal' data-bs-target='#modalSecondMoldingStation' second-molding-station-id='$row->id'><i class='fa-solid fa-pen-to-square'></i></button>
+                    <button type='button' class='btn btn-primary btn-sm mr-1 actionEditSecondMoldingStation d-none' data-bs-toggle='modal' data-bs-target='#modalSecondMoldingStation' second-molding-station-id='$row->id'><i class='fa-solid fa-pen-to-square'></i></button>
+                    <button type='button' class='btn btn-info btn-sm mr-1 actionViewSecondMoldingStation' data-bs-toggle='modal' data-bs-target='#modalSecondMoldingStation' second-molding-station-id='$row->id'><i class='fa-solid fa-eye'></i></button>
                 </center>
             ";
             return $result;
@@ -90,21 +91,44 @@ class SecondMoldingStationController extends Controller
                     $checkIfStationExist = SecMoldingRuncardStation::where('sec_molding_runcard_id', $request->second_molding_id)
                     ->where('station', $request->station)
                     ->exists();
-                    // return response()->json(['checkIfStationExist' => $checkIfStationExist]);
 
                     /**
                      * If Station is 1-Machine Final Overmold or 7-Camera Inspection
                      * already exist then return hasError to true
                      */
                     if($request->station != 6 && $checkIfStationExist){ // 1-Machine Final Overmold, 7-Camera Inspection, 6-Visual Inspection
+                        DB::rollback();
                         return response()->json(['hasError' => true, 'checkIfStationExist' => $checkIfStationExist]);
                     }
                     
                     /**
                      * If Station is 6-Visual Inspection or checkIfStationExist 
-                     * is false execute the query and return hasError to false
+                     * is false execute the query and return hasError for every condition
                      */
                     if($request->station == 6 || !$checkIfStationExist){ // 6-Visual Inspection
+                        /* Validation of input quantity(current) and output quantity(last station) */
+                        $getOutputQtyOfLastStationNonVisual = DB::connection('mysql')
+                            ->table('sec_molding_runcard_stations')
+                            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                            ->whereIn('sec_molding_runcard_stations.station', [1, 7]) // 1-Machine Final Overmold or 7-Camera Inspection
+                            ->orderBy('id', 'desc')
+                            ->select(
+                                'sec_molding_runcard_stations.station',
+                                'sec_molding_runcard_stations.output_quantity',
+                            )
+                            ->get();
+                        // return response()->json(['getOutputQtyOfLastStationNonVisual' => $getOutputQtyOfLastStationNonVisual]);
+
+                        if(count($getOutputQtyOfLastStationNonVisual) > 0){
+                            if((int)$request->input_quantity > (int)$getOutputQtyOfLastStationNonVisual[0]->output_quantity){
+                                DB::rollback();
+                                return response()->json(['hasError' => true, 'stationOutputQuantityIsHigher' => $getOutputQtyOfLastStationNonVisual]);
+                            }
+                        }
+
+                        /**
+                         * Insert Station
+                         */
                         $secondMoldingStationId = SecMoldingRuncardStation::insertGetId([
                             'sec_molding_runcard_id' => $request->second_molding_id,
                             'station' => $request->station,
@@ -120,39 +144,75 @@ class SecondMoldingStationController extends Controller
                             'created_at' => date('Y-m-d H:i:s'),
                         ]);
 
+                        /**
+                         * Multiple insert of MOD
+                         */
+                        if(isset($request->mod_id)){
+                            for ($i=0; $i < count($request->mod_id); $i++) { 
+                                SecMoldingRuncardStationMod::insert([
+                                    'sec_molding_runcard_id' => $request->second_molding_id,
+                                    'sec_molding_runcard_station_id' => $secondMoldingStationId,
+                                    'mod_id' => $request->mod_id[$i],
+                                    'mod_quantity' => $request->mod_quantity[$i],
+                                    'created_by' => Auth::user()->id,
+                                    'created_at' => date('Y-m-d H:i:s'),
+                                ]);
+                            }
+                        }
+
+                        $getComputedOutputQtyOfVisual = DB::connection('mysql')
+                            ->table('sec_molding_runcard_stations')
+                            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                            ->where('sec_molding_runcard_stations.station', 6) // 6-Visual Inspection
+                            ->select(
+                                DB::raw('SUM(output_quantity) AS computed_output_quantity'),
+                            )
+                            ->get();
+                            // return response()->json(['getComputedOutputQtyOfVisual' => $getComputedOutputQtyOfVisual[0]->computed_output_quantity, 'lastStation' => (int)$getOutputQtyOfLastStationNonVisual[0]->output_quantity]);
+
+                        if($getComputedOutputQtyOfVisual[0]->computed_output_quantity != null){
+                            if((int)$getComputedOutputQtyOfVisual[0]->computed_output_quantity > (int)$getOutputQtyOfLastStationNonVisual[0]->output_quantity){
+                                DB::rollback();
+                                return response()->json(['hasError' => true, 'stationOutputQuantityIsHigher' => $getComputedOutputQtyOfVisual]);
+                            }
+                        }
+
+                        /**
+                         * Computation of last station(Visual Inspection)
+                         */
                         if($request->station == 6){
                             $computedShipmentOutput = DB::connection('mysql')
-                            ->table('sec_molding_runcard_stations')
-                            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                            ->where('sec_molding_runcard_stations.station', $request->station)
-                            ->select(
-                                DB::raw('SUM(input_quantity) AS shipmentOutput'),
-                            )
-                            ->first();
+                                ->table('sec_molding_runcard_stations')
+                                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                                ->where('sec_molding_runcard_stations.station', 6)
+                                ->select(
+                                    DB::raw('SUM(input_quantity) AS shipmentOutput'),
+                                )
+                                ->first();
 
                             $computedNGCount = DB::connection('mysql')
-                            ->table('sec_molding_runcard_stations')
-                            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                            ->select(
-                                DB::raw('SUM(ng_quantity) AS ngCount'),
-                            )
-                            ->first();
-                            DB::rollback();
+                                ->table('sec_molding_runcard_stations')
+                                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                                ->select(
+                                    DB::raw('SUM(ng_quantity) AS ngCount'),
+                                )
+                                ->first();
                             // return response()->json(['computedShipmentOutput' => $computedShipmentOutput, 'computedNGCount' => $computedNGCount]);
 
                             $updateNGCountAndShipmentOutput = DB::connection('mysql')
                                 ->table('sec_molding_runcards')
                                 ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
-                                    'ng_count' => $computedNGCount->ngCount,
                                     'shipment_output' => $computedShipmentOutput->shipmentOutput,
+                                    'ng_count' => $computedNGCount->ngCount,
                                 ]);
 
                             $getSecondMoldingRuncardDetails = DB::connection('mysql')
                                 ->table('sec_molding_runcards')
-                                ->join('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
+                                // ->join('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
                                 ->where('sec_molding_runcards.id', $request->second_molding_id)
                                 ->whereNull('sec_molding_runcards.deleted_at')
                                 ->select(
+                                    'sec_molding_runcards.id',
                                     'sec_molding_runcards.target_shots',
                                     'sec_molding_runcards.adjustment_shots',
                                     'sec_molding_runcards.qc_samples',
@@ -182,76 +242,9 @@ class SecondMoldingStationController extends Controller
                                 ]);
                         }
                         
-                        /**
-                         * Multiple insert of MOD
-                         */
-                        if(isset($request->mod_id)){
-                            for ($i=0; $i < count($request->mod_id); $i++) { 
-                                SecMoldingRuncardStationMod::insert([
-                                    'sec_molding_runcard_id' => $request->second_molding_id,
-                                    'sec_molding_runcard_station_id' => $secondMoldingStationId,
-                                    'mod_id' => $request->mod_id[$i],
-                                    'mod_quantity' => $request->mod_quantity[$i],
-                                    'created_by' => Auth::user()->id,
-                                    'created_at' => date('Y-m-d H:i:s'),
-                                ]);
-                            }
-                        }
                         DB::commit();
-                        return response()->json(['hasError' => false]);
+                        return response()->json(['hasError' => false, 'second_molding_id' => $request->second_molding_id]);
                     }
-
-                    // if($request->station == 1 || $request->station == 6){ // 1-Machine Final Overmold, 6-Visual Inspection
-                    //     /**
-                    //      * Check if shipment_output(column) is not null then update shipment_output and ng_count
-                    //      * that will be used to the next process
-                    //      */
-                    //     $getShipmentOuput = DB::connection('mysql')
-                    //         ->table('sec_molding_runcards')
-                    //         ->where('sec_molding_runcards.id', $request->second_molding_id)
-                    //         // ->whereNull('sec_molding_runcards.shipment_output')
-                    //         ->whereNull('sec_molding_runcards.deleted_at')
-                    //         ->take(1)->update([
-                    //             'ng_count' => $request->ng_quantity,
-                    //             'shipment_output' => $request->output_quantity,
-                    //         ]);
-                    //         // return response()->json(['getShipmentOuput' => $getShipmentOuput]);
-
-                    //     if($getShipmentOuput == 1){
-                    //         $getSecondMoldingRuncardDetails = DB::connection('mysql')
-                    //             ->table('sec_molding_runcards')
-                    //             ->where('sec_molding_runcards.id', $request->second_molding_id)
-                    //             ->whereNull('sec_molding_runcards.deleted_at')
-                    //             ->groupBy('sec_molding_runcards.id')
-                    //             ->select(
-                    //                 'sec_molding_runcards.target_shots',
-                    //                 'sec_molding_runcards.adjustment_shots',
-                    //                 'sec_molding_runcards.qc_samples',
-                    //                 'sec_molding_runcards.prod_samples',
-                    //                 'sec_molding_runcards.ng_count',
-                    //                 'sec_molding_runcards.shipment_output',
-                    //                 'sec_molding_runcards.material_yield',
-                    //             )
-                    //             ->get();
-                    //         // return response()->json(['getSecondMoldingRuncardDetails' => $getSecondMoldingRuncardDetails]);
-
-                    //         $totalMachineOutput = $getSecondMoldingRuncardDetails[0]->target_shots 
-                    //             + $getSecondMoldingRuncardDetails[0]->adjustment_shots 
-                    //             + $getSecondMoldingRuncardDetails[0]->qc_samples
-                    //             + $getSecondMoldingRuncardDetails[0]->prod_samples
-                    //             + $getSecondMoldingRuncardDetails[0]->ng_count
-                    //             + $getSecondMoldingRuncardDetails[0]->shipment_output;
-                    //         $materialYield = ($getSecondMoldingRuncardDetails[0]->shipment_output / $totalMachineOutput * 100);
-                    //         // return response()->json(['totalMachineOutput' => $totalMachineOutput, 'materialYield' => $materialYield]);
-
-                    //         $updateTotalMachineOutputAndMaterialYield = DB::connection('mysql')
-                    //             ->table('sec_molding_runcards')
-                    //             ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
-                    //                 'total_machine_output' => $totalMachineOutput,
-                    //                 'material_yield' => $materialYield,
-                    //             ]);
-                    //     }
-                    // }
                 } catch (\Exception $e) {
                     DB::rollback();
                     return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage(), 'sessionError' => true]);
@@ -336,9 +329,6 @@ class SecondMoldingStationController extends Controller
                             ]);
                     }
                     
-
-
-
                     SecMoldingRuncardStationMod::where('sec_molding_runcard_station_id', $request->second_molding_station_id)->delete();
                     if(isset($request->mod_id)){
                         for ($i=0; $i < count($request->mod_id); $i++) { 
@@ -354,7 +344,7 @@ class SecondMoldingStationController extends Controller
                     }
                     
                     DB::commit();
-                    return response()->json(['hasError' => false]);
+                    return response()->json(['hasError' => false, 'second_molding_id' => $request->second_molding_id]);
                 } catch (\Exception $e) {
                     DB::rollback();
                     return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage(), 'sessionError' => true]);

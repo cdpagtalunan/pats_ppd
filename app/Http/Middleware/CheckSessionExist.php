@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 use App\Providers\RouteServiceProvider;
 
 class CheckSessionExist
@@ -21,8 +22,8 @@ class CheckSessionExist
         // session_start();
         // if (!$_SESSION) {
         if (!$request->session()->exists('user_id')) {
-            return redirect('get_session');
-            // return redirect()->route('login');
+            // return redirect('get_session');
+            return redirect('login');
             // return header("Refresh:0; url=rapidx/pats_ppd_rev/");
         }
         return $next($request);

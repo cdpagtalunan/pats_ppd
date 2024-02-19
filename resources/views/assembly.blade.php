@@ -703,6 +703,34 @@
                 </div>
             </div>
         </div>
+
+        {{-- MODAL FOR PRINTING  --}}
+        <div class="modal fade" id="modalAssemblyPrintQr">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"> Assembly - QR Code</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <!-- PO 1 -->
+                            <div class="col-sm-12">
+                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <label id="img_barcode_PO_text"></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="btnAssemblyPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div>
+
     @endsection
 
     @section('js_content')
@@ -1019,7 +1047,7 @@
                                     $(`#${DeviceQty}`).val(response['shipment_output']);
                                     $('#modalQrScanner').modal('hide');
                                 }else{
-                                    toastr.error('Incorrect Production Lot Number.')
+                                    toastr.error('Production Lot Does Not Match to Material Name')
                                 }
                             }
                         }
@@ -1126,6 +1154,30 @@
                         toastr.error('Please Select Device Name')
                     }
                 });
+                
+
+                $(document).on('click', '#btnSubmitAssemblyRuncardData',function(e){
+                    let _token = '{{ csrf_token() }}';
+                    let runcard_id = $('#txtAssyRuncardId').val();
+                    $.ajax({
+                        type: "post",
+                        url: "update_assy_runcard_status",
+                        data: {
+                            '_token': _token,
+                            'runcard_id': runcard_id
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            if (response['result'] == 1 ) {
+                                toastr.success('Successful!');
+                                $("#modalCNAssembly").modal('hide');
+                                dtAssemblyRuncard.draw();
+                            }else{
+                                toastr.error('Error!, Please Contanct ISS Local 208');
+                            }
+                        }
+                    });
+                });
 
                 $('#btnAddRuncardStation').on('click', function(e){
                      $('#modalAddStation').modal('show');
@@ -1186,7 +1238,7 @@
                     });
                 });
 
-                $('#btnSaveNewAssemblyRuncardStation').click( function(e){
+                $(document).on('click', '#btnSaveNewAssemblyRuncardStation',function(e){
                     e.preventDefault();
                     $.ajax({
                         type:"POST",
@@ -1228,11 +1280,14 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
+                            $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
                         },
                         success: function(response){
                             const assy_runcard_data = response['assembly_runcard_data'];
+                            if(assy_runcard_data[0].assembly_runcard_station.length > 2){
+                                $('#btnSubmitAssemblyRuncardData').prop('disabled', false);
+                            }
                             $('#modalCNAssembly').modal('show');
-
                             $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
                             $('#formCNAssemblyRuncard #txtDeviceName').val(assy_runcard_data[0].device_name);
                             $('#formCNAssemblyRuncard #txtMaterialName').val(assy_runcard_data[0].material_name);
@@ -1402,6 +1457,80 @@
 
 
                 };
+
+                $(document).on('click', '#btnPrintAssemblyRuncard', function(e){
+                    e.preventDefault();
+                    let assy_runcard_id = $(this).attr('assembly_runcard-id');
+                    // $('#hiddenPreview').append(dataToAppend)
+                    $.ajax({
+                        type: "get",
+                        url: "get_assembly_qr_code",
+                        data: {
+                            runcard_id: assy_runcard_id
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                            // response['label_hidden'][0]['id'] = id;
+                            // console.log(response['label_hidden']);
+                            // for(let x = 0; x < response['label_hidden'].length; x++){
+                            //     let dataToAppend = `
+                            //     <img src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
+                            //     `;
+                            //     $('#hiddenPreview').append(dataToAppend)
+                            // }
+
+                            $("#img_barcode_PO").attr('src', response['qr_code']);
+                            $("#img_barcode_PO_text").html(response['label']);
+                            img_barcode_PO_text_hidden = response['label_hidden'];
+                            $('#modalAssemblyPrintQr').modal('show');
+                        }
+                    });
+
+                });
+
+                $('#btnAssemblyPrintQrCode').on('click', function(){
+                    popup = window.open();
+                    let content = '';
+                    content += '<html>';
+                    content += '<head>';
+                    content += '<title></title>';
+                    content += '<style type="text/css">';
+                    content += '@media print { .pagebreak { page-break-before: always; } }';
+                    content += '</style>';
+                    content += '</head>';
+                    content += '<body>';
+                    // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                        content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                            content += '<tr style="width: 290px;">';
+                                content += '<td style="vertical-align: bottom;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                content += '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                            content += '</tr>';
+                        content += '</table>';
+                        content += '<br>';
+                        // if( i < img_barcode_PO_text_hidden.length-1 ){
+                        //     content += '<div class="pagebreak"> </div>';
+                        // }
+                    // }
+                    content += '</body>';
+                    content += '</html>';
+                    popup.document.write(content);
+
+                    popup.focus(); //required for IE
+                    popup.print();
+
+                    /*
+                        * this event will trigger after closing the tab of printing
+                    */
+                    // popup.addEventListener("beforeunload", function (e) {
+                    //     changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                    // });
+
+                    popup.close();
+
+                });
             });
         </script>
     @endsection

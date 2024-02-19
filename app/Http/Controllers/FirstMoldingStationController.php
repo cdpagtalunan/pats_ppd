@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use DataTables;
-use App\Models\FirstMoldingDetail;
-use App\Models\FirstMolding;
-use App\Models\FirstMoldingDetailMod;
-use App\Models\FirstMoldingStation;
-use App\Models\Station;
 use App\Models\User;
+use App\Models\Station;
+use App\Models\FirstMolding;
+use Illuminate\Http\Request;
+use App\Models\FirstMoldingDetail;
+use Illuminate\Support\Facades\DB;
+use App\Models\FirstMoldingStation;
+use Illuminate\Support\Facades\Auth;
+use App\Models\FirstMoldingDetailMod;
 use App\Http\Requests\FirstMoldingStationRequest;
 
 class FirstMoldingStationController extends Controller
@@ -18,14 +19,20 @@ class FirstMoldingStationController extends Controller
     public function loadFirstMoldingStationDetails(Request $request)
     {
         $first_molding_id= isset($request->first_molding_id) ? $request->first_molding_id : 0;
-        $first_molding_station_details = FirstMoldingDetail::where('first_molding_id',$first_molding_id)->whereNull('deleted_at')->get();
+        // $first_molding_station_details = FirstMoldingDetail::where('first_molding_id',$first_molding_id)->whereNull('deleted_at')->get();
+        $first_molding_station_details = FirstMoldingDetail::with('belongsToFirstMolding')->where('first_molding_id',$first_molding_id)->whereNull('deleted_at')->get();
         return DataTables::of($first_molding_station_details)
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            // $result .= '<button type="button" class="btn btn-info btn-sm mr-1" first-molding-station-id='.$row->id.' id="btnEditFirstMoldingStation"><i class="fa-solid fa-pen-to-square"></i></button>';
-            $result .= '<button type="button" class="btn btn-outline-info btn-sm mb-1" first-molding-station-id='.$row->id.' view-data="true" id="btnViewFirstMoldingStation"><i class="fa-solid fa-eye"></i></button>';
-            $result .= '<button type="button" class="btn btn-outline-danger btn-sm mb-1" first-molding-station-id='.$row->id.' id="btnDeleteFirstMoldingStation"><i class="fa-solid fa-times"></i></button>';
+            if($row->belongsToFirstMolding['status'] != 3){
+                // $result .= '<button type="button" class="btn btn-info btn-sm mr-1" first-molding-station-id='.$row->id.' id="btnEditFirstMoldingStation"><i class="fa-solid fa-pen-to-square"></i></button>';
+                $result .= '<button type="button" class="btn btn-outline-info btn-sm mb-1" first-molding-station-id='.$row->id.' test-data='.$row->belongsToFirstMolding['status'].' view-data="true" id="btnViewFirstMoldingStation"><i class="fa-solid fa-eye"></i></button>';
+                $result .= '<button type="button" class="btn btn-outline-danger btn-sm mb-1" first-molding-station-id='.$row->id.' id="btnDeleteFirstMoldingStation"><i class="fa-solid fa-times"></i></button>';
+                // $result .= '';
+            }else{
+                $result .= '';
+            }
             $result .= '</center>';
             return $result;
         })
@@ -148,13 +155,14 @@ class FirstMoldingStationController extends Controller
     //         return $th;
     //     }
 // }
+
     public function getVisualInputMachineOutput(FirstMoldingStationRequest $request){
         $arr_data = [];
         // Read all NG QTY from First Molding Details Table
         $arr_first_molding_station_visual_input = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
                                                                             ->where('station',6) //nmodify Station is equal Visual Inspection
                                                                             ->whereNull('deleted_at')->get(['input']);
-        
+
         foreach ($arr_first_molding_station_visual_input as $key => $value) {
             $_visual_input [] = $value->input;
         }
@@ -183,10 +191,17 @@ class FirstMoldingStationController extends Controller
             $arr_input = [];
             $arr_visual_output = [];
             $arr_total_machine_output = [];
-
+            //get the Station that is not partial. It cannot save duplicate data if partial
             $is_exist_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
             ->where('station',$request->station)
             ->where('is_partial',0)
+            ->whereNull('deleted_at')
+            ->exists();
+            //If the station is partial, the rest of following same station will automatically save as partial.
+            //Ex: Visual 500 is partial, the next saving is partia.
+            $is_partial_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+            ->where('station',$request->station)
+            ->where('is_partial',1)
             ->whereNull('deleted_at')
             ->exists();
 
@@ -205,8 +220,9 @@ class FirstMoldingStationController extends Controller
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
                     'yield' => $request->station_yield,
-                    'is_partial'=> isset($request->is_partial) ? $request->is_partial : 0 ,
+                    'is_partial'=> ( isset($request->is_partial) || $is_partial_first_molding_detail_station ) ? 1 : 0 ,
                     'remarks' => $request->remarks,
+                    'last_updated_by' => Auth::user()->id,
                     'updated_at' => date('Y-m-d H:i:s'),
                 ]);
                 $first_molding_detail_id = $request->first_molding_detail_id;
@@ -221,8 +237,9 @@ class FirstMoldingStationController extends Controller
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
                     'yield' => $request->station_yield,
-                    'is_partial'=> isset($request->is_partial) ? $request->is_partial : 0 ,
+                    'is_partial'=> ( isset( $request->is_partial ) || $is_partial_first_molding_detail_station ) ? 1 : 0 ,
                     'remarks' => $request->remarks,
+                    'last_updated_by' => Auth::user()->id,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
                 $first_molding_detail_id = $get_first_molding_detail_id;
@@ -271,7 +288,7 @@ class FirstMoldingStationController extends Controller
                 $arr_first_molding_station_visual_input = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
                                                                                     ->where('station',6) //nmodify Station is equal Visual Inspection
                                                                                     ->whereNull('deleted_at')->get(['input']);
-                
+
                 foreach ($arr_first_molding_station_visual_input as $key => $value) {
                     $_visual_input [] = $value->input;
                 }
@@ -440,6 +457,7 @@ class FirstMoldingStationController extends Controller
                 'first_molding_id' => $first_molding_detail[0]->first_molding_id,
                 'first_molding_station_last_output' => $last_output,
                 'first_molding_detail_count' => $is_exist,
+                'is_partial' => ($first_molding_detail[0]->is_partial) == 0 ? 'false' : 'true', //0- False | 1- True
             ] );
         }else{
             return response()->json( [
