@@ -25,7 +25,7 @@ class FirstMoldingStationController extends Controller
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            if($row->belongsToFirstMolding['status'] != 3){
+            if($row->belongsToFirstMolding['status'] == 3){
                 // $result .= '<button type="button" class="btn btn-info btn-sm mr-1" first-molding-station-id='.$row->id.' id="btnEditFirstMoldingStation"><i class="fa-solid fa-pen-to-square"></i></button>';
                 $result .= '<button type="button" class="btn btn-outline-info btn-sm mb-1" first-molding-station-id='.$row->id.' test-data='.$row->belongsToFirstMolding['status'].' view-data="true" id="btnViewFirstMoldingStation"><i class="fa-solid fa-eye"></i></button>';
                 $result .= '<button type="button" class="btn btn-outline-danger btn-sm mb-1" first-molding-station-id='.$row->id.' id="btnDeleteFirstMoldingStation"><i class="fa-solid fa-times"></i></button>';
@@ -198,7 +198,7 @@ class FirstMoldingStationController extends Controller
             ->whereNull('deleted_at')
             ->exists();
             //If the station is partial, the rest of following same station will automatically save as partial.
-            //Ex: Visual 500 is partial, the next saving is partia.
+            //Ex: Visual 500 is partial, the next saving is partial.
             $is_partial_first_molding_detail_station = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
             ->where('station',$request->station)
             ->where('is_partial',1)
@@ -312,11 +312,9 @@ class FirstMoldingStationController extends Controller
                     ]);
                 }
             }
-            // DB::rollback();
-            /*
-                TODO: Check if the station is 7 = Camera Inspection
-                TODO: Check if the input of the Sum Camera Inspection Input is greater than Ouput of the Visual Inspection
-                TODO: else if Sum Camera Inspection Input is equal Ouput of the Visual Inspection, Save the Shipment out, ng count, total machine code to First Molding Table
+            
+            /* 
+                TODO: Check if the current input is greater than Current Ouput 
             */
             if($request->station == 7){ //nmodify Station is equal Camera Inspection
                 // Machine 1st Overmold Station is the first station
