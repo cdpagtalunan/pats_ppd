@@ -140,7 +140,7 @@
             </section>
         </div>
 
-        {{-- MODAL FOR PRINTING  --}}
+    {{-- MODAL FOR PRINTING  --}}
         <div class="modal fade" id="modalFirstMoldingPrintQr">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -359,8 +359,8 @@
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Material Yield 
-                                                    &nbsp; <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) * 100"></i> 
+                                                <span class="input-group-text w-100" id="basic-addon1">Material Yield
+                                                    &nbsp; <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) * 100"></i>
                                                 </span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm" id="material_yield" name="material_yield" onkeypress="return event.charCode >= 48 && event.charCode <= 57" readonly>
@@ -379,8 +379,8 @@
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Target Output 
-                                                    &nbsp; <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(PO Qty * Usage)"></i> 
+                                                <span class="input-group-text w-100" id="basic-addon1">Target Output
+                                                    &nbsp; <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(PO Qty * Usage)"></i>
                                                 </span>
                                             </div>
                                             <input type="number" class="form-control form-control-sm" id="required_output" name="required_output" min="0" step="0.01" readonly>
@@ -556,7 +556,7 @@
                                                 </thead>
                                                 <tbody>
                                                 </tbody>
-                                                <tfoot>
+                                                {{-- <tfoot>
                                                     <tr>
                                                         <th style="border-top: 1px solid #dee2e6"></th>
                                                         <th style="border-top: 1px solid #dee2e6"></th>
@@ -567,7 +567,7 @@
                                                         <th style="border-top: 1px solid #dee2e6" title="Total Visual Inspection" class="text-success"></th>
                                                         <th style="border-top: 1px solid #dee2e6"></th>
                                                     </tr>
-                                                </tfoot>
+                                                </tfoot> --}}
                                             </table>
                                         </div>
                                     </div>
@@ -617,6 +617,17 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- <div class="row">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Step</span>
+                                    </div>
+                                    <select type="text" class="form-control form-control-sm" id="step" name="step" placeholder="Station">
+                                    </select>
+                                </div>
+                            </div>
+                        </div> --}}
                         <div class="row">
                             <div class="col">
                                 <div class="input-group input-group-sm mb-3">
@@ -800,7 +811,7 @@
             </div>
         </div>
     </div>
-
+{{-- end  --}}
     @endsection
 
     @section('js_content')
@@ -941,25 +952,24 @@
                         { "data" : "remarks" },
                         { "data" : "created_at" },
                     ],
-                    footerCallback: function (row, data, start, end, display) {
-                        // console.log('data ', data);
-                        let api = this.api();
+                    // footerCallback: function (row, data, start, end, display) {
+                    //     let api = this.api();
 
-                        let countNGQuantity = 0;
-                        let countVisualInspectionQuantity = 0;
-                        if(data.length > 0){
-                            for (let index = 0; index < data.length; index++) {
-                                // console.log('station', data[index].station);
-                                countNGQuantity += parseInt(data[index].ng_qty);
-                                if(data[index].station == 7){ //nmodify Station is equal Camera Inspection
-                                    countVisualInspectionQuantity += parseInt(data[index].output);
-                                }
-                            }
-                        }
-                        // console.log('countNGQuantity ', countNGQuantity);
-                        $(api.column(5).footer()).html(`${countNGQuantity}`)
-                        $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
-                    }
+                    //     let countNGQuantity = 0;
+                    //     let countVisualInspectionQuantity = 0;
+                    //     if(data.length > 0){
+                    //         for (let index = 0; index < data.length; index++) {
+                    //             console.log('station', data[index].station);
+                    //             countNGQuantity += parseInt(data[index].ng_qty);
+                    //             if(data[index].station == 5){ //nmodify Station is equal Visual Inspection || Camera Inspection
+                    //                 countVisualInspectionQuantity += parseInt(data[index].output);
+                    //                 console.log('visual output ', data[index].output);
+                    //             }
+                    //         }
+                    //     }
+                    //     $(api.column(5).footer()).html(`${countNGQuantity}`)
+                    //     $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
+                    // }
                 });
 
                 table.FirstMoldingDetails.on('click','#btnEditFirstMolding', editFirstMolding);
@@ -1138,7 +1148,7 @@
                         confirmButtonText: "Yes"
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            /* 
+                            /*
                             TODO : Scan Emp ID
                             */
                             firstMoldingUpdateStatus();
