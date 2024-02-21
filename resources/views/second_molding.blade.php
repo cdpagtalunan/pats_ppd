@@ -217,9 +217,9 @@
                                                 <input type="text" class="form-control form-control-sm" id="textRevisionNumber" name="revision_number" placeholder="Auto generated" readonly>
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
-                                                <span class="input-group-text w-50">Production Lot</span>
-                                                <input type="text" class="form-control form-control-sm w-25" id="textProductionLot" readonly name="production_lot" placeholder="Production Lot">
-                                                <input type="text" class="form-control datetimepicker w-25" id="textProductionLotTime" placeholder="07:30-04:30" name="textProductionLotTime">
+                                                <span class="input-group-text" style="width: 30%">Production Lot</span>
+                                                <input type="text" class="form-control form-control-sm" style="width: 40%" id="textProductionLot" readonly name="production_lot" placeholder="Production Lot">
+                                                <input type="text" class="form-control datetimepicker" style="width: 30%" id="textProductionLotTime" placeholder="07:30-04:30" name="textProductionLotTime">
                                             </div>
                                             <div id="divMaterialLotNumbers">
                                                 <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking">
@@ -600,6 +600,16 @@
         <script>
             $(document).ready(function(){
                 $('#textProductionLotTime').mask('00:00-00:00', {reverse: false});
+                $('#textProductionLotTime').keyup(delay(function(e){
+                    let textProductionLot = $('#textProductionLot').val();
+                    let textProductionLotTime = $('#textProductionLotTime').val();
+                    if(textProductionLotTime.length == 11){
+                        let subTextProductionLot = textProductionLot.substr(0, 7);
+                        let concattedProductionLot = `${subTextProductionLot}${textProductionLotTime}`;
+                        $('#textProductionLot').val(concattedProductionLot)
+                    }
+                }, 400));
+                
                 let dataTablesSecondMolding, dataTablesSecondMoldingStation;
                 $(document).on('keypress', '#textSearchPMIPONumber', function(e){
                     if(e.keyCode == 13){
@@ -992,7 +1002,11 @@
                                 $('#textMaterialName', $('#formSecondMolding')).val(responseData[0].material_name);
                                 $('#textDrawingNumber', $('#formSecondMolding')).val(responseData[0].drawing_number);
                                 $('#textRevisionNumber', $('#formSecondMolding')).val(responseData[0].revision_number);
-                                $('#textProductionLot', $('#formSecondMolding')).val(responseData[0].production_lot);
+                                let textProductionLot = responseData[0].production_lot;
+                                $('#textProductionLot', $('#formSecondMolding')).val(textProductionLot);
+                                let subTextProductionLotTime = textProductionLot.substr(-11);
+                                $('#textProductionLotTime', $('#formSecondMolding')).val(subTextProductionLotTime);
+                                
                                 $('#textLotNumberEight', $('#formSecondMolding')).val(responseData[0].lot_number_eight);
                                 $('#textLotNumberEightFirstMoldingId', $('#formSecondMolding')).val(responseData[0].lot_number_eight_first_molding_id);
                                 $('#textLotNumberNine', $('#formSecondMolding')).val(responseData[0].lot_number_nine);

@@ -63,7 +63,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                                <label class="form-label">Device Name:</label>
+                                                <label class="form-label">Filter Device Name:</label>
                                             <div class="input-group mb-3">
                                                 <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Device Name"></i>
                                                 <select class="form-control select2bs5" id="txtSelectSecondMoldingDevice" name="sel_device_name" placeholder="Select Device Name"></select>
@@ -207,8 +207,9 @@
                         <div class="modal-body">
                             <div class="row d-flex justify-content-center">
                                 <label class="text-secondary mt-2">Are you sure you want to proceed?</label>
-                                <input type="hidden" class="form-control" name="cnfrm_second_molding_id" id="cnfrmtxtFirstMoldingId">
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_id" id="cnfrmtxtIPQCId">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_production_lot" id="cnfrmtxtIPQCProdLot">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_process_category" id="cnfrmtxtIPQCProcessCat">
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_status" id="cnfrmtxtIPQCStatus">
                             </div>
                         </div>
@@ -1057,9 +1058,12 @@
                             let ng_value = frmIPQCInspectionData.find('#txtQcSamples').val() - frmIPQCInspectionData.find('#txtOkSamples').val();
                             frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
 
-                            frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
-                            frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
-                            frmIPQCInspectionData.find("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
+                            const trimmed_mat_name = ipqc_data.material_name.replace(/ /g,'');
+                            // console.log(trimmed_mat_name);
+
+                            GetBDrawingFromACDCS(trimmed_mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
+                            GetInspStandardFromACDCS(trimmed_mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
+                            GetUDFromACDCS(trimmed_mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
                             //disabled and readonly
                             frmIPQCInspectionData.find("#ScanProductLot").prop('disabled', true);

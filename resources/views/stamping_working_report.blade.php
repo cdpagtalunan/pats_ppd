@@ -107,6 +107,9 @@
                                             </div>
                                         </div>
                                     </div>
+
+
+
                                     <div class="row mb-3">
                                         <div class="col-2">
                                             <span>B</span>
@@ -119,6 +122,9 @@
                                             </div>
                                         </div>
                                     </div>
+
+
+
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="col border px-4 border">

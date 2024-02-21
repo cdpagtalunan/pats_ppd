@@ -97,6 +97,18 @@
                                                   <label>Contact Name</label>
                                                     <input type="text" class="form-control" id="global_contact_name" name="global_contact_name" readonly>
                                                 </div>
+                                                <div class="col-sm-3">
+                                                    <label>PO Number</label>
+                                                    <div class="input-group">
+                                                      <input type="text" class="form-control" id="global_po_no" name="global_po_no">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <label>Target Qty</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="global_target_qty" name="global_target_qty" readonly>
+                                                    </div>
+                                                </div>
                                               </div>
                                             </div>
                                           </div>
@@ -121,11 +133,13 @@
                                                 <tr>
                                                     <th>Action</th>
                                                     <th>Status</th>
+                                                    <th>PMI PO No.</th>
                                                     <th>PO No.</th>
                                                     <th>Device Name</th>
                                                     <th>Contact Name</th>
                                                     <th>Contact Lot No.</th>
                                                     <th>Production Lot No.</th>
+                                                    <th>Shipment Output</th>
                                                     <th>Remarks</th>
                                                     <th>Created At</th>
                                                 </tr>
@@ -373,7 +387,7 @@
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
                                             </div>
-                                            <input value="PR2310089320" type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
+                                            <input value="PR2310089320" type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no" readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -417,7 +431,7 @@
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Item Name</span>
+                                                <span class="input-group-text w-100" id="basic-addon1">Series Name</span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm" id="item_name" name="item_name" readonly>
                                         </div>
@@ -820,7 +834,6 @@
 
                 getFirstModlingDevices();
                 // $('#production_lot_extension').mask('00:00-00:00', {reverse: false});
-
                 $('#modalFirstMolding').on('hidden.bs.modal', function() {
                     formModal.firstMolding.find('#first_molding_id').val('');
                     formModal.firstMoldingStation.find('#first_molding_id').val('');
@@ -846,7 +859,10 @@
                     formModal.firstMolding.find('.form-control').removeClass('is-invalid');
                     formModal.firstMolding.find('.form-control').attr('title', '');
                     formModal.firstMolding.find('#virgin_material').val('');
-
+                    formModal.firstMolding.find('#material_yield').val('0%');
+                    formModal.firstMolding.find('[type="number"]').val(0);
+                    $('#global_target_qty').val('');
+                    $('#global_po_no').val('');
                 })
 
                 $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
@@ -914,19 +930,22 @@
                         url: "load_first_molding_details",
                         data: function (param){
                             param.first_molding_device_id = $("#global_device_name").val();
+                            param.global_po_no = $("#global_po_no").val();
                         }
                     },
                     fixedHeader: true,
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "status" },
+                        { "data" : "pmi_po_no" },
                         { "data" : "po_no" },
                         { "data" : "device_name" },
                         { "data" : "contact_name" },
                         { "data" : "contact_lot_number" },
                         { "data" : "prodn_lot_number" },
+                        { "data" : "prodn_output" },
                         { "data" : "remarks" },
-                        { "data" : "created_at" },
+                        { "data" : "date_created"},
                     ]
                 });
 
@@ -950,7 +969,7 @@
                         { "data" : "ng_qty" },
                         { "data" : "output" },
                         { "data" : "remarks" },
-                        { "data" : "created_at" },
+                        { "data" : "date_created" },
                     ],
                     // footerCallback: function (row, data, start, end, display) {
                     //     let api = this.api();
@@ -1095,6 +1114,12 @@
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
                     let device_name = $('#global_input_device_name').val();
+                    let global_target_qty = $('#global_target_qty').val();
+
+                    if(global_target_qty == ''){
+                        toastr.error('PO not Found. Please check this PO Number to MIMF Module !');
+                        return;
+                    }
                     dt.firstMoldingStation.draw()
                     $('#modalFirstMolding').modal('show');
                     $('#btnFirstMoldingStation').prop('disabled',true);
@@ -1102,8 +1127,6 @@
                     $('#btnRuncardDetails').removeClass('d-none',true);
                     $('#btnAddFirstMoldingMaterial').removeClass('d-none',true);
 
-                    formModal.firstMolding.find('#material_yield').val('0%');
-                    formModal.firstMolding.find('[type="number"]').val(0);
                     arr.Ctr = 0;
                     getDiesetDetailsByDeviceName(device_name);
 
@@ -1155,9 +1178,6 @@
                         }
                     });
                 });
-                const isPartial = function (){
-                    alert('dsadas')
-                }
 
                 formModal.firstMoldingStation.find('#is_partial').change(function (e) {
                     e.preventDefault();
@@ -1181,11 +1201,20 @@
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
 
-                formModal.firstMolding.find('#pmi_po_no').on('keydown',function (e) {
+                // formModal.firstMolding.find('#pmi_po_no').on('keydown',function (e) {
+                //     if(e.keyCode == 13){
+                //         e.preventDefault();
+                //         let  deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
+                //         getPmiPoReceivedDetails( $(this).val(),deviceId);
+                //     }
+                // });
+
+                $('#global_po_no').on('keydown',function (e) { //nmodify
                     if(e.keyCode == 13){
                         e.preventDefault();
                         let  deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
                         getPmiPoReceivedDetails( $(this).val(),deviceId);
+                        dt.firstMolding.draw();
                     }
                 });
 
@@ -1274,7 +1303,9 @@
                             formModal.firstMolding.find('#first_molding_device_id').html(`<option value="${first_molding_device_id}">${device_name}</option>`);
                             formModal.firstMolding.find('#contact_name').val(contact_name);
 
-                            dt.firstMolding.draw();
+                            $('#global_po_no').val('');
+                            $('#global_target_qty').val('');
+
                             // getDiesetDetailsByDeviceName(device_name);
                             getMachineFromMaterialProcess(formModal.firstMolding.find('#machine_no'),device_name);
                             getStation (formModal.firstMoldingStation.find('#station'),device_name)
@@ -1358,7 +1389,6 @@
                     }
                     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
                 });
-
 
                 $('#txtScanUserId').on('keyup', function(e){
                     if(e.keyCode == 13){

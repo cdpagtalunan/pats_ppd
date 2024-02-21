@@ -36,7 +36,7 @@ function GetPatsPpdUser(cboElement){
         dataType: "json",
 
         beforeSend: function(){
-            result = '<option value="" selected disabled> -- Loading -- </option>'
+            result = '<option value="" selected disabled> -- Scan Operator ID -- </option>'
             cboElement.html(result);
         },
         success: function(response){

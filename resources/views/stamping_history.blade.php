@@ -290,9 +290,9 @@
                 })          
 
                 setTimeout(() => {
-                    GetStampingProdnMaterialName($('.dataFromStampingProdnMaterialName'));
-                    GetPatsPpdUser($('.getUsers'));
-                }, 500);
+                    GetStampingProdnMaterialName($('.dataFromStampingProdnMaterialName'))
+                    GetPatsPpdUser($('.getUsers'))
+                }, 500)
                 
                 // ======================= START DATA TABLE =======================
                 dataTableStampingHistory = $("#tblStampingHistory").DataTable({
@@ -359,6 +359,11 @@
                     })
                 })
                 
+                $('#modalStampingHistory').on('hidden.bs.modal', function() {
+                    $('#formStampingHistory')[0].reset()
+                    $('#slctStampingHistoryOperator').val('').trigger('change')
+                })
+
                 $('#txtStampingHistoryTotalShot').keyup(function (e) { 
                     let getValue = $('#txtStampingHistoryTotalShot').val()
                     let getPrevTotalValue = $('#txtStampingHistoryPrevTotalShotAccumulated').val()

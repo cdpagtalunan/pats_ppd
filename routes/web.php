@@ -11,6 +11,7 @@ use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\ProcessController;
 use App\Http\Controllers\StationController;
 use App\Http\Controllers\StampingController;
+use App\Http\Controllers\OQCLotAppController;
 use App\Http\Controllers\UserLevelController;
 use App\Http\Controllers\DefectsInfoController;
 use App\Http\Controllers\FirstMoldingController;
@@ -21,9 +22,11 @@ use App\Http\Controllers\SecondMoldingController;
 use App\Http\Controllers\CarrierDetailsController;
 use App\Http\Controllers\PackingDetailsController;
 use App\Http\Controllers\AssemblyRuncardController;
-use App\Http\Controllers\StampingHistoryController;
 use App\Http\Controllers\CustomerDetailsController;
+use App\Http\Controllers\DailyChecksheetController;
 use App\Http\Controllers\MaterialProcessController;
+use App\Http\Controllers\MoldingAssyIpqcController;
+use App\Http\Controllers\StampingHistoryController;
 use App\Http\Controllers\ReceivingDetailsController;
 use App\Http\Controllers\ProductionHistoryController;
 use App\Http\Controllers\LoadingPortDetailsController;
@@ -33,15 +36,13 @@ use App\Http\Controllers\FirstMoldingStationController;
 use App\Http\Controllers\SecondMoldingStationController;
 use App\Http\Controllers\MoldingIpqcInspectionController;
 use App\Http\Controllers\PackingDetailsMoldingController;
-use App\Http\Controllers\DestinationPortDetailsController;
-use App\Http\Controllers\DailyChecksheetController;
-use App\Http\Controllers\ExportTraceabilityReportController;
 
 
 // use App\Http\Controllers\IpqcFirstMoldingController;
 // use App\Http\Controllers\IpqcSecondMoldingController;
 // use App\Http\Controllers\IpqcAssemblyController;
-use App\Http\Controllers\MoldingAssyIpqcController;
+use App\Http\Controllers\DestinationPortDetailsController;
+use App\Http\Controllers\ExportTraceabilityReportController;
 
 
 /*
@@ -133,6 +134,14 @@ Route::view('/5s_checksheet','5s_checksheet')->name('5s_checksheet');
 
 /* PRESS STAMPING MACHINE CHHECKSHEET VIEW */
 Route::view('/press_stamping_machine_checksheet','press_stamping_machine_checksheet')->name('press_stamping_machine_checksheet');
+
+/* OQC LOT APPLICATION VIEW */
+Route::view('/assy_oqc_lot_app','assembly_oqc_lot_app')->name('assy_oqc_lot_app');
+
+/* FINAL VISUAL VIEW */
+Route::view('/assy_fvi','assembly_fvi')->name('assy_fvi');
+
+Route::view('/stamping_working_report','stamping_working_report')->name('stamping_working_report');
 
 
 // USER CONTROLLER
@@ -505,8 +514,16 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/chk_device_prod_lot_from_sec_molding', 'chk_device_prod_lot_from_sec_molding')->name('chk_device_prod_lot_from_sec_molding');
     Route::post('/update_assy_runcard_status', 'update_assy_runcard_status')->name('update_assy_runcard_status');
     Route::get('/get_assembly_qr_code', 'get_assembly_qr_code')->name('get_assembly_qr_code');
+    Route::get('/get_total_yield', 'get_total_yield')->name('get_total_yield');
+    Route::get('/connect_ypics', 'connect_ypics')->name('connect_ypics');
     // Route::get('/chck_existing_stations', 'chck_existing_stations')->name('chck_existing_stations'); //CLARK DITO KANA
 });
+
+Route::controller(OQCLotAppController::class)->group(function () {
+
+});
+
+
 
 // MODE OF DEFECTS CONTROLLER
 Route::controller(DefectsInfoController::class)->group(function () {
@@ -551,6 +568,11 @@ Route::controller(MimfController::class)->group(function () {
     Route::get('/get_mimf_by_id', 'getMimfById')->name('get_mimf_by_id');
     Route::get('/get_control_no', 'getControlNo')->name('get_control_no');
     Route::get('/get_pmi_po', 'getPmiPoFromPoReceived')->name('get_pmi_po');
+
+    Route::get('/view_mimf_stamping_matrix', 'viewMimfStampingMatrix')->name('view_mimf_stamping_matrix');
+    Route::post('/update_mimf_stamping_matrix', 'updateMimfStampingMatrix')->name('update_mimf_stamping_matrix');
+    Route::get('/get_mimf_stamping_matrix_by_id', 'getMimfStampingMatrixById')->name('get_mimf_stamping_matrix_by_id');
+    Route::get('/get_pps_warehouse', 'getPpsWarehouse')->name('get_pps_warehouse');
 });
 
 Route::controller(StampingHistoryController::class)->group(function () {
@@ -572,11 +594,15 @@ Route::controller(DailyChecksheetController::class)->group(function () {
     Route::post('/update_status_conformed_by', 'updateStatusConformedBy')->name('update_status_conformed_by');
 
     //WEEKLY
-    Route::get('/get_weekly_machine', 'getWeeklyMachine')->name('get_weekly_machine');
     Route::get('/view_weekly_checksheet', 'viewWeeklyChecksheet')->name('view_weekly_checksheet');
     Route::post('/add_weekly_checksheet', 'addWeeklyChecksheet')->name('add_weekly_checksheet');
     Route::get('/get_weekly_checksheet_data', 'getWeeklyChecksheetData')->name('get_weekly_checksheet_data');
     Route::post('/update_status_weekly_check', 'updateWeeklyStatusCheckedBy')->name('update_status_weekly_check');
     Route::post('/update_status_weekly_conformed', 'updateWeeklyStatusConformedBy')->name('update_status_weekly_conformed');
+
+    //MONTHLY
+    Route::get('/view_monthly_checksheet', 'viewMonthlyChecksheet')->name('view_monthly_checksheet');
+    Route::post('/add_monthly_checksheet', 'addMonthlyChecksheet')->name('add_monthly_checksheet');
+    Route::get('/get_monthly_checksheet_data', 'getMonthlyChecksheetData')->name('get_monthly_checksheet_data');
 });
 

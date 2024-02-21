@@ -107,6 +107,8 @@
                                               <th rowspan="2">Action</th>
                                               <th rowspan="2">Device Code</th>
                                               <th rowspan="2">Device Name</th>
+                                              <th rowspan="2">Qty per Reel/Bundle of Trays</th>
+                                              <th rowspan="2">Qty per Box</th>
                                               <th colspan="2">Percentage</th>
                                               <th rowspan="2">Process</th>
                                           </tr>
@@ -216,6 +218,16 @@
                               <div class="form-group">
                                   <label>Material Name</label>
                                   <input type="text" class="form-control" name="name" id="txtAddDeviceName">
+                              </div>
+
+                              <div class="form-group">
+                                  <label>Qty per Reel/ Bundle of Trays</label>
+                                  <input type="number" class="form-control" name="qty_reel" id="txtAddQty" value="0">
+                              </div>
+
+                              <div class="form-group">
+                                  <label>Qty per Box</label>
+                                  <input type="number" class="form-control" name="qty_box" id="txtAddQtyBox" value="0">
                               </div>
                             
                               <div class="form-group">
@@ -818,13 +830,15 @@
             { "data" : "label" },
             { "data" : "code" },
             { "data" : "name" },
+            { "data" : "qty_per_reel" },
+            { "data" : "qty_per_box" },
             { "data" : "virgin",  orderable:false, searchable:false},
             { "data" : "recycle",  orderable:false, searchable:false },
             { "data" : "process_name" },
           ],
-          // "columnDefs": [
-          //   { className: "bg-info", "targets": [ 5 ] }
-          // ],
+          "columnDefs": [
+            { className: "bg-info dt-center", "targets": [ 4,5 ] },
+          ],
           // "scrollY": "400px",
           // "scrollCollapse": true,
         });//end of dataTableDevices

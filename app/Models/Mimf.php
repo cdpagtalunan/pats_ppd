@@ -14,4 +14,6 @@ class Mimf extends Model
     public function pps_po_received_info(){
         return $this->hasOne(TblPoReceived::class, 'id','pps_po_rcvd_id');
     }
+
+    
 }

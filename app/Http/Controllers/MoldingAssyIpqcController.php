@@ -22,6 +22,111 @@ use App\Models\AssemblyRuncard;
 
 class MoldingAssyIpqcController extends Controller
 {
+    //================================== VIEW IPQC DATA IN DATATABLES =====================================
+    public function view_ipqc_data(Request $request){
+        $view_ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
+                                // ->where('material_name', $request->material_name)
+                                ->when($request->material_name, function ($query) use ($request){
+                                    return $query ->where('material_name', $request->material_name);
+                                })
+                                ->whereIn('status', $request->ipqc_status)
+                                ->where('process_category', $request->process_category)
+                                ->where('logdel', 0)
+                                ->get();
+
+        return DataTables::of($view_ipqc_data)
+        ->addColumn('action', function($view_ipqc_data){
+            $result = "";
+            $result .= "<center>";
+            $result .= "<button class='btn btn-info btn-sm btnViewIPQCData' ipqc_data-id='$view_ipqc_data->id'>
+                        <i class='fa-solid fa-eye' data-bs-html='true' title='View IPQC Inspection'></i></button>";
+
+            if($view_ipqc_data->status < 3){ //Not Exsisting IPQC ID or Status less than 3(0 - Pending, 1,2 - Updated): Enabled Updating
+                $result .= "&nbsp";
+                $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-id='$view_ipqc_data->id'>
+                            <i class='fa-solid fa-microscope' data-bs-html='true' title='Proceed to IPQC Inspection'></i></button>";
+            }else if($view_ipqc_data->status == 5){ //Exsisting IPQC ID & Status 5(For Resetup): Enabled Updating
+                $result .= "&nbsp";
+                $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-id='$view_ipqc_data->id'>
+                            <i class='fa-solid fa-microscope' data-bs-html='true' title='Proceed to Re-Inspection'></i></button>";
+            }
+
+            if($view_ipqc_data->status == 1 ){ //Exsisting IPQC ID & Status 1(Accepted): Ready to Submit
+                $result .= "&nbsp";
+                $result .= "<button class='btn btn-success btn-sm btnSubmitIPQCData' ipqc_data-id='$view_ipqc_data->id'>
+                            <i class='fa-solid fa-circle-check' data-bs-html='true' title='Proceed to Mass Production'></i></button>";
+            }
+            else if($view_ipqc_data->status == 2){ //Exsisting IPQC ID & Status 2(Rejected): Ready to Submit
+                $result .= "&nbsp";
+                $result .= "<button class='btn btn-warning btn-sm btnSubmitIPQCData' ipqc_data-id='$view_ipqc_data->id'>
+                            <i class='fa-solid fa-triangle-exclamation' data-bs-html='true' title='Save Rejected QC Sample'></i></button>";
+            }
+            $result .= "</center>";
+            return $result;
+        })
+        ->addColumn('ipqc_status', function ($view_ipqc_data) {
+            $result = "";
+            
+            switch($view_ipqc_data->status){
+                case 0: //Default Value: Not Yet Inpected or Inserted Data But Not Updated = Not Ready
+                    $result .= '<center><span class="badge badge-pill badge-info">For IPQC Inspection</span></center>';
+                    break;
+                case 1: //Updated:(J)Accepted
+                    $result .= '<center><span class="badge badge-pill badge-primary">Accepted QC Sample</span></center>';
+                    break;
+                case 2: //Updated:(J)Rejected
+                    $result .= '<center><span class="badge badge-pill badge-warning">Rejected QC Sample</span></center>';
+                    break;
+                case 3: //Completed IPQC Inspection
+                    $result .= '<center><span class="badge badge-pill badge-success">Done IPQC Inspection</span></center>';
+                    break;
+                case 4: //Completed IPQC Inspection
+                    $result .= '<center><span class="badge badge-pill badge-warning">For Re-Setup</span></center>';
+                    break;
+                case 5: //Completed IPQC Inspection
+                    $result .= '<center><span class="badge badge-pill badge-info">For Re-Inspection</span></center>';
+                    break;
+            }
+            return $result;
+        })
+        ->addColumn('request_created_at', function ($view_ipqc_data) {
+            $result = "";
+            $result = Carbon::parse($view_ipqc_data->created_at);
+            return $result;
+        })
+        ->addColumn('ipqc_judgement', function ($view_ipqc_data) {
+            $result = "";
+                if($view_ipqc_data->judgement == 'Accepted'){
+                    $result .= "<center><span class='badge badge-pill badge-success'>$view_ipqc_data->judgement</span></center>";
+                }else if($view_ipqc_data->judgement == 'Rejected'){
+                    $result .= "<center><span class='badge badge-pill badge-warning'>$view_ipqc_data->judgement</span></center>";
+                }
+            return $result;
+        })
+        ->addColumn('ipqc_inspector_name', function ($view_ipqc_data) {
+            $result = "";
+                $result = $view_ipqc_data->ipqc_insp_name->firstname.' '.$view_ipqc_data->ipqc_insp_name->lastname;
+            return $result;
+        })
+        ->addColumn('ipqc_document_no', function ($view_ipqc_data) {
+            $result = "";
+                $result = $view_ipqc_data->document_no;
+            return $result;
+        })
+        ->addColumn('ipqc_measdata_attachment', function ($view_ipqc_data) {
+            $result = "";
+                $result = $view_ipqc_data->measdata_attachment;
+            return $result;
+        })
+        ->addColumn('ipqc_inspected_date', function ($view_ipqc_data) {
+            $result = "";
+                $result = $view_ipqc_data->updated_at;
+            return $result;
+        })
+        ->rawColumns(['action','ipqc_status','request_created_at','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
+        ->make(true);
+    }
+
     //================================= GET FIRST MOLDINNG DEVICE FOR FILTERING =========================
     public function get_device_from_first_molding(Request $request){
         $first_molding_devices = FirstMolding::select('first_molding_device_id')->with('firstMoldingDevice')
@@ -109,108 +214,6 @@ class MoldingAssyIpqcController extends Controller
                                             ->get();
 
         return response()->json(['ipqc_data' => $ipqc_data]);
-    }
-
-    //================================== VIEW IPQC DATA IN DATATABLES =====================================
-    public function view_ipqc_data(Request $request){
-            $view_ipqc_data = MoldingAssyIpqcInspection::with('ipqc_insp_name')
-                                    ->where('material_name', $request->material_name)
-                                    ->whereIn('status', $request->ipqc_status)
-                                    ->where('process_category', $request->process_category)
-                                    ->where('logdel', 0)
-                                    ->get();
-
-            return DataTables::of($view_ipqc_data)
-            ->addColumn('action', function($view_ipqc_data){
-                $result = "";
-                $result .= "<center>";
-                $result .= "<button class='btn btn-info btn-sm btnViewIPQCData' ipqc_data-id='$view_ipqc_data->id'>
-                            <i class='fa-solid fa-eye' data-bs-html='true' title='View IPQC Inspection'></i></button>";
-
-                if($view_ipqc_data->status < 3){ //Not Exsisting IPQC ID or Status less than 3(0 - Pending, 1,2 - Updated): Enabled Updating
-                    $result .= "&nbsp";
-                    $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-id='$view_ipqc_data->id'>
-                                <i class='fa-solid fa-microscope' data-bs-html='true' title='Proceed to IPQC Inspection'></i></button>";
-                }else if($view_ipqc_data->status == 5){ //Exsisting IPQC ID & Status 5(For Resetup): Enabled Updating
-                    $result .= "&nbsp";
-                    $result .= "<button class='btn btn-primary btn-sm btnUpdateIPQCData' ipqc_data-id='$view_ipqc_data->id'>
-                                <i class='fa-solid fa-microscope' data-bs-html='true' title='Proceed to Re-Inspection'></i></button>";
-                }
-
-                if($view_ipqc_data->status == 1 ){ //Exsisting IPQC ID & Status 1(Accepted): Ready to Submit
-                    $result .= "&nbsp";
-                    $result .= "<button class='btn btn-success btn-sm btnSubmitIPQCData' ipqc_data-id='$view_ipqc_data->id'>
-                                <i class='fa-solid fa-circle-check' data-bs-html='true' title='Proceed to Mass Production'></i></button>";
-                }
-                else if($view_ipqc_data->status == 2){ //Exsisting IPQC ID & Status 2(Rejected): Ready to Submit
-                    $result .= "&nbsp";
-                    $result .= "<button class='btn btn-warning btn-sm btnSubmitIPQCData' ipqc_data-id='$view_ipqc_data->id'>
-                                <i class='fa-solid fa-triangle-exclamation' data-bs-html='true' title='Save Rejected QC Sample'></i></button>";
-                }
-                $result .= "</center>";
-                return $result;
-            })
-            ->addColumn('ipqc_status', function ($view_ipqc_data) {
-                $result = "";
-                
-                switch($view_ipqc_data->status){
-                    case 0: //Default Value: Not Yet Inpected or Inserted Data But Not Updated = Not Ready
-                        $result .= '<center><span class="badge badge-pill badge-info">For IPQC Inspection</span></center>';
-                        break;
-                    case 1: //Updated:(J)Accepted
-                        $result .= '<center><span class="badge badge-pill badge-primary">Accepted QC Sample</span></center>';
-                        break;
-                    case 2: //Updated:(J)Rejected
-                        $result .= '<center><span class="badge badge-pill badge-warning">Rejected QC Sample</span></center>';
-                        break;
-                    case 3: //Completed IPQC Inspection
-                        $result .= '<center><span class="badge badge-pill badge-success">Done IPQC Inspection</span></center>';
-                        break;
-                    case 4: //Completed IPQC Inspection
-                        $result .= '<center><span class="badge badge-pill badge-warning">For Re-Setup</span></center>';
-                        break;
-                    case 5: //Completed IPQC Inspection
-                        $result .= '<center><span class="badge badge-pill badge-info">For Re-Inspection</span></center>';
-                        break;
-                }
-                return $result;
-            })
-            ->addColumn('request_created_at', function ($view_ipqc_data) {
-                $result = "";
-                $result = Carbon::parse($view_ipqc_data->created_at);
-                return $result;
-            })
-            ->addColumn('ipqc_judgement', function ($view_ipqc_data) {
-                $result = "";
-                    if($view_ipqc_data->judgement == 'Accepted'){
-                        $result .= "<center><span class='badge badge-pill badge-success'>$view_ipqc_data->judgement</span></center>";
-                    }else if($view_ipqc_data->judgement == 'Rejected'){
-                        $result .= "<center><span class='badge badge-pill badge-warning'>$view_ipqc_data->judgement</span></center>";
-                    }
-                return $result;
-            })
-            ->addColumn('ipqc_inspector_name', function ($view_ipqc_data) {
-                $result = "";
-                    $result = $view_ipqc_data->ipqc_insp_name->firstname.' '.$view_ipqc_data->ipqc_insp_name->lastname;
-                return $result;
-            })
-            ->addColumn('ipqc_document_no', function ($view_ipqc_data) {
-                $result = "";
-                    $result = $view_ipqc_data->document_no;
-                return $result;
-            })
-            ->addColumn('ipqc_measdata_attachment', function ($view_ipqc_data) {
-                $result = "";
-                    $result = $view_ipqc_data->measdata_attachment;
-                return $result;
-            })
-            ->addColumn('ipqc_inspected_date', function ($view_ipqc_data) {
-                $result = "";
-                    $result = $view_ipqc_data->updated_at;
-                return $result;
-            })
-            ->rawColumns(['action','ipqc_status','request_created_at','ipqc_judgement','ipqc_inspector_name','ipqc_document_no','ipqc_measdata_attachment','ipqc_inspected_date'])
-            ->make(true);
     }
 
     //====================================== ADD/UPDATE IPQC DATA FOR FIRST MOLDING =========================

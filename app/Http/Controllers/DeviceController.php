@@ -125,14 +125,17 @@ class DeviceController extends Controller
 
             try{
                 $device_array = array(
+                
                     'code'            => $request->code,
                     'name'            => $request->name,
                     'process'         => $request->process,
+                    'qty_per_reel'    => $request->qty_reel,
+                    'qty_per_box'     => $request->qty_box,
                     'virgin_percent'  => $request->virgin,
                     'recycle_percent' => $request->recycled,
 
                 );
-                if(isset($request->id)){
+                if(isset($request->id)){ // update
                     // , 'name' => $request->name, 
                     $exist = DB::connection('mysql')
                     ->select("
@@ -155,7 +158,7 @@ class DeviceController extends Controller
                     }
                    
                 }
-                else{
+                else{ // insert
                     $device_array['created_by'] = Auth::user()->id;
                     $device_array['last_updated_by'] = Auth::user()->id;
                     $device_array['created_at'] = NOW();

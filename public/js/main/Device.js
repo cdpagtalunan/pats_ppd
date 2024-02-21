@@ -95,10 +95,13 @@ function GetDeviceByIdToEdit(deviceId){
 
             let result = JsonObject['device'];
             // if(result.length > 0){
-
+                
+                
                 $("#txtDeviceId").val(result.id);
                 $("#txtAddDeviceCode").val(result.code);
                 $("#txtAddDeviceName").val(result.name);
+                $("#txtAddQty").val(result.qty_per_reel);
+                $("#txtAddQtyBox").val(result.qty_per_box);
 
                 $("#txtVirginPerc").val(result.virgin_percent);
                 $("#txtRecycledPerc").val(result.recycle_percent);

@@ -38,6 +38,7 @@ class CreateMimfsTable extends Migration
             $table->string('created_by')->nullable()->comment = 'user login';
             $table->string('updated_by')->nullable()->comment = 'user login';
             $table->unsignedTinyInteger('logdel')->default(0)->comment = '0-show,1-hide';
+            $table->unsignedTinyInteger('status')->default(0)->comment = '1-Stamping,2-Molding';
             $table->timestamps();
         });
     }

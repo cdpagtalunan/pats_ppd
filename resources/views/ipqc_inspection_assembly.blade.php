@@ -63,7 +63,7 @@
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-sm-2">
-                                                <label class="form-label">Device Name:</label>
+                                                <label class="form-label">Filter Device Name:</label>
                                             <div class="input-group mb-3">
                                                 <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Select Device Name"></i>
                                                 <select class="form-control select2bs5" id="txtSelectAssemblyDevice" name="sel_device_name" placeholder="Select Device Name"></select>
@@ -207,8 +207,9 @@
                         <div class="modal-body">
                             <div class="row d-flex justify-content-center">
                                 <label class="text-secondary mt-2">Are you sure you want to proceed?</label>
-                                <input type="hidden" class="form-control" name="cnfrm_second_molding_id" id="cnfrmtxtFirstMoldingId">
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_id" id="cnfrmtxtIPQCId">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_production_lot" id="cnfrmtxtIPQCProdLot">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_process_category" id="cnfrmtxtIPQCProcessCat">
                                 <input type="hidden" class="form-control" name="cnfrm_ipqc_status" id="cnfrmtxtIPQCStatus">
                             </div>
                         </div>
@@ -239,7 +240,7 @@
                         <div class="modal-body">
                             <input type="hidden" id="txtIpqcId" name="ipqc_id">
                             <input type="hidden" id="txtFirstMoldingId" name="second_molding_id">
-                            <input type="hidden" id="txtProcessCategory" name="process_category" value="2">
+                            <input type="hidden" id="txtProcessCategory" name="process_category" value="3">
                             <div class="row">
                                 <div class="col-sm-6">
                                     <div class="card">
@@ -444,9 +445,9 @@
                         type: "get",
                         url: "verify_production_lot",
                         data: {
-                            'production_lot': ScanQrCodeVal.lot_no,
-                            'device_name': ScanQrCodeVal.name,
-                            'process_category': 2
+                            'production_lot': ScanQrCodeVal.production_lot,
+                            'device_name': ScanQrCodeVal.device_name,
+                            'process_category': 3
                         },
                         dataType: "json",
                         success: function (response) {
@@ -458,14 +459,14 @@
                                 $('#txtPartCode').val('');
                                 $('#txtMaterialName').val('');
 
-                            }else if(response['production_lot'] == ScanQrCodeVal.lot_no){
+                            }else if(response['production_lot'] == ScanQrCodeVal.production_lot){
                                 toastr.success('Production Lot Matched!');
-                                $('#txtProductionLot').val(ScanQrCodeVal.lot_no);
-                                $('#txtPoNumber').val(ScanQrCodeVal.po);
-                                $('#txtPartCode').val(ScanQrCodeVal.code);
-                                $('#txtMaterialName').val(ScanQrCodeVal.name);
+                                $('#txtProductionLot').val(ScanQrCodeVal.production_lot);
+                                $('#txtPoNumber').val(ScanQrCodeVal.po_number);
+                                $('#txtPartCode').val(ScanQrCodeVal.part_code);
+                                $('#txtMaterialName').val(ScanQrCodeVal.device_name);
 
-                                const trimmed_mat_name = ScanQrCodeVal.name.replace(/ /g,'');
+                                const trimmed_mat_name = ScanQrCodeVal.device_name.replace(/ /g,'');
                                 console.log(trimmed_mat_name);
 
                                 GetBDrawingFromACDCS(trimmed_mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
@@ -483,7 +484,7 @@
                             $('#modalQrScanner').modal('hide');
                         }
                     });
-                }, 300));
+                }, 500));
 
                 // NEW CODE CLARK 02042024
                 GetDeviceNameFromIPQC($("#txtSelectAssemblyDevice"));
@@ -497,7 +498,7 @@
                         param.material_name =  $("#txtSelectAssemblyDevice").val();
                         param.ipqc_status =  [0,1,2,5]; //Status Pending, Updated (A) or (B), For Re-inspection
                         // param.second_molding_status = [0]; //First Molding Status : For IPQC
-                        param.process_category = 2; //Process Category : Second Molding
+                        param.process_category = 3; //Process Category : Assembly
                         }
                     },
                     fixedHeader: true,
@@ -523,7 +524,7 @@
                         param.material_name =  $("#txtSelectAssemblyDevice").val();
                         param.ipqc_status = [3]; //Status 3 = Submitted: Judgement - Accepted
                         // param.second_molding_status = [1, 3]; //First Molding Status : For Mass Prod, Done
-                        param.process_category = 2; //Process Category : Second Molding
+                        param.process_category = 3; //Process Category : Assembly
                         }
                     },
                     fixedHeader: true,
@@ -549,7 +550,7 @@
                         param.material_name =  $("#txtSelectAssemblyDevice").val();
                         param.ipqc_status = [4]; //Status 4 = Submitted: Judgement - Rejected
                         // param.second_molding_status = [2]; //First Molding Status : For Resetup
-                        param.process_category = 2; //Process Category : Second Molding
+                        param.process_category = 3; //Process Category : Assembly
                         }
                     },
                     fixedHeader: true,
@@ -976,6 +977,7 @@
                                 dtAssemblyIpqcInspResetup.draw();
                                 // GetDeviceNameFromIPQC($("#txtSelectAssemblyDevice"));
                                 frmIPQCInspectionData.find("#txtSelectAssemblyDevice").val(0).trigger('change');
+                                GetDeviceNameFromIPQC($("#txtSelectAssemblyDevice"));
                             }
                             else if(result == 'Duplicate'){
                                 toastr.error('Request Already Submitted!');
@@ -1033,9 +1035,16 @@
                             let ng_value = frmIPQCInspectionData.find('#txtQcSamples').val() - frmIPQCInspectionData.find('#txtOkSamples').val();
                             frmIPQCInspectionData.find('#txtNGQty').val(ng_value);
 
-                            frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
-                            frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
-                            frmIPQCInspectionData.find("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
+                            const trimmed_mat_name = ipqc_data.material_name.replace(/ /g,'');
+                            // console.log(trimmed_mat_name);
+
+                            GetBDrawingFromACDCS(trimmed_mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
+                            GetInspStandardFromACDCS(trimmed_mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
+                            GetUDFromACDCS(trimmed_mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
+
+                            // frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']).trigger('change');
+                            // frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']).trigger('change');
+                            // frmIPQCInspectionData.find("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']).trigger('change');
 
                             //disabled and readonly
                             frmIPQCInspectionData.find("#ScanProductLot").prop('disabled', true);
