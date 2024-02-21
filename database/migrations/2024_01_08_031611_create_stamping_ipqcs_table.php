@@ -31,6 +31,7 @@ class CreateStampingIpqcsTable extends Migration
             $table->string('doc_no_urgent_direction')->nullable()->comment = 'UD from acdcs';
             $table->string('measdata_attachment')->nullable();
             $table->string('ilqcm_attachment')->nullable();
+            $table->string('remarks')->nullable();
             $table->tinyInteger('status')->default(0)->comment = '0-Pending, 1-Updated:Accepted(J), 2-Updated:Rejected(J), 3-Submitted:Accepted(J), 4-Submitted:Rejected(J), 5-For Re-Inspection';
             $table->tinyInteger('logdel')->default(0)->comment = '0-Active, 1-Deleted';
             $table->unsignedBigInteger('created_by')->nullable();

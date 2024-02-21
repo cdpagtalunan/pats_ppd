@@ -25,70 +25,44 @@ class UserController extends Controller
 {
     public function rapidx_sign_in_admin(Request $request)
     {
-        // $user_data = array(
-        //     'username' => $request->get('username'),
-        //     // 'password' => $request->get('password'),
-        //     'user_stat' => "1"
-        // );
         $user_data = $request->all();
-            // return $user_data;
-
         $validator = Validator::make($request->all(), [
             'username' => 'required',
-            // 'password' => 'required'
         ]);
 
         if ($validator->passes()) {
-            // if ($request->password == 'rapidx_admin') {
+            $user_info = RapidxUser::where('username', $request->username)->first();
+            // return $user_info;
+            if ($user_info != null) {
+                session_start();
+                $_SESSION["rapidx_user_id"] = $user_info->id;
+                $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
+                $_SESSION["rapidx_username"] = $user_info->username;
+                $_SESSION["rapidx_name"] = $user_info->name;
+                $_SESSION["rapidx_email"] = $user_info->email;
+                $_SESSION["rapidx_department_id"] = $user_info->department_id;
+                $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
 
-                $user_info = RapidxUser::where('username', $request->username)->first();
-                // return $user_info;
-                if ($user_info != null) {
-                    session_start();
-                    $_SESSION["rapidx_user_id"] = $user_info->id;
-                    $_SESSION["rapidx_user_level_id"] = $user_info->user_level_id;
-                    // $_SESSION["rapidx_username"] = $user_info->username;
-                    $_SESSION["rapidx_name"] = $user_info->name;
-                    $_SESSION["rapidx_email"] = $user_info->email;
-                    $_SESSION["rapidx_department_id"] = $user_info->department_id;
-                    $_SESSION["rapidx_employee_number"] =  $user_info->employee_number;
+                $user_accesses = RapidXUserAccess::on('rapidx')->where('user_id', $user_info->id)
+                    ->where('user_access_stat', 1)
+                    ->get();
 
-                    $user_accesses = RapidXUserAccess::on('rapidx')->where('user_id', $user_info->id)
-                        ->where('user_access_stat', 1)
-                        ->get();
-
-                    $arr_user_accesses = [];
-                    for ($index = 0; $index < count($user_accesses); $index++) {
-                        // $arr_user_accesses['module_id'] = $user_accesses[$index]->module_id;
-                        // $arr_user_accesses['user_level_id'] = $user_accesses[$index]->user_level_id;
-                        array_push($arr_user_accesses, array(
-                            'module_id' => $user_accesses[$index]->module_id,
-                            'user_level_id' => $user_accesses[$index]->user_level_id
-                        ));
-                    }
-
-                    $_SESSION["rapidx_user_accesses"] = $arr_user_accesses;
-
-                    // return $_SESSION;
-                    /**
-                     * Add session for specific systems
-                     * - this is useful for a system with different user roles
-                     * -JD
-                     */
-                    // $userData = ShuttleAllocation::where('rapidx_user_id', $user_info->id)->get();
-                    // if(count($userData) > 0){
-                    //     $_SESSION["shuttle_allocation_user_role_id"] = $userData[0]->user_role_id;
-                    // }
-
-                    return response()->json([
-                        'result' => "1",
-                    ]);
-                } else {
-                    return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+                $arr_user_accesses = [];
+                for ($index = 0; $index < count($user_accesses); $index++) {
+                    array_push($arr_user_accesses, array(
+                        'module_id' => $user_accesses[$index]->module_id,
+                        'user_level_id' => $user_accesses[$index]->user_level_id
+                    ));
                 }
-            // } else {
-            //     return response()->json(['result' => "0", 'error' => 'Login Failed!']);
-            // }
+
+                $_SESSION["rapidx_user_accesses"] = $arr_user_accesses;
+
+                return response()->json([
+                    'result' => "1",
+                ]);
+            } else {
+                return response()->json(['result' => "0", 'error' => 'Login Failed!']);
+            }
         } else {
             return response()->json(['result' => "0", 'error' => $validator->messages()]);
         }
@@ -119,20 +93,19 @@ class UserController extends Controller
                 $_SESSION["position"] = Auth::user()->position;
                 $_SESSION["employee_id"] =  Auth::user()->employee_id;
 
+                $request->session()->put('user_id', Auth::user()->id);
+                $request->session()->put('position', Auth::user()->position);
+                $request->session()->put('employee_id', Auth::user()->employee_id);
+                $request->session()->put('email', Auth::user()->email);
+
                 if(Auth::user()->is_password_changed == 0){
-                   
-
                     return response()->json(['result' => "2"]);
-
                 }
                 else{
-
-
                     return response()->json(['result' => "1", 'username' => $user_data['username']]);
                 }
             }
             else{
-
                 return response()->json(['result' => "0", 'error_message' => 'Login Failed!', 'error' => $validator->messages()]);
             }
         }
@@ -143,6 +116,13 @@ class UserController extends Controller
 
     // Sign Out
     public function sign_out(Request $request){
+        // session_start();
+        // session_unset();
+        // session_destroy();
+        $request->session()->forget('user_id');
+        $request->session()->forget('position');
+        $request->session()->forget('employee_id');
+        $request->session()->forget('email');
         Auth::logout();
         return response()->json(['result' => "1"]);
     }
@@ -406,13 +386,13 @@ class UserController extends Controller
                     ]);
                 }
 
-                if(isset($request->send_email)){
-                    $subject = 'PATS User Registration';
-                    $email = $request->email;
-                    $message = 'This is a notification from PATS. Your PATS user account was successfully registered.';
+                // if(isset($request->send_email)){
+                //     $subject = 'PATS User Registration';
+                //     $email = $request->email;
+                //     $message = 'This is a notification from PATS. Your PATS user account was successfully registered.';
 
-                    // dispatch(new SendUserPasswordJob($subject, $message, $request->username, $password, $email));
-                }
+                //     // dispatch(new SendUserPasswordJob($subject, $message, $request->username, $password, $email));
+                // }
 
                 DB::commit();
 
@@ -444,6 +424,12 @@ class UserController extends Controller
 
     public function get_user_list(Request $request){
         $users = User::all();
+
+        return response()->json(['users' => $users]);
+    }
+
+    public function get_user_by_en(Request $request){
+        $users = User::where('employee_id', $request->employee_id)->first();
 
         return response()->json(['users' => $users]);
     }

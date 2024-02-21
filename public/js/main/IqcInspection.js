@@ -1,4 +1,6 @@
 
+// $(document).ready(function () {
+
     const tbl = {
         iqcInspection:'#tblIqcInspection',
         iqcWhsDetails :'#tblWhsDetails',
@@ -40,6 +42,7 @@
             url: "load_whs_transaction",
             data: function (param){
                 param.firstStamping = "true" //DT for 1st Stamping
+                param.lotNum = $('#txtSearchLotNum').val()
             },
         },
         fixedHeader: true,
@@ -59,6 +62,9 @@
         "serverSide" : true,
         "ajax" : {
             url: "load_whs_details",
+            data: function (param){
+                param.lotNum = $('#txtSearchLotNum').val()
+            },
         },
         fixedHeader: true,
         "columns":[
@@ -79,6 +85,9 @@
         "serverSide" : true,
         "ajax" : {
             url: "load_iqc_inspection",
+            data: function (param){
+                param.lotNum = $('#txtSearchLotNum').val()
+            },
         },
         fixedHeader: true,
         "columns":[
@@ -86,8 +95,8 @@
             { "data" : "status", orderable:false, searchable:false },
             { "data" : "date_inspected" },
             { "data" : "time_inspected" }, //
-            { "data" : "supplier" },
             { "data" : "app_ctrl_no" }, //
+            { "data": "supplier" },
             // { "data" : "classification" },//
             // { "data" : "family" },//
             // { "data" : "category" },//
@@ -102,14 +111,11 @@
         ],
     });
 
-
-
     const getFamily = function () {
         $.ajax({
             url: "get_family",
             method: "get",
             dataType: "json",
-
             beforeSend: function(){
                 result = '<option value="" selected disabled> -- Loading -- </option>';
                 form.iqcInspection.find('select[name=family]').html(result);
@@ -358,6 +364,7 @@
                     }
                 }
                 /*Mode of Defects Modal*/
+
                 $('#mod_lot_no').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 $('#mod_quantity').empty().prepend(`<option value="" selected disabled>-Select-</option>`)
                 for (let i = 0; i < response.length; i++) {
@@ -540,3 +547,5 @@
             }
         });
     }
+
+// }) //end Doc Ready

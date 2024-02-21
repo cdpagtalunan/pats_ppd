@@ -15,12 +15,14 @@ class CreatePackingDetailsTable extends Migration
     {
         Schema::create('packing_details', function (Blueprint $table) {
             $table->id();
+            $table->integer('oqc_id');
+            $table->string('packing_ctrl_no')->nullable();
             $table->string('po_no')->nullable();
-            $table->string('po_qty')->nullable();
+            $table->string('lot_qty')->nullable();
+            $table->string('shipment_qty')->nullable();
             $table->string('material_name')->nullable();
             $table->string('material_lot_no')->nullable();
             $table->string('drawing_no')->nullable();
-            $table->string('delivery_balance')->nullable();
             $table->string('no_of_cuts')->nullable();
             $table->string('material_quality')->nullable();
             $table->integer('print_count')->nullable();

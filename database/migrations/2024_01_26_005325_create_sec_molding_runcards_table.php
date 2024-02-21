@@ -17,8 +17,11 @@ class CreateSecMoldingRuncardsTable extends Migration
             $table->bigIncrements('id');
             $table->string('device_name')->nullable();
             $table->string('parts_code')->nullable();
+            $table->string('pmi_po_number')->nullable();
             $table->string('po_number')->nullable();
             $table->string('po_quantity')->nullable();
+            $table->string('required_output')->nullable();
+            $table->string('total_yield')->nullable();
             $table->string('machine_number')->nullable();
             $table->string('material_lot_number')->nullable();
             $table->string('material_name')->nullable();
@@ -35,6 +38,16 @@ class CreateSecMoldingRuncardsTable extends Migration
             $table->string('contact_name_lot_number_second')->nullable();
             $table->string('me_name_lot_number_one')->nullable();
             $table->string('me_name_lot_number_second')->nullable();
+
+            $table->integer('target_shots')->nullable();
+            $table->integer('adjustment_shots')->nullable();
+            $table->integer('qc_samples')->nullable();
+            $table->integer('prod_samples')->nullable();
+            $table->integer('ng_count')->nullable();
+            $table->integer('total_machine_output')->nullable();
+            $table->integer('shipment_output')->nullable();
+            $table->float('material_yield')->nullable();
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();
             $table->tinyInteger('status')->default(0)->comment ='';

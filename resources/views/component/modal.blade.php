@@ -97,7 +97,7 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Quantity</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty"  min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="total_lot_qty" name="total_lot_qty"  min="0" step="0.01" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -172,14 +172,14 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Accept</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0">
+                                <input type="number" class="form-control form-control-sm" id="accept" name="accept" min="0" step="0.01">
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Reject</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0">
+                                <input type="number" class="form-control form-control-sm" id="reject" name="reject" min="0" step="0.01">
                             </div>
                         </div>
                     </div>
@@ -251,14 +251,14 @@
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Target LAR</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="target_lar" name="target_lar" min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="target_lar" name="target_lar" min="0" min="0" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Target DPPM</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="target_dppm" name="target_dppm" min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="target_dppm" name="target_dppm" min="0" min="0" readonly>
 
                             </div>
                             <div class="input-group input-group-sm mb-3">
@@ -275,25 +275,25 @@
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Inspected</span>
                                 </div>
                                     {{-- <input type="text" class="form-control form-control-sm" id="txtInput" name="input" min="0" value="0"> --}}
-                                <input type="number" class="form-control form-control-sm" id="lot_inspected" name="lot_inspected" min="0" readonly>
+                                <input type="number" class="form-control form-control-sm" id="lot_inspected" name="lot_inspected" min="0" step="0.01" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Lot Accepted</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="0" max="1">
+                                <input type="number" class="form-control form-control-sm" id="accepted" name="accepted" min="0" max="1" step="0.01">
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Sampling Size</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="sampling_size" name="sampling_size" min="0">
+                                <input type="number" class="form-control form-control-sm" id="sampling_size" name="sampling_size" min="0" step="0.01">
                             </div>
                             <div class="input-group input-group-sm mb-3 d-none divMod">
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">No. of Defectives</span>
                                 </div>
-                                <input type="number" class="form-control form-control-sm" id="no_of_defects" name="no_of_defects" min="0" placeholder="auto-compute" readonly>
+                                <input type="number" class="form-control form-control-sm" id="no_of_defects" name="no_of_defects" min="0" step="0.01" placeholder="auto-compute" readonly>
                             </div>
                             <div class="input-group input-group-sm mb-3">
                                 <div class="input-group-prepend w-50">
@@ -354,281 +354,3 @@
         </div>
     </div>
 </div>
-
-<div class="modal fade" id="modalFirstMolding" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered modal-xl-custom">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title"><i class="fa fa-plus"></i> Add Data</h4>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="formFirstMolding" autocomplete="off">
-                @csrf
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-4 border px-4">
-                            <div class="py-3">
-                                <span class="badge badge-secondary">1.</span> Runcard Details
-                            </div>
-                            <div class="input-group input-group-sm mb-3 d-none">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Id </span>
-                                </div>
-                                <input class="form-control form-control-sm" type="number" id="first_molding_id" name="first_molding_id">
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
-                                </div>
-                                <select class="form-select form-control-sm" id="first_molding_device_id" name="first_molding_device_id" >
-                                </select>
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Contact Name: </span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="contact_name" name="contact_name" readonly>
-                            </div>
-                                <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Contact Lot #</span>
-                                </div>
-                                <div class="input-group-prepend">
-                                    <button type="button" class="btn btn-dark" id="btnScanQrFirstMolding"><i class="fa fa-qrcode w-100"></i></button>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number">
-                                {{-- <input type="text" value="C1100R-1/2H 1.2X70"  class="form-control form-control-sm" id="contact_lot_number" name="contact_lot_number"> --}}
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Production Lot</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="production_lot" name="production_lot">
-                                {{-- <input value="2B40125-G-A-M-T-0600-1000" type="text" class="form-control form-control-sm" id="production_lot" name="production_lot"> --}}
-                            </div>
-
-                            {{-- <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">PMI PO Number</span>
-                                </div>
-                                <select type="text" class="form-control form-control-sm" id="pmi_po_no" name="pmi_po_no">
-                                </select>
-                            </div>
-
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="po_no" name="po_no">
-                            </div>
-
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="po_qty" name="po_qty">
-                            </div> --}}
-
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
-                                </div>
-                                <textarea class="form-control form-control-sm" id="remarks" name="remarks" rows="5"></textarea>
-                            </div>
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Created At</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="created_at" name="created_at" readonly="true" placeholder="Auto generated">
-                            </div>
-                            <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
-                                <button class="btn btn-sm btn-success" type="submit" id="btnRuncardDetails">
-                                    <i class="fa-solid fa-floppy-disk"></i> Save
-                                </button>
-                            </div>
-                        </div>
-                      </form>
-                        <div class="col-sm-8">
-                            <div class="col border px-4 border">
-                                <div class="py-3">
-                                    <div style="float: left;">
-                                        <span class="badge badge-secondary">2.</span> Stations
-                                    </div>
-                                    <div style="float: right;">
-                                        <button class="btn btn-primary btn-sm" type="button" id="btnFirstMoldingStation" disabled>
-                                            <i class="fa fa-plus" ></i> Add Station
-                                        </button>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm small table-bordered table-hover" id="tblFirstMoldingStationDetails" style="width: 100%;">
-                                            <thead>
-                                                <tr class="bg-light">
-                                                    <th></th>
-                                                    <!-- <th></th> -->
-                                                    <th>Station</th>
-                                                    <th>Date</th>
-                                                    <th>Name</th>
-                                                    <th>Input</th>
-                                                    <th>NG Qty</th>
-                                                    <th>Output</th>
-                                                    <th>Remarks</th>
-                                                    <th>Created Date</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                    <button type="button" id="btnSubmitFirstMoldingStation" class="btn btn-primary" disabled><i class="fa fa-check"></i> Submit</button>
-                </div>
-        </div>
-        <!-- /.modal-content -->
-    </div>
-    <!-- /.modal-dialog -->
-</div>
-
-<div class="modal fade" id="modalFirstMoldingStation" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-        <div class="modal-content modal-lg">
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="fas fa-object-group text-info"></i> Stations</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="formFirstMoldingStation">
-                    @csrf
-                    <div class="row  d-none">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Id</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="first_molding_id" name="first_molding_id">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row  d-none">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">First Molding Detail Id</span>
-                                </div>
-                                <input type="text" class="form-control form-control-sm" id="first_molding_detail_id" name="first_molding_detail_id">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Station</span>
-                                </div>
-                                <select type="text" class="form-control form-control-sm" id="station" name="station" placeholder="Station">
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Date</span>
-                                </div>
-                                <input type="date" class="form-control form-control-sm" id="date" name="date" value="<?php echo date('Y-m-d'); ?>">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                                <div class="input-group-prepend w-50">
-                                    <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
-                                </div>
-                                <select type="text" class="form-control form-control-sm" id="operator_name" name="operator_name" placeholder="Station">
-                                <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option>
-                                </select>
-                                {{-- <input type="text" class="form-control form-control-sm" id="operator_name" name="operator_name"> --}}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend w-50">
-                                <span class="input-group-text w-100" id="basic-addon1">Input</span>
-                            </div>
-                            <input type="number" class="form-control form-control-sm" id="input" name="input" min="0">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend w-50">
-                                <span class="input-group-text w-100" id="basic-addon1">NG Qty</span>
-                            </div>
-                            <input type="number" class="form-control form-control-sm" id="ng_qty" name="ng_qty" min="0" value="0">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend w-50">
-                                <span class="input-group-text w-100" id="basic-addon1">Output</span>
-                            </div>
-                            <input type="number" class="form-control form-control-sm" id="output" name="output" min="0" readonly>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col">
-                            <div class="input-group input-group-sm mb-3">
-                            <div class="input-group-prepend w-50">
-                                <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
-                            </div>
-                            <input type="text" class="form-control form-control-sm" id="remarks" name="remarks">
-                            </div>
-                        </div>
-                    </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Save</button>
-            </div>
-        </form>
-        </div>
-    </div>
-</div>
-
-<!-- Start Scan QR Modal First Molding -->
-<div class="modal fade" id="mdlScanQrCodeFirstMolding" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header border-bottom-0 pb-0">
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body pt-0">
-                {{-- hidden_scanner_input --}}
-                <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCodeFirstMolding" name="scan_qr_code" autocomplete="off">
-                <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- /.End Scan QR Modal -->

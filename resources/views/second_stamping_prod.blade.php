@@ -68,7 +68,7 @@
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#modalScanPO"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" value="450244133600010"> --}}
-                                                <input type="text" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
+                                                <input type="search" class="form-control" placeholder="PO Number" id="txtSearchPONum" readonly>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -117,7 +117,7 @@
                                             style="width: 100%;">
                                             <thead>
                                                 <tr>
-                                                    <th>Action</th>
+                                                    <th style="width: 14%">Action</th>
                                                     <th>Status</th>
                                                     <th>PO Number</th>
                                                     <th>Production Lot No.</th>
@@ -126,6 +126,7 @@
                                                     <th>PO Quantity</th>
                                                     <th>Shipment Output</th>
                                                     <th>Material Lot #</th>
+                                                    <th>Overall Yield</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -210,16 +211,17 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Operator Name:</label>
-                                                {{-- <input type="hidden" class="form-control form-control-sm" name="opt_id" id="txtOptID" readonly value="@php echo Auth::user()->id; @endphp"> --}}
-                                                {{-- <input type="text" class="form-control form-control-sm select2bs4" name="opt_name[]" id="txtOptName" readonly> --}}
-                                                <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple>
+                                                <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" disabled multiple>
                                                 </select>
+                                                <button class="btn btn-primary btn-sm w-100" type="button" id="btnScanOperator" title="Scan Operator Name">
+                                                    <i class="fa-solid fa-qrcode"></i>
+                                                </button>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Shift:</label>
                                                 <input type="text" class="form-control form-control-sm" name="opt_shift" id="txtOptShift" readonly>
                                             </div>
-                                           
+
                                         </div>
                                     </div>
                                 </div>
@@ -239,11 +241,16 @@
                                                     <input type="number" class="form-control form-control-sm" name="no_tray" id="txtNoTray" placeholder="No. of Tray" readonly>
                                                 </div>
                                             </div>
-                                           
+
+                                            <label class="form-label">Material Lot No.:</label>
+                                            <div class="input-group mb-1">
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly required>
+                                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                                            </div>
 
                                             <div class="form-group">
                                                 <label class="form-label">Input Pins:</label>
-                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins">
+                                                <input type="number" class="form-control form-control-sm" name="inpt_pins" id="txtInptPins" readonly>
                                             </div>
                                             {{-- <div class="form-group">
                                                 <label class="form-label">Actual Quantity:</label>
@@ -301,7 +308,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Material Yield:</label>
-                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="This data is from OQC Inspection"></i>
+                                                {{-- <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="This data is from OQC Inspection"></i> --}}
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Auto Compute &#013;(Shipment Output / Total Machine Output) Percent"></i>
                                                 <input type="text" class="form-control form-control-sm" placeholder="---" name="mat_yield" id="txtMatYield" readonly>
                                             </div>
                                             {{-- <div class="form-group">
@@ -321,15 +329,19 @@
                                                 <input type="text" class="form-control" id="txtProdLotView" readonly>
                                             </div>
 
-                                            <label class="form-label">Material Lot No.:</label>
+                                            {{-- <label class="form-label">Material Lot No.:</label>
                                             <div class="input-group mb-1">
-                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtTtlMachOutput_0" readonly required>
+                                                <input type="text" class="form-control form-control-sm matNo" aria-describedby="button-addon2" name="material_no" id="txtMaterialLot" readonly required>
                                                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
-                                            </div>
+                                            </div> --}}
 
                                             <div class="form-group d-none" id="divRemarks">
                                                 <label class="form-label">Remarks:</label>
                                                 <textarea rows='5' name="remarks" id="txtRemarks" class="form-control form-control-sm"></textarea>
+                                            </div>
+
+                                            <div class="mt-4">
+                                                <button type="button" class="btn btn-info w-100 btn-sm" id="btnViewSublot">See Sub-lots</button>
                                             </div>
                                         </div>
                                     </div>
@@ -383,7 +395,12 @@
                         <div class="row">
                             <!-- PO 1 -->
                             <div class="col-sm-12">
-                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                                <div class="d-none" id="hiddenPreview">
+
+                                </div>
+                                <center>
+                                    <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br>
+                                </center>
                                 <label id="img_barcode_PO_text"></label>
                             </div>
                         </div>
@@ -463,6 +480,99 @@
         </div>
 
 
+        <div class="modal fade" id="modalMultipleSublot" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa-solid fa-circle-exclamation"></i> Sub-lot Input</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formSublot">
+                            @csrf
+                            <input type="hidden" id="txtSublotStampingId" name="stamping_id">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend w-25">
+                                            <span class="input-group-text w-100"><strong>PO No.:</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="txtSubLotPoNumber" name="sublot_po" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><strong>Lot No.:</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="txtSubLotLotNo" name="sublot_lotno" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><strong>Shipment Output:</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="txtSubLotShipOutput" name="sublot_shipout" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="float-end" id="buttons">
+                                        <button type="button" class="btn btn-sm btn-danger d-none" id="btnRemoveSublot">Remove</button>
+                                        <button type="button" class="btn btn-sm btn-success" id="btnAddSublot">Add</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="txtSublotMultipleCounter" name="sublot_counter" value="1">
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label class="form-label">Sub-lot #</label>
+                                        <input type="number" class="form-control form-control-sm" id="txtSublotNo_1" value="1" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div>
+                                        <label class="form-label">Sub-lot Quantity</label>
+                                        <input type="number" class="form-control form-control-sm" name="sublot_qty_1" id="txtSublotQty_1">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div id="divMultipleSublot">
+
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" id="btnSaveSublot">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         {{-- MODAL FOR SCANNING MATERIAL LOT # --}}
+         <div class="modal fade" id="modalScanSelOp" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <input type="text" class="w-100 hidden_scanner_input" id="txtScanOpId" name="" autocomplete="off">
+                        {{-- <input type="text" class="w-100" id="txtScanOpId" name="" autocomplete="off"> --}}
+                        <div class="text-center text-secondary">Please scan operator ID.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     @endsection
 
     @section('js_content')
@@ -472,7 +582,7 @@
             var autogenLotNum
             var btnFunction;
 
-            // var img_barcode_PO_text_hidden;
+            var img_barcode_PO_text_hidden;
             // var multipleMatId;
             // var printId;
             // var scanningFunction;
@@ -491,8 +601,8 @@
                     "processing" : true,
                     "serverSide" : true,
                     "ajax" : {
-                        url: "view_first_stamp_prod",
-                         data: function (param){
+                        url: "view_stamp_prod",
+                        data: function (param){
                             param.po = $("#txtSearchPONum").val();
                             param.stamp_cat = 2;
                         }
@@ -509,6 +619,7 @@
                         { "data" : "po_qty" },
                         { "data" : "ship_output" },
                         { "data" : "material" },
+                        { "data" : "overall_yield" },
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": "_all"},
@@ -548,6 +659,7 @@
                         }
                     });
                 });
+
                 $('#txtScanPO').on('keyup', function(e){
                     if(e.keyCode == 13){
                         getSecondStampReq($(this).val());
@@ -557,7 +669,7 @@
 
                     }
                 });
-              
+
                 $('#txtTargetOutput').on('keyup', function(e){
                     // Computation for PPC Target Output (Pins) and Planned Loss (10%) (Pins)
                     // let ppcTargtOut = 0;
@@ -571,22 +683,22 @@
                     $('#txtPlannedLoss').val(planLoss.toFixed(2));
                 });
 
-                $('#txtTtlMachOutput').on('keyup', function(e){
+                $('#txtTtlMachOutput, #txtProdSamp, #txtNGCount').on('keyup', function(e){
                     // * computation for Shipment Output and Material Yield
                     let sum = Number($('#txtSetupPin').val()) + Number($('#txtAdjPin').val()) + Number($('#txtQcSamp').val()) + Number($('#txtProdSamp').val()) + Number($('#txtNGCount').val());
-                    let ttlMachOutput = $(this).val();
+                    let ttlMachOutput = $('#txtTtlMachOutput').val();
 
                     let shipmentOutput = ttlMachOutput - sum;
-                    // let matYieldComp = shipmentOutput/ttlMachOutput;
-                    // let matYield =  matYieldComp * 100;
-                    // if(Number.isFinite(matYield)){
+                    let matYieldComp = shipmentOutput/ttlMachOutput;
+                    let matYield =  matYieldComp * 100;
+                    if(Number.isFinite(matYield)){
                         $('#txtShipOutput').val(shipmentOutput);
-                        // $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
-                    // }
-                    // else{
-                    //     $('#txtShipOutput').val('');
-                    //     $('#txtMatYield').val('');
-                    // }
+                        $('#txtMatYield').val(`${matYield.toFixed(2)}%`);
+                    }
+                    else{
+                        $('#txtShipOutput').val('');
+                        $('#txtMatYield').val('');
+                    }
                 });
 
                 // $(document).on('keypress', '#txtSearchPONum', function(e){
@@ -715,20 +827,20 @@
                     content += '</style>';
                     content += '</head>';
                     content += '<body>';
-                    // for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
-                        content += '<table style="margin-left: -5px; margin-top: 18px;">';
+                    for (let i = 0; i < img_barcode_PO_text_hidden.length; i++) {
+                        content += '<table style="margin-left: -5px; margin-top: 10px;">';
                             content += '<tr style="width: 290px;">';
-                                content += '<td style="vertical-align: bottom;">';
-                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                content += '<td>';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[i]['img'] + '" style="min-width: 75px; max-width: 75px;">';
                                 content += '</td>';
-                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
+                                content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[i]['text'] + '</td>';
                             content += '</tr>';
                         content += '</table>';
                         content += '<br>';
-                        // if( i < img_barcode_PO_text_hidden.length-1 ){
-                        //     content += '<div class="pagebreak"> </div>';
-                        // }
-                    // }
+                        if( i < img_barcode_PO_text_hidden.length-1 ){
+                            content += '<div class="pagebreak"> </div>';
+                        }
+                    }
                     content += '</body>';
                     content += '</html>';
                     popup.document.write(content);
@@ -740,46 +852,49 @@
                         * this event will trigger after closing the tab of printing
                     */
                     popup.addEventListener("beforeunload", function (e) {
-                        changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        if(img_barcode_PO_text_hidden[0]['stampCat'] == undefined){
+
+                            changePrintCount(img_barcode_PO_text_hidden[0]['id']);
+                        }
                     });
 
                     popup.close();
 
                 });
 
-                $('#btnAddMatNo').on('click', function(e){
-                    e.preventDefault();
-                    let newCount = Number($('#multipleCounter').val()) + Number(1);
-                    if(newCount > 0){
-                        $('#btnRemoveMatNo').removeClass('d-none');
-                    }
-                    $('#multipleCounter').val(newCount);
-                    let inputGroup = `
-                            <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
-                                <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
-                                <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
-                            </div>
-                    `;
-                    $('#divMultipleMatLot').append(inputGroup)
-                });
+                // $('#btnAddMatNo').on('click', function(e){
+                //     e.preventDefault();
+                //     let newCount = Number($('#multipleCounter').val()) + Number(1);
+                //     if(newCount > 0){
+                //         $('#btnRemoveMatNo').removeClass('d-none');
+                //     }
+                //     $('#multipleCounter').val(newCount);
+                //     let inputGroup = `
+                //             <div class='input-group mb-1 appendDiv' id="divInput_${newCount}">
+                //                 <input type='text' class='form-control form-control-sm matNo' name='material_no[]' id='txtTtlMachOutput_${newCount}' required readonly>
+                //                 <button class="btn btn-primary btn-sm btnQr" type="button" id="button-addon2"><i class="fa-solid fa-qrcode"></i></button>
+                //             </div>
+                //     `;
+                //     $('#divMultipleMatLot').append(inputGroup)
+                // });
 
-                $('#btnRemoveMatNo').on('click', function(e){
-                    e.preventDefault();
-                    let counter = $('#multipleCounter').val();
+                // $('#btnRemoveMatNo').on('click', function(e){
+                //     e.preventDefault();
+                //     let counter = $('#multipleCounter').val();
 
-                    $(`#divInput_${counter}`).remove();
+                //     $(`#divInput_${counter}`).remove();
 
-                    let newCount = $('#multipleCounter').val() - 1;
-                    $('#multipleCounter').val(newCount)
+                //     let newCount = $('#multipleCounter').val() - 1;
+                //     $('#multipleCounter').val(newCount)
 
-                    if(newCount == 0){
-                        $('#btnRemoveMatNo').addClass('d-none');
-                    }
-                });
+                //     if(newCount == 0){
+                //         $('#btnRemoveMatNo').addClass('d-none');
+                //     }
+                // });
 
                 $(document).on('click', '.btnQr', function(){
-                    multipleMatId = $(this).offsetParent().children().attr('id');
-                    console.log($(this).offsetParent().children().attr('id'));
+                    // multipleMatId = $(this).offsetParent().children().attr('id');
+                    // console.log($(this).offsetParent().children().attr('id'));
                     $('#modalScanQr').modal('show');
                     $('#modalScanQr').on('shown.bs.modal', function () {
                         $('#txtScanQrCode').focus();
@@ -791,7 +906,8 @@
                     if(e.keyCode == 13){
                         try{
                             scannedItem = JSON.parse($(this).val());
-                            $(`#${multipleMatId}`).val(scannedItem['new_lot_no']);
+                            $(`#txtMaterialLot`).val(scannedItem['new_lot_no']);
+                            $(`#txtInptPins`).val(scannedItem['qty']);
                             $('#modalScanQr').modal('hide');
                         }
                         catch (e){
@@ -834,7 +950,7 @@
                     dtDatatableHistory = $("#tblHistorySecondStamp").DataTable({
                         "processing" : true,
                         "serverSide" : true,
-                        "paging": false, 
+                        "paging": false,
                         "searching": false,
                         "info": false,
                         "destroy": true,
@@ -847,12 +963,12 @@
                         },
                         fixedHeader: true,
                         "columns":[
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return meta.row + meta.settings._iDisplayStart + 1;
                                 }
                             },
-                            { 
+                            {
                                 render: function (data, type, row, meta) {
                                     return po;
                                 }
@@ -875,7 +991,7 @@
                     printStampCat = $(this).data('stampcat');
                     btnFunction = $(this).data('function');
 
-    
+
                     Swal.fire({
                         // title: "Are you sure?",
                         html: "Data already for mass production. <br> Do you want to re-setup this lot?",
@@ -891,19 +1007,119 @@
                             scanningFunction = "editProdData";
                         }
                     });
-                    
+
                 });
 
+                $(document).on('click', '.btnAddBatch', function(e){
+                    let id = $(this).data('id');
+                    let po = $(this).data('po');
+                    let lotno = $(this).data('lotno');
+                    let shipout = $(this).data('shipout');
 
+                    $('#txtSublotStampingId', $('#formSublot')).val(id);
+                    $('input[name="sublot_po"]', $('#formSublot')).val(po)
+                    $('input[name="sublot_lotno"]', $('#formSublot')).val(lotno)
+                    $('input[name="sublot_shipout"]', $('#formSublot')).val(shipout)
+
+                    $('#modalMultipleSublot').modal('show');
+                });
+
+                $('#btnAddSublot').on('click', function(e){
+                    e.preventDefault();
+                    let newCount = Number($('#txtSublotMultipleCounter').val()) + Number(1);
+
+                    if(newCount > 1){
+                        $('#btnRemoveSublot').removeClass('d-none');
+                    }
+                    // <div class="col-sm-6">
+                    //             <div>
+                    //                 <label class="form-label">Sub-lot #</label>
+                    //                 <input type="number" class="form-control form-control-sm" value="1" readonly>
+                    //             </div>
+                    //         </div>
+
+                    //         <div class="col-sm-6">
+                    //             <div>
+                    //                 <label class="form-label">Quantity</label>
+                    //                 <input type="number" class="form-control form-control-sm" name="sublot_qty[]" id="txtSublotQty_1">
+                    //             </div>
+                    //         </div>
+                    $('#txtSublotMultipleCounter').val(newCount);
+                    let inputGroup = `
+                        <div class="row mt-1 subLotMultiple" id="divMultiple_${newCount}">
+                            <div class="col-sm-6">
+                                <div>
+                                    <input type="number" class="form-control form-control-sm" value="${newCount}" id="txtSublotNo_${newCount}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div>
+                                    <input type='text' class='form-control form-control-sm' name='sublot_qty_${newCount}' id='txtSublotQty_${newCount}' required>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    $('#divMultipleSublot').append(inputGroup)
+
+                });
+
+                $('#btnRemoveSublot').on('click', function(e){
+                    e.preventDefault();
+
+                    let counter = $('#txtSublotMultipleCounter').val();
+                    $(`#divMultiple_${counter}`).remove();
+
+                    let newCount = counter - 1;
+
+                    $('#txtSublotMultipleCounter').val(newCount);
+
+                    if(newCount == 1){
+                        $(this).addClass('d-none');
+                    }
+
+                })
+
+                $('#btnSaveSublot').on('click', function(e){
+                    let counter = $('#txtSublotMultipleCounter').val();
+                    let shipmentOutput = $('#txtSubLotShipOutput').val();
+                    let total = 0;
+                    console.log('counter', counter);
+                    for(let x = 1; x <= counter; x++){
+                        console.log('forloop counter', x);
+                        total = Number($(`#txtSublotQty_${x}`).val())+Number(total);
+                    }
+                    console.log(total);
+                    if(total > shipmentOutput){
+                        toastr.error('Sub-lot quantity is greater than shipment output');
+                        return;
+                    }
+                    if(shipmentOutput != total){
+                        toastr.error('Sub-lot quantity is not equal to shipment output');
+                        return;
+                    }
+                    if(shipmentOutput == total){
+                        // saveSublot();
+                        $('#modalScanQRSave').modal('show');
+                        $('#modalScanQRSaveText').html('Please Scan Employee ID.')
+                        scanningFunction = "saveSublot";
+                    }
+                });
+
+                $('#btnViewSublot').on('click', function(e){
+                    e.preventDefault();
+                    let stampingId = $('#txtProdDataId', $('#formProdDataSecondStamp')).val();
+
+                    getSublotById(stampingId);
+                });
 
             });
 
             $(document).on('keyup','#txtScanUserId', function(e){
-                
+
                 if(e.keyCode == 13){
-                    
-                    if(scanningFunction === "prodData"){
-                        validateUser($(this).val().toUpperCase(), [0,4], function(result){
+
+                    if(scanningFunction === "prodData"){ // TO SAVE STAMPING
+                        validateUser($(this).val().toUpperCase(), [0,4,1,9], function(result){
                             if(result == true){
 
                                 // console.log($('#formProdDataSecondStamp').serialize())
@@ -914,7 +1130,7 @@
                             }
                         });
                     }
-                    else if(scanningFunction === "editProdData"){
+                    else if(scanningFunction === "editProdData"){ // FOR EDIT TO RESETUP
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
                                 $('#modalScanQRSave').modal('hide');
@@ -927,7 +1143,19 @@
 
                         });
                     }
-                    else{
+                    else if(scanningFunction === "saveSublot"){ // FOR SAVE SUBLOT
+                        validateUser($(this).val().toUpperCase(), [0,4,1,9], function(result){
+                            if(result == true){
+                                saveSublot();
+                                $('#modalScanQRSave').modal('hide');
+
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+                        });
+                    }
+                    else{ // * FOR REPRINTING
                         validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
                             if(result == true){
                                 $('#modalScanQRSave').modal('hide');
@@ -940,13 +1168,29 @@
                         });
 
                     }
-                  
+
                     setTimeout(() => {
                         $(this).val('');
-                        
+
                     }, 500);
                 }
             });
+
+            $("#modalPrintQr").on('hidden.bs.modal', function () {
+                console.log('hidden.bs.modal');
+                $('.hiddnQr').remove();
+            });
         </script>
+
+        @if (in_array(Auth::user()->position, [0,1,9]) || in_array(Auth::user()->user_level_id, [1]))
+            <script>
+                $('#txtSearchPONum').prop('readonly', false);
+                $('#txtSearchPONum').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        getSecondStampReq($(this).val());
+                    }
+                });
+            </script>
+        @endif
     @endsection
 @endauth

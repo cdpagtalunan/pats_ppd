@@ -1,5 +1,6 @@
 const submitProdData = async (scannedId, form, stampCat) => {
     $('input[name="status"]').prop('disabled', false);
+    $('#selOperator').prop('disabled', false);
 
     let data = $.param({'scanned_id': scannedId, 'stamp_cat': stampCat }) + "&" + form.serialize();
     await $.ajax({
@@ -8,7 +9,8 @@ const submitProdData = async (scannedId, form, stampCat) => {
         // data: $('#formProdData').serialize(),
         data: data,
         dataType: "json",
-       
+        beforeSend: function(){
+        },
         success: function (response) {
             if(response['result'] == 1){
                 $('#modalScanQRSave').modal('hide');
@@ -22,6 +24,7 @@ const submitProdData = async (scannedId, form, stampCat) => {
                     $('#modalProdSecondStamp').modal('hide');
                 }
                 toastr.success(`${response['msg']}`);
+                
             }
             else{ // ! ERROR HANDLER
                 toastr.error('Please input required fields.');
@@ -140,12 +143,12 @@ const submitProdData = async (scannedId, form, stampCat) => {
                     $('#txtActQty', form).attr('title', response['error']['act_qty']);
                 }
                 if(response['error']['material_no'] === undefined){
-                    $('#txtMaterialLot_0', form).removeClass('is-invalid');
-                    $('#txtMaterialLot_0', form).attr('title', '');
+                    $('#txtMaterialLot', form).removeClass('is-invalid');
+                    $('#txtMaterialLot', form).attr('title', '');
                 }
                 else{
-                    $('#txtMaterialLot_0', form).addClass('is-invalid');
-                    $('#txtMaterialLot_0', form).attr('title', response['error']['material_no']);
+                    $('#txtMaterialLot', form).addClass('is-invalid');
+                    $('#txtMaterialLot', form).attr('title', response['error']['material_no']);
                 }
                 if(response['error']['remarks'] === undefined){
                     $('#txtRemarks', form).removeClass('is-invalid');
@@ -157,7 +160,11 @@ const submitProdData = async (scannedId, form, stampCat) => {
                 }
                 
             }
-            $('input[name="status"]').prop('disabled', true);
+            setTimeout(() => {
+                $('input[name="status"]').prop('disabled', true);
+                $('#selOperator').prop('disabled', true);
+    
+            }, 500);
 
         },
         error: function(data, xhr, status){
@@ -179,6 +186,7 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
             $('#divProdLotInput').addClass('d-none');
             getOperatorList($('.selOpName'));
             $('#button-addon2').prop('disabled', true);
+            $('#btnScanOperator').prop('disabled', true);
 
 
         },
@@ -205,10 +213,12 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
             $('#txtTtlMachOutput').val(response['total_mach_output'])
             $('#txtShipOutput').val(response['ship_output'])
 
-            // * GET VALUE OF YIELD FROM OQC INSPECTION
-            if(response['oqc_details'] != null){
-                $('#txtMatYield').val(response['oqc_details']['yield'])
-            }
+            $('#txtMatYield').val(response['mat_yield'])
+
+            // // * GET VALUE OF YIELD FROM OQC INSPECTION
+            // if(response['oqc_details'] != null){
+                // $('#txtMatYield').val(response['oqc_details']['yield'])
+            // }
 
             $('#txtProdLotView').val(response['prod_lot_no']);
             $('#txtNGCount').val(response['ng_count']);
@@ -251,9 +261,9 @@ const getProdDataById = async (id, btnFunction, stampCat) => {
                 $('#txtNoCut').val(response['no_of_cuts'])
             }
 
-            $(`#txtMaterialLot_0`).val(response['material_lot_no']);
+            $(`#txtMaterialLot`).val(response['material_lot_no']);
 
-            if(btnFunction == 0){
+            if(btnFunction == 0){ // Viewing
                 $('#saveProdData').hide();
 
                 $('#formProdData :input').attr('readonly','readonly');
@@ -336,17 +346,26 @@ const printProdData = async (id, stampCat) => {
         type: "get",
         url: "print_qr_code",
         data: {
-            "id" : id,
-            "stamp_cat" : stampCat
+            "id"       : id,
+            "stamp_cat": stampCat
         },
         dataType: "json",
         success: function (response) {
             response['label_hidden'][0]['id'] = id;
+          
+            console.log(response['label_hidden'][0]);
+            for(let x = 0; x < response['label_hidden'].length; x++){
+                let dataToAppend = `
+                <img class='hiddnQr' src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
+                `;
+                $('#hiddenPreview').append(dataToAppend)
+            }
+          
+            // <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->margin(5)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"></img>
             $("#img_barcode_PO").attr('src', response['qrCode']);
             $("#img_barcode_PO_text").html(response['label']);
             img_barcode_PO_text_hidden = response['label_hidden'];
             $('#modalPrintQr').modal('show');
-            console.log(response);
         }
     });
 }
@@ -418,10 +437,9 @@ const getOperatorList = (cboElement) => {
         data: "",
         dataType: "json",
         success: function (response) {
-            console.log(response);
             let result = "";
             for(let x = 0; x<response.length; x++){
-                result += `<option value="${response[x]['id']}">${response[x]['firstname']} ${response[x]['lastname']}</option>`;
+                result += `<option value="${response[x]['employee_id']}">${response[x]['firstname']} ${response[x]['lastname']}</option>`;
             }
 
             cboElement.html(result);
@@ -493,3 +511,142 @@ const getSecondStampReq = (params) => {
 //     //     }
 //     // });
 // }
+
+const saveSublot = () => {
+    $.ajax({
+        type: "post",
+        url: "save_sublot",
+        data: $('#formSublot').serialize(),
+        dataType: "json",
+        success: function (response) {
+            if(response['result'] == 1){
+                toastr.success('Successfully Updated!');
+                $('#modalMultipleSublot').modal('hide');
+                dtDatatableProdSecondStamp.draw();
+            }
+        },
+        error: function(data, xhr, status){
+            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}
+
+const getSublotById = (id) => {
+    $.ajax({
+        type: "get",
+        url: "get_sublot_by_id",
+        data: {
+            'id' : id
+        },
+        dataType: "json",
+        beforeSend: function(){
+            $('#btnSaveSublot').hide();
+            $('#buttons').hide();
+        },
+        success: function (response) {
+            for(let x = 0; x < response['stampSubLot']['second_stamping_sublots'].length; x++){
+                let counter = x + 1;
+                console.log('counter',counter);
+                console.log('x',x);
+                if($('#txtSublotMultipleCounter').val() != counter){
+
+                    $('#btnAddSublot').click();
+                }
+                $(`#txtSublotNo_${counter}`).val(response['stampSubLot']['second_stamping_sublots'][x]['counter'])
+                $(`#txtSublotQty_${counter}`).val(response['stampSubLot']['second_stamping_sublots'][x]['batch_qty'])
+
+            }
+
+            $('#txtSubLotPoNumber', $('#formSublot')).val(response['stampSubLot']['po_num'])
+            $('#txtSubLotLotNo', $('#formSublot')).val(response['stampSubLot']['prod_lot_no'])
+            $('#txtSubLotShipOutput', $('#formSublot')).val(response['stampSubLot']['ship_output'])
+            $('#modalMultipleSublot').modal('show');
+
+        },
+        error: function(data, xhr, status){
+            // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+            toastr.error('No Data Exist')
+        }
+    });
+}
+
+const validateScannedMaterial = (deviceName, MaterialName, process, callback) => {
+    $.ajax({
+        type: "get",
+        url: "get_matrix_for_mat_validation",
+        data: {
+            'device_name' : deviceName,
+            'material_name' : MaterialName,
+            'process_name' : process
+        },
+        dataType: "json",
+        success: function (response) {
+            let value
+            if(response['data'].length > 0){
+                
+            }
+            else{
+                value = false;
+            }
+
+            callback(true);
+        },
+        error: function(data, xhr, status){
+            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}
+
+const printQrForIPQC = (id, stampCat) => {
+    $.ajax({
+        type: "get",
+        url: "print_qr_for_ipqc",
+        data: {
+            "id" : id,
+            "stamp_cat" : stampCat
+        },
+        dataType: "json",
+        success: function (response) {
+            response['label_hidden'][0]['id'] = id;
+            response['label_hidden'][0]['stampCat'] = stampCat;
+            $("#img_barcode_PO").attr('src', response['qrCode']);
+            $("#img_barcode_PO_text").html(response['label']);
+            img_barcode_PO_text_hidden = response['label_hidden'];
+            $('#modalPrintQr').modal('show');
+        }
+    });
+}
+
+/*
+    * This is common script for first and second stamping
+    * For Scanning of operator ID for valueing in operator name field
+*/
+let operatorArray = [];
+$('#btnScanOperator').on('click', function(){
+    $('#modalScanSelOp').modal('show');
+    operatorArray = [];
+    $('#selOperator').val(operatorArray).trigger('change');
+
+});
+
+$('#modalScanSelOp').on('shown.bs.modal', function () {
+    $('#txtScanOpId').focus();
+});
+
+$('#txtScanOpId').on('keyup', function(e){
+    if(e.keyCode == 13){
+        operatorArray.push($(this).val());
+        console.log(operatorArray);
+        $('#selOperator').val(operatorArray).trigger('change');
+
+        $(this).val('');
+    }
+});
+
+
+$(document).on('click', '.btnPrintIPQC', function(e){
+    let id = $(this).data('id');
+    let stampCat = $(this).data('stampcat');
+
+    printQrForIPQC(id, stampCat)
+});

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\MaterialProcess;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\MaterialProcessMachine;
 use App\Models\MaterialProcessStation;
 use App\Models\MaterialProcessMaterial;
 use Illuminate\Support\Facades\Validator;
@@ -24,6 +25,9 @@ class MaterialProcessController extends Controller
                 $query->where('status', 0);
             },
             'station_details'=> function($query){
+                $query->where('status', 0);
+            },
+            'machine_details'=> function($query){
                 $query->where('status', 0);
             },
             'station_details.stations',
@@ -84,13 +88,25 @@ class MaterialProcessController extends Controller
             }
             return $result;
         })
-        ->rawColumns(['action', 'mat_details', 'stat_details'])
+        ->addColumn('mach_details', function($material_process_details){
+            $result = "";
+            if(count($material_process_details->machine_details) > 0){
+                for ($i=0; $i < count($material_process_details->machine_details); $i++) {
+                    $result .= "<span class='badge bg-info text-white'>".$material_process_details->machine_details[$i]->machine_code."(".$material_process_details->machine_details[$i]->machine_name.")</span>";
+                }
+            }
+            else{
+                $result .= "N/A";
+            }
+            return $result;
+        })
+        ->rawColumns(['action', 'mat_details', 'stat_details', 'mach_details'])
         ->make(true);
     }
 
     public function get_mat_proc_for_add(Request $request){
         $machine_details = DB::connection('mysql_rapid_eedms')
-        ->select('SELECT * FROM generallogistics WHERE machine_section = "PPS"');
+        ->select('SELECT * FROM generallogistics WHERE machine_section = "PPS" AND machine_code = "MACHINE"');
 
         // $material_details_warehouse_data = DB::connection('mysql_rapid_pps')
         // ->select('SELECT PartNumber AS code, MaterialType AS name FROM tbl_Warehouse');
@@ -189,76 +205,95 @@ class MaterialProcessController extends Controller
                     'step'      => $request->step,
                     'process'   => $request->process,
                     // 'device_id'   => $request->device_id,
-                    'machine_code'   => $request->machine,
+                    // 'machine_code'   => $request->machine,
                     // 'created_by'    => Auth::user()->id
                 );
 
                 if(isset($request->mat_proc_id)){ // EDIT
-                    // $mat_proc_id = MaterialProcess::insertGetId($mat_proc_array);
+                    $material_process_id = $request->mat_proc_id;
                     $mat_proc_array['last_updated_by'] = Auth::user()->id;
 
                     MaterialProcess::where('id', $request->mat_proc_id)
                     ->update($mat_proc_array);
 
                     MaterialProcessMaterial::where('mat_proc_id', $request->mat_proc_id)->delete();
-                    if(isset($request->material_name)){
-                        for ($i=0; $i < count($request->material_name); $i++) { 
-                             $exploded_material = explode(' || ',$request->material_name[$i]);
-                            MaterialProcessMaterial::insert([
-                                'mat_proc_id'   => $request->mat_proc_id,
-                                'material_code' => $exploded_material[0],
-                                'material_type' => $exploded_material[1],
-                                'created_by'    => Auth::user()->id
-                            ]);
-                        }
-                    }
+
+                    MaterialProcessMachine::where('mat_proc_id', $request->mat_proc_id)->delete();
+                    // if(isset($request->material_name)){
+                    //     for ($i=0; $i < count($request->material_name); $i++) { 
+                    //          $exploded_material = explode(' || ',$request->material_name[$i]);
+                    //         MaterialProcessMaterial::insert([
+                    //             'mat_proc_id'   => $request->mat_proc_id,
+                    //             'material_code' => $exploded_material[0],
+                    //             'material_type' => $exploded_material[1],
+                    //             'created_by'    => Auth::user()->id
+                    //         ]);
+                    //     }
+                    // }
 
                     MaterialProcessStation::where('mat_proc_id',  $request->mat_proc_id)->delete();
-                    if(isset($request->station)){
-                        for ($j=0; $j < count($request->station); $j++) { 
-                            MaterialProcessStation::insert([
-                                'mat_proc_id'   => $request->mat_proc_id,
-                                'station_id' => $request->station[$j]
-                            ]);
-                        }
-                    }
+                    // if(isset($request->station)){
+                    //     for ($j=0; $j < count($request->station); $j++) { 
+                    //         MaterialProcessStation::insert([
+                    //             'mat_proc_id'   => $request->mat_proc_id,
+                    //             'station_id' => $request->station[$j]
+                    //         ]);
+                    //     }
+                    // }
                 }
                 else{ // ADD
                     // return 'else';
                     $mat_proc_array['device_id'] = $request->device_id;
                     $mat_proc_array['created_by'] = Auth::user()->id;
+                    $mat_proc_array['created_at'] = NOW();
 
-                    if(isset($request->machine)){
-                        $machine_info = DB::connection('mysql_rapid_eedms')
-                        ->select('SELECT machine_name FROM generallogistics WHERE machine_code_number = "'.$request->machine.'"');
+                    // if(isset($request->machine)){
+                    //     $machine_info = DB::connection('mysql_rapid_eedms')
+                    //     ->select('SELECT machine_name FROM generallogistics WHERE machine_code_number = "'.$request->machine.'"');
     
-                        $mat_proc_array['machine_name'] = $machine_info[0]->machine_name;
-                    }
+                    //     $mat_proc_array['machine_name'] = $machine_info[0]->machine_name;
+                    // }
     
                     $mat_proc_id = MaterialProcess::insertGetId($mat_proc_array);
+                    $material_process_id = $mat_proc_id;
     
-                    if(isset($request->material_name)){
-                        for ($i=0; $i < count($request->material_name); $i++) { 
-                            $exploded_material = explode(' || ',$request->material_name[$i]);
-                            MaterialProcessMaterial::insert([
-                                'mat_proc_id'   => $mat_proc_id,
-                                'material_code' => $exploded_material[0],
-                                'material_type' => $exploded_material[1],
-                                'created_by'    => Auth::user()->id
-                            ]);
-                        }
-                    }
 
-                    if(isset($request->station)){
-                        for ($j=0; $j < count($request->station); $j++) { 
-                            MaterialProcessStation::insert([
-                                'mat_proc_id'   => $mat_proc_id,
-                                'station_id' => $request->station[$j]
-                            ]);
-                        }
+                }
+                if(isset($request->machine)){
+                    for ($h=0; $h < count($request->machine); $h++) { 
+                        $exploded_machine = explode(' || ',$request->machine[$h]);
+                        MaterialProcessMachine::insert([
+                            'mat_proc_id'   => $material_process_id,
+                            'machine_code' => $exploded_machine[0],
+                            'machine_name' => $exploded_machine[1],
+                            'created_by'    => Auth::user()->id,
+                            'created_at'    => NOW()
+                        ]);
                     }
                 }
 
+                if(isset($request->material_name)){
+                    for ($i=0; $i < count($request->material_name); $i++) { 
+                        $exploded_material = explode(' || ',$request->material_name[$i]);
+                        MaterialProcessMaterial::insert([
+                            'mat_proc_id'   => $material_process_id,
+                            'material_code' => $exploded_material[0],
+                            'material_type' => $exploded_material[1],
+                            'created_by'    => Auth::user()->id,
+                            'created_at'    => NOW()
+                        ]);
+                    }
+                }
+
+                if(isset($request->station)){
+                    for ($j=0; $j < count($request->station); $j++) { 
+                        MaterialProcessStation::insert([
+                            'mat_proc_id'   => $material_process_id,
+                            'station_id' => $request->station[$j],
+                            'created_at'    => NOW()
+                        ]);
+                    }
+                }
               
 
               
@@ -282,6 +317,9 @@ class MaterialProcessController extends Controller
                 $query->where('status', 0);
             },
             'station_details'=> function($query){
+                $query->where('status', 0);
+            },
+            'machine_details'=> function($query){
                 $query->where('status', 0);
             },
             'process_details'

@@ -32,6 +32,8 @@
             #colDevice, #colMaterialProcess{
                 transition: .5s;
             }
+
+            .checked-ok { background: #5cec4c!important; }
         </style>
 
         <!-- Content Wrapper. Contains page content -->
@@ -67,7 +69,15 @@
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
-                                    <br><br>
+                                    {{-- <div class="row">
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Lot Number</label>
+                                            <div class="input-group mb-3">
+                                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLotNum"><i class="fa-solid fa-qrcode"></i></button>
+                                                <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
+                                            </div>
+                                        </div>
+                                    </div> --}}
                                     {{-- TABS --}}
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
@@ -76,9 +86,13 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Inspected</a>
                                         </li>
-                                    </ul>
+                                    </ul> <br>
                                     <div class="tab-content" id="myTabContent">
                                         {{-- Pending Tab --}}
+                                        <button  class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#modalVerifyData" id="btnVerifyScanLotNumber"><i
+                                            class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
+                                        </button><br><br>
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
                                             <div class="table-responsive">
                                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
@@ -144,6 +158,7 @@
                 </div>
             </section>
         </div>
+        <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
         <!--- Modal modalSaveIqcInspection formSaveIqcInspection-->
         @include('component.modal')
 
@@ -217,6 +232,23 @@
                 </div>
             </div>
         </div>
+
+         <!-- MODALS -->
+         <div class="modal fade" id="modalVerifyData">
+            <div class="modal-dialog modal-dialog-center">
+                <div class="modal-content modal-sm">
+                    <div class="modal-body">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off"> --}}
+                        <div class="text-center text-secondary"><span id="modalScanLotNumberIdText">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
     @endsection
     @section('js_content')
         <script type="text/javascript">
@@ -226,7 +258,53 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
+            /*
+                $('a[href="#menu1"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    $('#txtLotNum').attr('is_inspected','false');
+                    dataTable.iqcInspection.draw();
 
+                });
+                $('a[href="#menu2"]').click(function (e) {
+                    e.preventDefault();
+                    $('#txtSearchLotNum').val('');
+                    $('#txtLotNum').attr('is_inspected','true');
+                    dataTable.iqcInspected.draw();
+                });
+
+                $('#modalLotNum').on('shown.bs.modal', function () {
+                    $('#txtLotNum').focus();
+                    const mdlScanLotNum = document.querySelector("#modalLotNum");
+                    const inptScanLotNum = document.querySelector("#txtLotNum");
+                    let focus = false
+
+                    mdlScanLotNum.addEventListener("mouseover", () => {
+                        if (inptScanLotNum === document.activeElement) {
+                            focus = true
+                        } else {
+                            focus = false
+                        }
+                    });
+
+                    mdlScanLotNum.addEventListener("click", () => {
+                        if (focus) {
+                            inptScanLotNum.focus()
+                        }
+                    });
+                });
+
+                $('#txtLotNum').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        scannedLotNumber = JSON.parse($(this).val()).new_lot_no;
+                        $('#txtSearchLotNum').val(scannedLotNumber);
+                        dataTable.iqcInspection.draw();
+                        dataTable.iqcInspected.draw();
+                        $('#txtLotNum').val('');
+                        $('#modalLotNum').modal('hide');
+                    }
+                });
+            */
                 $(tbl.iqcWhsDetails).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
@@ -338,6 +416,39 @@
                     // saveIqcInspection();
                     $('#modalScanQRSave').modal('show');
                 });
+
+                $('#modalVerifyData').on('shown.bs.modal', function () {
+                    $('#txtScanVerifyData').focus();
+                });
+
+                $('#txtScanVerifyData').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        try{
+                            scannedItem = JSON.parse($(this).val());
+                            console.log('scannedItem', scannedItem);
+                            $('#tblWhsDetails tbody tr').each(function(index, tr){
+                                let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+
+                                let powerOff = $(this).find('td:nth-child(1)').children().children();
+
+                                // console.log('tblWhsDetails', lot_no);
+                                // console.log('scannedItem', scannedItem['lot_no']);
+                                if(scannedItem['new_lot_no'] === lot_no){
+                                    $(tr).addClass('checked-ok');
+                                    powerOff.removeAttr('style');
+                                    $('#modalVerifyData').modal('hide');
+                                }
+                                // console.log(lot_no);
+                            })
+                        }
+                        catch (e){
+                            toastr.error('Invalid Sticker');
+                            console.log(e);
+                        }
+                        $(this).val('');
+                    }
+                });
+
             });
         </script>
     @endsection

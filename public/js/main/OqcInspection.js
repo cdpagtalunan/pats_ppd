@@ -16,19 +16,19 @@ function SetClassRemove(elementId, value){
     $(`.${elementId}`).addClass(`${value}`)
 }
 
-let value = [];
-function defectiveCounts(valuePassed){
-    console.log('defectiveCounts', valuePassed);
-    $('.defectiveCount').each(function () {
-        $(this).on('keyup', function(e){
-            let innerValue = this.value;
-            console.log('each', this);
-            console.log('innerValue', innerValue);
-            value.push(innerValue);
-        })
-    });
-    console.log(`value ${value}`);
-}
+// let value = [];
+// function defectiveCounts(valuePassed){
+//     console.log('defectiveCounts', valuePassed);
+//     $('.defectiveCount').each(function () {
+//         $(this).on('keyup', function(e){
+//             let innerValue = this.value;
+//             console.log('each', this);
+//             console.log('innerValue', innerValue);
+//             value.push(innerValue);
+//         })
+//     });
+//     console.log(`value ${value}`);
+// }
 
 function ScanUserById() {
     $('#mdlScanQrCode').modal('show')
@@ -366,20 +366,22 @@ function UpdateOqcInspection(){
                 }
             }else if(response['hasError'] == 0){
                 $("#formOqcInspection")[0].reset()
-                $('#modalOqcInspectionFirstStamping').modal('hide')
-                $('#modalOqcInspectionSecondStamping').modal('hide')
+                // $('#modalOqcInspectionFirstStamping').modal('hide')
+                // $('#modalOqcInspectionSecondStamping').modal('hide')
+                $('#modalOqcInspection').modal('hide')
                 toastr.success('Succesfully saved!')
 
-                $('#modalOqcInspectionFirstStamping').on('hide.bs.modal', function() {
-                    dataTableOQCInspectionFirstStamping.draw()
-                })
+                dataTableOQCInspectionFirstStamping.draw()
+                dataTableOQCInspectionSecondStamping.draw()
 
-                $('#modalOqcInspectionSecondStamping').on('hide.bs.modal', function() {
-                    dataTableOQCInspectionSecondStamping.draw()
-                })
+                // $('#modalOqcInspectionFirstStamping').on('hide.bs.modal', function() {
+                //     dataTableOQCInspectionFirstStamping.draw()
+                // })
+
+                // $('#modalOqcInspectionSecondStamping').on('hide.bs.modal', function() {
+                //     dataTableOQCInspectionSecondStamping.draw()
+                // })
             }
-            // else{
-            // }
 
             $("#iBtnOqcInspectionIcon").removeClass('spinner-border spinner-border-sm')
             $("#btnOqcInspection").removeClass('disabled')
@@ -478,58 +480,64 @@ function GetOqcInspectionById(getPo,
                 $('#timeOqcInspectionTimeInspectedTo').val(getOqcInspectionData[0].time_ins_to)
                 $('#slctOqcInspectionShift').val(getOqcInspectionData[0].shift)
                 $('#txtOqcInspectionInspector').val(getOqcInspectionData[0].inspector)
-                $('#slctOqcInspectionSubmission').val(getOqcInspectionData[0].submission)
                 $('#slctOqcInspectionCocRequirement').val(getOqcInspectionData[0].coc_req)
                 $('#txtOqcInspectionJudgement').val(getOqcInspectionData[0].judgement)
                 $('#txtOqcInspectionLotInspected').val(getOqcInspectionData[0].lot_inspected)
-                $('#txtOqcInspectionLotAccepted').val(getOqcInspectionData[0].lot_accepted)
+                $('#slctOqcInspectionLotAccepted').val(getOqcInspectionData[0].lot_accepted)
                 $('#txtOqcInspectionRemarks').val(getOqcInspectionData[0].remarks)
-
-                if(getOqcInspectionData[0].lot_accepted == '0'){
+                
+                if(getOqcInspectionData[0].lot_accepted == 0){
                     GetMOD($('.inspectionModDropdown_0'))
                     $('.mod-class').removeClass('d-none')
+
+                    if($('#txtCheckButton').val() == 'view'){
+                        $('#slctOqcInspectionSubmission').val(getOqcInspectionData[0].submission)
+                    }else{
+                        $('#slctOqcInspectionSubmission').val(Number(getOqcInspectionData[0].submission)+1)
+                    }
                 }else{
                     $('.mod-class').addClass('d-none')
+                    $('#slctOqcInspectionSubmission').val(getOqcInspectionData[0].submission)
                 }
 
-                for (let getPrintLot = 0; getPrintLot < getOqcInspectionData[0].print_lot_oqc_inspection_info.length; getPrintLot++) {
+                for (let getPrintLot = 0; getPrintLot < getOqcInspectionData[0].print_lot_oqc_inspection_details.length; getPrintLot++) {
                     if(getPrintLot>0){
                         $('#btnAddPrintLot').trigger('click')
                     }else{
-                        for (let getPrintLot = 0; getPrintLot < getOqcInspectionData[0].print_lot_oqc_inspection_info.length; getPrintLot++) {
+                        for (let getPrintLot = 0; getPrintLot < getOqcInspectionData[0].print_lot_oqc_inspection_details.length; getPrintLot++) {
                             $('#btnRemovePrintLot').trigger('click')
                         }
                     }
-                    $(`#txtPrintLotNo_${getPrintLot}`).val(getOqcInspectionData[0].print_lot_oqc_inspection_info[getPrintLot]['print_lot_no'])
-                    $(`#txtPrintLotQty_${getPrintLot}`).val(getOqcInspectionData[0].print_lot_oqc_inspection_info[getPrintLot]['print_lot_qty'])
+                    $(`#txtPrintLotNo_${getPrintLot}`).val(getOqcInspectionData[0].print_lot_oqc_inspection_details[getPrintLot]['print_lot_no'])
+                    $(`#txtPrintLotQty_${getPrintLot}`).val(getOqcInspectionData[0].print_lot_oqc_inspection_details[getPrintLot]['print_lot_qty'])
                 }
 
-                for (let getReelLot = 0; getReelLot < getOqcInspectionData[0].reel_lot_oqc_inspection_info.length; getReelLot++) {
+                for (let getReelLot = 0; getReelLot < getOqcInspectionData[0].reel_lot_oqc_inspection_details.length; getReelLot++) {
                     if(getReelLot>0){
                         $('#btnAddReelLot').trigger('click')
                     }else{
-                        for (let getReelLot = 0; getReelLot < getOqcInspectionData[0].reel_lot_oqc_inspection_info.length; getReelLot++) {
+                        for (let getReelLot = 0; getReelLot < getOqcInspectionData[0].reel_lot_oqc_inspection_details.length; getReelLot++) {
                             $('#btnRemoveReelLot').trigger('click')
                         }
                     }
-                    $(`#txtReelLotNo_${getReelLot}`).val(getOqcInspectionData[0].reel_lot_oqc_inspection_info[getReelLot]['reel_lot_no'])
-                    $(`#txtReelLotQty_${getReelLot}`).val(getOqcInspectionData[0].reel_lot_oqc_inspection_info[getReelLot]['reel_lot_qty'])
+                    $(`#txtReelLotNo_${getReelLot}`).val(getOqcInspectionData[0].reel_lot_oqc_inspection_details[getReelLot]['reel_lot_no'])
+                    $(`#txtReelLotQty_${getReelLot}`).val(getOqcInspectionData[0].reel_lot_oqc_inspection_details[getReelLot]['reel_lot_qty'])
                 }
 
                 let countDefects = 0
-                for (let mod = 0; mod < getOqcInspectionData[0].mod_oqc_inspection_info.length; mod++) {
-                    countDefects +=  parseInt(getOqcInspectionData[0].mod_oqc_inspection_info[mod]['mod_qty'])
+                for (let mod = 0; mod < getOqcInspectionData[0].mod_oqc_inspection_details.length; mod++) {
+                    countDefects +=  parseInt(getOqcInspectionData[0].mod_oqc_inspection_details[mod]['mod_qty'])
                     if(mod>0){
                         $('#btnAddMod').trigger('click')
                     }else{
-                        for (let mod = 0; mod < getOqcInspectionData[0].mod_oqc_inspection_info.length; mod++) {
+                        for (let mod = 0; mod < getOqcInspectionData[0].mod_oqc_inspection_details.length; mod++) {
                             $('#btnRemoveMod').trigger('click')
                         }
                     }
 
                     setTimeout(() => {
-                        $(`#txtMod_${mod}`).val(getOqcInspectionData[0].mod_oqc_inspection_info[mod]['mod']).trigger('change')
-                        $(`#txtModQty_${mod}`).val(getOqcInspectionData[0].mod_oqc_inspection_info[mod]['mod_qty'])
+                        $(`#txtMod_${mod}`).val(getOqcInspectionData[0].mod_oqc_inspection_details[mod]['mod']).trigger('change')
+                        $(`#txtModQty_${mod}`).val(getOqcInspectionData[0].mod_oqc_inspection_details[mod]['mod_qty'])
                     }, 400);
 
                     $('#txtOqcInspectionDefectiveNum').val(countDefects)

@@ -29,24 +29,38 @@ class IqcInspectionController extends Controller
         return $iqc_inspection_by = IqcInspection::where('judgement',1)->get();
     }
 
-    public function loadWhsTransaction()
+    public function loadWhsTransaction(Request $request)
     {
         /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
         */
-        $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+
+        // return $request->lotNum;
+        if( isset( $request->lotNum ) ){
+            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+            ->select('
+                SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
+                FROM tbl_WarehouseTransaction whs_transaction
+                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                WHERE whs_transaction.inspection_class = 1 AND whs_transaction.Lot_number = "'.$request->lotNum.'"
+                ORDER BY whs.PartNumber DESC
+            ');
+        }else{
+            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('
                 SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
                 WHERE whs_transaction.inspection_class = 1
                 ORDER BY whs.PartNumber DESC
-        ');
+            ');
+        }
+
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' style='display: none;' whs-trasaction-id='".$row->whs_transaction_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -79,20 +93,33 @@ class IqcInspectionController extends Controller
 
     public function loadWhsDetails(Request $request)
     {
-
-        $tbl_whs_trasanction = DB::connection('mysql')
-        ->select('
-            SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
-                    mat_name as"MaterialType",supplier_pmi_lot_no as "Lot_number",po_no
-            FROM receiving_details
-            WHERE status = 1
-            ORDER BY created_at DESC
-        ');
+        if( isset( $request->lotNum ) ){
+            $tbl_whs_trasanction = DB::connection('mysql')
+            ->select('
+                SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
+                        mat_name as"MaterialType",supplier_pmi_lot_no as "Lot_number",po_no
+                FROM receiving_details
+                WHERE status = 1 AND supplier_pmi_lot_no = "'.$request->lotNum.'"
+                ORDER BY created_at DESC
+            ');
+        }else{
+            $tbl_whs_trasanction = DB::connection('mysql')
+            ->select('
+                SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
+                        mat_name as"MaterialType",supplier_pmi_lot_no as "Lot_number",po_no
+                FROM receiving_details
+                WHERE status = 1
+                ORDER BY created_at DESC
+            ');
+        }
+        
+        
+        
         return DataTables::of($tbl_whs_trasanction)
         ->addColumn('action', function($row){
             $result = '';
             $result .= '<center>';
-            $result .= "<button class='btn btn-info btn-sm mr-1' receiving-detail-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
+            $result .= "<button class='btn btn-info btn-sm mr-1' style='display: none;' receiving-detail-id='".$row->receiving_detail_id."'id='btnEditIqcInspection'><i class='fa-solid fa-pen-to-square'></i></button>";
             $result .= '</center>';
             return $result;
         })
@@ -105,35 +132,31 @@ class IqcInspectionController extends Controller
         })
         ->rawColumns(['action','status'])
         ->make(true);
-        /*
-            InvoiceNo
-            whs_transaction_username,whs_username
-            whs_transaction_lastupdate,whs_lastupdate
-            whs_transaction_lastupdate,whs_lastupdate
-            *Inspection Times*
-            *Application Ctrl. No*
-            *FY#*
-            *WW#*
-            *Sub*
-            PartNumber
-            ProductLine,MaterialType
-            Supplier
-            Lot_number
-        */
     }
 
-    public function loadIqcInspection()
+    public function loadIqcInspection(Request $request)
     {
         /*  Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
             NOTE: If the data exist to iqc_inspections it means the data is already inspected
         */
-        $tbl_iqc_inspected = DB::connection('mysql')
-        ->select('
-            SELECT *
-            FROM iqc_inspections
-            WHERE deleted_at IS NULL AND judgement >= 1
-            ORDER BY created_at DESC
-        ');
+
+        if( isset( $request->lotNum ) ){
+            $tbl_iqc_inspected = DB::connection('mysql')
+            ->select('
+                SELECT *
+                FROM iqc_inspections
+                WHERE deleted_at IS NULL AND judgement >= 1 AND lot_no = "'.$request->lotNum.'"
+                ORDER BY created_at DESC
+            ');
+        }else{
+            $tbl_iqc_inspected = DB::connection('mysql')
+            ->select('
+                SELECT *
+                FROM iqc_inspections
+                WHERE deleted_at IS NULL AND judgement >= 1
+                ORDER BY created_at DESC
+            ');
+        }
 
         return DataTables::of($tbl_iqc_inspected)
         ->addColumn('action', function($row){

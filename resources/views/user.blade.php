@@ -72,6 +72,7 @@
                           <th>Employee ID</th>
                           <th>OQC Stamp</th>
                           <th>Position</th>
+                          <th>Section</th>
                           <th>User Level</th>
                           <th>Status</th>
                           <th>Action</th>
@@ -268,15 +269,15 @@
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
                       <option value="4">Production Operator</option>
-                      <option value="5">IQC Inspector</option>
+                      <option value="5">QC Inspector</option>
                       <option value="6">Warehouse</option>
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
                       <option value="10">PPC - Clerk</option>
                       <option value="11">Technician</option>
-                      <option value="12">IPQC Inspector</option>
-                      <option value="13">OQC Inspector</option>
+                      {{-- <option value="12">IPQC Inspector</option>
+                      <option value="13">OQC Inspector</option> --}}
                     </select>
                 </div>
 
@@ -491,10 +492,10 @@
                         <input type="checkbox" name="with_email" id="chkAddUserWithEmail" checked="checked">
                         <label>Email</label>
                       </div>
-                      <div class="col-sm-6">
+                      {{-- <div class="col-sm-6">
                         <input type="checkbox" name="send_email" id="chkAddUserSendEmail" checked="checked">
                         <label>Send Password to Email</label>
-                      </div>
+                      </div> --}}
                     </div>
 
 
@@ -517,17 +518,27 @@
                       <option value="2">QC Supervisor</option>
                       <option value="3">Material Handler</option>
                       <option value="4">Production Operator</option>
-                      <option value="5">IQC Inspector</option>
+                      <option value="5">QC Inspector</option>
                       <option value="6">Warehouse</option>
                       <option value="7">PPC - Planner</option>
                       <option value="8">PPC - Sr. Planner</option>
                       <option value="9">Engineer</option>
                       <option value="10">PPC - Clerk</option>
                       <option value="11">Technician</option>
-                      <option value="12">IPQC Inspector</option>
-                      <option value="13">OQC Inspector</option>
+                      {{-- <option value="12">IPQC Inspector</option>
+                      <option value="13">OQC Inspector</option> --}}
                     </select>
                 </div>
+
+                <div class="form-group">
+                  <label>Section</label>
+                    <select class="form-control select2bs4" name="section" style="width: 100%;" id="selAddUserSection">
+                      <option selected value="" disabled>N/A</option>
+                      <option value="0">Stamping</option>
+                      <option value="1">Molding</option>
+                    </select>
+                </div>
+                
 
 
                 <div class="form-group">
@@ -649,7 +660,7 @@
                       return "Production Operator";
                     }
                     else if (row.position == 5) {
-                      return "IQC Inspector";
+                      return "QC Inspector";
                     }
                     else if (row.position == 6) {
                       return "Warehouse";
@@ -669,12 +680,24 @@
                     else if (row.position == 11) {
                       return "Technician";
                     }
-                    else if (row.position == 12) {
-                      return "IPQC Inspector";
+
+                  },
+                },
+            },
+            { "data": 'section',
+                defaultContent: 'N/A',
+                name: 'section',
+                orderable: true,
+                searchable: true,
+                render: {
+                  display: function (data, type, row) {
+                    if (row.section == 0) {
+                      return "Stamping";
                     }
-                    else if (row.position == 13) {
-                      return "OQC Inspector";
+                    else if (row.section == 1) {
+                      return "Molding";
                     }
+
                   },
                 },
             },
@@ -783,8 +806,8 @@
           $("#txtAddUserName").focus();
           $("#selAddUserLevel").select2('val', '0');
           $("#txtAddUserEmail").removeAttr('disabled');
-          $("#chkAddUserSendEmail").removeAttr('disabled');
-          $("#chkAddUserSendEmail").prop('checked', 'checked');
+          // $("#chkAddUserSendEmail").removeAttr('disabled');
+          // $("#chkAddUserSendEmail").prop('checked', 'checked');
           $("#chkAddUserWithEmail").prop('checked', 'checked');
           GetUserLevel($(".selectUserLevel"));
         });
@@ -792,14 +815,14 @@
         $("#chkAddUserWithEmail").click(function(){
           if($(this).prop('checked')) {
             $("#txtAddUserEmail").removeAttr('disabled');
-            $("#chkAddUserSendEmail").removeAttr('disabled');
-            $("#chkAddUserSendEmail").prop('checked', 'checked');
+            // $("#chkAddUserSendEmail").removeAttr('disabled');
+            // $("#chkAddUserSendEmail").prop('checked', 'checked');
           }
           else{
             $("#txtAddUserEmail").prop('disabled', 'disabled');
             $("#txtAddUserEmail").val('');
-            $("#chkAddUserSendEmail").prop('disabled', 'disabled');
-            $("#chkAddUserSendEmail").removeAttr('checked');
+            // $("#chkAddUserSendEmail").prop('disabled', 'disabled');
+            // $("#chkAddUserSendEmail").removeAttr('checked');
           }
         });
 

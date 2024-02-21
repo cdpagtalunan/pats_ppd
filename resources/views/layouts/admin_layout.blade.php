@@ -1,4 +1,7 @@
+
+
 @auth
+ 
   @if(Auth::user()->is_password_changed == 0)
     <script type="text/javascript">
       window.location = "{{ url('change_pass_view') }}";
@@ -10,7 +13,6 @@
       window.location = "{{ url('login') }}";
     </script>
   @endif
-
   {{-- @if(Auth::user()->user_level_id != 1)
     <script type="text/javascript">
       window.location = "{{ url('dashboard') }}";
@@ -55,6 +57,8 @@
       $('#btnLogout').click(function(){
           SignOut();
       });
+
+
   });
 </script>
 @else

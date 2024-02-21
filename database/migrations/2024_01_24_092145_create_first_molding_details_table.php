@@ -12,7 +12,7 @@ class CreateFirstMoldingDetailsTable extends Migration
      * @return void
      */
     public function up()
-    {
+    { //31
         Schema::create('first_molding_details', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('first_molding_id')->unsigned()->comment = 'Id from first_moldings(table)';
@@ -22,11 +22,15 @@ class CreateFirstMoldingDetailsTable extends Migration
             $table->integer('input')->nullable();
             $table->integer('ng_qty')->nullable();
             $table->integer('output')->nullable();
-            $table->integer('remarks')->nullable();
+            $table->string('yield')->nullable();
+            $table->tinyInteger('is_partial')->nullable()->default(0)->comment ='0 - No | 1 - Yes';
+            $table->string('remarks')->nullable();
             $table->tinyInteger('status')->nullable()->default(0)->comment ='';
             $table->softDeletes()->nullable();
             $table->timestamps();
+
             $table->foreign('first_molding_id')->references('id')->on('first_moldings');
+            $table->foreign('last_updated_by')->references('id')->on('users');
         });
     }
 

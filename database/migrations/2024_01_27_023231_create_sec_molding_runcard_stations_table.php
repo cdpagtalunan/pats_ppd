@@ -20,8 +20,10 @@ class CreateSecMoldingRuncardStationsTable extends Migration
             $table->string('date')->nullable();
             $table->string('operator_name')->nullable();
             $table->string('input_quantity')->nullable();
+            $table->tinyInteger('partial')->nullable()->comment = '0-No, 1-Yes';
             $table->string('ng_quantity')->nullable();
             $table->string('output_quantity')->nullable();
+            $table->string('station_yield')->nullable();
             $table->longText('remarks')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();
