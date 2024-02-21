@@ -107,6 +107,24 @@
                                             </div>
                                         </div>
                                     </div>
+
+
+                                    
+                                    <div class="row mb-3">
+                                        <div class="col-2">
+                                            <span>B</span>
+                                        </div>
+                                        <div class="col-10">
+                                            <div class="row flex-column">
+                                                <span>B-1 Waiting for materials</span>
+                                                <span>A2 - 7s</span>
+                                                <span>A3 - Shipment preparation</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    
                                 </div>
                                 <div class="col-sm-6">
                                     <div class="col border px-4 border">
