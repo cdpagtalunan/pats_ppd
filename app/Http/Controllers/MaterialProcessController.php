@@ -245,6 +245,7 @@ class MaterialProcessController extends Controller
                     // return 'else';
                     $mat_proc_array['device_id'] = $request->device_id;
                     $mat_proc_array['created_by'] = Auth::user()->id;
+                    $mat_proc_array['created_at'] = NOW();
 
                     // if(isset($request->machine)){
                     //     $machine_info = DB::connection('mysql_rapid_eedms')
@@ -279,7 +280,7 @@ class MaterialProcessController extends Controller
                             'material_code' => $exploded_material[0],
                             'material_type' => $exploded_material[1],
                             'created_by'    => Auth::user()->id,
-                            'created_by'    => NOW()
+                            'created_at'    => NOW()
                         ]);
                     }
                 }

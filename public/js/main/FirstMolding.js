@@ -100,7 +100,7 @@
 
                 let data = response['first_molding'][0];
                 let first_molding_material_list = data.first_molding_material_lists[0];
-                
+
                 formModal.firstMolding.find('#first_molding_id').val(data.id);
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
@@ -310,6 +310,7 @@
                     });
                     dt.firstMolding.draw();
                     $('#modalFirstMolding').modal('hide');
+                    $('#modalScanQRSave').modal('hide');
                 }
             },error: function (data, xhr, status){
                 if(data.status === 422){
@@ -341,7 +342,6 @@
                 }else{
                     toastr.error(`Error: ${data.status}`);
                 }
-
             }
         });
     }
@@ -386,9 +386,9 @@
                 if(response['result'] === 1){
                     let total_machine_output = response.total_machine_output;
                     let shipment_output = response.shipment_output;
-                    let station = response.station;
+                    let step = response.step;
 
-                    if(station == 7){ // nmodify Station id 7- Camera Inspection , need to change id to live
+                    if(step > 1){ // nmodify
                         formModal.firstMolding.find('#shipment_output').val(shipment_output);
                         formModal.firstMolding.find('#ng_count').val(response.ng_count);
                         formModal.firstMolding.find('#total_machine_output').val(total_machine_output);
@@ -730,5 +730,5 @@
             }
         });
     }
-    
+
 // })

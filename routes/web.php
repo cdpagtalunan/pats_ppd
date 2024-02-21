@@ -240,7 +240,7 @@ Route::middleware('CheckSessionExist')->group(function(){
         Route::get('/view_checksheet', 'view_checksheet')->name('view_checksheet');
         Route::post('/change_status', 'change_status')->name('change_status');
         Route::get('/get_checksheet_data', 'get_checksheet_data')->name('get_checksheet_data');
-        
+
     });
 });
 
@@ -295,7 +295,7 @@ Route::controller(StampingIpqcController::class)->group(function () {
 //     Route::get('/assembly_download_file/{id}', 'assembly_download_file')->name('assembly_download_file');
 // });
 
-// 
+//
 //FIRST MOLDING -> SECOND MOLDING -> ASSEMBLY IPQC CONTROLLER
 Route::controller(MoldingAssyIpqcController::class)->group(function () {
     Route::get('/get_devices_from_ipqc', 'get_devices_from_ipqc')->name('get_devices_from_ipqc');
@@ -570,8 +570,8 @@ Route::controller(DailyChecksheetController::class)->group(function () {
     Route::post('/add_daily_checksheet', 'addDailyChecksheet')->name('add_daily_checksheet');
     Route::post('/update_status_checked_by', 'updateStatusCheckedBy')->name('update_status_checked_by');
     Route::post('/update_status_conformed_by', 'updateStatusConformedBy')->name('update_status_conformed_by');
-    
-    //WEEKLY 
+
+    //WEEKLY
     Route::get('/get_weekly_machine', 'getWeeklyMachine')->name('get_weekly_machine');
     Route::get('/view_weekly_checksheet', 'viewWeeklyChecksheet')->name('view_weekly_checksheet');
     Route::post('/add_weekly_checksheet', 'addWeeklyChecksheet')->name('add_weekly_checksheet');

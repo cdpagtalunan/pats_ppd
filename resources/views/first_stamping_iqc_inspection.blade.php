@@ -34,7 +34,7 @@
             }
 
             .checked-ok { background: #5cec4c!important; }
-            
+
         </style>
 
 
@@ -78,13 +78,12 @@
                                             <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
                                         </div>
                                     </div> --}}
-                                    
-                                   {{-- <div class="row">
+
+                                  {{-- <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label">Lot Number</label>
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLotNum"><i class="fa-solid fa-qrcode"></i></button>
-                                                {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchLotNum" value="450244133600010"> --}}
                                                 <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
                                             </div>
                                         </div>

@@ -429,8 +429,7 @@
                                             $('#slctStampingHistoryOperator').append(selectedUser)
                                         }else{
                                             alert('Employee No. '+userDetails.employee_id+' is already scanned!')
-                                            console.log('REMOVE: ', $('.select2-selection__choice__remove').text());
-                                            // $('.select2-selection__choice__remove').click()
+                                            $('.select2-selection__choice__remove').click()
                                             $('.select2-results__options').hide()
                                         }
                                     }

@@ -241,6 +241,14 @@ class FirstMoldingController extends Controller
     {
         try{
             $tbl_po_received = TblPoReceived::where('OrderNo',$request->pmi_po_no)->get();
+            return response()->json( [
+                'result_count' => count($tbl_po_received),
+                'po_no' => $tbl_po_received[0]->ProductPONo ,
+                'order_qty' => $tbl_po_received[0]->OrderQty ,
+                'po_balance' => $tbl_po_received[0]->POBalance ,
+                'item_code' => $tbl_po_received[0]->ItemCode ,
+                'item_name' => $tbl_po_received[0]->ItemName ,
+            ]);
             $tbl_milf = Mimf::where('pmi_po_no',$request->pmi_po_no)->get();
             if( count ($tbl_po_received) == 0 || count($tbl_milf) == 0){
                 return response()->json( [
@@ -403,29 +411,19 @@ class FirstMoldingController extends Controller
     }
 
     public function validateScanFirstMoldingContactLotNum (Request $request){
-        // return $request->all();
-        // {
-        //     "po_no": "450242795000010",
-        //     "new_lot_no": "EE240116-01Z-1/22",
-        //     "qty": "22"
-        // }
-        // return $request->contact_lot_num;
-        // FirstStampingProduction::wh
-        // DB::beginTransaction();
-        // try{
-        //     Stamping5sChecksheet::where('id', $request->id)
-        //     ->update([
-        //         'status' => $request->status,
-        //         'checked_by' => $_SESSION['user_id']
-        //     ]);
-
-        //     DB::commit();
-        //     return response()->json(['result' => true]);
-
-        // }catch(Exemption $e){
-        //     DB::rollback();
-        //     return $e;
-        // }
+        /*
+            {
+                "po": "450244133600010",
+                "code": "108321601",
+                "name": "CT 6009-VE",
+                "production_lot_no": "D240202-01-1",
+                "qty": 88000,
+                "output_qty": 2223,
+                "cat": 2,
+                "sublot_qty": 2223,
+                "sublot_counter": "1/1"
+            }
+        */
         try{
             $stamping_prod = FirstStampingProduction::where('prod_lot_no',$request->contact_lot_num)->whereNull('deleted_at')->get(['status']);
             if( count($stamping_prod) > 0 ){
@@ -444,7 +442,7 @@ class FirstMoldingController extends Controller
             }else{
                 return response()->json([
                     "result" => 0,
-                    "error_msg" => "Invalid Prodn Lot Number",
+                    "error_msg" => "Prodn Lot Number does not exist.",
                 ],500);
             }
         }catch(Exemption $e){
@@ -452,9 +450,4 @@ class FirstMoldingController extends Controller
         }
 
     }
-
-
-
-
-
 }

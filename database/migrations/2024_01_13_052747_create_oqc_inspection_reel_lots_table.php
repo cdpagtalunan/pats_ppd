@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReelLotsTable extends Migration
+class CreateOqcInspectionReelLotsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -23,6 +23,7 @@ class CreateReelLotsTable extends Migration
             $table->timestamps();
 
             $table->foreign('oqc_inspection_id')->references('id')->on('oqc_inspections');
+
         });
     }
 
