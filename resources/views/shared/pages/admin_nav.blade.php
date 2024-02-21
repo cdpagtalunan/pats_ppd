@@ -198,6 +198,12 @@
                                 <p>Stamping History</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="{{ route("stamping_working_report") }}" class="nav-link">
+                                <i class="fa-solid fa-stamp"></i>
+                                <p>Stamping Working Report</p>
+                            </a>
+                        </li>
                     @endif
 
                     @if (in_array(Auth::user()->position, [0,4,6,7,9,11,13,2]))
@@ -342,7 +348,21 @@
                                 <li class="nav-item">
                                     <a href="{{ route('assembly') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>Assembly</p>
+                                        <p>Assembly Runcard</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('assy_fvi') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Final Visual Inspection</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('assy_oqc_lot_app') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>OQC Lot Application</p>
                                     </a>
                                 </li>
                             </ul>

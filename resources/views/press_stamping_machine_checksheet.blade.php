@@ -38,6 +38,10 @@
             vertical-align: middle;
         }
 
+        .text-block-header {
+            display: none;
+        }
+
         .hidden_scanner_input{
                 position: absolute;
                 opacity: 0;
@@ -193,7 +197,7 @@
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">UNIT NO</span>
                                             </div>
-                                            <select class="form-control form-control-sm"  id="txtunitNo" name="unit_no">
+                                            <select class="form-control form-control-sm dailyUnitClass"  id="txtunitNo" name="unit_no" required>
                                                 <option value="" selected disabled>--Select--</option>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
@@ -287,7 +291,7 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-header">
+                            <div id="KyoriHeaderId" class="card-header text-block-header">
                                 <div class="col-sm-12">
                                     <div class="row">
                                         <div class="col-sm-8">
@@ -314,7 +318,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body p-2">
+                            <div id="kyoriBodyId" class="card-body p-2 text-block-header">
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <div class="card">
@@ -355,25 +359,25 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_1" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_1" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_1" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_1" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -387,25 +391,25 @@
                                                         </div>
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_2" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_2" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_2" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_2" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -414,25 +418,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_3" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_3" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_3" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_3" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -441,25 +445,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_4" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_4" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_4" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_4" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_4" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_4" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_4" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_4" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -468,25 +472,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_5" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_5" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_5" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_5" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_5" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_5" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_5" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_5" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -495,25 +499,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_6" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_6" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_6" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_6" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_6" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_6" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_6" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_6" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -522,25 +526,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_7" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_7" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_7" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_7" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_7" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_7" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_7" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_7" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -549,25 +553,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_8" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_8" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_8" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_8" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_8" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_8" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_8" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_8" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -576,25 +580,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_9" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_9" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_9" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_9" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_9" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_9" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_9" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_9" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -603,25 +607,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_10" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_10" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_10" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_10" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_10" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_10" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_10" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_10" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -630,25 +634,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_11" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_11" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_11" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_11" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_11" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_11" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_11" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_11" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -657,25 +661,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_12" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_12" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_12" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_12" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_12" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_12" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_12" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_12" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -684,25 +688,25 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_13" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_13" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_13" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_13" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="3" name="result_13" id="">
+                                                                <input class="form-check-input" type="radio" value="3" name="result_13" id="">
                                                                 <label class="form-check-label" for="">
                                                                     NP
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="4" name="result_13" id="">
+                                                                <input class="form-check-input" type="radio" value="4" name="result_13" id="">
                                                                 <label class="form-check-label" for="">
                                                                     N/A
                                                                 </label>
@@ -746,6 +750,459 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="card">
+                            <div id="komatsuHeaderId" class="card-header text-block-header">
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-sm-8">
+                                            <b>
+                                            GENERAL INSTRUCTION : <br>
+                                            1. CONDUCT CHECKING BASED ON REQUIRED FREQUENCY INDICATED HEREIN.<br>
+                                            2. REFER TO POINT PANEL FOR PARTS IDENTIFICATION.<br>
+                                            3. DAILY CHECKING MUST BE CONDUCTED EVERY START OF THE MORNING SHIFT.<br>
+                                            4. REPORT IMMEDIATELY TO EQUIPMENT MAINTENANCE SECTION ANY ABNORMALITY FOUND DURING CHECKING.<br>
+                                            5. WEEKLY CHECKING SHALL BE CONDUCTED DURING THE FIRST WORKING DAY OF THE WEEK.<br>
+                                            6. MONTHLY CHECKING SHALL BE CONDUCTED ON THE FIRST WORKING DAY OF THE CALENDAR MONTH.
+                                            </b>
+                                        </div>
+                                        <div class="col-sm-1">
+                                            <b>
+                                            Legend :
+                                            </b>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <b>
+                                            ✓ = OK <br> X = NG <br> NP = NO PRODUCTION <br> N/A = NOT APPLICABLE
+                                            </b>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="komatsuBodyId" class="card-body p-2 text-block-header">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            {{-- <div class="card-header p-2">
+                                                <h6>A.1 Machines & Equipments</h6>
+                                            </div> --}}
+                                            <div class="card-body" >
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <label>D1</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                        <label>D1.1</label> <br><br>
+
+                                                        <label>D2</label> <br>
+                                                        <label>STD MEAS.</label> <br>
+                                                        <label>ACTUAL MEAS.</label> <br>
+                                                        <label>RESULT</label> <br><br>
+
+                                                        <label>D3</label><br>
+                                                        <label>STD MEAS.</label> <br>
+                                                        <label>ACTUAL MEAS.</label> <br>
+                                                        <label>RESULT</label> <br><br><br>
+
+                                                        <label>D4</label><br>
+                                                        <label>D5</label><br><br>
+                                                        <label>D6</label><br><br>
+                                                        <label>D7</label><br>
+                                                        <label>D8</label><br>
+                                                        <label>D9</label><br><br>
+                                                        <label>D10</label><br>
+                                                        <label>D11</label><br>
+                                                        <label>D12</label><br>
+                                                        <label>D13</label>
+
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <label> </label><br><br>
+                                                        <label>500 ~ 2000</label>
+                                                        <div class="form-group">
+                                                            <input type="text" name="komatsu_actual_measurement2" id="txtKomatsuActualMeasurement2" autocomplete="off">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+
+                                                        <label> </label><br>
+                                                        <label>0.4 ~ 0.6</label>
+                                                        <div class="form-group">
+                                                            <input type="text" name="komatsu_actual_measurement3" id="txtKomatsuActualMeasurement3" autocomplete="off">
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div><br>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_4" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_4" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_4" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_4" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_5" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_5" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_5" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_5" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_6" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_6" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_6" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_6" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_7" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_7" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_7" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_7" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_8" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_8" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_8" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_8" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_9" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_9" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_9" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_9" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_10" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_10" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_10" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_10" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_11" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_11" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_11" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_11" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_12" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_12" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_12" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_12" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_13" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_13" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="3" name="komatsu_result_13" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    NP
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="4" name="komatsu_result_13" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    N/A
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label style="display: flex; justify-content: center; align-items: center;">DAILY CHECKPOINTS</label>
+                                                        D1. OPERATIONAL PANEL<br>
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;D1.1. BUTTONS AND SWITCHES (FUNCTION/FREE FROM DUST)<br>
+                                                        D2. MATERIAL OIL LEVEL GAUGE (STD LEVEL= 500~2000)<br>
+                                                        D3. AIR PRESSURE GAUGE (STD PRESSURE = 0.4 ~ 0.6)<br>
+                                                        D4. OIL PRESSURE VALVE (ON MODE)<br>
+                                                        D5. SET-UP LAMP (FUNCTION)<br>
+                                                        D6. SCRAP BOX (APPEARANCE)<br>
+                                                        D7. SAFETY DOOR (FUNCTION / CONDITION)<br>
+                                                        D8. ABNORMAL SOUND / VIBRATION<br>
+                                                        D9. BOLSTER <br>
+                                                        D10. GIVE OIL BOX<br>
+                                                        D11. RAY TYPE SAFETY DEVICE<br>
+                                                        D12. BUY-OFF STICKER<br>
+                                                        D13. PREVENTIVE MAINTENANCE (PM) STICKER<br><br><br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
@@ -825,7 +1282,7 @@
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">UNIT NO</span>
                                             </div>
-                                            <select class="form-control form-control-sm"  id="txtWeeklyUnitNo" name="weekly_unit_no">
+                                            <select class="form-control form-control-sm weeklyUnitClass" id="txtWeeklyUnitNo" name="weekly_unit_no">
                                                 <option value="" selected disabled>--Select--</option>
                                                 <option value="1">1</option>
                                                 <option value="2">2</option>
@@ -928,8 +1385,8 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-header">
-                            </div>
+                            {{-- <div class="card-header">
+                            </div> --}}
                             <div class="card-body p-2">
                                 <div class="row">
                                     <div class="col-sm-12">
@@ -937,7 +1394,7 @@
                                             {{-- <div class="card-header p-2">
                                                 <h6>A.1 Machines & Equipments</h6>
                                             </div> --}}
-                                            <div class="card-body" >
+                                            <div id="kyoriWeeklyDivId" class="card-body text-block-header">
                                                 <div class="row">
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
@@ -954,13 +1411,13 @@
                                                     <div class="col-sm-3">
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_w1" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_w1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_w1" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_w1" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
@@ -969,13 +1426,13 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_w2" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_w2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_w2" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_w2" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
@@ -984,13 +1441,13 @@
 
                                                         <div class="form-group">
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="1" name="result_w3" id="">
+                                                                <input class="form-check-input" type="radio" value="1" name="result_w3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     ✓
                                                                 </label>
                                                             </div>
                                                             <div class="form-check  form-check-inline">
-                                                                <input class="form-check-input" type="radio" required value="2" name="result_w3" id="">
+                                                                <input class="form-check-input" type="radio" value="2" name="result_w3" id="">
                                                                 <label class="form-check-label" for="">
                                                                     X
                                                                 </label>
@@ -1003,6 +1460,84 @@
                                                         W1. PRESSURE SWITCH FOR PNEUMATICS<br>
                                                         W2. PRESSURE SWITCH FOR LUBE OIL<br>
                                                         W3. PRESSURE SWITCH FOR DIE HEIGHT LOCK <br><br><br>
+
+                                                        {{-- <label style="display: flex; justify-content: center; align-items: center;">MONTHLY CHECKPOINTS</label>
+                                                        M1. SUCTION FILTER (NO CLOGGED IN OIL TANK)<br>
+                                                        M2. HYDRAULIC SYSTEM (NO OIL LEAKAGE)<br>
+                                                        M3. WIRING CONNECTIONS (FIRMLY TIGHTENED)<br>
+                                                        M4. ELECTRICAL BOX (NO INGRESS OF OIL,WATER,DUST)<br>
+                                                        M5. LIMIT SWITCH (NO DEFORMATION) --}}
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div id="komatsuWeeklyDivId" class="card-body text-block-header">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <label>W1</label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>W2</label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>W3</label> 
+                                                        </div>  
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_w1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_w1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_w2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_w2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_w3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_w3" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <label style="display: flex; justify-content: center; align-items: center;">WEEKLY CHECKPOINTS</label>
+                                                        W1. MATERIAL FELT (CONDITION / APPEARANCE)<br>
+                                                        W2. SOUND PROOF BOX (APPEARANCE / FUNCTION)<br>
+                                                        W3. AIR TANK FILTER (CONDITION / APPEARANCE)<br><br><br>
 
                                                         {{-- <label style="display: flex; justify-content: center; align-items: center;">MONTHLY CHECKPOINTS</label>
                                                         M1. SUCTION FILTER (NO CLOGGED IN OIL TANK)<br>
@@ -1100,6 +1635,392 @@
             <!-- /.modal-dialog -->
     </div>
 
+        
+    <div class="modal fade" id="modalAddMonthlyChecksheet" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Press Stamping Machine Checksheet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="formAddMonthlyChecksheet">
+                    @csrf
+                    <input type="hidden" id="txtMonthlyChkSheetId" name="monthly_checksheet_id">
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">UNIT NO</span>
+                                            </div>
+                                            <select class="form-control form-control-sm monthlyUnitClass" id="txtMonthlyUnitNo" name="monthly_unit_no">
+                                                <option value="" selected disabled>--Select--</option>
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                                <option value="3">3</option>
+                                                <option value="4">4</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Division</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyCheckDiv" name="monthly_division" value="Operations Division" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Month</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyMonth" name="monthly_month" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-40">
+                                                <span class="input-group-text w-100" id="basic-addon1">Machine</span>
+                                            </div>
+                                            <select class="form-control form-control-sm select2bs4" id="selMonthlyMachine" name="machine_monthly" required></select>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-2">
+                                    
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">AREA</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyArea" name="machine_area_monthly" value="Stamping" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">CONFORMED BY</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyConformedBy" name="conformed_by_monthly" value="H. De Guzman" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-60">
+                                                <span class="input-group-text w-100" id="basic-addon1">CONDUCTED BY (OPERATOR)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyConductedBy" name="conducted_by_monthly" readonly>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">CHECKED BY (ENGINEER)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyCheckedBy" name="checked_by_monthly" readonly>
+                                        </div>
+                                    </div>
+                                </div> 
+
+                                <div class="row mt-2">
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">CONFORMED BY (QC)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyConformedByQC" name="conformed_by_qc_monthly" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-12 col-lg-6">
+                                        <div class="input-group input-group-sm">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Date/Time</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="txtMonthlyCheckDate" name="date_monthly" readonly>
+                                            <input type="hidden" class="form-control form-control-sm" id="txtMonthlyCheckTime" name="time_monthly" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                Monthly Checksheet
+                            </div>
+                            <div class="card-body p-2">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="card">
+                                            {{-- <div id="kyoriMonthlyDivId" class="card-body text-block-header"> --}}
+                                            <div id="kyoriMonthlyDivId" class="card-body">
+                                                {{-- <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <label style="display: flex; justify-content: center; align-items: center;">MONTHLY CHECKPOINTS</label>
+                                                        M1. SUCTION FILTER (NO CLOGGED IN OIL TANK)<br>
+                                                        M2. HYDRAULIC SYSTEM (NO OIL LEAKAGE)<br>
+                                                        M3. WIRING CONNECTIONS (FIRMLY TIGHTENED)<br>
+                                                        M4. ELECTRICAL BOX (NO INGRESS OF OIL,WATER,DUST)<br>
+                                                        M5. LIMIT SWITCH (NO DEFORMATION)
+                                                    </div>
+                                                </div> --}}
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label>M1</label>
+                                                            <label style="margin-left: 120px;">Remarks</label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="1" name="result_m1" id="">
+                                                            <label class="form-check-label" for="">
+                                                                ✓
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="2" name="result_m1" id="">
+                                                            <label class="form-check-label" for="">
+                                                                X
+                                                            </label>
+
+                                                        </div>
+                                                            <input type="text" name="monthly_remarks1" id="txtMonthlyRemarks1">
+
+                                                    </div>
+
+                                                    <div class="col-sm-6">
+                                                        <label style="display: flex; justify-content: center; align-items: center;">MONTHLY CHECKPOINTS</label>
+                                                        M1. SUCTION FILTER (NO CLOGGED IN OIL TANK)<br>
+                                                        M2. HYDRAULIC SYSTEM (NO OIL LEAKAGE)<br>
+                                                        M3. WIRING CONNECTIONS (FIRMLY TIGHTENED)<br>
+                                                        M4. ELECTRICAL BOX (NO INGRESS OF OIL,WATER,DUST)<br>
+                                                        M5. LIMIT SWITCH (NO DEFORMATION)
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label>M2</label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="2" name="result_m2" id="">
+                                                            <label class="form-check-label" for="">
+                                                                ✓
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="2" name="result_m2" id="">
+                                                            <label class="form-check-label" for="">
+                                                                X
+                                                            </label>
+
+                                                        </div>
+                                                            <input type="text" name="monthly_remarks2" id="txtMonthlyRemarks2">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label>M3</label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="3" name="result_m3" id="">
+                                                            <label class="form-check-label" for="">
+                                                                ✓
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="3" name="result_m3" id="">
+                                                            <label class="form-check-label" for="">
+                                                                X
+                                                            </label>
+
+                                                        </div>
+                                                            <input type="text" name="monthly_remarks3" id="txtMonthlyRemarks3">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label>M4</label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="4" name="result_m4" id="">
+                                                            <label class="form-check-label" for="">
+                                                                ✓
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="4" name="result_m4" id="">
+                                                            <label class="form-check-label" for="">
+                                                                X
+                                                            </label>
+
+                                                        </div>
+                                                            <input type="text" name="monthly_remarks4" id="txtMonthlyRemarks4">
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label>M5</label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="5" name="result_m5" id="">
+                                                            <label class="form-check-label" for="">
+                                                                ✓
+                                                            </label>
+                                                        </div>
+
+                                                        <div class="form-check  form-check-inline">
+                                                            <input class="form-check-input" type="radio" value="5" name="result_m5" id="">
+                                                            <label class="form-check-label" for="">
+                                                                X
+                                                            </label>
+
+                                                        </div>
+                                                            <input type="text" name="monthly_remarks5" id="txtMonthlyRemarks5">
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                            <div id="komatsuMonthlyDivId" class="card-body text-block-header">
+                                                <div class="row">
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <label>M1</label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label>M2</label>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_m1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_m1" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="1" name="komatsu_result_m2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    ✓
+                                                                </label>
+                                                            </div>
+                                                            <div class="form-check  form-check-inline">
+                                                                <input class="form-check-input" type="radio" value="2" name="komatsu_result_m2" id="">
+                                                                <label class="form-check-label" for="">
+                                                                    X
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <div class="form-group">
+                                                            <div>
+                                                                <label>Remarks</label>
+                                                                <input type="text" name="komatsu_monthly_remarks1" id="txtKomatsuRemarksId1">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            <div>
+                                                                <label>Remarks</label>
+                                                                <input type="text" name="komatsu_monthly_remarks2" id="txtKomatsuRemarksId2">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3">
+                                                        <label style="display: flex; justify-content: center; align-items: center;">MONTHLY CHECKPOINTS</label>
+                                                        M1. GIB LUBRICATION OIL (NORMAL LEVEL)<br>
+                                                        M2. GEAR CHAMBER OIL LEVEL GAUGE (NORMAL LEVEL)<br>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="btnMonthlySave" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Save
+                        </button>
+                        <button hidden type="button" id="btnMonthlyCheck" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Check
+                        </button>
+                        <button hidden type="button" id="btnMonthlyConform" class="btn btn-primary">
+                            <i class="fa fa-check"></i>
+                            Conform
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalScanQrSaveMonthly">
+        <div class="modal-dialog modal-dialog-center">
+          <div class="modal-content modal-sm ">
+            {{-- <div class="modal-header">
+              <h4 class="modal-title"><i class="fa fa-user"></i> Logout</h4>
+              <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div> --}}
+            <div class="modal-body">
+              {{-- hidden_scanner_input --}}
+              {{-- <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanUserId" name="scan_qr_code" autocomplete="off"> --}}
+              <input type="text" class="w-100 hidden_scanner_input" id="txtScanUserIdMonthly" name="scan_id_monthly" autocomplete="off">
+              <div class="text-center text-secondary"><span id="modalScanQrSaveMonthlyText">Please scan employee ID.</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+          </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <!-- /.modal -->
+
 @endsection
 
 @section('js_content')
@@ -1108,6 +2029,7 @@
     var dtDailyChecksheet;
     var checkSheetfunction;
     var dtWeeklyChecksheet;
+    var dtMonthlyChecksheet;
     
 
     $(document).ready(function(e){
@@ -1158,6 +2080,24 @@
             ],
         });
 
+        dtMonthlyChecksheet = $("#tblMonthlyChecksheet").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "view_monthly_checksheet",
+                data: function (param) {
+                    param.month = $("#selMonth").val();
+                }
+            },
+            fixedHeader: true,
+            "columns": [
+                { "data": "action" },
+                { "data": "status" },
+                { "data": "month" },
+                { "data": "machine_details.machine_name" },
+            ],
+        });
+
 
         $(".datepicker").on('change', function(){
             dtDailyChecksheet.draw();
@@ -1169,19 +2109,37 @@
             let month = moment().format('MM');
             getMachineForChecksheet($('#selMachine'));
 
-            if(time >= "07:00" && time <= "19:29"){
-                $('#txtShift').val('A')
-            }
-            else{
-                $('#txtShift').val('B')
-            }
             $('#txtCheckDate').val(date)
             $('#txtCheckTime').val(time)
             $('#txtMonth').val(month)
-            
-
             $('#modalAddDailyChecksheet').modal('show');
             
+        });
+
+        let dailyUnitValue;
+        let dailyMachinevalue;
+      
+        
+        $('.dailyUnitClass').change(function (e) { 
+            e.preventDefault();
+            dailyUnitValue = $(this).val();
+            $('#selMachine').change(function (e) { 
+                // e.preventDefault();
+                dailyMachinevalue = $('#selMachine').val();
+                if(dailyMachinevalue == 2 && dailyUnitValue == 4){
+                    $('#KyoriHeaderId').removeClass('text-block-header')
+                    $('#kyoriBodyId').removeClass('text-block-header')
+                }else if(dailyMachinevalue == 4 && dailyUnitValue == 3){
+                    $('#komatsuHeaderId').removeClass('text-block-header')
+                    $('#komatsuBodyId').removeClass('text-block-header')
+                }
+                else{
+                    $('#KyoriHeaderId').addClass('text-block-header')
+                    $('#kyoriBodyId').addClass('text-block-header')
+                    $('#komatsuHeaderId').addClass('text-block-header')
+                    $('#komatsuBodyId').addClass('text-block-header')
+                }
+            });
         });
 
         $('#formAddDailyChecksheet').submit(function(e){
@@ -1215,9 +2173,12 @@
             dailyCheckSheetStatus = $(this).data('status')
             dailyCheckSheetId = $(this).data('id');
 
-            $('#txtDailyChkSheetId').val(dailyCheckSheetId)
+            console.log(dailyCheckSheetId);
 
-            getDailyChecksheet(dailyCheckSheetId, dailyCheckSheetStatus);
+            $('#txtDailyChkSheetId').val(dailyCheckSheetId)
+            setTimeout(() => {
+                getDailyChecksheet(dailyCheckSheetId, dailyCheckSheetStatus);
+            }, 500);
 
         });
 
@@ -1333,6 +2294,8 @@
 
         $("#modalAddDailyChecksheet").on('hidden.bs.modal', function () {
             // console.log('hidden.bs.modal');
+            $('#KyoriHeaderId').addClass('text-block-header')
+            $('#kyoriBodyId').addClass('text-block-header')
             $('#formAddDailyChecksheet')[0].reset();
             $('#txtDailyCheckSheetId').val('');
             $('input', $('#formAddDailyChecksheet')).prop('disabled', false);
@@ -1341,17 +2304,38 @@
         });
 
         // WEEKLY
+    
+        let weeklyUnitValue;
+        let weeklyMachinevalue;
+
+        $('.weeklyUnitClass').change(function (e) { 
+            e.preventDefault();
+            weeklyUnitValue = $(this).val();
+            $('#selWeeklyMachine').change(function (e) { 
+                // e.preventDefault();
+                weeklyMachinevalue = $('#selWeeklyMachine').val();
+                if(weeklyMachinevalue == 2 && weeklyUnitValue == 4){
+                    $('#kyoriWeeklyDivId').removeClass('text-block-header')
+                }else if(weeklyMachinevalue == 4 && weeklyUnitValue == 3){
+                    $('#komatsuWeeklyDivId').removeClass('text-block-header')
+                }
+                else{
+                    $('#kyoriWeeklyDivId').addClass('text-block-header')
+                    $('#komatsuWeeklyDivId').addClass('text-block-header')
+                }
+            });
+        });
 
         $('#addWeeklyChecksheet').on('click', function(){
             // let date = moment().format('MM-DD-YYYY');
             let date = moment().format('YYYY-MM-DD');
             let time = moment().format('kk:mm');
-            let month = moment().format('MM');
-
+            let month = moment().format('MMMM');
+            
             var dated = new Date();
-            var weekOfMonth = (0 | dated.getDate() / 7)+1;
-
-            console.log(weekOfMonth);
+            var weekOfMonth = (0 | dated.getDate() / 6)+1;
+            
+            // console.log(dated.getDate());
 
             getMachineForChecksheet($('#selWeeklyMachine'));
 
@@ -1376,7 +2360,7 @@
             if(e.keyCode == 13){
                 validateUser($(this).val().toUpperCase(), [0,1,4,9,11], function(result){
                     if(result == true){
-                        console.log('pasok');
+                        // console.log('pasok');
                         saveWeeklyChecksheet($('#txtScanUserIdWeekly').val());
                     }
                     else{ // Error Handler
@@ -1396,19 +2380,12 @@
 
             $('#txtWeeklyChkSheetId').val(weeklyChecksheetId)
 
+            console.log('weeklyChecksheetStatus', weeklyChecksheetStatus);
+
             // setTimeout(() => {
-                getWeeklyChecksheet(weeklyChecksheetId, weeklyChecksheetStatus);
+            getWeeklyChecksheet(weeklyChecksheetId, weeklyChecksheetStatus);
             // }, 1000);
 
-        });
-
-        $("#modalAddWeeklyChecksheet").on('hidden.bs.modal', function () {
-            // console.log('hidden.bs.modal');
-            $('#formAddWeeklyChecksheet')[0].reset();
-            $('#txtWeeklyCheckSheetId').val('');
-            $('input', $('#formAddWeeklyChecksheet')).prop('disabled', false);
-            $('select', $('#formAddWeeklyChecksheet')).prop('disabled', false);
-            $('#btnWeeklySave').show();
         });
 
         $(document).on('click', '#btnWeeklyCheck', function(e){
@@ -1520,6 +2497,107 @@
                 $(this).val('');
             }
         });
+        
+        
+        $("#modalAddWeeklyChecksheet").on('hidden.bs.modal', function () {
+            // console.log('hidden.bs.modal');
+            $('#kyoriWeeklyDivId').addClass('text-block-header')
+            $('#komatsuWeeklyDivId').addClass('text-block-header')
+            $('#formAddWeeklyChecksheet')[0].reset();
+            $('#txtWeeklyCheckSheetId').val('');
+            $('input', $('#formAddWeeklyChecksheet')).prop('disabled', false);
+            $('select', $('#formAddWeeklyChecksheet')).prop('disabled', false);
+            $('#btnWeeklySave').show();
+        });
+
+        // MONTHLY
+
+        $('.monthlyUnitClass').change(function (e) { 
+            e.preventDefault();
+            MonthlyUnitValue = $(this).val();
+            $('#selMonthlyMachine').change(function (e) { 
+                // e.preventDefault();
+                MonthlyMachinevalue = $('#selMonthlyMachine').val();
+                if(MonthlyMachinevalue == 2 && MonthlyUnitValue == 4){
+                    $('#kyoriMonthlyDivId').removeClass('text-block-header')
+                }else if(MonthlyMachinevalue == 4 && MonthlyUnitValue == 3){
+                    $('#komatsuMonthlyDivId').removeClass('text-block-header')
+                }
+                else{
+                    $('#kyoriMonthlyDivId').addClass('text-block-header')
+                    $('#komatsuMonthlyDivId').addClass('text-block-header')
+                }
+            });
+        });
+
+        $('#addMonthlyChecksheet').on('click', function(){
+            // let date = moment().format('MM-DD-YYYY');
+            let date = moment().format('YYYY-MM-DD');
+            let time = moment().format('kk:mm');
+            let month = moment().format('MMMM');
+
+            getMachineForChecksheet($('#selMonthlyMachine'));
+
+            $('#txtMonth').val(month)
+            $('#txtMonthlyCheckDate').val(date)
+            $('#txtMonthlyCheckTime').val(time)
+            $('#txtMonthlyMonth').val(month)
+            
+            $('#modalAddMonthlyChecksheet').modal('show');        
+        });
+
+        $('#formAddMonthlyChecksheet').submit(function(e){
+            e.preventDefault();
+
+            $('#modalScanQrSaveMonthly').modal('show');
+            $('#modalScanQrSaveMonthlyText').html('Please Scan Employee ID.')
+        })
+
+        $(document).on('keyup','#txtScanUserIdMonthly', function(e){
+            if(e.keyCode == 13){
+                validateUser($(this).val().toUpperCase(), [0,1,4,9,11], function(result){
+                    if(result == true){
+                        // console.log('pasok');
+                        saveMonthlyChecksheet($('#txtScanUserIdMonthly').val());
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+                    $('#txtScanUserIdMonthly').val('');
+                });
+            }
+        });
+
+        let monthlyChecksheetStatus;
+        let monthlyChecksheetId
+
+        $(document).on('click', '.btnViewMonthlyChecksheet', function(e){
+            monthlyChecksheetStatus = $(this).data('status')
+            monthlyChecksheetId = $(this).data('id');
+
+            $('#txtmonthlyChkSheetId').val(monthlyChecksheetId)
+
+            console.log('monthlyChecksheetStatus', monthlyChecksheetStatus);
+            console.log('monthlyChecksheetId', monthlyChecksheetId);
+
+            // setTimeout(() => {
+            getMonthlyChecksheet(monthlyChecksheetId, monthlyChecksheetStatus);
+            // }, 1000);
+
+        });
+
+        $("#modalAddMonthlyChecksheet").on('hidden.bs.modal', function () {
+            // console.log('hidden.bs.modal');
+            // $('#kyoriMonthlyDivId').addClass('text-block-header')
+            $('#komatsuMonthlyDivId').addClass('text-block-header')
+            $('#formAddMonthlyChecksheet')[0].reset();
+            $('#txtmonthlyChkSheetId').val('');
+            $('input', $('#formAddMonthlyChecksheet')).prop('disabled', false);
+            $('select', $('#formAddMonthlyChecksheet')).prop('disabled', false);
+            $('#btnMonthlySave').show();
+        });
+
+        // 
 
     })
 </script>

@@ -1,7 +1,7 @@
 @php $layout = 'layouts.admin_layout'; @endphp
 @auth
     @extends($layout)
-    @section('title', 'Assembly')
+    @section('title', 'Assembly Runcard')
     @section('content_page')
         <style type="text/css">
             .hidden_scanner_input{
@@ -25,13 +25,13 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Assembly</h1>
+                            <h1>Assembly Runcard</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
                                 </li>
-                                <li class="breadcrumb-item active">Assembly</li>
+                                <li class="breadcrumb-item active">Assembly Runcard</li>
                             </ol>
                         </div>
                     </div>
@@ -64,12 +64,12 @@
                                                 <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMaterialName" readonly>
                                             </div>
                                         </div>
-                                        {{-- <div class="col-sm-2">
-                                            <label class="form-label">Part Code</label>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Required Output</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Part Code" id="txtSearchPartCode" readonly>
+                                                <input type="text" class="form-control" placeholder="Required Output" id="txtSearchReqOutput" readonly>
                                             </div>
-                                        </div> --}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -134,212 +134,220 @@
                         <div class="modal-body">
                             {{-- <input type="text" id="textSecondMoldingId" class="d-none" name="id"> --}}
                             <div class="row">
-                                <div class="col-sm-4 border px-4">
-                                    <div class="py-3">
-                                        <span class="badge badge-secondary">1.</span> Runcard Details
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Assembly Runcard ID</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtAssyRuncardId" name="assy_runcard_id" readonly>
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtDeviceName" name="device_name" placeholder="Auto generated" readonly>
-                                    </div>
-                                    {{-- <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtMaterialName" name="material_name" placeholder="Auto generated" readonly>
-                                    </div> --}}
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtPONumber" name="po_number" placeholder="Search PO">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-2">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Required Qty</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtRequiredOutput" name="required_output" placeholder="Auto generated">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Runcard No.</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Auto generated">
-                                    </div>
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Production Lot No.</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtProductionLot" name="production_lot" placeholder="Auto generated">
-                                    </div>
-
-                                    <div id="pSeriesName" style="border:2px; border-style:dashed; padding:2px;">
-                                        <div class="input-group input-group-sm mb-2">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                <div class="col-sm-6 border">
+                                    <div class="row">
+                                        <div class="col-sm-6 pl-4">
+                                            <div class="py-3">
+                                                <span class="badge badge-secondary">1.</span> Runcard Details
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoMatName" name="p_zero_two_material_name" value="CN171P-02#IN-VE" readonly>
-                                        </div>
-
-                                        <div class="input-group input-group-sm mb-2">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
+                                            <div class="input-group input-group-sm mb-3 d-none">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Assembly Runcard ID</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtAssyRuncardId" name="assy_runcard_id" readonly>
                                             </div>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-info" type="button" title="Scan code" id="btnScanPZeroTwoProdLot" form-value="ScanPZeroTwoProdLot">
-                                                    <i class="fa fa-qrcode"></i>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtDeviceName" name="device_name" placeholder="Auto generated" readonly>
+                                            </div>
+                                            {{-- <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtMaterialName" name="material_name" placeholder="Auto generated" readonly>
+                                            </div> --}}
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtPONumber" name="po_number" placeholder="Search PO"
+                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-2">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Required Qty</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtRequiredOutput" name="required_output" placeholder="Auto generated">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Runcard No.</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Auto generated">
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Shipment Output</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtShipmentOutput" name="shipment_output">
+                                            </div>
+
+                                            <div id="pSeriesName" style="border:2px; border-style:dashed; padding:2px;">
+                                                <div class="input-group input-group-sm mb-2">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="txtPZeroTwoMatName" name="p_zero_two_material_name" value="CN171P-02#IN-VE" readonly>
+                                                </div>
+
+                                                <div class="input-group input-group-sm mb-2">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
+                                                    </div>
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-info" type="button" title="Scan code" id="btnScanPZeroTwoProdLot" form-value="ScanPZeroTwoProdLot">
+                                                            <i class="fa fa-qrcode"></i>
+                                                        </button>
+                                                    </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtPZeroTwoProdLot" name="p_zero_two_prod_lot" placeholder="Scan Production Lot" readonly>
+                                                        <input type="hidden" class="form-control form-control-sm" id="txtPZeroTwoDeviceId" name="p_zero_two_device_id" placeholder="Device ID">
+                                                </div>
+
+                                                <div class="input-group input-group-sm mb-2">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">PO No</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePO" name="p_zero_two_po_no" placeholder="Auto generated" readonly>
+                                                </div>
+
+                                                {{-- <div class="input-group input-group-sm mb-1">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">P-02#IN - PMI PO No</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                                </div> --}}
+
+                                                <div class="input-group input-group-sm mb-2">
+                                                    <div class="input-group-prepend w-50">
+                                                        <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
+                                                    </div>
+                                                    <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDeviceQty" name="p_zero_two_dev_qty" placeholder="Auto generated" readonly>
+                                                </div>
+                                            </div>
+
+
+                                            <div id="sSeriesName">
+                                                <div style="border: 2px; border-style:dashed; padding:2px;">
+                                                    <div class="input-group input-group-sm mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" value="CN171S-07#IN-VE" readonly>
+                                                    </div>
+                                                    
+                                                    <div class="input-group input-group-sm mt-1 mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-info" type="button" title="Scan code" id="btnScanSZeroSevenProdLot" form-value="ScanSZeroSevenProdLot">
+                                                                <i class="fa fa-qrcode"></i>
+                                                            </button>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroSevenProdLot" name="s_zero_seven_prod_lot" placeholder="Scan Production Lot" readonly>
+                                                        <input type="hidden" class="form-control form-control-sm" id="txtSZeroSevenDeviceId" name="s_zero_seven_device_id" placeholder="Device ID">
+                                                    </div>
+
+                                                    <div class="input-group input-group-sm mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">PO No</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePO" name="s_zero_seven_po_no" placeholder="Auto generated" readonly>
+                                                    </div>
+
+                                                    {{-- <div class="input-group input-group-sm mb-1">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">S-07#IN - PMI PO No</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                                    </div> --}}
+
+                                                    <div class="input-group input-group-sm mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDeviceQty" name="s_zero_seven_dev_qty" placeholder="Auto generated" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <div style="border: 2px; border-style:dashed; padding:2px;" class="border-top-0">
+                                                    <div class="input-group input-group-sm mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroTwoMatName" name="s_zero_two_material_name" value="CN171S-02#MO-VE" readonly>
+                                                    </div>
+
+                                                    <div class="input-group input-group-sm mt-1 mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
+                                                        </div>
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-info" type="button" title="Scan code" id="btnScanSZeroTwoProdLot" form-value="ScanSZeroTwoProdLot">
+                                                                <i class="fa fa-qrcode"></i>
+                                                            </button>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroTwoProdLot" name="s_zero_two_prod_lot" placeholder="Scan Production Lot" readonly>
+                                                        <input type="hidden" class="form-control form-control-sm" id="txtSZeroTwoDeviceId" name="s_zero_two_device_id" placeholder="Device ID">
+                                                    </div>
+
+                                                    <div class="input-group input-group-sm mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">PO No</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePO" name="s_zero_two_po_no" placeholder="Auto generated" readonly>
+                                                    </div>
+
+                                                    {{-- <div class="input-group input-group-sm mb-1">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">PMI PO No</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
+                                                    </div> --}}
+
+                                                    <div class="input-group input-group-sm mb-2">
+                                                        <div class="input-group-prepend w-50">
+                                                            <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
+                                                        </div>
+                                                        <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDeviceQty" name="s_zero_two_dev_qty" placeholder="Auto generated" readonly>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 pr-4">
+                                            <div class="py-3">
+                                                <span>&nbsp;</span>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Total Assembly Yield</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtTotalAssyYield" name="total_assy_yield" placeholder="Auto generated" readonly>
+                                            </div>
+
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Average Overall Yield</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtAveOveallYield" name="ave_overall_yield" placeholder="Auto generated" readonly>
+                                            </div>
+                                            <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
+                                                <button class="btn btn-sm btn-success" type="button" id="btnRuncardDetails">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Save
                                                 </button>
                                             </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtPZeroTwoProdLot" name="p_zero_two_prod_lot" placeholder="Scan Production Lot" readonly>
-                                                <input type="hidden" class="form-control form-control-sm" id="txtPZeroTwoDeviceId" name="p_zero_two_device_id" placeholder="Device ID">
                                         </div>
-
-                                        <div class="input-group input-group-sm mb-2">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">PO No</span>
-                                            </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePO" name="p_zero_two_po_no" placeholder="Auto generated" readonly>
-                                        </div>
-
-                                        {{-- <div class="input-group input-group-sm mb-1">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">P-02#IN - PMI PO No</span>
-                                            </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
-                                        </div> --}}
-
-                                        <div class="input-group input-group-sm mb-2">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
-                                            </div>
-                                            <input type="text" class="form-control form-control-sm" id="txtPZeroTwoDeviceQty" name="p_zero_two_dev_qty" placeholder="Auto generated" readonly>
-                                        </div>
-                                    </div>
-
-
-                                    <div id="sSeriesName">
-                                        <div style="border: 2px; border-style:dashed; padding:2px;">
-                                            <div class="input-group input-group-sm mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" value="CN171S-07#IN-VE" readonly>
-                                            </div>
-                                            
-                                            <div class="input-group input-group-sm mt-1 mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
-                                                </div>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-info" type="button" title="Scan code" id="btnScanSZeroSevenProdLot" form-value="ScanSZeroSevenProdLot">
-                                                        <i class="fa fa-qrcode"></i>
-                                                    </button>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenProdLot" name="s_zero_seven_prod_lot" placeholder="Scan Production Lot" readonly>
-                                                <input type="hidden" class="form-control form-control-sm" id="txtSZeroSevenDeviceId" name="s_zero_seven_device_id" placeholder="Device ID">
-                                            </div>
-
-                                            <div class="input-group input-group-sm mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">PO No</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePO" name="s_zero_seven_po_no" placeholder="Auto generated" readonly>
-                                            </div>
-
-                                            {{-- <div class="input-group input-group-sm mb-1">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">S-07#IN - PMI PO No</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
-                                            </div> --}}
-
-                                            <div class="input-group input-group-sm mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroSevenDeviceQty" name="s_zero_seven_dev_qty" placeholder="Auto generated" readonly>
-                                            </div>
-                                        </div>
-
-                                        <div style="border: 2px; border-style:dashed; padding:2px;" class="border-top-0">
-                                            <div class="input-group input-group-sm mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoMatName" name="s_zero_two_material_name" value="CN171S-02#MO-VE" readonly>
-                                            </div>
-
-                                            <div class="input-group input-group-sm mt-1 mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
-                                                </div>
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-info" type="button" title="Scan code" id="btnScanSZeroTwoProdLot" form-value="ScanSZeroTwoProdLot">
-                                                        <i class="fa fa-qrcode"></i>
-                                                    </button>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoProdLot" name="s_zero_two_prod_lot" placeholder="Scan Production Lot" readonly>
-                                                <input type="hidden" class="form-control form-control-sm" id="txtSZeroTwoDeviceId" name="s_zero_two_device_id" placeholder="Device ID">
-                                            </div>
-
-                                            <div class="input-group input-group-sm mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">PO No</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePO" name="s_zero_two_po_no" placeholder="Auto generated" readonly>
-                                            </div>
-
-                                            {{-- <div class="input-group input-group-sm mb-1">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">PMI PO No</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDevicePMIPO" name="po_quantity" placeholder="Auto generated" readonly>
-                                            </div> --}}
-
-                                            <div class="input-group input-group-sm mb-2">
-                                                <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Material Qty</span>
-                                                </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtSZeroTwoDeviceQty" name="s_zero_two_dev_qty" placeholder="Auto generated" readonly>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="input-group input-group-sm mt-2 mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Total Assembly Yield</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtTotalAssyYield" name="total_assy_yield" placeholder="Auto generated" readonly>
-                                    </div>
-
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Average Overall Yield</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtAveOveallYield" name="ave_overall_yield" placeholder="Auto generated" readonly>
-                                    </div>
-
-                                    <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
-                                        <button class="btn btn-sm btn-success" type="button" id="btnRuncardDetails">
-                                            <i class="fa-solid fa-floppy-disk"></i> Save
-                                        </button>
-                                    </div>
+                                    </div>  
                                 </div>
-                                <div class="col-sm-8">
+                                <div class="col-sm-6">
                                     <div class="col border px-4 border">
                                         <div class="py-3">
                                             <div style="float: left;">
@@ -584,7 +592,7 @@
 
                             {{-- Visual Inspection Add Fields START --}}
                             <div id="VisualInspDocNoDiv" class="d-none">
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
@@ -593,7 +601,7 @@
                                                 <input type="text" class="form-control form-control-sm" id="txtDocNoWorkI" name="doc_no_work_i">
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
 
                                 <div class="row">
                                     <div class="col">
@@ -1080,11 +1088,13 @@
                             // prodData = {};
                         },
                         success: function (response) {
+                            let device_details = response['device_details'];
                             let material_details = response['material_details'];
                             let station_details = response['station_details'];
                             console.log(station_details);
 
                             $('#txtSearchMaterialName').val(material_details);
+                            $('#txtSearchReqOutput').val(device_details[0].qty_per_box);
                             // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
                             // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
@@ -1138,6 +1148,67 @@
                 // }, 500));
                 /* SEARCH PO COMMENTED BY CLARK END*/
 
+                // CREATE RUNCARD BASED ON PO
+                $(document).keyup('#txtPONumber', delay(function(e){
+                    let txtPONumber = $('#formCNAssemblyRuncard').find('#txtPONumber').val();
+                    let txtDeviceName = $('#formCNAssemblyRuncard').find('#txtDeviceName').val();
+
+                    // $.ajax({
+                    //     type: "get",
+                    //     // url: "http://rapidx/rapidx-api/api/ypics_clark.php",
+                    //     url: "http://rapid/NAAYES/api/ypics.php",
+                    //     data: {
+                    //         po_number : txtPONumber,
+                    //     },
+                    //     dataType: "json",
+                    //     success: function (response) {
+                    //         console.log(response);
+                    //     }
+                    // });
+                    data = {
+                        'po_no'        : txtPONumber,
+                        'device_name'  : txtDeviceName,
+                    };
+                    $.ajax({
+                        'data'      : data,
+                        'type'      : 'get',
+                        'dataType'  : 'json',
+                        'url'       : 'http://rapid/NAAYES/api/ypics_ppd.php',
+                        success : function(data){
+                            if(data == ""){
+                                toastr.error("No Data Found");
+                                $('#formCNAssemblyRuncard').find('#txtRuncardNo').val('');
+                                $('#formCNAssemblyRuncard').find('#txtPoQuantity').val('');
+                            }else{
+                                $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(500);
+                                let txtRuncard = txtPONumber.slice(5,10);
+                                
+                                $.ajax({
+                                    type: "get",
+                                    url: "get_assembly_runcard_data",
+                                    data: {
+                                        po_number: txtPONumber,
+                                    },
+                                    dataType: "json",
+                                    success: function (response) {
+                                        let result = response['assembly_runcard_data'];
+                                        runcardCount = result.length;
+                                        
+                                        if(result.length == 0){
+                                            runcardCount = 1;
+                                        }else{
+                                            runcardCount = (result.length + 1);
+                                        }
+
+                                        $('#txtRuncardNo').val(txtRuncard +'-'+ runcardCount);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }, 700));
+                // CREATE RUNCARD BASED ON PO END
+
                 $('#btnAddAssemblyRuncard').on('click', function(e){
                     if($('#txtSelectDeviceName').val() != "" && $('#txtSearchMaterialName').val() != ""){
 
@@ -1149,6 +1220,18 @@
                         }else{
                             $('#btnAddRuncardStation').prop('disabled', false);
                         }
+
+                        $('#txtRequiredOutput').val($('#txtSearchReqOutput').val());
+
+                        // $.ajax({
+                        //     type: "get",
+                        //     url: "get_total_yield",
+                        //     data: "data",
+                        //     dataType: "json",
+                        //     success: function (response) {
+                                
+                        //     }
+                        // });
                     }
                     else{
                         toastr.error('Please Select Device Name')
@@ -1296,7 +1379,7 @@
                             $('#formCNAssemblyRuncard #txtPoQuantity').val(assy_runcard_data[0].po_quantity);
                             $('#formCNAssemblyRuncard #txtRequiredOutput').val(assy_runcard_data[0].required_output);
                             $('#formCNAssemblyRuncard #txtRuncardNo').val(assy_runcard_data[0].runcard_no);
-                            $('#formCNAssemblyRuncard #txtProductionLot').val(assy_runcard_data[0].production_lot);
+                            $('#formCNAssemblyRuncard #txtShipmentOutput').val(assy_runcard_data[0].shipment_output);
                             $('#formCNAssemblyRuncard #txtPZeroTwoProdLot').val(assy_runcard_data[0].p_zero_two_prod_lot);
                             $('#formCNAssemblyRuncard #txtPZeroTwoDeviceId').val(assy_runcard_data[0].p_zero_two_device_id);
                             $('#formCNAssemblyRuncard #txtSZeroSevenProdLot').val(assy_runcard_data[0].s_zero_seven_prod_lot);

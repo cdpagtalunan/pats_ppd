@@ -228,7 +228,7 @@
                                             <div class="card-header p-2">
                                                 <h6>A.1 Machines & Equipments</h6>
                                             </div>
-                                            <div class="card-body" >
+                                            <div class="card-body">
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <label>A.1.1 Sound proof body surface</label>

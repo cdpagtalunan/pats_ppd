@@ -123,7 +123,7 @@
                 formModal.firstMolding.find('#item_name').val(data.item_name);
                 formModal.firstMolding.find('#po_qty').val(data.po_qty);
                 formModal.firstMolding.find('#required_output').val(data.required_output);
-                formModal.firstMolding.find('#created_at').val(data.created_at);
+                formModal.firstMolding.find('#created_at').val(response['created_at']);
                 formModal.firstMolding.find('#remarks').val(data.remarks);
 
                 formModal.firstMolding.find('#virgin_material').val(first_molding_material_list.virgin_material);
@@ -310,6 +310,7 @@
                     });
                     dt.firstMolding.draw();
                     $('#modalFirstMolding').modal('hide');
+                    $('#modalScanQRSave').modal('hide');
                 }
             },error: function (data, xhr, status){
                 if(data.status === 422){
@@ -345,7 +346,6 @@
             }
         });
     }
-
 
     const updateFirstMoldingShipmentMachineOuput = function (firstMoldingId,shipmentOutput,ngCount){
         let data = $.param({
@@ -517,7 +517,7 @@
                         multiplier = 1 ;
                     }
                     let productOfPoNumber =  poQty * multiplier ;
-                    console.log('multiplier',multiplier);
+                    console.log('multiplier',productOfPoNumber);
                     formModal.firstMolding.find('#po_no').val(response.po_no);
                     formModal.firstMolding.find('#po_qty').val(response.order_qty);
                     formModal.firstMolding.find('#po_target').val(response.order_qty);
@@ -527,6 +527,8 @@
                     formModal.firstMolding.find('#required_output').val(productOfPoNumber);
                     formModal.firstMolding.find('#virgin_qty').val(response.virgin_qty);
                     formModal.firstMolding.find('#recycle_qty').val(response.recycled_qty);
+                    formModal.firstMolding.find('#pmi_po_no').val(response.pmi_po_no);
+                    $('#global_target_qty').val(productOfPoNumber);
                 }else{
                     toastr.error(response.error_msg)
                     formModal.firstMolding.find('#po_no').val('');
@@ -539,6 +541,8 @@
                     formModal.firstMolding.find('#required_output').val('');
                     formModal.firstMolding.find('#virgin_qty').val('');
                     formModal.firstMolding.find('#recycle_qty').val('');
+                    $('#global_target_qty').val('');
+
                 }
             }
         });

@@ -20,44 +20,44 @@ class StampingHistoryController extends Controller
 {
     public function getStampingProdnMaterialName(Request $request){
         date_default_timezone_set('Asia/Manila');
-        
+
         $stamping_prodn_material_name = FirstStampingProduction::select('material_name')->whereNull('deleted_at')->distinct()->get();
         return response()->json(['getPrdnMaterialName'  => $stamping_prodn_material_name]);
     }
 
     public function getPatsPpdUser(Request $request){
         date_default_timezone_set('Asia/Manila');
-        
+
         $users = User::where('status', 1)->whereIn('position',[0,1,4])->orderBy('firstname', 'ASC')->get();
         return response()->json(['users'  => $users]);
     }
 
     public function getPreviousShotAccumulatedByPartName(Request $request){
         date_default_timezone_set('Asia/Manila');
-        
+
         $new_total_shot_accum = 0;
         $get_previous_shot_accumulated = StampingHistory::where('part_name', $request->materialName)->where('logdel', 0)->orderBy('id', 'DESC')->get();
-        for($i=0; $i < count($get_previous_shot_accumulated); $i++) { 
+        for($i=0; $i < count($get_previous_shot_accumulated); $i++) {
             $new_total_shot_accum += $get_previous_shot_accumulated[$i]->total_shot;
         }
-        
+
         return response()->json(['newTotalShotAccum'  => $new_total_shot_accum]);
     }
 
     public function viewStampingHistory(Request $request){
         date_default_timezone_set('Asia/Manila');
-        
+
         $get_stamping_history = StampingHistory::where('part_name', $request->materialName)->where('logdel', 0)->orderBy('id', 'DESC')->get();
         return DataTables::of($get_stamping_history)
         ->addColumn('action', function($get_stamping_info){
             $result = '<center>';
             $result .= '
-                <button class="btn btn-dark btn-sm text-center 
-                    actionEditStampingHistory" 
-                    stamping_history-id="'. $get_stamping_info->id .'" 
-                    part_name="'. $get_stamping_info->part_name .'" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalStampingHistory" 
+                <button class="btn btn-dark btn-sm text-center
+                    actionEditStampingHistory"
+                    stamping_history-id="'. $get_stamping_info->id .'"
+                    part_name="'. $get_stamping_info->part_name .'"
+                    data-bs-toggle="modal"
+                    data-bs-target="#modalStampingHistory"
                     data-bs-keyboard="false" title="View">
                     <i class="nav-icon fa fa-edit"></i>
                 </button>';
@@ -73,12 +73,12 @@ class StampingHistoryController extends Controller
                 ->where('logdel', 0)
                 ->orderBy('id', 'desc')
                 ->get();
-    
+
             $total_sum = 0;
-            for ($i=0; $i < count($next_to_last_shot); $i++) { 
+            for ($i=0; $i < count($next_to_last_shot); $i++) {
                 $total_sum += $next_to_last_shot[$i]->total_shot;
             }
-    
+
             $result .= $total_sum;
             $result .= '</center>';
             return $result;
@@ -149,16 +149,18 @@ class StampingHistoryController extends Controller
                     'neraiti'       =>  $request->stamping_history_neraiti,
                     'remarks'       =>  $request->stamping_history_remark,
                     'scan_by'       =>  $request->employee_no,
-                ];   
+                ];
                 if(count($check_existing_record) != 1){
                     $stamping_history['created_by']  = $request->stamping_history_created_by;
                     $stamping_history['created_at']  = date('Y-m-d H:i:s');
+
                     StampingHistory::insert(
                         $stamping_history
                     );
                 }else{
-                    $stamping_history['updated_by']  = $request->stamping_history_updated_by;
+                    $stamping_history['updated_by']  = $request->stamping_history_created_by;
                     $stamping_history['updated_at']  = date('Y-m-d H:i:s');
+
                     StampingHistory::where('id', $request->stamping_history_id)
                     ->update(
                         $stamping_history
@@ -176,7 +178,7 @@ class StampingHistoryController extends Controller
 
     public function getStampingHistoryById(Request $request){
         date_default_timezone_set('Asia/Manila');
-        
+
         $get_operator_name = user::all();
         $get_stamping_history_to_edit = StampingHistory::where('id', $request->stampingHistoryID)->get();
 
@@ -187,12 +189,12 @@ class StampingHistoryController extends Controller
             ->get();
 
         $total_sum = 0;
-        for ($i=0; $i < count($next_to_last_shot); $i++) { 
+        for ($i=0; $i < count($next_to_last_shot); $i++) {
             $total_sum += $next_to_last_shot[$i]->total_shot;
         }
-        
+
         return response()->json([
-            'getStampingHistoryToEdit'  => $get_stamping_history_to_edit, 
+            'getStampingHistoryToEdit'  => $get_stamping_history_to_edit,
             'getOperatorName'           => $get_operator_name,
             'totalSum'                  =>  $total_sum
         ]);

@@ -290,9 +290,9 @@
                 })          
 
                 setTimeout(() => {
-                    GetStampingProdnMaterialName($('.dataFromStampingProdnMaterialName'));
-                    GetPatsPpdUser($('.getUsers'));
-                }, 500);
+                    GetStampingProdnMaterialName($('.dataFromStampingProdnMaterialName'))
+                    GetPatsPpdUser($('.getUsers'))
+                }, 500)
                 
                 // ======================= START DATA TABLE =======================
                 dataTableStampingHistory = $("#tblStampingHistory").DataTable({
@@ -359,6 +359,11 @@
                     })
                 })
                 
+                $('#modalStampingHistory').on('hidden.bs.modal', function() {
+                    $('#formStampingHistory')[0].reset()
+                    $('#slctStampingHistoryOperator').val('').trigger('change')
+                })
+
                 $('#txtStampingHistoryTotalShot').keyup(function (e) { 
                     let getValue = $('#txtStampingHistoryTotalShot').val()
                     let getPrevTotalValue = $('#txtStampingHistoryPrevTotalShotAccumulated').val()
@@ -429,8 +434,7 @@
                                             $('#slctStampingHistoryOperator').append(selectedUser)
                                         }else{
                                             alert('Employee No. '+userDetails.employee_id+' is already scanned!')
-                                            console.log('REMOVE: ', $('.select2-selection__choice__remove').text());
-                                            // $('.select2-selection__choice__remove').click()
+                                            $('.select2-selection__choice__remove').click()
                                             $('.select2-results__options').hide()
                                         }
                                     }

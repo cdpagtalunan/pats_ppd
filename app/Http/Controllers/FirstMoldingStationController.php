@@ -52,7 +52,11 @@ class FirstMoldingStationController extends Controller
             $result .= '</center>';
             return $result;
         })
-        ->rawColumns(['action','stations','operator_names'])
+        ->addColumn('date_created', function($row){
+            $result = $row->created_at;
+            return $result;
+        })
+        ->rawColumns(['action','stations','operator_names','date_created'])
         ->make(true);
 
     }
@@ -420,6 +424,7 @@ class FirstMoldingStationController extends Controller
             $arr_material_station_by_device_name_id[] = $value_material_station_by_device_name->station_id;
             $arr_material_station_by_device_name_value[] = $value_material_station_by_device_name->station_name;
         }
+
         return response()->json([
             'id'    =>  $arr_material_station_by_device_name_id,
             'value' =>  $arr_material_station_by_device_name_value,
@@ -451,5 +456,14 @@ class FirstMoldingStationController extends Controller
             'id'    =>  $arr_value_id,
             'value' =>  $arr_value_name
         ]);
+    }
+
+    public function index(Request $request){
+        return 'true';
+        try {
+            return response()->json(['is_success' => "true"]);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => "false", 'exceptionError' => $e->getMessage()]);
+        }
     }
 }

@@ -1,4 +1,4 @@
-@php $layout = 'layouts.admin_layout'; @endphp
+m@php $layout = 'layouts.admin_layout'; @endphp
 {{-- @auth
   @php
     if(Auth::user()->user_level_id == 1){

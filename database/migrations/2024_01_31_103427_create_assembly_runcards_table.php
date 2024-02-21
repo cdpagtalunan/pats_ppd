@@ -16,12 +16,13 @@ class CreateAssemblyRuncardsTable extends Migration
         Schema::create('assembly_runcards', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('device_name')->nullable();
+            $table->string('part_code')->nullable();
             $table->string('material_name')->nullable();
             $table->string('po_number')->nullable();
             $table->string('po_quantity')->nullable();
             $table->string('required_output')->nullable();
             $table->string('runcard_no')->nullable();
-            $table->string('production_lot')->nullable();
+            $table->string('shipment_output')->nullable();
             $table->string('p_zero_two_prod_lot')->nullable();
 
             $table->unsignedBigInteger('created_by')->nullable();

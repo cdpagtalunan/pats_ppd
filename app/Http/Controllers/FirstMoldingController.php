@@ -10,13 +10,14 @@ use App\Models\FirstMolding;
 
 use Illuminate\Http\Request;
 use App\Models\TblPoReceived;
+use Illuminate\Support\Carbon;
 use App\Models\FirstMoldingDetail;
 use App\Models\FirstMoldingDevice;
 use Illuminate\Support\Facades\DB;
 use App\Models\FirstStampingProduction;
 use App\Models\FirstMoldingMaterialList;
-use Illuminate\Support\Facades\Validator;
 
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\FirstMoldingRequest;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Requests\FirstMoldingStationRequest;
@@ -53,13 +54,15 @@ class FirstMoldingController extends Controller
 
     public function loadFirstMoldingDetails(Request $request)
     {
+        date_default_timezone_set('Asia/Manila');
         $first_molding_device_id= isset($request->first_molding_device_id) ? $request->first_molding_device_id : 0;
+        $global_po_no= isset($request->global_po_no) ? $request->global_po_no : 0;
         $first_molding = DB::connection('mysql')
         ->select('
-                SELECT  first_moldings.*,first_moldings.id as "first_molding_id",devices.*
+                SELECT  first_moldings.*,first_moldings.id as "first_molding_id",devices.*,first_moldings.created_at as date_created
                 FROM first_moldings first_moldings
                 RIGHT JOIN first_molding_devices devices ON devices.id = first_moldings.first_molding_device_id
-                WHERE first_moldings.first_molding_device_id = '.$first_molding_device_id.' AND first_moldings.deleted_at IS NULL
+                WHERE first_moldings.first_molding_device_id = '.$first_molding_device_id.' AND first_moldings.pmi_po_no = "'.$global_po_no.'" AND first_moldings.deleted_at IS NULL
                 AND devices.deleted_at IS NULL
                 ORDER BY first_moldings.created_at DESC
         ');
@@ -120,7 +123,24 @@ class FirstMoldingController extends Controller
             $result = '';
             return $result = $row->production_lot . $row->production_lot_extension;
         })
-        ->rawColumns(['action','status','prodn_lot_number'])
+        ->addColumn('prodn_output', function($row){
+            $result = '';
+            switch ($row->status) {
+                case 3:
+                    $result .= $row->date_created;
+                    break;
+                default:
+                    $result .= 0;
+                    break;
+            }
+            return $result;
+        })
+        ->addColumn('date_created', function($row){
+            $result = $row->date_created;
+            // $result = date('Y-m-d H:i:s', $row->created_by);
+            return $result;
+        })
+        ->rawColumns(['action','status','prodn_lot_number','prodn_output','date_created'])
         ->make(true);
     }
 
@@ -211,6 +231,7 @@ class FirstMoldingController extends Controller
     public function getMoldingDetails(Request $request)
     {
         try{
+            date_default_timezone_set('Asia/Manila');
             /*
                 TODO: Save Auto Prod Lot
                 TODO: Multiple Resin Lot Number Virgin at Recycle
@@ -219,7 +240,7 @@ class FirstMoldingController extends Controller
             $first_molding = FirstMolding::with('firstMoldingDevice','firstMoldingMaterialLists')
             ->where('id',$request->first_molding_id)
             ->get();
-            return response()->json( [ 'first_molding' => $first_molding ] );
+            return response()->json( [ 'first_molding' => $first_molding , 'created_at' => Carbon::parse($first_molding[0]['created_at'])->format('Y-m-d H:i:s') ]);
 
         } catch (\Throwable $th) {
             return $th;
@@ -244,19 +265,16 @@ class FirstMoldingController extends Controller
             $tbl_milf = Mimf::where('pmi_po_no',$request->pmi_po_no)->get();
             if( count ($tbl_po_received) == 0 || count($tbl_milf) == 0){
                 return response()->json( [
-                    'result' => 0,
-                    'result_count' => 0,
-                    'error_msg' => "Please check this PO in MIMF Module !",
-                ]
-            );
+                        'result' => 0,
+                        'result_count' => 0,
+                        'error_msg' => "PO not Found. Please check this PO Number to MIMF Module !",
+                    ]
+                );
             }
-            //tbl_milf[0]->control_no;
-            //tbl_milf[0]->date_issuance;
-            //tbl_milf[0]->material_type;
-            //tbl_milf[0]->needed_kgs;
             if( count($tbl_po_received) > 0 && count($tbl_milf) > 0 ){
                 return response()->json( [
                     'result_count' => count($tbl_po_received),
+                    'pmi_po_no' => $tbl_po_received[0]->OrderNo ,
                     'po_no' => $tbl_po_received[0]->ProductPONo ,
                     'order_qty' => $tbl_po_received[0]->OrderQty ,
                     'po_balance' => $tbl_po_received[0]->POBalance ,
@@ -266,12 +284,11 @@ class FirstMoldingController extends Controller
                     'virgin_qty' => $tbl_milf[0]->virgin_material ,
                     'recycled_qty' => $tbl_milf[0]->recycled ,
                 ] );
-            }else{
-                return response()->json( [
-                    'result_count' => 0,
-                ] );
             }
-
+            //tbl_milf[0]->control_no;
+            //tbl_milf[0]->date_issuance;
+            //tbl_milf[0]->material_type;
+            //tbl_milf[0]->needed_kgs;
         } catch (\Throwable $th) {
             return $th;
         }

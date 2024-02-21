@@ -279,7 +279,7 @@ class MaterialProcessController extends Controller
                             'material_code' => $exploded_material[0],
                             'material_type' => $exploded_material[1],
                             'created_by'    => Auth::user()->id,
-                            'created_by'    => NOW()
+                            'created_at'    => NOW()
                         ]);
                     }
                 }

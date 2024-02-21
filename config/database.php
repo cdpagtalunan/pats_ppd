@@ -251,6 +251,39 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'sqlsrv_1' => [
+            'driver' => 'sqlsrv',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST_YPICS', '192.168.3.251\MSSQLSERVER'),
+            'port' => env('DB_PORT_YPICS', '1433'),
+            'database' => env('DB_DATABASE_YPICS', 'forge'),
+            'username' => env('DB_USERNAME_YPICS', 'forge'),
+            'password' => env('DB_PASSWORD_YPICS', ''),
+            'charset' => 'utf8',
+            'prefix' => '',
+            'prefix_indexes' => true,
+        ],
+
+        // 'mssql' => [
+        //     'driver' => 'mssql',
+        //     'url' => env('DATABASE_URL'),
+        //     'host' => env('DB_HOST_RAPID_PPS', '192.168.3.251'),
+        //     'port' => env('DB_PORT_RAPID_PPS', '3306'),
+        //     'database' => env('DB_DATABASE_RAPID_PPS', 'forge'),
+        //     'username' => env('DB_USERNAME_RAPID_PPS', 'forge'),
+        //     'password' => env('DB_PASSWORD_RAPID_PPS', ''),
+        //     'unix_socket' => env('DB_SOCKET', ''),
+        //     'charset' => 'utf8mb4',
+        //     'collation' => 'utf8mb4_unicode_ci',
+        //     'prefix' => '',
+        //     'prefix_indexes' => true,
+        //     'strict' => true,
+        //     'engine' => null,
+        //     'options' => extension_loaded('pdo_sqlsrv') ? array_filter([
+        //         PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+        //     ]) : [],
+        // ],
+
     ],
 
     /*

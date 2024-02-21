@@ -30,15 +30,16 @@ class AssemblyRuncardController extends Controller
         $material_type = implode(',',$material_name);
 
         $station_details = $matrix_data[0]->material_process[0]->station_details;
-        return response()->json(['material_details' => $material_type, 'station_details' => $station_details]);
+        return response()->json(['device_details' => $matrix_data, 'material_details' => $material_type, 'station_details' => $station_details]);
     }
 
-    public function get_data_from_2nd_molding(Request $request){
-        $sec_molding_runcard_data = SecMoldingRuncard::whereNull('deleted_at')
-                                            ->where('pmi_po_number', $request->po_number)
-                                            ->get();
-        return response()->json(['sec_molding_runcard_data' => $sec_molding_runcard_data]);
-    }
+    // COMMENTED CLARK FOR SEARCHING PO
+    // public function get_data_from_2nd_molding(Request $request){
+    //     $sec_molding_runcard_data = SecMoldingRuncard::whereNull('deleted_at')
+    //                                         ->where('pmi_po_number', $request->po_number)
+    //                                         ->get();
+    //     return response()->json(['sec_molding_runcard_data' => $sec_molding_runcard_data]);
+    // }
 
     public function chk_device_prod_lot_from_first_molding(Request $request){
         $device_name_by_prod_lot = FirstMolding::with('firstMoldingDevice')
@@ -103,6 +104,18 @@ class AssemblyRuncardController extends Controller
         ]);
     }
 
+    // public function connect_ypics(Request $request){
+    //     // $test = YPICS::select('SELECT TOP 1 a.SORDER as PO, a.CODE, b.NAME FROM XRECE a
+    //     // INNER JOIN XHEAD b on b.CODE = a.CODE')->get();
+
+    //     $test = DB::connection('sqlsrv_1')
+    //                 ->select("SELECT TOP 1 a.SORDER as PO, a.CODE, b.NAME FROM XRECE a
+    //                             INNER JOIN XHEAD b on b.CODE = a.CODE'
+    //                 ");
+
+    //     return $test;
+    // }
+
     public function get_assembly_runcard_data(Request $request){
         // $assembly_runcard_data = AssemblyRuncard::when($request->assy_runcard_station_id, function ($with_query) use ($request){
         //                                             return $with_query-> with(['assembly_runcard_station.station_name','assembly_runcard_station.user','assembly_runcard_station' => function($station_id_query) use ($request){
@@ -115,8 +128,17 @@ class AssemblyRuncardController extends Controller
 
         $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name','assembly_runcard_station.user'])
                                                 ->whereNull('deleted_at')
-                                                ->where('id', $request->assy_runcard_id)
+                                                ->when($request->assy_runcard_id, function ($query) use ($request){
+                                                        return $query ->where('id', $request->assy_runcard_id);
+                                                })
+                                                ->when($request->po_number, function ($query) use ($request){
+                                                        return $query ->where('po_number', $request->po_number);
+                                                })
+                                                // ->where('id', $request->assy_runcard_id)
+                                                // ->where('po_number', $request->po_number)
                                                 ->get();
+
+        // return $assembly_runcard_data;
 
         if(isset($request->assy_runcard_station_id)){
             $mode_of_defect_data =  AssemblyRuncardStationsMods::with(['mode_of_defect'])->where('assembly_runcard_stations_id', $request->assy_runcard_station_id)
@@ -256,7 +278,7 @@ class AssemblyRuncardController extends Controller
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
                                     'runcard_no'            => $request->runcard_no,
-                                    'production_lot'        => $request->production_lot,
+                                    'shipment_output'        => $request->shipment_output,
                                     'p_zero_two_prod_lot'    => $request->p_zero_two_prod_lot,
                                     'p_zero_two_device_id'   => $request->p_zero_two_device_id,
                                     's_zero_seven_prod_lot'  => $request->s_zero_seven_prod_lot,
@@ -280,7 +302,7 @@ class AssemblyRuncardController extends Controller
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
                                     'runcard_no'            => $request->runcard_no,
-                                    'production_lot'        => $request->production_lot,
+                                    'shipment_output'        => $request->shipment_output,
                                     'p_zero_two_prod_lot'    => $request->p_zero_two_prod_lot,
                                     'p_zero_two_device_id'   => $request->p_zero_two_device_id,
                                     's_zero_seven_prod_lot'  => $request->s_zero_seven_prod_lot,
@@ -449,10 +471,11 @@ class AssemblyRuncardController extends Controller
                                     ->whereNull('deleted_at')
                                     ->first([
                                         'po_number',
-                                        // 'parts_code',
-                                        'device_name',
-                                        'production_lot',
                                         'po_quantity',
+                                        'device_name',
+                                        'part_code',
+                                        'runcard_no',
+                                        'shipment_output',
                                     ]);
 
         // return $assembly;
@@ -468,9 +491,9 @@ class AssemblyRuncardController extends Controller
             'text' =>  "<strong>$assembly->po_number</strong><br>
             <strong>$assembly->po_quantity</strong><br>
             <strong>$assembly->device_name</strong><br>
-            <strong>$assembly->production_lot</strong><br>
-            <strong>$assembly->production_lot</strong><br>
-            <strong>$assembly->production_lot</strong><br>
+            <strong>$assembly->part_code</strong><br>
+            <strong>$assembly->runcard_no</strong><br>
+            <strong>$assembly->shipment_output</strong><br>
             "
         );
         // <strong>$assembly->qty</strong><br>
@@ -479,28 +502,28 @@ class AssemblyRuncardController extends Controller
         $label = "
             <table class='table table-sm table-borderless' style='width: 100%;'>
                 <tr>
-                    <td>PO No.:</td>
+                    <td>PO No:</td>
                     <td>$assembly->po_number</td>
                 </tr>
                 <tr>
-                    <td>Material Code:</td>
+                    <td>PO Quantity:</td>
                     <td>$assembly->po_quantity</td>
                 </tr>
                 <tr>
-                    <td>Material Name:</td>
+                    <td>Device Name:</td>
                     <td>$assembly->device_name</td>
                 </tr>
                 <tr>
+                    <td>Part Code:</td>
+                    <td>$assembly->part_code</td>
+                </tr>
+                <tr>
                     <td>Production Lot #:</td>
-                    <td>$assembly->production_lot</td>
+                    <td>$assembly->runcard_no</td>
                 </tr>
                 <tr>
                     <td>Shipment Output:</td>
-                    <td>$assembly->production_lot</td>
-                </tr>
-                <tr>
-                    <td>PO Quantity:</td>
-                    <td>$assembly->production_lot</td>
+                    <td>$assembly->shipment_output</td>
                 </tr>
             </table>
         ";
@@ -515,4 +538,20 @@ class AssemblyRuncardController extends Controller
 
         return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'assembly_data' => $assembly]);
     }
+
+    // public function get_total_yield(Request $request){
+    //     $fmold_total_yield = FirstMolding::with('firstMoldingDevice')
+    //                                         ->whereNull('deleted_at')
+    //                                         ->where('production_lot', $request->production_lot)
+    //                                         ->get();
+
+    //         $TotalYield = DB::connection('mysql')->select("SELECT fmold.material_yield as fmold_mat_yield, smold.material_yield as smold_mat_yield, assy.total_assembly_yield as total_assy_yield FROM first_moldings as fmold
+    //                     INNER JOIN sec_molding_runcards AS smold ON fmold.production_lot = sub.id
+    //                     INNER JOIN assembly_runcards AS assy ON runcard_station.station = sub.id
+    //                     WHERE runcard_station.assembly_runcards_id = '$request->assy_runcard_id'
+    //                     ORDER BY runcard_station.id DESC
+    //         ");
+    //         // material_yield fmold, smold
+    //         //total_assembly_yield
+    // }
 }
