@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Device;
 use App\Models\Process;
 use App\Models\MaterialProcessStation;
 use App\Models\MaterialProcessMaterial;
@@ -29,5 +30,10 @@ class MaterialProcess extends Model
 
     public function machine_details(){
         return $this->hasMany(MaterialProcessMachine::class, 'mat_proc_id', 'id');
+    }
+
+    public function device_details(){
+        return $this->hasOne(Device::class, 'id', 'device_id');
+
     }
 }

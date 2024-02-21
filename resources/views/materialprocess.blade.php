@@ -440,9 +440,11 @@
                               </div>
                               <div class="form-group">
                                 <label>Material Name</label>
-                                <select class="form-control select2bs4" id="selAddMatProcMatName" name="material_name[]" multiple>
-
+                                <select class="form-control select2bs4" id="selAddMatProcMatName" name="" multiple>
                                 </select>
+                                {{-- <select class="form-control select2bs4" id="selAddMatProcMatName" name="" multiple="">
+
+                                </select> --}}
                               </div>
                              
                           </div>
@@ -740,6 +742,7 @@
     let dataTableMatProcess;
     let selectedDeviceId = 0;
     let selectedDeviceName = '';
+    let selectedProcess;
 
     $(document).ready(function () {
 
@@ -757,13 +760,14 @@
         $(this).closest('tr').addClass('table-active');
         selectedDeviceId = $(this).closest('tbody tr.table-active').find('.td_device_id').val();
         selectedDeviceName = $(this).closest('tbody tr.table-active').find('.td_device_name').val();
+        selectedProcess = $(this).closest('tbody tr.table-active').find('.td_process').val();
 
+        // console.log( selectedProcess);
         $("#uSelectedDeviceName").text(selectedDeviceName);
         $("#txtAddSubDeviceDeviceId").val(selectedDeviceId);
         $("#txtAddSubDeviceDeviceName").val(selectedDeviceName);
-        getMaterialProcessForInputs();
+        getMaterialProcessForInputs(selectedProcess);
 
-        dataTableMatProcess.draw();
       });
 
       $("#chkAddMatProcHasEmboss").click(function(){
@@ -968,7 +972,6 @@
         });
 
         $("#btnShowAddMatProcModal").click(function(){
-
           toastr.options = {
             "closeButton": false,
             "debug": false,
@@ -988,6 +991,7 @@
           };
 
           if(selectedDeviceId != 0){
+
             $("#txtAddMatProcDevId").val(selectedDeviceId);
             $("#txtAddMatProcDeviceName").val(selectedDeviceName);
 
@@ -1157,6 +1161,23 @@
         $("#modalAddDevice").on('hidden.bs.modal', function () {
             console.log('hidden.bs.modal');
             resetDeviceAddValues();
+        });
+
+        function resetMatProcValues() {
+            // Reset values
+            $("#formAddMatProc")[0].reset();
+
+            // Reset hidden input fields
+            $("#selAddMatProcProcess").val("").trigger('change');
+            $("#selAddMatProcMachine").val("").trigger('change');
+            $('select[id="selAddMatProcMatName"]').val([]).trigger('change');
+            $('#txtAddMatProcId').val('');
+            $('#txtAddMatProcStep').prop('readonly', true);
+        }
+
+        $("#modalAddMatProc").on('hidden.bs.modal', function () {
+            console.log('hidden.bs.modal resetMatProcValues');
+            resetMatProcValues();
         });
 
 

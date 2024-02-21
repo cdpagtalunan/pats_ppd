@@ -200,6 +200,7 @@ class MaterialProcessController extends Controller
         else{
             DB::beginTransaction();
 
+            // return $request->all();
             try{
                 $mat_proc_array = array(
                     'step'      => $request->step,
@@ -272,8 +273,21 @@ class MaterialProcessController extends Controller
                 }
 
                 if(isset($request->material_name)){
-                    for ($i=0; $i < count($request->material_name); $i++) { 
-                        $exploded_material = explode(' || ',$request->material_name[$i]);
+                    if(is_array($request->material_name)){
+                        for ($i=0; $i < count($request->material_name); $i++) { 
+                            $exploded_material = explode(' || ',$request->material_name[$i]);
+                            MaterialProcessMaterial::insert([
+                                'mat_proc_id'   => $material_process_id,
+                                'material_code' => $exploded_material[0],
+                                'material_type' => $exploded_material[1],
+                                'created_by'    => Auth::user()->id,
+                                'created_at'    => NOW()
+                            ]);
+                        }
+                    }
+                    else{
+                        $exploded_material = explode(' || ', $request->material_name);
+
                         MaterialProcessMaterial::insert([
                             'mat_proc_id'   => $material_process_id,
                             'material_code' => $exploded_material[0],
@@ -282,6 +296,7 @@ class MaterialProcessController extends Controller
                             'created_at'    => NOW()
                         ]);
                     }
+                    
                 }
 
                 if(isset($request->station)){
@@ -312,6 +327,7 @@ class MaterialProcessController extends Controller
 
     public function get_mat_proc_data(Request $request){
         $material_process_details = MaterialProcess::with([
+            'device_details',
             'material_details'=> function($query){
                 $query->where('status', 0);
             },
