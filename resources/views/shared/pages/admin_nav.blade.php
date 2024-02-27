@@ -144,8 +144,6 @@
                             </ul>
                         </li>
                     @endif
-
-                    
                     {{-- <li class="nav-item">
                         <a href="{{ route("press_stamping_kyori_machine_checksheet") }}" class="nav-link">
                             <i class="fa-solid fa-list-check"></i>

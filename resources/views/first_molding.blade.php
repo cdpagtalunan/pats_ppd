@@ -1362,6 +1362,8 @@
                             let contact_name = response[0].contact_name
                             let device_name = response[0].device_name
 
+                            // $('#tblFirstMoldingDetails').empty();
+                            dt.firstMolding.draw();
                             $('#btnAddFirstMolding').prop('disabled',false);
                             $('#global_contact_name').val(contact_name);
                             $('#global_input_device_name').val(device_name);

@@ -347,7 +347,6 @@
                 }else{
                     toastr.error(`Error: ${data.status}`);
                 }
-
             }
         });
     }

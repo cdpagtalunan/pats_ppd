@@ -248,7 +248,7 @@
                                                         </div>
                                                         <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" value="CN171S-07#IN-VE" readonly>
                                                     </div>
-                                                    
+
                                                     <div class="input-group input-group-sm mt-1 mb-2">
                                                         <div class="input-group-prepend w-50">
                                                             <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
@@ -780,7 +780,7 @@
                     // $('.select2bs5').select2({
                     //     theme: 'bootstrap-5'
                     // });
-                    
+
                     // $('#tableAssemblyStationMOD .textMODQuantity').each(function() {
                     //     if($(this).val() === null || $(this).val() === ""){
                     //         $("#tableAssemblyStationMOD tbody").empty();
@@ -1190,7 +1190,7 @@
                             }else{
                                 $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(500);
                                 let txtRuncard = txtPONumber.slice(5,10);
-                                
+
                                 $.ajax({
                                     type: "get",
                                     url: "get_assembly_runcard_data",
@@ -1201,7 +1201,7 @@
                                     success: function (response) {
                                         let result = response['assembly_runcard_data'];
                                         runcardCount = result.length;
-                                        
+
                                         if(result.length == 0){
                                             runcardCount = 1;
                                         }else{
@@ -1238,7 +1238,7 @@
                         //     data: "data",
                         //     dataType: "json",
                         //     success: function (response) {
-                                
+
                         //     }
                         // });
                     }
@@ -1246,7 +1246,7 @@
                         toastr.error('Please Select Device Name')
                     }
                 });
-                
+
 
                 $(document).on('click', '#btnSubmitAssemblyRuncardData',function(e){
                     let _token = '{{ csrf_token() }}';
@@ -1349,7 +1349,7 @@
                                 //     data: $('#formCNAssemblyRuncard').find('formCNAssemblyRuncard')
                                 //     dataType: "json",
                                 //     success: function(response){
-                                        
+
                                 //     }
                                 // });
 
