@@ -98,6 +98,9 @@
 {{-- PressStampingMachineChecksheet --}}
 <script src="@php echo asset("public/js/main/PressStampingMachineChecksheet.js?".date("YmdHis")) @endphp"></script>
 
+{{-- ASSEMBLY FVI --}}
+<script src="{{ asset('public/js/main/AssemblyFVI.js') }}" async></script>
+
 
 
 

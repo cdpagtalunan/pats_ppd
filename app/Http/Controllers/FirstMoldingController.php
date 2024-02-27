@@ -24,7 +24,7 @@ use App\Models\FirstMoldingMaterialList;
 
 class FirstMoldingController extends Controller
 {
-    public function getFirstMoldingDevices(Request $request)
+    public function getFirstMoldingDevices(Request $request) //FirstMoldingDevice::
     {
         $first_molding_device = FirstMoldingDevice::where('process_type',1)->whereNull('deleted_at')->get();
         foreach ($first_molding_device as $key => $value_first_molding_device) {

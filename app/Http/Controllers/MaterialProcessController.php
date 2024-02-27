@@ -9,6 +9,7 @@ use App\Models\Station;
 use App\Models\EEDMSMachine;
 use Illuminate\Http\Request;
 use App\Models\MaterialProcess;
+use App\Models\FirstMoldingDevice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialProcessMachine;
@@ -283,6 +284,18 @@ class MaterialProcessController extends Controller
                                 'created_by'    => Auth::user()->id,
                                 'created_at'    => NOW()
                             ]);
+                            //Add Molding Devices for Production History Module
+                            if($request->process == 4){
+                                $is_exist_first_molding_device = FirstMoldingDevice::where('device_name',$request->device_name)->exists();
+                                if( !isset( $is_exist_first_molding_device ) ){
+                                    FirstMoldingDevice::insert([
+                                        'device_name' => $request->device_name,
+                                        'contact_name' => $exploded_material[1],
+                                        'process_type' => 1,
+                                        'created_at'    => NOW(),
+                                    ]);
+                                }
+                            }
                         }
                     // }
                     // else{
@@ -322,8 +335,8 @@ class MaterialProcessController extends Controller
               
 
               
-                DB::commit();
-
+                // DB::commit();
+                DB::rollback();
                 return response()->json([
                     'result' => 1,
                     'msg'    => 'Transaction Successful'

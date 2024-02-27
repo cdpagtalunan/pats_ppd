@@ -6,7 +6,7 @@
 @section('title', 'Dashboard')
 
 @section('content_page')
-    <style>
+    {{-- <style>
         table.table tbody td{
             padding: 4px 4px;
             margin: 1px 1px;
@@ -22,7 +22,7 @@
             text-align: center;
             vertical-align: middle;
         }
-    </style>
+    </style> --}}
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -56,26 +56,24 @@
                                         <label>PO Number</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <button type="button" class="btn btn-primary btnSearchPO"
-                                                    title="Click to Scan PO Code"><i
-                                                        class="fa fa-qrcode"></i></button>
+                                                <button class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode">
+                                                    <i class="fa-solid fa-qrcode"></i>
+                                                </button>
                                             </div>
-                                            <input type="text" class="form-control" id="txtSearchPO" readonly="">
+                                            <input type="text" class="form-control" id="txtSearchPONum" readonly placeholder="Search PO Number">
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <label>Device Name</label>
-                                        <input type="text" class="form-control" id="txtDeviceName" name=""
-                                            readonly="">
+                                        <input type="text" class="form-control" id="txtSearchDeviceName" name="" readonly placeholder="Device Name">
                                     </div>
                                     <div class="col-sm-2">
                                         <label>Device Code</label>
-                                        <input type="text" class="form-control" id="txtDeviceCode"
-                                            readonly="">
+                                        <input type="text" class="form-control" id="txtSearchDeviceCode" readonly placeholder="Device Code">
                                     </div>
                                     <div class="col-sm-1">
                                         <label>PO Qty</label>
-                                        <input type="text" class="form-control" id="txtPoQty" readonly="">
+                                        <input type="text" class="form-control" id="txtSearchPoQty" readonly placeholder="PO Qty">
                                     </div>
                                 </div>
                                 <br>
@@ -92,12 +90,12 @@
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-sm table-bordered table-hover w-100" id="tblOQCLotApp">
+                                    <table class="table table-sm table-bordered table-hover w-100" id="tblAssyOQCLotApp">
                                         <thead>
                                             <tr>
                                                 <th>Action</th>
                                                 <th>Status</th>
-                                                <th>Submission</th>
+                                                {{-- <th>Sub Lot #</th> --}}
                                                 <th>Lot #</th>
                                                 <th>Sub Lot #</th>
                                                 <th>Required Lot Qty</th>
@@ -116,26 +114,809 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
+
+    <!-- Start Scan QR Modal -->
+    <div class="modal fade" id="mdlScanQrCode" data-formid="" tabindex="-1" role="dialog" aria-labelledby="ModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body pt-0">
+                    {{-- hidden_scanner_input --}}
+                    <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanQrCode" name="scan_qr_code" autocomplete="off">
+                    <div class="text-center text-secondary">Please scan the code.<br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.End Scan QR Modal -->
+
+    <div class="modal fade" id="modal_OQCLotApp_QRcode">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> OQC Lot Application - QR Sticker</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                        <center>
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')
+                                    ->size(150)->margin(5)->errorCorrection('H')
+                                    ->generate('0')) !!}" id="img_barcode_PONum" style="max-width: 200px;">
+                            <br>
+                        </center>
+                            <label id="img_barcode_details"></label>
+                            <label id="lbl_PO_num"></label>
+                            <label id="lbl_prod_name"></label>
+                            <label id="lbl_lot_num"></label>
+                            <label id="lbl_lot_qty"></label>
+                            <label id="lbl_line_num"></label>
+                            <label id="lbl_datetime_applied"></label>
+                            <label id="lbl_ww"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btn_print_oqc_barcode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal_LotApp_QRcode">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Lot Tray - QR Sticker</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- PO 1 -->
+                        <div class="col-sm-12">
+                        <center>
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')
+                                    ->size(150)->margin(5)->errorCorrection('H')
+                                    ->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;">
+                            <br>
+                        </center>
+                            <label id="img_barcode_PO_text"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btn_print_barcode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    
+    <div class="modal fade" id="modalScan_PO" data-formid="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="text-center text-secondary">
+                        Please scan the PO number.
+                        <br><br>
+                        <h1><i class="fa fa-qrcode fa-lg"></i></h1>
+                    </div>
+                    <input type="text" id="txt_search_po_number" class="hidden_scanner_input">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="modal_OQCLotApp_QRcode">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> OQC Lot Application - QR Sticker</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <center>
+                            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')
+                                    ->size(150)->margin(5)->errorCorrection('H')
+                                    ->generate('0')) !!}" id="img_barcode_PONum" style="max-width: 200px;">
+                            <br>
+                            </center>
+
+                            <label id="img_barcode_details"></label>
+                            <label id="lbl_PO_num"></label>
+                            <label id="lbl_prod_name"></label>
+                            <label id="lbl_lot_num"></label>
+                            <label id="lbl_lot_qty"></label>
+                            <label id="lbl_line_num"></label>
+                            <label id="lbl_datetime_applied"></label>
+                            <label id="lbl_ww"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btn_print_oqc_barcode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    
+    <!-- MODALS -->
+    <div class="modal fade" id="modalOQCLotApp" style="overflow-y: auto;">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">OQC Lot Application</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" id="formOQCLotApp">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">             
+                            <div class="col-sm-6 p-2">
+                                <input type="hidden" class="form-control" id="OQCLotAppId" name="oqc_lot_app_id">
+                                <input type="hidden" class="form-control" id="AssyFviId" name="assy_fvi_id">
+
+                                <input type="hidden" class="form-control" id="hidden_position" value="{{ Auth::user()->position }}">
+                                <input type="hidden" class="form-control" id="SubmissionCount" name="submission_count">
+                                <input type="hidden" class="form-control" id="hidden_runcard_id" name="hidden_runcard_id">
+                                <input type="hidden" class="form-control" id="hidden_status" name="hidden_status">
+                                <input type="hidden" class="form-control" id="hidden_require_oqc_before_emboss" name="hidden_require_oqc_before_emboss">
+                                <input type="hidden" class="form-control" id="hidden_runcard_status" name="hidden_runcard_status">
+                                <input type="hidden" class="form-control" id="hidden_sub_lot" name="hidden_sub_lot">
+
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Current PO Number</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmCurrentPo" name="po_number" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmDeviceName" name="device_name" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Lot No.</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmLotNo" name="lot_no" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Lot Quantity</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmLotQuantity" name="lot_quantity" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Output Quantity</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmOutputQuantity" name="output_quantity" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Application Date</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmAppDate" name="app_date" value="<?php date_default_timezone_set('Asia/Manila'); echo date("Y-m-d h:i a");?>" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Print Lot No.</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmPrintLotNo" name="print_lot_no" readonly autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">A Drawing No. / Rev</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmADrawing" name="a_drawing" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">G Drawing No. / Rev</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmGDrawing" name="g_drawing" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 p-2">
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Device Category</span>
+                                            </div>
+                                            <select class="form-control form-control-sm selectDevice" name="device_cat" id="FrmSelectDeviceCat">
+                                                <option value = "0" selected disabled>---</option>
+                                                <option value = "1">Automotive</option>
+                                                <option value = "2">Non-Automotive</option>
+                                                <option value = "3">Regular Device</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Certification Lot</span>
+                                            </div>
+                                            <select class="form-control form-control-sm selectCertLot" name="cert_lot" id="FrmCertLot">
+                                                <option value = "0" selected disabled>---</option>
+                                                <option value = "6">N/A</option>
+                                                <option value = "1">New Operator</option>
+                                                <option value = "2">New product/model</option>
+                                                <option value = "3">Evaluation lot</option>
+                                                <option value = "4">Re-inspection</option>
+                                                <option value = "5">Flexibility</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            {{-- </div>
+                            <div class="col-sm-4 p-2"> --}}
+                                <div class="row">
+                                    <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-100">
+                                            <span class="input-group-text w-100" id="basic-addon1">Guaranteed Lot (Containtment actions from in-process <br>
+                                            defects, OQC lot-out, internal & customer claim)</span>
+                                        </div>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input class="form-control-sm" type="radio" id="FrmGuaranteedLotWith" name="guaranteed_lot" value="1"> &nbsp; WITH &nbsp;&nbsp;
+                                        <input class="form-control-sm" type="radio" id="FrmGuaranteedLotWO" name="guaranteed_lot" value="2"> &nbsp; WITHOUT                         
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Problem</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="FrmProblem" name="problem" autocomplete="off" readonly>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Document No.</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="FrmDocNo" name="doc_no" autocomplete="off" readonly>
+                                    </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Lot Applied By</span>
+                                            </div>
+                                            <input type="text" class="form-control" id="AppliedByOperatorName" name="applied_by_operator_name" readonly>
+                                            <input type="hidden" id="idAppliedByOperatorName" name="id_applied_by_operator_name">
+                                            <div class="input-group-prepend">
+                                                <button type="button" class="btn btn-info btn-sm" id="btnSearchInspector" data-bs-toggle="modal" data-bs-target="#modalScanQRSave" title="Scan Employee ID"><i class="fa fa-barcode"></i></button>
+                                                <button type="button" class="btn btn-danger btn-sm" id="btnPopLastOperator" title="Remove Last Operator"><i class="fa fa-retweet"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
+                                        </div>
+                                        <textarea class="form-control form-control-sm" rows="3" id="FrmOQCRemarks" name="oqc_remarks"></textarea>
+                                    </div>
+                                    </div>
+                                </div>             
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 p-2">
+                                <span class="fa fa-list"></span> OQC Lot Application Summary
+                                <br><br> 
+                                <div class="table-responsive">
+                                    <table id="tblLotAppSummary" class="table table-sm table-bordered table-striped table-hover" style="width: 100%;">
+                                        <thead style="font-size:85%;">
+                                            <tr align="center">
+                                            <th>Submission</th>
+                                            <th>Guaranteed Lot</th>
+                                            <th>Problem</th>
+                                            <th>Document No.</th>
+                                            <th>App. Date</th>
+                                            {{-- <th>App. Time</th> --}}
+                                            <th>Lot Applied By</th>
+                                            <th>Remarks</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="font-size:85%;"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" id="id_btn_AddOQCLotApp" class="btn btn-primary btn-sm"><i class="fa fa-check fa-xs"></i> Save</button>
+                        <button type="button" id="id_btn_close_oqcla" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js_content')
 <script>
-    var dtOQCLotApp;
     $(document).ready(function(){
-        // dtOQCLotApp = $("#tblOQCLotApp").DataTable({
-        //     "processing": true,
-        //     "serverSide": true,
-        //     "ajax": {
-        //         url: "view_oqc_lot_app",
-        //         data: function (param) {
-        //             param.po = $("#txtSearchPO").val();
-        //         }
-        //     },
-        //     fixedHeader: true,
-        //     "columns": [
-        //         { data: "action", orderable:false, searchable:false }
-        //     ],
-        // }); //end of dataTableDevices
+
+        $('#btnScanPo').on('click', function(e){
+            e.preventDefault();
+            // $('#mdlScanQrCode').modal('show');
+            $('#mdlScanQrCode').on('shown.bs.modal', function () {
+                $('#txtScanQrCode').focus();
+                const mdlScanQrCode = document.querySelector("#mdlScanQrCode");
+                const inptQrCode = document.querySelector("#txtScanQrCode");
+                let focus = false;
+
+                mdlScanQrCode.addEventListener("mouseover", () => {
+                    if (inptQrCode === document.activeElement) {
+                        focus = true;
+                    } else {
+                        focus = false;
+                    }
+                });
+
+                mdlScanQrCode.addEventListener("click", () => {
+                    if (focus) {
+                        inptQrCode.focus()
+                    }
+                });
+            });
+        });
+
+        $(document).on('click', '.btn_update_lot', function(){
+            let id = $(this).val();
+            let sub_count = $(this).attr('sub_count');
+            $.ajax({
+                type: "get",
+                url: "get_data_from_assy_fvi",
+                data: {
+                    "fvi_id" : id,
+                    "sub_count" : sub_count,
+                    "po_number" : $('#txtSearchPONum').val()
+                },
+                dataType: "json",
+                success: function (response){
+                    let assy_fvi_details = response['assy_fvi_details'];
+                    let oqc_lot_app = response['assy_fvi_details'][0].oqc_lot_app;
+                    let oqc_lot_app_summ = response['assy_fvi_details'][0].oqc_lot_app.oqc_lot_app_summ[0];
+                    let devices = response['devices'];
+                    let total_qty_output = response['total_qty_output'];
+
+                    $('#AssyFviId').val(assy_fvi_details[0].id); //from fvi
+                    $('#FrmCurrentPo').val(assy_fvi_details[0]['po_no']); //from fvi
+                    $('#FrmDeviceName').val(assy_fvi_details[0]['device_name']); //from fvi
+                    $('#FrmLotNo').val(assy_fvi_details[0]['lot_no']); //from fvi
+                    $('#FrmLotQuantity').val(devices[0].qty_per_box); //from matrix
+                    $('#FrmOutputQuantity').val(total_qty_output); //from matrix
+                    
+                    $('#FrmADrawing').val(assy_fvi_details[0]['a_drawing_no'] +'-'+ assy_fvi_details[0]['a_drawing_rev']); //from fvi
+                    $('#FrmGDrawing').val(assy_fvi_details[0]['g_drawing_no'] +'-'+ assy_fvi_details[0]['g_drawing_rev']); //from fvi
+                    // data[0]['a_drawing_no'] +'-'+ data[0]['a_revision']
+                    // $('#FrmRDrawing').val(assy_fvi_details[0]['po_qty']);
+                    // $('#guaranteed_lot').val(assy_fvi_details[0]['po_qty']);
+
+                    let year = moment().format('YY');
+                        year = year.substr(1);
+
+                    let month = moment().format('M');
+
+                    if(month == 10){
+                        month = 'X'
+                    }else if(month == 11){
+                        month = 'Y'
+                    }else if(month == 12){
+                        month = 'Z'
+                    }
+
+                    let date = moment().format('DD');
+                    // console.log(year + month + date);
+
+                        // $('#txtFVICreatedAt').val(`${dt}`)
+                        // $('#txtFVIAppDT').val(`${dt}`)
+                        
+                    // $('#FrmProblem').val(assy_fvi_details[0]['po_qty']);
+                    // $('#FrmDocNo').val(assy_fvi_details[0]['po_qty']);
+                    // $('#FrmAppDate').val(assy_fvi_details[0]['device_name']);
+                    $('#FrmPrintLotNo').val(year + month + date);
+                    // $('#FrmOQCRemarks').val(assy_fvi_details[0]['po_qty']);
+                    if(oqc_lot_app == '' || oqc_lot_app == undefined){
+                        console.log('no lot app');
+                        $('#SubmissionCount').val(1);
+                    }else{
+                        console.log('may lot app');
+                        
+                        // GetUserName(oqc_lot_app.prodn_supervisor);
+                        submission_count = (oqc_lot_app.submission * 1 + 1);
+                        $('#SubmissionCount').val(submission_count);
+
+                        $('#OQCLotAppId').val(oqc_lot_app.id);
+
+                        $('#FrmCertLot').val(oqc_lot_app.device_cat);
+                        $('#FrmSelectDeviceCat').val(oqc_lot_app.cert_lot);
+
+                        $('#idAppliedByOperatorName').val(oqc_lot_app.user.id);
+                        $('#AppliedByOperatorName').val(oqc_lot_app.user.firstname +' '+ oqc_lot_app.user.lastname);
+
+                        $('#FrmProblem').val(oqc_lot_app_summ.problem);
+                        $('#FrmDocNo').val(oqc_lot_app_summ.doc_no);
+                        $('#FrmOQCRemarks').val(oqc_lot_app_summ.remarks);
+
+                        if(oqc_lot_app.guaranteed_lot == 1){
+                            $('#FrmGuaranteedLotWith').prop('checked', true);
+
+                            $('#FrmProblem').prop('required', true)
+                            $('#FrmProblem').removeAttr('readonly')
+                            $('#FrmDocNo').prop('required', true)
+                            $('#FrmDocNo').removeAttr('readonly')
+
+                        }else if(oqc_lot_app.guaranteed_lot == 2){
+                            $('#FrmGuaranteedLotWO').prop('checked', true);
+
+                            $('#FrmProblem').prop('required', false)
+                            $('#FrmProblem').prop('readonly', true)
+                            $('#FrmDocNo').prop('required', false)
+                            $('#FrmDocNo').prop('readonly', true)
+                        }
+                        dtOQCLotAppSummary.draw();
+                    }
+                    $('#modalOQCLotApp').modal('show');
+                }
+            });
+        });
+
+        $('#FrmGuaranteedLotWith').click(function (e){ 
+            // e.preventDefault();
+            // $(this).prop('checked', true);
+            // $('#FrmGuaranteedLotWO').prop('checked', false);
+            $('#FrmProblem').prop('required', true)
+            $('#FrmProblem').removeAttr('readonly')
+            $('#FrmDocNo').prop('required', true)
+            $('#FrmDocNo').removeAttr('readonly')
+        });
+
+        $('#FrmGuaranteedLotWO').click(function (e) { 
+            // e.preventDefault();
+            // $(this).prop('checked', true);
+            // $('#FrmGuaranteedLotWith').prop('checked', false);
+            $('#FrmProblem').prop('required', false)
+            $('#FrmProblem').prop('readonly', true)
+            $('#FrmDocNo').prop('required', false)
+            $('#FrmDocNo').prop('readonly', true)
+        });
+
+        $('#btnPopLastOperator').click(function(){
+            $('#AppliedByOperatorName').val('');
+        }); 
+
+        $(document).on('keyup','#txtScanUserId', function(e){
+            if(e.keyCode == 13){
+                validateUser($(this).val(), [0, 2, 5], function(result){
+                    if(result == 1){
+                        GetUserName($('#txtScanUserId').val());
+                    }else{ // Error Handler
+                        toastr.error('User not authorize!');
+                        $('#txtScanUserId').val('');
+                    }
+                });
+            }
+        });
+
+        function GetUserName(UserId){
+            $.ajax({
+                type: "get",
+                url: "get_user_name",
+                data: {
+                    "user_id": UserId,
+                },
+                dataType: "json",
+                success: function (response) {
+                    // console.log('gagaga');
+                    $('#AppliedByOperatorName').val(response['user'].firstname+' '+response['user'].lastname);
+                    $('#idAppliedByOperatorName').val(response['user'].id);
+                    $('#txtScanUserId').val('');
+                    $('#modalScanQRSave').modal('hide');
+                }
+            });
+        }
+
+        // TODO
+        // VALIDATE QR SCANNING BUKAS
+
+        $('#formOQCLotApp').submit(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: "post",
+                url: "add_oqc_lot_app",
+                data: $(this).serialize(),
+                dataType: "json",
+                success: function (response) {
+                    if (response['result'] == 1 ) {
+                        toastr.success('Successful!');
+                        $('#modalOQCLotApp').modal('hide');
+                        dtOQCLotApp.draw();
+                    }else{
+                        toastr.error('Error!, Please Contanct ISS Local 208');
+                    }
+                }
+            });
+        });
+
+        const dtOQCLotApp = $("#tblAssyOQCLotApp").DataTable({
+            "processing" : true,
+            "serverSide" : true,
+            "ajax" : {
+                url: "view_assy_oqc_lot_app",
+                data: function (param){
+                    param.po_no       = $("#txtSearchPONum").val();
+                    param.device_name = $("#txtSearchDeviceName").val();
+                },
+            },
+            fixedHeader: true,
+            "columns":[
+                { "data" : "action", orderable:false, searchable:false },
+                { "data" : "status_raw" },
+                { "data" : "lot_no" },
+                // { "data" : "sub_lot_raw" },
+                { "data" : "submission_raw" },
+                { "data" : "lot_qty" },
+                { "data" : "output_qty_raw" },
+                { "data" : "lot_applied_by" },
+            ],
+            "columnDefs": [
+                {"className": "dt-center", "targets": "_all"},
+                {
+                    "targets": [2],
+                    "data": null,
+                    "defaultContent": "---"
+                },
+            ],
+        });
+
+        const dtOQCLotAppSummary = $("#tblLotAppSummary").DataTable({
+            "processing"  : false,
+            "serverSide"  : true,
+            "ajax"        : {
+                url: "view_assy_oqc_lot_app_summary",
+                data: function (param){
+                    param.assy_fvi_id = $("#AssyFviId").val();
+                }
+            },
+            "columns":[
+                { "data" : "sub_raw" },
+                { "data" : "guar_lot_raw" },
+                { "data" : "problem" },
+                { "data" : "doc_no" },
+                { "data" : "app_date_raw" },
+                // { "data" : "app_time_raw" },
+                { "data" : "fvo_raw" },
+                { "data" : "remarks" }
+            ],
+            
+            order:[[0,'asc']]
+        }); //end of dataTable 
+
+        $('#btnSearchInspector').on('click', function(e){
+            e.preventDefault();
+            // $('#modalScanQRSave').modal('show');
+            $('#modalScanQRSave').on('shown.bs.modal', function () {
+                $('#txtScanUserId').focus();
+                const modalScanQRSave = document.querySelector("#modalScanQRSave");
+                const inptQrCode = document.querySelector("#txtScanUserId");
+                let focus = false;
+
+                modalScanQRSave.addEventListener("mouseover", () => {
+                    if (inptQrCode === document.activeElement) {
+                        focus = true;
+                    } else {
+                        focus = false;
+                    }
+                });
+
+                modalScanQRSave.addEventListener("click", () => {
+                    if (focus) {
+                        inptQrCode.focus()
+                    }
+                });
+            });
+        });
+
+        $('#txtScanQrCode').on('keypress', function(e){
+            if(e.keyCode == 13){
+                const ScanQrCode = $('#txtScanQrCode').val();
+
+                // if(ScanQrCodeVal.po != undefined){
+                    try {
+                        let ScanQrCodeVal = JSON.parse(ScanQrCode)
+                            getPoNum =  ScanQrCodeVal.po
+
+                            $.ajax({
+                                type: "get",
+                                url: "get_data_from_assy_fvi",
+                                data: {
+                                    "po_number" : getPoNum
+                                },
+                                dataType: "json",
+                                success: function (response) {
+                                    let assy_fvi_details = response['assy_fvi_details'];
+                                    if(assy_fvi_details == '' || assy_fvi_details == undefined){
+                                        toastr.error('PO does not exists')
+                                        $('#txtScanQrCode').val('');
+                                    }else{
+                                        $('#txtSearchPONum').val(assy_fvi_details[0]['po_no']);
+                                        $('#txtSearchDeviceName').val(assy_fvi_details[0]['device_name']);
+                                        $('#txtSearchDeviceCode').val(assy_fvi_details[0]['device_code']);
+                                        $('#txtSearchPoQty').val(assy_fvi_details[0]['po_qty']);
+                                        $('#txtScanQrCode').val('');
+                                        $('#mdlScanQrCode').modal('hide');
+
+                                        // let mat_name = assy_fvi_details[0]['material_name'];
+                                        // mat_name = mat_name.replace(/ /g,'');
+                                        // // console.log(mat_name);
+
+                                        // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                        // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                        // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+
+                                        dtOQCLotApp.draw();
+                                        // dt1stStampingIpqcInspectionCompleted.draw();
+                                        // dt1stStampingIpqcInspectionResetup.draw();
+                                    }
+                                }
+                            });
+                    }catch (error) {
+                        toastr.error('Please Scan QR Code')
+                        $('#txtScanQrCode').val('');
+                    }
+                // }
+            }
+        });
+        
+        //- Print OQC lot Application
+        $(document).on('click', '.btn_print_lotapp', function(){
+            const id = $(this).val();
+            const data = {
+                "id" : id,
+                "device_name" : $('#txtSearchDeviceName').val(),
+            }
+
+            data = $.param(data);
+            $.ajax({
+                data        : data,
+                type        : 'get',
+                dataType    : 'json',
+                url         : "generate_oqclotapp_qrsticker",
+                success     : function (data) {
+
+                $("#img_barcode_PONum").attr('src', data['po_qrcode']);
+                imgResulOQCPOCode   = data['po_qrcode'];
+                img_barcode_details = data['lbl'];
+                img_barcode_details2 = data['lbl2'];
+
+                $("#img_barcode_details").html(data['lbl']);
+
+
+
+                $("#modal_OQCLotApp_QRcode").modal('show');
+
+                }, error    : function (data) {
+                alert('ERROR: '+data);
+                }
+            });
+        });
+
+        $("#btn_print_oqc_barcode").click(function(){
+            popup = window.open();
+            let content = '';
+
+            content += '<html>';
+            content += '<head>';
+            content += '<title></title>';
+            content += '<style type="text/css">';
+
+            content += '@media print { .pagebreak { page-break-before: always; } }';
+
+            content += '.rotated {';
+            content += 'width: 290px;';
+            content += '}';
+
+            content += '</style>';
+            content += '</head>';
+            content += '<body>';
+
+            content += '<table style="margin-top: 15px;>';
+            content += '<tr style="width: 288px;">';
+                content += '<td>';
+                content += '<img src="' + imgResulOQCPOCode + '" style="min-width: 60px; max-width: 60px;">';
+                content += '</td>';
+                content += '<td style="font-size: 9px; font-family: Calibri;">'+img_barcode_details2+'</td>';
+            content += '</tr>';
+            content += '</table>';
+
+            content += '</body>';
+            content += '</html>';
+            popup.document.write(content);
+
+            popup.focus(); //required for IE
+            popup.print();
+            popup.close();
+        });
     });
 </script>
 @endsection

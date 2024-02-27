@@ -45,4 +45,8 @@ class FirstStampingProduction extends Model
         return $this->hasMany(ReceivingDetails::class,'prod_id', 'id');
     }
 
+    public function first_molding(){
+        return $this->hasMany(ReceivingDetails::class,'prod_id', 'id');
+    }
+    /* */
 }

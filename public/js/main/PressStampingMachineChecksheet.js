@@ -407,5 +407,23 @@ const getMonthlyChecksheet = (monthlyChecksheetId, monthlyChecksheetStatus) => {
     });
 }
 
-// 
+const getTechnicianForMaintenanceRepairHighlights = (cboElement) => {
+    $.ajax({
+        type: "get",
+        url: "get_technician_repair_highlights",
+        // data: "",
+        dataType: "json",
+        success: function (response) {
+            console.log('clg', response);
+            let result;
+
+            result += `<option value="0" selected disabled>-- Select --</option>`;
+            for(let x = 0; x< response.length; x++){
+                result += `<option value="${response[x]['id']}">${response[x]['firstname']} ${response[x]['lastname']}</option>`;
+            }
+
+            cboElement.html(result);
+        }
+    });
+}
 

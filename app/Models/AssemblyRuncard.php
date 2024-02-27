@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\AssemblyRuncardStation;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\AssemblyRuncardStationsMods;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AssemblyRuncard extends Model
 {
@@ -24,5 +25,6 @@ class AssemblyRuncard extends Model
     public function assembly_ipqc(){
     	return $this->hasOne(MoldingAssyIpqcInspection::class, 'fk_molding_assy_id', 'id');
     }
+    
 
 }

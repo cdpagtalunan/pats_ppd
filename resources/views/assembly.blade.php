@@ -58,16 +58,22 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-sm-1">
+                                            <label class="form-label">Device Code</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Device Code" id="txtSearchDeviceCode" readonly>
+                                            </div>
+                                        </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMaterialName" readonly>
                                             </div>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Required Output</label>
+                                        <div class="col-sm-1">
+                                            <label class="form-label">Qty / Box</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Required Output" id="txtSearchReqOutput" readonly>
+                                                <input type="text" class="form-control" placeholder="Qty per Box" id="txtSearchReqOutput" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -134,9 +140,9 @@
                         <div class="modal-body">
                             {{-- <input type="text" id="textSecondMoldingId" class="d-none" name="id"> --}}
                             <div class="row">
-                                <div class="col-sm-6 border">
-                                    <div class="row">
-                                        <div class="col-sm-6 pl-4">
+                                <div class="col-sm-4 border px-4">
+                                    {{-- <div class="row">
+                                        <div class="col-sm-6 pl-4"> --}}
                                             <div class="py-3">
                                                 <span class="badge badge-secondary">1.</span> Runcard Details
                                             </div>
@@ -152,12 +158,12 @@
                                                 </div>
                                                 <input type="text" class="form-control form-control-sm" id="txtDeviceName" name="device_name" placeholder="Auto generated" readonly>
                                             </div>
-                                            {{-- <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">Device Code</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtMaterialName" name="material_name" placeholder="Auto generated" readonly>
-                                            </div> --}}
+                                                <input type="text" class="form-control form-control-sm" id="txtDeviceCode" name="device_code" placeholder="Auto generated" readonly>
+                                            </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
@@ -321,12 +327,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-6 pr-4">
-                                            <div class="py-3">
+                                        {{-- </div> --}}
+                                        {{-- <div class="col-sm-6 pr-4"> --}}
+                                            {{-- <div class="py-3">
                                                 <span>&nbsp;</span>
-                                            </div>
-                                            <div class="input-group input-group-sm mb-3">
+                                            </div> --}}
+                                            <div class="input-group input-group-sm mt-2 mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Total Assembly Yield</span>
                                                 </div>
@@ -344,10 +350,10 @@
                                                     <i class="fa-solid fa-floppy-disk"></i> Save
                                                 </button>
                                             </div>
-                                        </div>
-                                    </div>  
+                                        {{-- </div>
+                                    </div>   --}}
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-8">
                                     <div class="col border px-4 border">
                                         <div class="py-3">
                                             <div style="float: left;">
@@ -963,7 +969,7 @@
                         url: "view_assembly_runcard_stations",
                         data: function (param){
                             param.assy_runcard_id = $("#txtAssyRuncardId").val();
-                        }
+                        },
                     },
                     fixedHeader: true,
                     "columns":[
@@ -1090,11 +1096,13 @@
                         success: function (response) {
                             let device_details = response['device_details'];
                             let material_details = response['material_details'];
-                            let station_details = response['station_details'];
-                            console.log(station_details);
+                            // let station_details = response['station_details'];
+                            // console.log(station_details);
 
+                            $('#txtSearchDeviceCode').val(device_details[0].code);
                             $('#txtSearchMaterialName').val(material_details);
                             $('#txtSearchReqOutput').val(device_details[0].qty_per_box);
+                            
                             // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
                             // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
@@ -1108,10 +1116,10 @@
 
                             //STATIONS
                             let result = '<option value="" disabled selected>-- Select Station --</option>';
-                            if (response['station_details'].length > 0) {
+                            if (device_details[0].material_process.length > 0) {
                                     result = '<option value="" disabled selected>-- Select Station --</option>';
-                                for (let index = 0; index < response['station_details'].length; index++) {
-                                    result += '<option value="' + response['station_details'][index].stations['id'] + '">' + response['station_details'][index].stations['station_name'] + '</option>';
+                                for (let index = 0; index < device_details[0].material_process.length; index++) {
+                                    result += '<option value="' + device_details[0].material_process[index].station_details[0].stations['id'] + '">' + device_details[0].material_process[index].station_details[0].stations['station_name'] + '</option>';
                                 }
                             } else {
                                 result = '<option value="0" selected disabled> -- No record found -- </option>';
@@ -1149,7 +1157,7 @@
                 /* SEARCH PO COMMENTED BY CLARK END*/
 
                 // CREATE RUNCARD BASED ON PO
-                $(document).keyup('#txtPONumber', delay(function(e){
+                $('#formCNAssemblyRuncard #txtPONumber').keyup(delay(function(e){
                     let txtPONumber = $('#formCNAssemblyRuncard').find('#txtPONumber').val();
                     let txtDeviceName = $('#formCNAssemblyRuncard').find('#txtDeviceName').val();
 
@@ -1214,6 +1222,7 @@
 
                         $('#modalCNAssembly').modal('show');
                         $('#txtDeviceName').val($('#txtSelectDeviceName').val());
+                        $('#txtDeviceCode').val($('#txtSearchDeviceCode').val());
 
                         if($('#txtAssyRuncardId').val() == ''){
                             $('#btnAddRuncardStation').prop('disabled', true);
@@ -1369,9 +1378,16 @@
                             const assy_runcard_data = response['assembly_runcard_data'];
                             if(assy_runcard_data[0].assembly_runcard_station.length > 2){
                                 $('#btnSubmitAssemblyRuncardData').prop('disabled', false);
+                                $('#btnAddRuncardStation').prop('disabled', true);
+                            }else{
+                                //Enable Adding of Runcard Station
+                                $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
+                                $('#btnAddRuncardStation').prop('disabled', false);
                             }
+
                             $('#modalCNAssembly').modal('show');
                             $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
+                            $('#formCNAssemblyRuncard #txtDeviceCode').val(assy_runcard_data[0].part_code);
                             $('#formCNAssemblyRuncard #txtDeviceName').val(assy_runcard_data[0].device_name);
                             $('#formCNAssemblyRuncard #txtMaterialName').val(assy_runcard_data[0].material_name);
                             $('#formCNAssemblyRuncard #txtPONumber').val(assy_runcard_data[0].po_number);
@@ -1386,12 +1402,21 @@
                             $('#formCNAssemblyRuncard #txtSZeroSevenDeviceId').val(assy_runcard_data[0].s_zero_seven_device_id);
                             $('#formCNAssemblyRuncard #txtSZeroTwoProdLot').val(assy_runcard_data[0].s_zero_two_prod_lot);
                             $('#formCNAssemblyRuncard #txtSZeroTwoDeviceId').val(assy_runcard_data[0].s_zero_two_device_id);
-                            $('#formCNAssemblyRuncard #txtTotalAssyYield').val(assy_runcard_data[0].total_assembly_yield);
+                            // $('#formCNAssemblyRuncard #txtTotalAssyYield').val(assy_runcard_data[0].total_assembly_yield);
+
+                            let total_assy_yield = 0;
+                            for (let index = 0; index < assy_runcard_data[0].assembly_runcard_station.length; index++) {
+                                let output = assy_runcard_data[0].assembly_runcard_station[index].output_quantity;
+                                let input = assy_runcard_data[0].assembly_runcard_station[index].input_quantity;
+                                let station_yield = ( output / input ) * 100;
+                                total_assy_yield += station_yield;
+                            }
+
+                            $('#formCNAssemblyRuncard #txtTotalAssyYield').val(`${total_assy_yield.toFixed(2)}%`);
+                            // `${station_yield.toFixed(2)}%`
                             $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
-                            //Enable Adding of Runcard Station
-                            $('#btnAddRuncardStation').prop('disabled', false);
 
                             verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
                             verifyProdLotfromMolding(assy_runcard_data[0].s_zero_two_prod_lot, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');

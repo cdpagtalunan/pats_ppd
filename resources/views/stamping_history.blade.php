@@ -285,8 +285,7 @@
 
             $(document).ready(function() {
                 $('.select2bs5').select2({
-                    theme: 'bootstrap-5',
-                    tags: 'true'
+                    theme: 'bootstrap-5'
                 })          
 
                 setTimeout(() => {

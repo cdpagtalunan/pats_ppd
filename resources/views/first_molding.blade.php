@@ -82,28 +82,34 @@
                                           <div class="card card-primary">
                                             <div class="card-body">
                                               <div class="row">
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-2">
                                                   <label>Device Name</label>
                                                   <div class="input-group">
                                                     <select class="form-select form-control" id="global_device_name" name="global_device_name" >
                                                     </select>
                                                   </div>
                                                 </div>
-                                                <div class="col-sm-3 d-none">
+                                                <div class="col-sm-2 d-none">
                                                   <label>Input Device Name</label>
                                                     <input type="text" class="form-control" id="global_input_device_name" name="global_input_device_name" readonly>
                                                 </div>
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-2">
                                                   <label>Contact Name</label>
                                                     <input type="text" class="form-control" id="global_contact_name" name="global_contact_name" readonly>
                                                 </div>
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-2">
                                                     <label>PO Number</label>
                                                     <div class="input-group">
                                                       <input type="text" class="form-control" id="global_po_no" name="global_po_no">
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-3">
+                                                <div class="col-sm-2">
+                                                    <label>PO Qty</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="global_po_qty" name="global_po_qty" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
                                                     <label>Target Qty</label>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control" id="global_target_qty" name="global_target_qty" readonly>
@@ -876,8 +882,10 @@
                     formModal.firstMolding.find('#virgin_material').val('');
                     formModal.firstMolding.find('#material_yield').val('0%');
                     formModal.firstMolding.find('[type="number"]').val(0);
-                    $('#global_target_qty').val('');
                     $('#global_po_no').val('');
+                    $('#global_po_qty').val('');
+                    $('#global_target_qty').val('');
+
                 })
 
                 $('#modalFirstMoldingStation').on('hidden.bs.modal', function() {
@@ -1159,12 +1167,25 @@
                 $('#btnAddFirstMolding').click(function (e) {
                     e.preventDefault();
                     let device_name = $('#global_input_device_name').val();
+                    let global_po_no = $('#global_po_no').val();
+                    let global_po_qty = $('#global_po_qty').val();
                     let global_target_qty = $('#global_target_qty').val();
+;
 
-                    if(global_target_qty == ''){
+                    if(global_target_qty == '' || global_po_no == '' || global_target_qty == ''){
                         toastr.error('PO not Found. Please check this PO Number to MIMF Module !');
                         return;
                     }
+                    // $.ajax({
+                    //     type: "GET",
+                    //     url: "validate_total_target_output_by_po",
+                    //     data: "data",
+                    //     dataType: "json",
+                    //     success: function (response) {
+                    //         console.log(response);
+                    //     }
+                    // });
+
                     dt.firstMoldingStation.draw()
                     $('#modalFirstMolding').modal('show');
                     $('#btnFirstMoldingStation').prop('disabled',true);
@@ -1176,7 +1197,6 @@
                     getDiesetDetailsByDeviceName(device_name);
 
                     // OPERATOR SHIFT
-                    // $time_now = moment().format('LT');
                     $time_now = moment().format('HH:mm:ss');
                     if($time_now >= '7:30:00' || $time_now <= '19:29:00'){
                         $('#shift').val('A');
@@ -1350,6 +1370,7 @@
 
                             $('#global_po_no').val('');
                             $('#global_target_qty').val('');
+                            $('#global_po_no').val('');
                             dt.firstMolding.draw();
 
                             // getDiesetDetailsByDeviceName(device_name);

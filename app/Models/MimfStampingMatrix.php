@@ -13,6 +13,6 @@ class MimfStampingMatrix extends Model
     protected $connection = "mysql";
 
     public function pps_whse_info(){
-        return $this->hasOne(TblWarehouse::class, 'PartNumber','part_code');
+        return $this->hasOne(TblWarehouse::class, 'id','pps_whse_id');
     }
 }

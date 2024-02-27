@@ -23,9 +23,9 @@ class CommonController extends Controller
 
     public function validate_user(Request $request){
         $user = User::where('employee_id', $request->id)
-        ->where('status', 1)
-        ->whereIn('position', $request->pos)
-        ->first();
+                    ->where('status', 1)
+                    ->whereIn('position', $request->pos)
+                    ->first();
 
         if(isset($user)){
             return response()->json(['result' => 1]);

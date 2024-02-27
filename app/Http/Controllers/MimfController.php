@@ -32,7 +32,7 @@ class MimfController extends Controller
         ->where('status', $request->mimfCategory)
         ->orderBy('control_no', 'DESC')
         ->get();
-        // return $get_mimfs;
+
         return DataTables::of($get_mimfs)
         ->addColumn('action', function($get_mimf) use($request){
             $result = '<center>';
@@ -70,26 +70,9 @@ class MimfController extends Controller
             $result .= '</center>';
             return $result;
         })
-        // ->addColumn('qty_invt', function($get_mimf){
-        //     $in = 0;
-        //     $out = 0;
-        //     $total_balanace = 0;
-        //     // if($get_mimf->pps_po_received_info->pps_dieset_info->pps_warehouse_info != null){
-        //     //     for($i=0; $i < count($get_mimf[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info); $i++) {
-        //     //         $in += $get_mimf[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info[$i]->In;
-        //     //         $out += $get_mimf[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info[$i]->Out;
-        //     //     }
-        //     //     $total_balanace = number_format($in-$out, 2, '.', '');
-        //     // //             // $total_balanace_for_molding = filter_var($in-$out, FILTER_SANITIZE_NUMBER_INT);
-        //     // }
-        //     $result = '<center>';
-        //     $result .= $get_mimf->pps_po_received_info->pps_dieset_info;
-        //     $result .= '</center>';
-        //     return $result;
-        // })
+        
         ->rawColumns([
             'action',
-            // 'qty_invt',
             'po_balance'
         ])
         ->make(true);
@@ -129,7 +112,6 @@ class MimfController extends Controller
     public function updateMimf(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
-        // return $request->mimf_stamping_matrix_status;
 
         if($request->mimf_stamping_matrix_status == 1){
             $test = 'ppd_mimf_stamping_matrix_id';
@@ -158,15 +140,15 @@ class MimfController extends Controller
             'mimf_delivery'                 => 'required',
             'mimf_remark'                   => 'required'
         ]);
-        // return $validator;
 
         if ($validator->fails()) {
             return response()->json(['validationHasError' => 1, 'error' => $validator->messages()]);
         }else{
-            // DB::beginTransaction();
-            // try {
-                $check_existing_record = Mimf::where('control_no', $request->mimf_control_no)->where('status', $request->mimf_stamping_matrix_status)->where('logdel', 0)->get();
-                // return count($check_existing_record);
+            DB::beginTransaction();
+            try {
+                $check_existing_control_no = Mimf::where('control_no', $request->mimf_control_no)->where('pmi_po_no', $request->mimf_pmi_po_no)->where('status', $request->mimf_stamping_matrix_status)->where('logdel', 0)->get();
+                $check_existing_po = Mimf::where('pmi_po_no', $request->mimf_pmi_po_no)->where('status', $request->mimf_stamping_matrix_status)->where('logdel', 0)->exists();
+                // return $check_existing_po;
                 $mimf = [
                     'status'            => $request->mimf_stamping_matrix_status,
                     'pps_po_rcvd_id'    => $request->pps_po_rcvd_id,
@@ -191,31 +173,35 @@ class MimfController extends Controller
                     'scan_by'           => $request->employee_no,
                 ];   
                 
-                if(count($check_existing_record) != 1){
-                    $mimf['created_by']  = $request->created_by;
-                    $mimf['created_at']  = date('Y-m-d H:i:s');
-                    Mimf::insert(
-                        $mimf
-                    );
-                }else{
-                    if($request->mimf_id != ''){
-                        $mimf['updated_by']  = $request->created_by;
-                        $mimf['updated_at']  = date('Y-m-d H:i:s');
-                        Mimf::where('id', $request->mimf_id)
-                        ->update(
+                if($check_existing_po != 1){
+                    if(count($check_existing_control_no) != 1){
+                        $mimf['created_by']  = $request->created_by;
+                        $mimf['created_at']  = date('Y-m-d H:i:s');
+                        Mimf::insert(
                             $mimf
                         );
                     }else{
-                        return response()->json(['result' => 1]);
+                        if($request->mimf_id != ''){
+                            $mimf['updated_by']  = $request->created_by;
+                            $mimf['updated_at']  = date('Y-m-d H:i:s');
+                            Mimf::where('id', $request->mimf_id)
+                            ->update(
+                                $mimf
+                            );
+                        }else{
+                            return response()->json(['result' => 1]);
+                        }
                     }
+                }else{
+                    return response()->json(['result' => 2]);
                 }
 
-                // DB::commit();
+                DB::commit();
                 return response()->json(['hasError' => 0]);
-            // } catch (\Exception $e) {
-            //     DB::rollback();
-            //     return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
-            // }
+            } catch (\Exception $e) {
+                DB::rollback();
+                return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
+            }
         }
     }
 
@@ -254,7 +240,6 @@ class MimfController extends Controller
                     }
                 }
             }
-            // return count($get_po_received_pmi_po_for_molding[0]->pps_dieset_info->pps_warehouse_info->pps_warehouse_transaction_info);
             return response()->json(['getPoReceivedPmiPoForMolding' => $get_po_received_pmi_po_for_molding, 'totalBalanceForMolding' => $total_balanace_for_molding]);
         }else{
             $get_po_received_pmi_po_for_stamping = TblPoReceived::with([
@@ -279,17 +264,17 @@ class MimfController extends Controller
                     }
                 }
             }
-            // return $get_po_received_pmi_po_for_stamping[0]->mimf_stamping_matrix_info->pps_whse_info;
-            // return $get_po_received_pmi_po_for_stamping;
-            return response()->json(['getPoReceivedPmiPoForStamping' => $get_po_received_pmi_po_for_stamping, 'totalBalanceForStamping' => $total_balanace_for_stamping]);
-
+            return response()->json([
+                'getPoReceivedPmiPoForStamping' => $get_po_received_pmi_po_for_stamping, 
+                'totalBalanceForStamping' => $total_balanace_for_stamping
+            ]);
         }
     }
 
     public function viewMimfStampingMatrix(Request $request){
         date_default_timezone_set('Asia/Manila');
         
-        $get_mimf_stamping_matrices = MimfStampingMatrix::where('logdel', 0)->orderBy('id', 'DESC')->get();
+        $get_mimf_stamping_matrices = MimfStampingMatrix::with(['pps_whse_info'])->where('logdel', 0)->orderBy('id', 'DESC')->get();
 
         return DataTables::of($get_mimf_stamping_matrices)
         ->addColumn('action', function($get_mimf_stamping_matrix){
@@ -306,15 +291,64 @@ class MimfController extends Controller
             $result .= '</center>';
             return $result;
         })
+        ->addColumn('part_number', function($get_mimf_stamping_matrix){
+            $result = '<center>';
+            $result .= $get_mimf_stamping_matrix->pps_whse_info->PartNumber;
+            $result .= '</center>';
+            return $result;
+        })
+        ->addColumn('material_type', function($get_mimf_stamping_matrix){
+            $result = '<center>';
+            $result .= $get_mimf_stamping_matrix->pps_whse_info->MaterialType ;
+            $result .= '</center>';
+            return $result;
+        })
         ->rawColumns([
             'action',
+            'part_number',
+            'material_type'
         ])
         ->make(true);
     }
+    
 
-    public function getPpsWarehouse(){
-        $get_partname = TblWarehouse::get('PartNumber');
-        return response()->json(['getPartName'  => $get_partname]);
+    public function getPpsWarehouse(Request $request){
+        if($request->ppsWhseDb == ''){
+            $get_partnumber = TblWarehouse::orderBy('id', 'DESC')->get(['id','PartNumber']);
+            return response()->json(['getPartNumber'  => $get_partnumber]);
+        }else{
+            $get_materialtype = TblWarehouse::where('id', $request->ppsWhseDb)->get();
+            return response()->json(['getMaterialType'  => $get_materialtype]);
+        }
+    }
+
+    public function getPpsPoReceivedItemName(Request $request){
+        if($request->poReceivedDb == ''){
+            // $get_itemname = TblPoReceived::select('ItemName')
+            // ->where('logdel', 0)
+            // ->orderBy('id', 'DESC')
+            // ->distinct()
+            // ->get();
+
+            // $get_itemname = DB::connection('mysql_rapid_pps')
+            // ->table('tbl_POReceived')
+            // ->select('ItemName')
+            // ->distinct()
+            // ->orderBy('id', 'DESC')-
+            // >get();
+
+            $get_itemname = DB::connection('mysql_rapid_pps')
+            ->select("SELECT DISTINCT ItemName
+                FROM tbl_POReceived
+                WHERE logdel = '0'
+                ORDER BY tbl_POReceived.ItemName ASC
+            ");
+
+            return response()->json(['getItemName'  => $get_itemname]);
+        }else{
+            $get_ItemCode = TblPoReceived::where('ItemName', $request->poReceivedDb)->where('logdel', 0)->first();
+            return response()->json(['getItemCode'  => $get_ItemCode]);
+        }
     }
 
     public function updateMimfStampingMatrix(Request $request){
@@ -325,8 +359,8 @@ class MimfController extends Controller
             'mimf_stamping_matrix_item_code'        => 'required',
             'mimf_stamping_matrix_item_name'        => 'required',
             'mimf_stamping_matrix_pin_kg'           => 'required',
-            'mimf_stamping_matrix_part_code'        => 'required',
-            'mimf_stamping_matrix_material_name'    => 'required',
+            'mimf_stamping_matrix_part_number'      => 'required',
+            'mimf_stamping_matrix_material_type'    => 'required',
             'mimf_stamping_matrix_created_by'       => 'required',
         ]);
 
@@ -337,10 +371,9 @@ class MimfController extends Controller
             try {
                 $check_existing_record = MimfStampingMatrix::where('id', $request->mimf_stamping_matrix_id)->where('logdel', 0)->get();
                 $mimf_stamping_matrix = [
+                    'pps_whse_id'   => $request->mimf_stamping_matrix_part_number,
                     'item_code'     => $request->mimf_stamping_matrix_item_code,
                     'item_name'     => $request->mimf_stamping_matrix_item_name,
-                    'part_code'     => $request->mimf_stamping_matrix_part_code,
-                    'material_name' => $request->mimf_stamping_matrix_material_name,
                     'pin_kg'        => $request->mimf_stamping_matrix_pin_kg,
                 ];   
                 
@@ -373,7 +406,7 @@ class MimfController extends Controller
     public function getMimfStampingMatrixById(Request $request){
         date_default_timezone_set('Asia/Manila');
         
-        $get_mimf_stamping_matrix_to_edit = MimfStampingMatrix::where('id', $request->mimfStampingMatrixID)->get();
+        $get_mimf_stamping_matrix_to_edit = MimfStampingMatrix::with(['pps_whse_info'])->where('id', $request->mimfStampingMatrixID)->get();
         return response()->json(['getMimfStampingMatrixToEdit'  => $get_mimf_stamping_matrix_to_edit]);
     }
 

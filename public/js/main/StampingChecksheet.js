@@ -28,6 +28,7 @@ const getMachineForChecksheet = (cboElement) => {
         dataType: "json",
         success: function (response) {
             let result;
+            console.log('response', response);
 
             result += `<option value="0" selected disabled>-- Select --</option>`;
             for(let x = 0; x< response.length; x++){

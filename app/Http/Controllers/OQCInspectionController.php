@@ -854,9 +854,6 @@ class OQCInspectionController extends Controller
         } else {
             DB::beginTransaction();
             try {
-                // $check_existing_record = OQCInspection::with(['stamping_production_info'])->where('id', $request->oqc_inspection_id)->where('logdel', 0)->get();
-                // return $check_existing_record;
-
                 $add_update_oqc_inspection =[
                     'fs_productions_id'         => $request->prod_id,
                     'status'                    => $request->status,

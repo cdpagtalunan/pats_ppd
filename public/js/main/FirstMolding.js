@@ -534,6 +534,7 @@
                     formModal.firstMolding.find('#virgin_qty').val(response.virgin_qty);
                     formModal.firstMolding.find('#recycle_qty').val(response.recycled_qty);
                     formModal.firstMolding.find('#pmi_po_no').val(response.pmi_po_no);
+                    $('#global_po_qty').val(poQty);
                     $('#global_target_qty').val(productOfPoNumber);
                 }else{
                     toastr.error(response.error_msg)
@@ -548,6 +549,8 @@
                     formModal.firstMolding.find('#virgin_qty').val('');
                     formModal.firstMolding.find('#recycle_qty').val('');
                     $('#global_target_qty').val('');
+                    $('#global_po_qty').val('');
+
 
                 }
             }

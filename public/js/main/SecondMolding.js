@@ -1,15 +1,12 @@
 const resetFormValuesOnModalClose = (modalId, formId) => {
     $(`#${modalId}`).on('hidden.bs.modal', function () {
-        // Reset form values
-        $(`#${formId}`)[0].reset();
-        console.log(`modalId ${modalId}`);
-        console.log(`formId ${formId}`);
         $(`#${formId}`).find('#selMachineNumber').val(0).trigger('change');  // chris to reset the select machine
+
         // Remove invalid & title validation
         $('div').find('input').removeClass('is-invalid');
-        $("div").find('input').attr('title', '');
+        $('div').find('input').attr('title', '');
         
-        $("#tableSecondMoldingStationMOD tbody").html(''); // Clear Mode of Defect table
+        $('#tableSecondMoldingStationMOD tbody').html(''); // Clear Mode of Defect table
         $('#textStation').prop('disabled', false);
         $('#textDate').prop('disabled', false);
         $('#textOperatorName').prop('disabled', false);
@@ -18,6 +15,22 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         $('#textRemarks').prop('disabled', false);
         $('#buttonAddModeOfDefect').prop('disabled', false);
         $('#buttonSaveSecondMoldingStation').prop('disabled', false);
+
+        /* Reset dynamic Lot Numbers */
+        let rowCounter = parseInt($('body').find($('#divLotNumberEightRow')).attr('row-count'));
+        while (rowCounter != 1) {
+            rowCounter--;
+            $('#divLotNumberEightRow div:last-child').remove();
+            console.log('rowCounter ', rowCounter);
+        }
+        $('body').find($('#divLotNumberEightRow')).attr('row-count', rowCounter)
+        $('#divLotNumberEightRow').attr('camera-inspection-count', 0);
+        // $('#buttonAddLotNumber').prop('disabled', false);
+        
+        // Reset form values
+        $(`#${formId}`)[0].reset();
+        console.log(`modalId ${modalId}`);
+        console.log(`formId ${formId}`);
     });
 }
 
@@ -116,14 +129,23 @@ const checkMaterialLotNumber = (qrScannerValue) => {
     });
 }
 
-const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue) => {
+const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue, scannerRow = null) => {
+    let qrScannerValueToJSON = JSON.parse(qrScannerValue);
+    let lotNumber = qrScannerValueToJSON.lot_no;
+    let lotNumberExtension = qrScannerValueToJSON.lot_no_ext;
+    let lotNumberSize;
+    console.log(`lotNumber ${lotNumber}`);
+    console.log(`lotNumberExtension ${lotNumberExtension}`);
+
     let textLotNumberValue= '';
     let textLotNumberIdValue = '';
     let firstMoldingDeviceId;
     if(formValue == 'formProductionLotNumberEight'){
-        textLotNumberValue = 'textLotNumberEight';
-        textLotNumberIdValue = 'textLotNumberEightFirstMoldingId';
+        // textLotNumberValue = 'textLotNumberEight';
+        // textLotNumberIdValue = 'textLotNumberEightFirstMoldingId';
         firstMoldingDeviceId = 1;
+        lotNumberSize = qrScannerValueToJSON.size;
+        console.log('lotNumberSize ', lotNumberSize);
     }else if(formValue == 'formProductionLotNumberNine'){
         textLotNumberValue = 'textLotNumberNine';
         textLotNumberIdValue = 'textLotNumberNineFirstMoldingId';
@@ -133,27 +155,49 @@ const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue) => {
         textLotNumberIdValue = 'textLotNumberTenFirstMoldingId';
         firstMoldingDeviceId = 3;
     }
-    let qrScannerValueToJSON = JSON.parse(qrScannerValue);
-    let lotNumber = qrScannerValueToJSON.lot_no;
-    let lotNumberExtension = qrScannerValueToJSON.lot_no_ext;
-    console.log(`qrScannerValue ${lotNumber}`);
-    console.log(`qrScannerValue ${lotNumberExtension}`);
+    
     $.ajax({
         type: "get",
         url: "check_material_lot_number_of_first_molding",
         data: {
             production_lot_number: lotNumber,
             production_lot_number_extension: lotNumberExtension,
+            production_lot_number_size: lotNumberSize,
         },
         dataType: "json",
         success: function (response) {
-            let data = response;
-            $(`#${textLotNumberValue}`).val('');
-            $(`#${textLotNumberIdValue}`).val('');
+            let data = response['data'];
+            let cameraInspectionCountResult = response['cameraInspectionCountResult'];
             if(data.length > 0){
                 if(data[0].first_molding_device_id == firstMoldingDeviceId){
-                    $(`#${textLotNumberValue}`).val(data[0].production_lot);
-                    $(`#${textLotNumberIdValue}`).val(data[0].first_molding_id);
+                    if(firstMoldingDeviceId == 1){
+                        console.log('scannerRow ', scannerRow);
+                        $(scannerRow).closest('div').find('input[name="lot_number_eight[]"').val(data[0].production_lot)
+                        $(scannerRow).closest('div').find('input[name="lot_number_eight_first_molding_id"').val(data[0].first_molding_id)
+                        $(scannerRow).closest('div').find('input[name="lot_number_eight_size_category[]"').val(data[0].first_molding_size_category)
+                        $(scannerRow).closest('div').find('input[name="lot_number_eight_quantity[]"').val(data[0].first_molding_output)
+                        $('#divLotNumberEightRow').attr('camera-inspection-count', cameraInspectionCountResult[0].camera_inspection_count);
+
+                        /**
+                         * Validation for Add Lot #(button)
+                         */
+                        let rowCounter = parseInt($('body').find($('#divLotNumberEightRow')).attr('row-count'));
+                        let cameraInspectionCount = parseInt($('#divLotNumberEightRow').attr('camera-inspection-count'));
+                        console.log('rowCounter ', rowCounter);
+                        if(cameraInspectionCount != 0){
+                            if(rowCounter == cameraInspectionCount){
+                                $('#buttonAddLotNumber').prop('disabled', true);
+                            }else{
+                                $('#buttonAddLotNumber').prop('disabled', false);
+                            }
+                        }
+                    }else{
+                        $(`#${textLotNumberValue}`).val('');
+                        $(`#${textLotNumberIdValue}`).val('');
+                        $(`#${textLotNumberValue}`).val(data[0].production_lot);
+                        $(`#${textLotNumberIdValue}`).val(data[0].first_molding_id);
+                    }
+                    
                     $('#modalQrScanner').modal('hide');
                 }else{
                     toastr.error('Incorrect material lot number.')
@@ -256,7 +300,7 @@ const getUser = (elementId) => {
         },
         success: function(response){
             result = '';
-            console.log('object ', response['data']);
+            // console.log('object ', response['data']);
             if(response['data'].length > 0){
                 for(let index = 0; index < response['data'].length; index++){
                     result += `<option value="${response['data'][index].id}">${response['data'][index].operator}</option>`;
@@ -307,13 +351,13 @@ const getDiesetDetailsByDeviceNameSecondMolding = (deviceName) => {
         success: function (response) {
             let dateNow = new Date();
             let twoDigitYear = dateNow.getFullYear().toString().substr(-2);
-            console.log(`twoDigitYear ${twoDigitYear}`);
+            // console.log(`twoDigitYear ${twoDigitYear}`);
             
             let twoDigitMonth = (dateNow.getMonth() + 1).toString().padStart(2, "0");
-            console.log(`twoDigitMonth ${twoDigitMonth}`);
+            // console.log(`twoDigitMonth ${twoDigitMonth}`);
             
             let twoDigitDay = String(dateNow.getDate()).padStart(2, '0');
-            console.log(`twoDigitDay ${twoDigitDay}`);
+            // console.log(`twoDigitDay ${twoDigitDay}`);
 
             let revNo = response['rev_no'];
             $('#textProductionLot', $('#formSecondMolding')).val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
