@@ -262,14 +262,6 @@ class FirstMoldingController extends Controller
     {
         try{
             $tbl_po_received = TblPoReceived::where('OrderNo',$request->pmi_po_no)->get();
-            return response()->json( [
-                'result_count' => count($tbl_po_received),
-                'po_no' => $tbl_po_received[0]->ProductPONo ,
-                'order_qty' => $tbl_po_received[0]->OrderQty ,
-                'po_balance' => $tbl_po_received[0]->POBalance ,
-                'item_code' => $tbl_po_received[0]->ItemCode ,
-                'item_name' => $tbl_po_received[0]->ItemName ,
-            ]);
             $tbl_milf = Mimf::where('pmi_po_no',$request->pmi_po_no)->get();
             if( count ($tbl_po_received) == 0 || count($tbl_milf) == 0){
                 return response()->json( [

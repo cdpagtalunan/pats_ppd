@@ -134,9 +134,9 @@
                         <div class="modal-body">
                             {{-- <input type="text" id="textSecondMoldingId" class="d-none" name="id"> --}}
                             <div class="row">
-                                <div class="col-sm-6 border">
-                                    <div class="row">
-                                        <div class="col-sm-6 pl-4">
+                                <div class="col-sm-4 border px-4">
+                                    {{-- <div class="row">
+                                        <div class="col-sm-6 pl-4"> --}}
                                             <div class="py-3">
                                                 <span class="badge badge-secondary">1.</span> Runcard Details
                                             </div>
@@ -242,7 +242,7 @@
                                                         </div>
                                                         <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" value="CN171S-07#IN-VE" readonly>
                                                     </div>
-                                                    
+
                                                     <div class="input-group input-group-sm mt-1 mb-2">
                                                         <div class="input-group-prepend w-50">
                                                             <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
@@ -321,12 +321,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-6 pr-4">
-                                            <div class="py-3">
+                                        {{-- </div> --}}
+                                        {{-- <div class="col-sm-6 pr-4"> --}}
+                                            {{-- <div class="py-3">
                                                 <span>&nbsp;</span>
-                                            </div>
-                                            <div class="input-group input-group-sm mb-3">
+                                            </div> --}}
+                                            <div class="input-group input-group-sm mt-2 mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Total Assembly Yield</span>
                                                 </div>
@@ -344,10 +344,10 @@
                                                     <i class="fa-solid fa-floppy-disk"></i> Save
                                                 </button>
                                             </div>
-                                        </div>
-                                    </div>  
+                                        {{-- </div>
+                                    </div>   --}}
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-8">
                                     <div class="col border px-4 border">
                                         <div class="py-3">
                                             <div style="float: left;">
@@ -774,7 +774,7 @@
                     // $('.select2bs5').select2({
                     //     theme: 'bootstrap-5'
                     // });
-                    
+
                     // $('#tableAssemblyStationMOD .textMODQuantity').each(function() {
                     //     if($(this).val() === null || $(this).val() === ""){
                     //         $("#tableAssemblyStationMOD tbody").empty();
@@ -1090,8 +1090,8 @@
                         success: function (response) {
                             let device_details = response['device_details'];
                             let material_details = response['material_details'];
-                            let station_details = response['station_details'];
-                            console.log(station_details);
+                            // let station_details = response['station_details'];
+                            // console.log(station_details);
 
                             $('#txtSearchMaterialName').val(material_details);
                             $('#txtSearchReqOutput').val(device_details[0].qty_per_box);
@@ -1108,10 +1108,10 @@
 
                             //STATIONS
                             let result = '<option value="" disabled selected>-- Select Station --</option>';
-                            if (response['station_details'].length > 0) {
+                            if (device_details[0].material_process.length > 0) {
                                     result = '<option value="" disabled selected>-- Select Station --</option>';
-                                for (let index = 0; index < response['station_details'].length; index++) {
-                                    result += '<option value="' + response['station_details'][index].stations['id'] + '">' + response['station_details'][index].stations['station_name'] + '</option>';
+                                for (let index = 0; index < device_details[0].material_process.length; index++) {
+                                    result += '<option value="' + device_details[0].material_process[index].station_details[0].stations['id'] + '">' + device_details[0].material_process[index].station_details[0].stations['station_name'] + '</option>';
                                 }
                             } else {
                                 result = '<option value="0" selected disabled> -- No record found -- </option>';
@@ -1149,7 +1149,7 @@
                 /* SEARCH PO COMMENTED BY CLARK END*/
 
                 // CREATE RUNCARD BASED ON PO
-                $(document).keyup('#txtPONumber', delay(function(e){
+                $('#formCNAssemblyRuncard #txtPONumber').keyup(delay(function(e){
                     let txtPONumber = $('#formCNAssemblyRuncard').find('#txtPONumber').val();
                     let txtDeviceName = $('#formCNAssemblyRuncard').find('#txtDeviceName').val();
 
@@ -1182,7 +1182,7 @@
                             }else{
                                 $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(500);
                                 let txtRuncard = txtPONumber.slice(5,10);
-                                
+
                                 $.ajax({
                                     type: "get",
                                     url: "get_assembly_runcard_data",
@@ -1193,7 +1193,7 @@
                                     success: function (response) {
                                         let result = response['assembly_runcard_data'];
                                         runcardCount = result.length;
-                                        
+
                                         if(result.length == 0){
                                             runcardCount = 1;
                                         }else{
@@ -1229,7 +1229,7 @@
                         //     data: "data",
                         //     dataType: "json",
                         //     success: function (response) {
-                                
+
                         //     }
                         // });
                     }
@@ -1237,7 +1237,7 @@
                         toastr.error('Please Select Device Name')
                     }
                 });
-                
+
 
                 $(document).on('click', '#btnSubmitAssemblyRuncardData',function(e){
                     let _token = '{{ csrf_token() }}';
@@ -1340,7 +1340,7 @@
                                 //     data: $('#formCNAssemblyRuncard').find('formCNAssemblyRuncard')
                                 //     dataType: "json",
                                 //     success: function(response){
-                                        
+
                                 //     }
                                 // });
 
@@ -1369,7 +1369,13 @@
                             const assy_runcard_data = response['assembly_runcard_data'];
                             if(assy_runcard_data[0].assembly_runcard_station.length > 2){
                                 $('#btnSubmitAssemblyRuncardData').prop('disabled', false);
+                                $('#btnAddRuncardStation').prop('disabled', true);
+                            }else{
+                                //Enable Adding of Runcard Station
+                                $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
+                                $('#btnAddRuncardStation').prop('disabled', false);
                             }
+
                             $('#modalCNAssembly').modal('show');
                             $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
                             $('#formCNAssemblyRuncard #txtDeviceName').val(assy_runcard_data[0].device_name);
@@ -1386,12 +1392,21 @@
                             $('#formCNAssemblyRuncard #txtSZeroSevenDeviceId').val(assy_runcard_data[0].s_zero_seven_device_id);
                             $('#formCNAssemblyRuncard #txtSZeroTwoProdLot').val(assy_runcard_data[0].s_zero_two_prod_lot);
                             $('#formCNAssemblyRuncard #txtSZeroTwoDeviceId').val(assy_runcard_data[0].s_zero_two_device_id);
-                            $('#formCNAssemblyRuncard #txtTotalAssyYield').val(assy_runcard_data[0].total_assembly_yield);
+                            // $('#formCNAssemblyRuncard #txtTotalAssyYield').val(assy_runcard_data[0].total_assembly_yield);
+
+                            let total_assy_yield = 0;
+                            for (let index = 0; index < assy_runcard_data[0].assembly_runcard_station.length; index++) {
+                                let output = assy_runcard_data[0].assembly_runcard_station[index].output_quantity;
+                                let input = assy_runcard_data[0].assembly_runcard_station[index].input_quantity;
+                                let station_yield = ( output / input ) * 100;
+                                total_assy_yield += station_yield;
+                            }
+
+                            $('#formCNAssemblyRuncard #txtTotalAssyYield').val(`${total_assy_yield.toFixed(2)}%`);
+                            // `${station_yield.toFixed(2)}%`
                             $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
-                            //Enable Adding of Runcard Station
-                            $('#btnAddRuncardStation').prop('disabled', false);
 
                             verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
                             verifyProdLotfromMolding(assy_runcard_data[0].s_zero_two_prod_lot, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
