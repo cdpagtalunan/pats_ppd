@@ -13,6 +13,7 @@ use App\Http\Controllers\StationController;
 use App\Http\Controllers\StampingController;
 use App\Http\Controllers\OQCLotAppController;
 use App\Http\Controllers\UserLevelController;
+use App\Http\Controllers\AssemblyFviController;
 use App\Http\Controllers\DefectsInfoController;
 use App\Http\Controllers\FirstMoldingController;
 use App\Http\Controllers\StampingIpqcController;
@@ -35,12 +36,13 @@ use App\Http\Controllers\StampingChecksheetController;
 use App\Http\Controllers\FirstMoldingStationController;
 use App\Http\Controllers\SecondMoldingStationController;
 use App\Http\Controllers\MoldingIpqcInspectionController;
-use App\Http\Controllers\PackingDetailsMoldingController;
+use App\Http\Controllers\AssemblyOqcLotAppController;
 
 
 // use App\Http\Controllers\IpqcFirstMoldingController;
 // use App\Http\Controllers\IpqcSecondMoldingController;
 // use App\Http\Controllers\IpqcAssemblyController;
+use App\Http\Controllers\PackingDetailsMoldingController;
 use App\Http\Controllers\DestinationPortDetailsController;
 use App\Http\Controllers\ExportTraceabilityReportController;
 
@@ -249,7 +251,7 @@ Route::middleware('CheckSessionExist')->group(function(){
         Route::get('/view_checksheet', 'view_checksheet')->name('view_checksheet');
         Route::post('/change_status', 'change_status')->name('change_status');
         Route::get('/get_checksheet_data', 'get_checksheet_data')->name('get_checksheet_data');
-        
+
     });
 });
 
@@ -304,7 +306,7 @@ Route::controller(StampingIpqcController::class)->group(function () {
 //     Route::get('/assembly_download_file/{id}', 'assembly_download_file')->name('assembly_download_file');
 // });
 
-// 
+//
 //FIRST MOLDING -> SECOND MOLDING -> ASSEMBLY IPQC CONTROLLER
 Route::controller(MoldingAssyIpqcController::class)->group(function () {
     Route::get('/get_devices_from_ipqc', 'get_devices_from_ipqc')->name('get_devices_from_ipqc');
@@ -463,6 +465,7 @@ Route::controller(FirstMoldingStationController::class)->group(function () {
     Route::get('/get_first_molding_station_last_ouput', 'getFirstMoldingStationLastOuput')->name('get_first_molding_station_last_ouput');
     Route::get('/delete_first_molding_detail', 'deleteFirstMoldingDetail')->name('delete_first_molding_detail');
     Route::get('/get_operation_names', 'getOperatioNames')->name('get_operation_names');
+    Route::get('/get_first_molding_station_qr_code', 'getFirstMoldingStationQrCode')->name('get_first_molding_station_qr_code');
 
     Route::post('/save_first_molding_station', 'saveFirstMoldingStation')->name('save_first_molding_station');
 });
@@ -492,6 +495,7 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::get('/get_user_for_second_molding', 'getUser')->name('get_user_for_second_molding');
     Route::get('/get_machine', 'getMachine')->name('get_machine');
     Route::get('/get_dieset_details_by_device_name_second_molding', 'getDiesetDetailsByDeviceNameSecondMolding')->name('get_dieset_details_by_device_name_second_molding');
+    Route::get('/get_count_of_station', 'getCountOfStation')->name('get_count_of_station');
 });
 /* Second Molding Station Controller */
 Route::controller(SecondMoldingStationController::class)->group(function () {
@@ -518,12 +522,6 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/connect_ypics', 'connect_ypics')->name('connect_ypics');
     // Route::get('/chck_existing_stations', 'chck_existing_stations')->name('chck_existing_stations'); //CLARK DITO KANA
 });
-
-Route::controller(OQCLotAppController::class)->group(function () {
-
-});
-
-
 
 // MODE OF DEFECTS CONTROLLER
 Route::controller(DefectsInfoController::class)->group(function () {
@@ -568,11 +566,12 @@ Route::controller(MimfController::class)->group(function () {
     Route::get('/get_mimf_by_id', 'getMimfById')->name('get_mimf_by_id');
     Route::get('/get_control_no', 'getControlNo')->name('get_control_no');
     Route::get('/get_pmi_po', 'getPmiPoFromPoReceived')->name('get_pmi_po');
-    
+
     Route::get('/view_mimf_stamping_matrix', 'viewMimfStampingMatrix')->name('view_mimf_stamping_matrix');
     Route::post('/update_mimf_stamping_matrix', 'updateMimfStampingMatrix')->name('update_mimf_stamping_matrix');
     Route::get('/get_mimf_stamping_matrix_by_id', 'getMimfStampingMatrixById')->name('get_mimf_stamping_matrix_by_id');
     Route::get('/get_pps_warehouse', 'getPpsWarehouse')->name('get_pps_warehouse');
+    Route::get('/get_pps_po_recveived_item_name', 'getPpsPoReceivedItemName')->name('get_pps_po_recveived_item_name');
 });
 
 Route::controller(StampingHistoryController::class)->group(function () {
@@ -592,8 +591,8 @@ Route::controller(DailyChecksheetController::class)->group(function () {
     Route::post('/add_daily_checksheet', 'addDailyChecksheet')->name('add_daily_checksheet');
     Route::post('/update_status_checked_by', 'updateStatusCheckedBy')->name('update_status_checked_by');
     Route::post('/update_status_conformed_by', 'updateStatusConformedBy')->name('update_status_conformed_by');
-    
-    //WEEKLY 
+
+    //WEEKLY
     Route::get('/view_weekly_checksheet', 'viewWeeklyChecksheet')->name('view_weekly_checksheet');
     Route::post('/add_weekly_checksheet', 'addWeeklyChecksheet')->name('add_weekly_checksheet');
     Route::get('/get_weekly_checksheet_data', 'getWeeklyChecksheetData')->name('get_weekly_checksheet_data');
@@ -604,5 +603,37 @@ Route::controller(DailyChecksheetController::class)->group(function () {
     Route::get('/view_monthly_checksheet', 'viewMonthlyChecksheet')->name('view_monthly_checksheet');
     Route::post('/add_monthly_checksheet', 'addMonthlyChecksheet')->name('add_monthly_checksheet');
     Route::get('/get_monthly_checksheet_data', 'getMonthlyChecksheetData')->name('get_monthly_checksheet_data');
+
+    //MAINTENANCE/REPAIR HIGHLIGHTS
+    Route::get('/view_maintenance_repair_highlights', 'viewMonthlyRepairHighlights')->name('view_maintenance_repair_highlights');
+    Route::get('/get_technician_repair_highlights', 'getTechnicianRepairHighlights')->name('get_technician_repair_highlights');
+    Route::post('/add_maintenance_highlights', 'addMaintenanceHighlights')->name('add_maintenance_highlights');
 });
+
+// ASSEMBLY FVI
+Route::controller(AssemblyFviController::class)->group(function () {
+    Route::get('/view_visual_inspection', 'view_visual_inspection')->name('view_visual_inspection');
+    Route::get('/view_fvi_runcards', 'view_fvi_runcards')->name('view_fvi_runcards');
+    Route::get('/get_fvi_doc', 'get_fvi_doc')->name('get_fvi_doc');
+    Route::get('/get_assembly_line', 'get_assembly_line')->name('get_assembly_line');
+    Route::post('/save_visual_details', 'save_visual_details')->name('save_visual_details');
+    Route::get('/get_visual_details', 'get_visual_details')->name('get_visual_details');
+    Route::get('/get_runcard_details', 'get_runcard_details')->name('get_runcard_details');
+    Route::post('/save_runcard', 'save_runcard')->name('save_runcard');
+    Route::get('/get_fvi_details_by_id', 'get_fvi_details_by_id')->name('get_fvi_details_by_id');
+    Route::get('/validate_runcard_output', 'validate_runcard_output')->name('validate_runcard_output');
+    Route::post('/submit_to_oqc_lot_app', 'submit_to_oqc_lot_app')->name('submit_to_oqc_lot_app');
+
+
+});
+
+// ASSEMBLY OQC LOT APP
+Route::controller(AssemblyOqcLotAppController::class)->group(function () {
+    Route::get('/get_data_from_assy_fvi', 'get_data_from_assy_fvi')->name('get_data_from_assy_fvi');
+    Route::get('/view_assy_oqc_lot_app', 'view_assy_oqc_lot_app')->name('view_assy_oqc_lot_app');
+    Route::get('/view_assy_oqc_lot_app_summary', 'view_assy_oqc_lot_app_summary')->name('view_assy_oqc_lot_app_summary');
+    Route::post('/add_oqc_lot_app', 'add_oqc_lot_app')->name('add_oqc_lot_app');
+    Route::get('/get_user_name', 'get_user_name')->name('get_user_name');
+});
+
 

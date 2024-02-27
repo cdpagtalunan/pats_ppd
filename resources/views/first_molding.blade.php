@@ -154,33 +154,6 @@
             </section>
         </div>
 
-    {{-- MODAL FOR PRINTING  --}}
-        <div class="modal fade" id="modalFirstMoldingPrintQr">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title"> Production - QR Code</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <!-- PO 1 -->
-                            <div class="col-sm-12">
-                                <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
-                                <label id="img_barcode_PO_text"></label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" id="btnFirstMoldingPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
-
     {{-- @include('component.modal') --}}
     <div class="modal fade" id="modalFirstMolding" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-xl-custom">
@@ -676,6 +649,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row d-none" id="isSelectCameraInspection">
+                            <div class="col">
+                                <div class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend w-50">
+                                        <span class="input-group-text w-100" id="basic-addon1">Size</span>
+                                    </div>
+                                    <select type="text" class="form-control form-control-sm" id="size_category" name="size_category" placeholder="Station">
+                                        <option value="" selected disabled>--Select--</option>
+                                        <option value="Small">Small</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Large">Large</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col">
                                 <div class="input-group input-group-sm mb-3">
@@ -825,6 +813,33 @@
             </div>
         </div>
     </div>
+
+    {{-- MODAL FOR PRINTING  --}}
+    <div class="modal fade" id="modalFirstMoldingPrintQr">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"> Production - QR Code</h4>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- PO 1 -->
+                        <div class="col-sm-12">
+                            <center><img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="img_barcode_PO" style="max-width: 200px;"><br></center>
+                            <label id="img_barcode_PO_text"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="btnFirstMoldingPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 {{-- end  --}}
     @endsection
 
@@ -876,6 +891,7 @@
                     formModal.firstMoldingStation.find('.form-control').attr('title', '');
                     resetTotalNgQty();
                     $("#tableFirstMoldingStationMOD tbody").empty();
+                    formModal.firstMoldingStation.find('#isSelectCameraInspection').addClass('d-none',true);
                 })
 
                 $('#modalFirstMolding').on('shown.bs.modal', function () {
@@ -1033,6 +1049,35 @@
                                     toastr.error(`Error: ${data.status}`);
                                 }
                             });
+                        }
+                    });
+
+                });
+
+                table.FirstMoldingStationDetails.on('click', '#btnPrintFirstMoldingStation', function(e){
+                    e.preventDefault();
+                    let firstMoldingStationId = $(this).attr('first-molding-station-id');
+                    $.ajax({
+                        type: "get",
+                        url: "get_first_molding_station_qr_code",
+                        data: {"first_molding_detail_id" : firstMoldingStationId},
+                        dataType: "json",
+                        success: function (response) {
+                            console.log(response);
+                            // response['label_hidden'][0]['id'] = id;
+                            // console.log(response['label_hidden']);
+                            // for(let x = 0; x < response['label_hidden'].length; x++){
+                            //     let dataToAppend = `
+                            //     <img src="${response['label_hidden'][x]['img']}" style="max-width: 200px;"></img>
+                            //     `;
+                            //     $('#hiddenPreview').append(dataToAppend)
+                            // }
+
+
+                            $("#img_barcode_PO").attr('src', response['qr_code']);
+                            $("#img_barcode_PO_text").html(response['label']);
+                            img_barcode_PO_text_hidden = response['label_hidden'];
+                            $('#modalFirstMoldingPrintQr').modal('show');
                         }
                     });
 
@@ -1305,20 +1350,21 @@
 
                             $('#global_po_no').val('');
                             $('#global_target_qty').val('');
+                            dt.firstMolding.draw();
 
                             // getDiesetDetailsByDeviceName(device_name);
                             getMachineFromMaterialProcess(formModal.firstMolding.find('#machine_no'),device_name);
                             getStation (formModal.firstMoldingStation.find('#station'),device_name)
-                            //nmodify
                         }
                     });
                 });
 
                 $('#txtScanQrCodeFirstMolding').on('keyup', function(e){
                     let scanFirstMoldingContactLotNo = $(this).val()
+                    let firstMoldingDeviceId = formModal.firstMolding.find('#first_molding_device_id').val()
                     try {
                         if(e.keyCode == 13){
-                            validateScanFirstMoldingContactLotNum(scanFirstMoldingContactLotNo);
+                            validateScanFirstMoldingContactLotNum(scanFirstMoldingContactLotNo,firstMoldingDeviceId);
                         }
                     } catch (error) {
                         // console.log(error);
@@ -1426,6 +1472,12 @@
                     if (keyCode === 13) {
                         e.preventDefault();
                     }
+                });
+
+                formModal.firstMoldingStation.find('#station').change(function (e) {
+                    e.preventDefault();
+                    let stationId = $(this).val();
+                    fnIsSelectCameraInspection(stationId);
                 });
 
             });
