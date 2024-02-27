@@ -19,6 +19,7 @@ class CreateFirstMoldingDetailsTable extends Migration
             $table->string('station')->nullable();
             $table->string('date')->nullable();
             $table->string('operator_name')->nullable();
+            $table->string('size_category')->nullable()->comment ='S - Small | M - Medium | L- Large';
             $table->integer('input')->nullable();
             $table->integer('ng_qty')->nullable();
             $table->integer('output')->nullable();
@@ -28,7 +29,6 @@ class CreateFirstMoldingDetailsTable extends Migration
             $table->tinyInteger('status')->nullable()->default(0)->comment ='';
             $table->softDeletes()->nullable();
             $table->timestamps();
-
             $table->foreign('first_molding_id')->references('id')->on('first_moldings');
             $table->foreign('last_updated_by')->references('id')->on('users');
         });

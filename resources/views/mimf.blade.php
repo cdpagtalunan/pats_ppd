@@ -57,15 +57,15 @@
                     <div class="row"><!-- Row -->
                         <div class="col-12"><!-- Col -->
                             <div class="card card-dark"><!-- General form elements -->
-                                {{-- <div class="card-header"> --}}
-                                    <!-- <h3 class="card-title">Material Issuance Monitoring Table</h3> -->
-                                {{-- </div> --}}
+                                <!-- <div class="card-header">
+                                    <h3 class="card-title">Material Issuance Monitoring Table</h3> 
+                                </div> -->
                                 <ul class="nav nav-tabs p-2" role="tablist">
                                     <li class="nav-item" role="presentation">
                                         <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#mimfRequest" type="button" role="tab">Material Issuance Monitoring Table</button>
                                     </li>
                                     <li class="nav-item d-none navMimfStampingMatrix" role="presentation">
-                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#mimfStampingMatrix" type="button" role="tab">MIMF Stamping Matrix</button>
+                                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#mimfStampingMatrix" type="button" role="tab">MIMF Stamping Setting</button>
                                     </li>
                                 </ul>
 
@@ -127,8 +127,8 @@
                                                             <th>Action</th>
                                                             <th>Item Code</th>
                                                             <th>Item Name</th>
-                                                            <th>Part Code</th>
-                                                            <th>Matrial Name</th>
+                                                            <th>Part Number</th>
+                                                            <th>Matrial Type</th>
                                                             <th>Pin / KG</th>
                                                         </tr>
                                                     </thead>
@@ -160,7 +160,7 @@
                         @csrf
                         <input type="hidden" class="col-1 mimfClass" id="txtPpsDiesetId" name="pps_dieset_id" placeholder="For Molding">
                         <input type="hidden" class="col-1 mimfClass" id="txtPpdMatrixId" name="ppd_matrix_id" placeholder="For Molding">
-                        <input type="hidden" class="col-1 mimfClass" id="txtPpsWhseId" name="pps_whse_id">
+                        <input type="hidden" class="col-1 mimfClass" id="MimfStampingMatrix" name="pps_whse_id">
                         <input type="hidden" class="col-1 mimfClass" id="txtPpsPoReceivedId" name="pps_po_rcvd_id">
                         <input type="hidden" class="col-1 mimfClass" id="txtMimfId" name="mimf_id">
                         <input type="hidden" class="col-1" id="txtMimfStampingMatrixStatus" name="mimf_stamping_matrix_status" required>
@@ -172,56 +172,91 @@
                                 <div class="col-sm-6 mt-3">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Control No.</strong></span>
-                                        </div>
-                                        <input type="text" class="form-control mimfClass" id="txtMimfControlNo" name="mimf_control_no" readonly>
-                                    </div>
-
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>PMI PO No.</strong></span>
-                                        </div>
-                                        <input type="text" class="form-control mimfClass" id="txtMimfPmiPoNo" name="mimf_pmi_po_no">
-                                    </div>
-
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Date of Issuance</strong></span>
+                                            <span class="input-group-text w-100"><strong class="ml-4">Date of Issuance</strong></span>
                                         </div>
                                         <input type="date" class="form-control" id="dateMimfDateOfInssuance" name="mimf_date_issuance" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Prod'n Quantity</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Reset Every Month&#013;Format: Year-Month-000.">&nbsp;</i>
+                                                <strong>
+                                                    Control No.
+                                                </strong>
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control mimfClass" id="txtMimfControlNo" name="mimf_control_no" readonly>
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="PO Received Order No.">&nbsp;</i>
+                                                    PMI PO No.
+                                                </strong>
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control mimfClass" id="txtMimfPmiPoNo" name="mimf_pmi_po_no">
+                                    </div>
+
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="PO Received Order Quantity.">&nbsp;</i>
+                                                    Prod'n Quantity
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearReceivedPo" id="txtMimfProdnQuantity" name="mimf_prodn_quantity" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Device Code</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="PO Received Item Code.">&nbsp;</i>
+                                                    Device Code
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearReceivedPo" id="txtMimfDeviceCode" name="mimf_device_code" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Device Name</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="PO Received Item Name.">&nbsp;</i>
+                                                    Device Name
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearReceivedPo" id="txtMimfDeviceName" name="mimf_device_name" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Material Code</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="PPS Warehouse Part Number.">&nbsp;</i>
+                                                    Material Code
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearPPSMIS" id="txtMimfMaterialCode" name="mimf_material_code" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Material Type</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="PPS Warehouse Material Type.">&nbsp;</i>
+                                                    Material Type
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearPPSMIS" id="txtMimfMaterialType" name="mimf_material_type" readonly>
                                     </div>
@@ -230,56 +265,77 @@
                                 <div class="col-sm-6 mt-3">
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Quantity from Inventory</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="PPS Warehouse Transaction.">&nbsp;</i>
+                                                    Quantity from Inventory
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearPPSMIS" id="txtMimfQuantityFromInventory" name="mimf_quantity_from_inventory" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Needed KGS</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question moldingOnly" data-bs-toggle="tooltip" data-bs-html="true" title="Prodn Qty(PO Received Order Quantity) * Shot Weight(Die-Set) / No. of Cavity(Die-Set) / 1000.">&nbsp;</i>
+                                                    <i class="fa-solid fa-circle-question stampingOnly" data-bs-toggle="tooltip" data-bs-html="true" title="Prodn Qty(PO Received Order Quantity) / Pin KG(MIMF Stamping Setting) + 10%.">&nbsp;</i>
+                                                    Needed KGS
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearDieSet" id="txtMimfNeededKgs" name="mimf_needed_kgs" readonly>
                                     </div>
 
                                     <div class="input-group mb-3 moldingOnly">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Virgin Material</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Needed KGS(MIMF) * Virgin Material(Matrix) .">&nbsp;</i>
+                                                    Virgin Material
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearMatrix" id="txtMimfVirginMaterial" name="mimf_virgin_material" readonly>
                                     </div>
 
                                     <div class="input-group mb-3 moldingOnly">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Recycled</strong></span>
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Needed KGS(MIMF) * Recycle(Matrix) .">&nbsp;</i>
+                                                    Recycled
+                                                </strong>
+                                            </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearMatrix" id="txtMimfRecycled" name="mimf_recycled" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Prod'n</strong></span>
+                                            <span class="input-group-text w-100"><strong class="ml-4">Prod'n</strong></span>
                                         </div>
                                         <input type="date" class="form-control mimfClass" id="dateMimfProdn" name="date_mimf_prodn">
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Delivery</strong></span>
+                                            <span class="input-group-text w-100"><strong class="ml-4">Delivery</strong></span>
                                         </div>
                                         <input type="text" class="form-control mimfClass" id="txtMimfDelivery" name="mimf_delivery">
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Remarks</strong></span>
+                                            <span class="input-group-text w-100"><strong class="ml-4">Remarks</strong></span>
                                         </div>
                                         <input type="text" class="form-control mimfClass" id="txtMimfRemark" name="mimf_remark">
                                     </div>
 
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Created By</strong></span>
+                                            <span class="input-group-text w-100"><strong class="ml-4">Created By</strong></span>
                                         </div>
                                         <input type="text" class="form-control" id="txtCreatedBy" name="created_by" value="@php echo Auth::user()->firstname.' '.Auth::user()->lastname; @endphp" readonly>
                                     </div>
@@ -315,7 +371,7 @@
         </div><!-- /.End Scan Modal -->      
         
         <!-- Start MIMF STAMPING MATRIX Modal -->
-        <div class="modal fade" id="modalMimfStampingMatrix" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalMimfStampingMatrix" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -330,47 +386,46 @@
                         <input type="hidden" class="col-2" id="txtMimfStampingMatrixId" name="mimf_stamping_matrix_id">                        
                         <div class="modal-body">
                             <div class="row"><!-- Start Row MIMF STAMPING MATRIX Data -->
-                                <div class="col-sm-6 mt-3">
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Item Code</strong></span>
-                                        </div>
-                                        <input type="text" class="form-control" id="txtMimfStampingMatrixItemCode" name="mimf_stamping_matrix_item_code">
-                                    </div>
-
-                                    <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
+                                <div class="col-6 mt-3">
+                                    <div class="input-group mb-3 fixed">
+                                        <div class="input-group-prepend w-25">
                                             <span class="input-group-text w-100"><strong>Item Name</strong></span>
                                         </div>
-                                            <input type="text" class="form-control" id="txtMimfStampingMatrixItemName" name="mimf_stamping_matrix_item_name">
+                                        <select class="form-control select2bs5 ppsPoReceived selectValue" id="slctMimfStampingMatrixItemName" name="mimf_stamping_matrix_item_name"></select>    
                                     </div>          
+
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend w-25">
+                                            <span class="input-group-text w-100"><strong>Item Code</strong></span>
+                                        </div>
+                                        <input type="text" class="form-control" id="txtMimfStampingMatrixItemCode" name="mimf_stamping_matrix_item_code" readonly>
+                                    </div>
                                     
                                     <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
+                                        <div class="input-group-prepend w-25">
                                             <span class="input-group-text w-100"><strong>Pin / KG</strong></span>
                                         </div>
                                             <input type="text" class="form-control" id="txtMimfStampingMatrixPinkg" name="mimf_stamping_matrix_pin_kg">
                                     </div>     
                                 </div>
 
-                                <div class="col-sm-6 mt-3">
+                                <div class="col-6 mt-3">
                                     <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Part Code</strong></span>
+                                        <div class="input-group-prepend w-25">
+                                            <span class="input-group-text w-100"><strong>Part Number</strong></span>
                                         </div>
-                                        <select class="form-select form-control-sm select2bs4 ppsWhse" id="slctMimfStampingMatrixPartCode" name="mimf_stamping_matrix_part_code"></select>    
-                                        {{-- <input type="text" class="form-control clearPPSMIS" id="txtMimfStampingMatrixPartCode" name="mimf_stamping_matrix_part_code"> --}}
+                                        <select class="form-control select2bs5 ppsWhse selectValue" id="slctMimfStampingMatrixPartNumber" name="mimf_stamping_matrix_part_number"></select>    
                                     </div>
 
                                     <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100"><strong>Material Name</strong></span>
+                                        <div class="input-group-prepend w-25">
+                                            <span class="input-group-text w-100"><strong>Material Type</strong></span>
                                         </div>
-                                        <input type="text" class="form-control clearDieSet" id="txtMimfStampingMatrixMaterialName" name="mimf_stamping_matrix_material_name">
+                                        <input type="text" class="form-control clearDieSet" id="txtMimfStampingMatrixMaterialType" name="mimf_stamping_matrix_material_type" readonly>
                                     </div>
 
                                     <div class="input-group mb-3">
-                                        <div class="input-group-prepend w-50">
+                                        <div class="input-group-prepend w-25">
                                             <span class="input-group-text w-100"><strong>Created By</strong></span>
                                         </div>
                                         <input type="text" class="form-control" id="txtMimfStampingMatrixCreatedBy" name="mimf_stamping_matrix_created_by" value="@php echo Auth::user()->firstname.' '.Auth::user()->lastname; @endphp" readonly>
@@ -401,11 +456,14 @@
             let dataTableMimfStampingMatrix
             let mimfCategory
             $(document).ready(function() {
-                GetPpsWarehouse($('.ppsWhse'))
-
-                $('.select2bs4').select2({
+                $('.select2bs5').select2({
                     theme: 'bootstrap-5'
                 })          
+
+                setTimeout(() => {     
+                    GetPpsWarehouse($('.ppsWhse'))
+                    GetPpsPoReceivedItemName($('.ppsPoReceived'))
+                }, 500);
 
                 $('#selectCategory').change(function (e) { 
                     e.preventDefault();
@@ -414,11 +472,13 @@
                     if($('#selectCategory').val() == 1){
                         $('#txtMimfStampingMatrixStatus').val('1')
                         $('.moldingOnly').addClass('d-none')
+                        $('.stampingOnly').removeClass('d-none')
                         $('.clearMatrix').attr('required', false)
                         $('.navMimfStampingMatrix').removeClass('d-none')
                     }else{
                         $('#txtMimfStampingMatrixStatus').val('2')
                         $('.moldingOnly').removeClass('d-none')
+                        $('.stampingOnly').addClass('d-none')
                         $('.clearMatrix').attr('required', true)
                         $('.navMimfStampingMatrix').addClass('d-none')
                     }
@@ -507,7 +567,6 @@
                         },
                         success: function(response){
                             if($('#txtMimfStampingMatrixStatus').val() != 1){
-                                console.log('IF')
                                 let getPoReceivedPmiPoForMolding = response['getPoReceivedPmiPoForMolding']
                                 let totalBalanceForMolding = response['totalBalanceForMolding']
                                 let kgs = 0
@@ -524,7 +583,7 @@
                                         $('#txtMimfNeededKgs').val(kgs)
 
                                         if(getPoReceivedPmiPoForMolding[0].pps_dieset_info.pps_warehouse_info != null){
-                                            $('#txtPpsWhseId').val(getPoReceivedPmiPoForMolding[0].pps_dieset_info.pps_warehouse_info.id)
+                                            $('#MimfStampingMatrix').val(getPoReceivedPmiPoForMolding[0].pps_dieset_info.pps_warehouse_info.id)
                                             $('#txtMimfMaterialCode').val(getPoReceivedPmiPoForMolding[0].pps_dieset_info.pps_warehouse_info.PartNumber)
                                             $('#txtMimfMaterialType').val(getPoReceivedPmiPoForMolding[0].pps_dieset_info.pps_warehouse_info.MaterialType)
                                             $('#txtMimfQuantityFromInventory').val(totalBalanceForMolding)
@@ -575,19 +634,19 @@
                                         $('#txtMimfNeededKgs').val(kgs)
 
                                         if(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pps_whse_info != null){
-                                            $('#txtPpsWhseId').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pps_whse_info.id)
-                                            $('#txtMimfMaterialCode').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.part_code)
-                                            $('#txtMimfMaterialType').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.material_name)
+                                            $('#MimfStampingMatrix').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pps_whse_info.id)
+                                            $('#txtMimfMaterialCode').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pps_whse_info.PartNumber)
+                                            $('#txtMimfMaterialType').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pps_whse_info.MaterialType)
 
                                             $('#txtMimfQuantityFromInventory').val(totalBalanceForStamping)
                                         }else{
-                                            console.log('mimf_stamping_matrices->part_code != tbl_Warehouse->PartNumber')
                                             $('.clearPPSMIS').val('')
                                         }
                                     }else{
                                         console.log('tbl_POReceived->ItemCode != mimf_stamping_matrices->item_code')
                                         $('.clearDieSet').val('')
                                         $('.clearPPSMIS').val('')
+                                        // toastr.error('The MIMF Stamping Setting Module does not recognize the Item Name: "'+getPoReceivedPmiPoForStamping[0].ItemName+'"')
                                     }
                                 }else{
                                     $('.clearReceivedPo').val('')
@@ -617,7 +676,7 @@
 
 
                     $('#txtMimfId').val(mimfID)
-                    $('#txtPpsWhseId').val(whseID)
+                    $('#MimfStampingMatrix').val(whseID)
                     $('#txtPpdMatrixId').val(matrixID)
                     $('#txtPpsDiesetId').val(dieSetID)
                     $('#txtPpsPoReceivedId').val(poReceivedID)
@@ -689,13 +748,51 @@
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "item_code" },
                         { "data" : "item_name" },
-                        { "data" : "part_code" },
-                        { "data" : "material_name" },
+                        { "data" : "part_number" },
+                        { "data" : "material_type" },
                         { "data" : "pin_kg" },
                     ],
                     "columnDefs": [
                         // { className: "", targets: 0 },
                     ],
+                })
+
+                $('#slctMimfStampingMatrixItemName').change(function (e) { 
+                    e.preventDefault();
+                    $.ajax({
+                        url: "get_pps_po_recveived_item_name",
+                        type: "get",
+                        data: {
+                            poReceivedDb : $('#slctMimfStampingMatrixItemName').val(),
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            let getItemCode = response['getItemCode']
+                            if(getItemCode != undefined){
+                                $('#txtMimfStampingMatrixItemCode').val(getItemCode.ItemCode)
+                            }
+                        }
+                    })
+                })
+
+                $('#slctMimfStampingMatrixPartNumber').on('change', function (e){ 
+                    e.preventDefault();
+                    // console.log('PART_NAME: ',$(this).val())
+                    $.ajax({
+                        url: "get_pps_warehouse",
+                        type: "get",
+                        data: {
+                            ppsWhseDb : $('select[name="mimf_stamping_matrix_part_number"]').val(),
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            let getMaterialType = response['getMaterialType']
+                            console.log('getMaterialType',getMaterialType);
+                            if(getMaterialType != undefined){
+                                $('#txtMimfStampingMatrixMaterialType').val(getMaterialType[0].MaterialType)
+                            }
+                        }
+                    })
                 })
 
                 $('#formMimfStampingMatrix').submit(function (e) { 
@@ -714,6 +811,7 @@
 
                 $('#modalMimfStampingMatrix').on('hidden.bs.modal', function() {
                     $('#formMimfStampingMatrix')[0].reset()
+                    $('.selectValue').val('').trigger('change')
                 })
 
             })

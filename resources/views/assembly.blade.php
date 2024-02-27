@@ -58,16 +58,22 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="col-sm-1">
+                                            <label class="form-label">Device Code</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Device Code" id="txtSearchDeviceCode" readonly>
+                                            </div>
+                                        </div>
                                         <div class="col-sm-3">
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMaterialName" readonly>
                                             </div>
                                         </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label">Required Output</label>
+                                        <div class="col-sm-1">
+                                            <label class="form-label">Qty / Box</label>
                                             <div class="input-group mb-3">
-                                                <input type="text" class="form-control" placeholder="Required Output" id="txtSearchReqOutput" readonly>
+                                                <input type="text" class="form-control" placeholder="Qty per Box" id="txtSearchReqOutput" readonly>
                                             </div>
                                         </div>
                                     </div>
@@ -152,12 +158,12 @@
                                                 </div>
                                                 <input type="text" class="form-control form-control-sm" id="txtDeviceName" name="device_name" placeholder="Auto generated" readonly>
                                             </div>
-                                            {{-- <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
-                                                    <span class="input-group-text w-100" id="basic-addon1">Material Name</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1">Device Code</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtMaterialName" name="material_name" placeholder="Auto generated" readonly>
-                                            </div> --}}
+                                                <input type="text" class="form-control form-control-sm" id="txtDeviceCode" name="device_code" placeholder="Auto generated" readonly>
+                                            </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
@@ -963,7 +969,7 @@
                         url: "view_assembly_runcard_stations",
                         data: function (param){
                             param.assy_runcard_id = $("#txtAssyRuncardId").val();
-                        }
+                        },
                     },
                     fixedHeader: true,
                     "columns":[
@@ -1093,8 +1099,10 @@
                             // let station_details = response['station_details'];
                             // console.log(station_details);
 
+                            $('#txtSearchDeviceCode').val(device_details[0].code);
                             $('#txtSearchMaterialName').val(material_details);
                             $('#txtSearchReqOutput').val(device_details[0].qty_per_box);
+                            
                             // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
                             // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
@@ -1214,6 +1222,7 @@
 
                         $('#modalCNAssembly').modal('show');
                         $('#txtDeviceName').val($('#txtSelectDeviceName').val());
+                        $('#txtDeviceCode').val($('#txtSearchDeviceCode').val());
 
                         if($('#txtAssyRuncardId').val() == ''){
                             $('#btnAddRuncardStation').prop('disabled', true);
@@ -1378,6 +1387,7 @@
 
                             $('#modalCNAssembly').modal('show');
                             $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
+                            $('#formCNAssemblyRuncard #txtDeviceCode').val(assy_runcard_data[0].part_code);
                             $('#formCNAssemblyRuncard #txtDeviceName').val(assy_runcard_data[0].device_name);
                             $('#formCNAssemblyRuncard #txtMaterialName').val(assy_runcard_data[0].material_name);
                             $('#formCNAssemblyRuncard #txtPONumber').val(assy_runcard_data[0].po_number);

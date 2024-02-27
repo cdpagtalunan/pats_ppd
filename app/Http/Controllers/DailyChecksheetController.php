@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use App\Models\DailyChecksheet;
 use App\Models\WeeklyChecksheet;
 use App\Models\MonthlyChecksheet;
+use App\Models\MaintenanceRepairHighlights;
 use App\Models\User;
 
 class DailyChecksheetController extends Controller
@@ -132,7 +133,44 @@ class DailyChecksheetController extends Controller
         ->make(true);
     }
 
-    // 
+    public function viewMonthlyRepairHighlights(Request $request){
+        $maintenance_repair_highlights_details = MaintenanceRepairHighlights::with(['machine_details'])
+        ->where('status', 0)
+        ->get();
+
+        return DataTables::of($maintenance_repair_highlights_details)
+        // ->addColumn('action', function($maintenance_repair_highlights_details){
+        //     $result = "";
+        //     $result .= "<center>";
+        //     // $result .= "<button class='btn btn-primary btn-sm btnViewMonthlyChecksheet' data-status='$maintenance_repair_highlights_details->status' data-id='$maintenance_repair_highlights_details->id' data-function='0'><i class='fa-solid fa-eye'></i></button>";
+            
+        //     // if($maintenance_repair_highlights_details->status == 0 && in_array( session()->get('position'), [0,1,2])){
+        //     //     $result .= "<button class='btn btn-secondary btn-sm ml-1 btnCheck' data-status='$maintenance_repair_highlights_details->status' data-id='$maintenance_repair_highlights_details->id'><i class='fas fa-tools'></i></button>";
+        //     // }
+        //     // else if($maintenance_repair_highlights_details->status == 1){
+        //     //     $result .= "<button class='btn btn-info btn-sm ml-1 btnConform' data-id='$maintenance_repair_highlights_details->id'  data-function='1'><i class='fa-solid fa-pen-to-square'></i></button>";
+        //     // }
+        //     $result .= "</center>";
+        //     return $result;
+        // })
+        // ->addColumn('status', function($maintenance_repair_highlights_details){
+        //     $result = "";
+        //     $result .= "<center>";
+        //     // if($maintenance_repair_highlights_details->status == 0){
+        //     //     $result .= "<span class='badge bg-secondary text-light'>For Engineer Verification</span>";
+        //     // }
+        //     // else if($maintenance_repair_highlights_details->status == 1){
+        //     //     $result .= "<span class='badge bg-info text-light'>For QC Verification</span><br>";
+        //     // }else{
+        //     //     $result .= "<span class='badge bg-success text-light'>Done</span>";
+        //     // }
+        //     $result .= "</center>";
+
+        //     return $result;
+        // })
+        // ->rawColumns(['action', 'status'])
+        ->make(true);
+    }
 
 
     public function addDailyChecksheet(Request $request){
@@ -612,6 +650,51 @@ class DailyChecksheetController extends Controller
         return $monthly_checksheet_data;
     }
 
-    // 
+    public function getTechnicianRepairHighlights(Request $request){
+        return DB::connection('mysql')
+        ->table('users')
+        ->where('position', '=', 11)
+        ->orWhere('position', '=', 9)
+        ->get();
+        
+    }
+
+    public function addMaintenanceHighlights(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        $mutable = Carbon::now()->format('Y-m-d');
+        $data = $request->all();
+
+        $user_details = User::where('id', $request->in_charge)->first();
+
+        // return $data;
+
+        $rules = [
+            // // 'maintenance_repair_highlights'      => 'required',
+            // 'in_charge'                 => 'required',
+        ];
+        
+
+        $validator = Validator::make($data, $rules);
+        if($validator->passes()){            
+                        $array = [
+                            'maintenance_repair_highlights'            => $request->maintenance_repair_highlights,
+                            'in_charge'               => $user_details->firstname." ".$user_details->lastname,
+                            'date'                 => $request->maintenance_date,
+                            'machine_id'            => $request->machine_maintenance,
+                            'created_at'            => date('Y-m-d H:i:s'),
+                            'created_by'            => $request->in_charge,
+                        ];
+                        // return $oqc_id;
+                        
+                        MaintenanceRepairHighlights::insert($array);
+
+            return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+        }
+        else{
+            return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
+        }
+
+        
+    }
 
 }

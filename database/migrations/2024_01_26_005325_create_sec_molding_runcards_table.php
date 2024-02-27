@@ -29,6 +29,8 @@ class CreateSecMoldingRuncardsTable extends Migration
             $table->string('revision_number')->nullable();
             $table->string('production_lot')->nullable();
             $table->string('lot_number_eight')->nullable();
+            $table->string('lot_number_eight_quantity')->nullable();
+            $table->string('lot_number_eight_size_category')->nullable();
             $table->integer('lot_number_eight_first_molding_id')->comment = "Id from first_moldings(table)";
             $table->string('lot_number_nine')->nullable();
             $table->integer('lot_number_nine_first_molding_id')->comment = "Id from first_moldings(table)";

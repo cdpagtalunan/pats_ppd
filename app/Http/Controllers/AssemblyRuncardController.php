@@ -23,14 +23,14 @@ class AssemblyRuncardController extends Controller
 {
     public function get_data_from_matrix(Request $request){
         $material_name = [];
-        $matrix_data = Device::with(['material_process.material_details'])->with(['material_process.station_details.stations'])->where('name', $request->device_name)->where('status', 1)->get();
+        $matrix_data = Device::with(['material_process.material_details', 'material_process.station_details.stations'])->where('name', $request->device_name)->where('status', 1)->get();
         foreach($matrix_data[0]->material_process[0]->material_details as $material_details){
             $material_name[] = $material_details->material_type;
         }
         $material_type = implode(',',$material_name);
 
         $station_details = $matrix_data[0]->material_process[0]->station_details;
-        return response()->json(['device_details' => $matrix_data, 'material_details' => $material_type, 'station_details' => $station_details]);
+        return response()->json(['device_details' => $matrix_data, 'material_details' => $material_type]);
     }
 
     // COMMENTED CLARK FOR SEARCHING PO
@@ -56,7 +56,7 @@ class AssemblyRuncardController extends Controller
             $shipment_output  = '';
         }else{
             $device_name     = $device_name_by_prod_lot[0]->firstMoldingDevice->device_name;
-            $production_lot  = $device_name_by_prod_lot[0]->production_lot;
+            $production_lot  = $device_name_by_prod_lot[0]->production_lot .''. $device_name_by_prod_lot[0]->production_lot_extension;
             $device_id       = $device_name_by_prod_lot[0]->first_molding_device_id;
             $yec_po_number   = $device_name_by_prod_lot[0]->po_no;
             $pmi_po_number   = $device_name_by_prod_lot[0]->pmi_po_no;
@@ -138,7 +138,17 @@ class AssemblyRuncardController extends Controller
                                                 // ->where('po_number', $request->po_number)
                                                 ->get();
 
-        // return $assembly_runcard_data;
+        // $material_processes_by_device_name = DB::connection('mysql')
+        //     ->select("  SELECT material_processes.step
+        //                 FROM material_processes
+        //                 INNER JOIN devices ON devices.id = material_processes.device_id
+        //                 INNER JOIN material_process_stations ON material_process_stations.mat_proc_id = material_processes.id
+        //                 INNER JOIN stations ON stations.id = material_process_stations.station_id
+        //                 WHERE devices.name = '' AND stations.id = $request->station
+        //                 AND material_processes.process = 4 AND material_processes.status = 0
+        //     ");
+
+        // return $material_processes_by_device_name;
 
         if(isset($request->assy_runcard_station_id)){
             $mode_of_defect_data =  AssemblyRuncardStationsMods::with(['mode_of_defect'])->where('assembly_runcard_stations_id', $request->assy_runcard_station_id)
@@ -274,10 +284,11 @@ class AssemblyRuncardController extends Controller
                 if(!isset($request->assy_runcard_id)){
                     AssemblyRuncard::insert([
                                     'device_name'            => $request->device_name,
+                                    'part_code'              => $request->device_code,
                                     'po_number'              => $request->po_number,
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
-                                    'runcard_no'            => $request->runcard_no,
+                                    'runcard_no'             => $request->runcard_no,
                                     'shipment_output'        => $request->shipment_output,
                                     'p_zero_two_prod_lot'    => $request->p_zero_two_prod_lot,
                                     'p_zero_two_device_id'   => $request->p_zero_two_device_id,
@@ -352,6 +363,10 @@ class AssemblyRuncardController extends Controller
                     if(AssemblyRuncardStation::where('assembly_runcards_id', $request->station_assy_runcard_id)->where('station', $request->runcard_station)->exists()){
                         return response()->json(['result' => 2]);
                     }else{
+
+                        // $isFirstStationExist = AssemblyRuncardStation::where('')
+                        // device_details[0].material_process[index].station_details[0].stations['id']
+
                         $assy_runcard_station_id = AssemblyRuncardStation::insertGetId([
                                             'assembly_runcards_id'  => $request->station_assy_runcard_id,
                                             'station'               => $request->runcard_station,
@@ -467,21 +482,36 @@ class AssemblyRuncardController extends Controller
 
     public function get_assembly_qr_code (Request $request)
     {
-        $assembly = AssemblyRuncard::where('id',$request->runcard_id)
-                                    ->whereNull('deleted_at')
-                                    ->first([
-                                        'po_number',
-                                        'po_quantity',
-                                        'device_name',
-                                        'part_code',
-                                        'runcard_no',
-                                        'shipment_output',
-                                    ]);
+        // $first_molding = FirstMolding::leftJoin('first_molding_devices', function($join) {
+        //     $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
+        // })
+        // ->where('first_moldings.id',$request->first_molding_id)
+        // ->whereNull('first_moldings.deleted_at')
+        // ->first([
+        // 'po_no AS po','item_code AS code','item_name AS name',
+        // 'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
+        // 'po_qty AS qty','shipment_output AS output_qty','first_molding_devices.device_name AS device_name'
+        // ]);
 
-        // return $assembly;
+        $assembly = AssemblyRuncard::select('po_number',
+                                            'po_quantity',
+                                            'device_name',
+                                            'part_code',
+                                            'runcard_no',
+                                            'shipment_output',
+                                            DB::raw("CONCAT( firstname, ' ', lastname) AS operator_name"))
+                                    ->leftJoin('assembly_runcard_stations', function($join) {
+                                        $join->on('assembly_runcard_stations.assembly_runcards_id', '=' ,'assembly_runcards.id');
+                                    })
+                                    ->leftJoin('users', function($join) {
+                                        $join->on('users.id', '=', 'assembly_runcard_stations.operator_name');
+                                    })
+                                    ->where('assembly_runcards.id', $request->runcard_id)
+                                    ->whereNull('assembly_runcards.deleted_at')
+                                    ->first();
 
         $qrcode = QrCode::format('png')
-        ->size(250)->errorCorrection('H')
+        ->size(300)->errorCorrection('H')
         ->generate(json_encode($assembly));
 
         $qr_code = "data:image/png;base64," . base64_encode($qrcode);
@@ -494,6 +524,7 @@ class AssemblyRuncardController extends Controller
             <strong>$assembly->part_code</strong><br>
             <strong>$assembly->runcard_no</strong><br>
             <strong>$assembly->shipment_output</strong><br>
+            <strong>$assembly->operator_name</strong><br>
             "
         );
         // <strong>$assembly->qty</strong><br>
@@ -524,6 +555,10 @@ class AssemblyRuncardController extends Controller
                 <tr>
                     <td>Shipment Output:</td>
                     <td>$assembly->shipment_output</td>
+                </tr>
+                <tr>
+                    <td>Operator Name:</td>
+                    <td>$assembly->operator_name</td>
                 </tr>
             </table>
         ";

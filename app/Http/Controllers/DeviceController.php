@@ -53,6 +53,7 @@ class DeviceController extends Controller
 
                 $result .= '<input type="hidden" value="' . $device->id . '" class="form-control td_device_id">';
                 $result .= '<input type="hidden" value="' . $device->name . '" class="form-control td_device_name">';
+                $result .= '<input type="hidden" value="' . $device->process . '" class="form-control td_process">';
 
                 $result .= '</div>
                         </div></center>';

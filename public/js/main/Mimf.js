@@ -4,6 +4,9 @@ function GetPpsWarehouse(cboElement){
     $.ajax({
         url: "get_pps_warehouse",
         method: "get",
+        data: {
+            ppsWhseDb : $('#slctMimfStampingMatrixPartNumber').val(),
+        },
         dataType: "json",
 
         beforeSend: function(){
@@ -13,10 +16,43 @@ function GetPpsWarehouse(cboElement){
         success: function(response){
             result = '';
 
-            if(response['getPartName'].length > 0){
+            if(response['getPartNumber'].length > 0){
                 result = '<option selected disabled> --- Select --- </option>';
-                for(let index = 0; index < response['getPartName'].length; index++){
-                    result += '<option value="' + response['getPartName'][index].id +'">'+ response['getPartName'][index].PartNumber +'</option>'
+                for(let index = 0; index < response['getPartNumber'].length; index++){
+                    // result += '<option value="' + response['getPartNumber'][index].PartNumber +'">'+ response['getPartNumber'][index].PartNumber +'</option>'
+                    result += '<option value="' + response['getPartNumber'][index].id +'">'+ response['getPartNumber'][index].PartNumber +'</option>'
+                }
+            }
+            else{
+                result = '<option value="0" selected disabled> No record found </option>'
+            }
+            cboElement.html(result)
+        }
+    })
+}
+
+function GetPpsPoReceivedItemName(cboElement){
+    let result = '<option value="">N/A</option>'
+
+    $.ajax({
+        url: "get_pps_po_recveived_item_name",
+        method: "get",
+        data: {
+            poReceivedDb : $('#slctMimfStampingMatrixItemName').val(),
+        },
+        dataType: "json",
+
+        beforeSend: function(){
+            result = '<option value="" selected disabled> -- Loading -- </option>'
+            cboElement.html(result);
+        },
+        success: function(response){
+            result = '';
+
+            if(response['getItemName'].length > 0){
+                result = '<option selected disabled> --- Select --- </option>';
+                for(let index = 0; index < response['getItemName'].length; index++){
+                    result += '<option value="' + response['getItemName'][index].ItemName +'">'+ response['getItemName'][index].ItemName +'</option>'
                 }
             }
             else{
@@ -185,13 +221,15 @@ function UpdateMimf(){
                     $("#txtCreatedBy").addClass('is-invalid')
                     $("#txtCreatedBy").attr('title', response['error']['created_by'])
                 }
-            }else if(response['hasError'] == 0){
+            }else if(response['result'] == 1){
+                alert('Control No. "'+$("#txtMimfControlNo").val()+'" is already exist! '+"\n\n"+' Please refresh the browser to process the request once again.')
+            }else if(response['result'] == 2){
+                alert('PMI Po No. "'+$("#txtMimfPmiPoNo").val()+'" is already exist!')
+            }else{
                 $("#formMimf")[0].reset()
                 $('#modalMimf').modal('hide')
                 dataTableMimf.draw()
                 toastr.success('Succesfully saved!')
-            }else{
-                alert('Control No. "'+$("#txtMimfControlNo").val()+'" is already exist! '+"\n\n"+' Please refresh the browser to process the request once again.')
             }
 
             $("#iBtnMimfIcon").removeClass('spinner-border spinner-border-sm')
@@ -270,12 +308,12 @@ function UpdateMimfStampignMatrix(){
                 }
 
                 if(response['error']['mimf_stamping_matrix_item_name'] === undefined){
-                    $("#txtMimfStampingMatrixItemName").removeClass('is-invalid')
-                    $("#txtMimfStampingMatrixItemName").attr('title', '')
+                    $("#slctMimfStampingMatrixItemName").removeClass('is-invalid')
+                    $("#slctMimfStampingMatrixItemName").attr('title', '')
                 }
                 else{
-                    $("#txtMimfStampingMatrixItemName").addClass('is-invalid')
-                    $("#txtMimfStampingMatrixItemName").attr('title', response['error']['mimf_stamping_matrix_item_name'])
+                    $("#slctMimfStampingMatrixItemName").addClass('is-invalid')
+                    $("#slctMimfStampingMatrixItemName").attr('title', response['error']['mimf_stamping_matrix_item_name'])
                 }
 
                 if(response['error']['mimf_stamping_matrix_pin_kg'] === undefined){
@@ -287,22 +325,22 @@ function UpdateMimfStampignMatrix(){
                     $("#txtMimfStampingMatrixPinkg").attr('title', response['error']['mimf_stamping_matrix_pin_kg'])
                 }
 
-                if(response['error']['mimf_stamping_matrix_part_code'] === undefined){
-                    $("#txtMimfStampingMatrixPartCode").removeClass('is-invalid')
-                    $("#txtMimfStampingMatrixPartCode").attr('title', '')
+                if(response['error']['mimf_stamping_matrix_part_number'] === undefined){
+                    $("#slctMimfStampingMatrixPartNumber").removeClass('is-invalid')
+                    $("#slctMimfStampingMatrixPartNumber").attr('title', '')
                 }
                 else{
-                    $("#txtMimfStampingMatrixPartCode").addClass('is-invalid')
-                    $("#txtMimfStampingMatrixPartCode").attr('title', response['error']['mimf_stamping_matrix_part_code'])
+                    $("#slctMimfStampingMatrixPartNumber").addClass('is-invalid')
+                    $("#slctMimfStampingMatrixPartNumber").attr('title', response['error']['mimf_stamping_matrix_part_number'])
                 }
 
-                if(response['error']['mimf_stamping_matrix_material_name'] === undefined){
-                    $("#txtMimfStampingMatrixNeededKgs").removeClass('is-invalid')
-                    $("#txtMimfStampingMatrixNeededKgs").attr('title', '')
+                if(response['error']['mimf_stamping_matrix_material_type'] === undefined){
+                    $("#txtMimfStampingMatrixMaterialType").removeClass('is-invalid')
+                    $("#txtMimfStampingMatrixMaterialType").attr('title', '')
                 }
                 else{
-                    $("#txtMimfStampingMatrixNeededKgs").addClass('is-invalid')
-                    $("#txtMimfStampingMatrixNeededKgs").attr('title', response['error']['mimf_stamping_matrix_material_name'])
+                    $("#txtMimfStampingMatrixMaterialType").addClass('is-invalid')
+                    $("#txtMimfStampingMatrixMaterialType").attr('title', response['error']['mimf_stamping_matrix_material_type'])
                 }
 
                 if(response['error']['mimf_stamping_matrix_created_by'] === undefined){
@@ -346,13 +384,19 @@ function GetMimfStampingMatrixById(mimfStampingMatrixID){
 
         success: function(response){
             let getMimfStampingMatrixToEdit   = response['getMimfStampingMatrixToEdit']
-            console.log(getMimfStampingMatrixToEdit)
+            console.log('EDIT: ', getMimfStampingMatrixToEdit[0])
+            console.log('item_name: ', getMimfStampingMatrixToEdit[0].item_code)
+            console.log('item_code: ', getMimfStampingMatrixToEdit[0].item_name)
+            console.log('PartNumber: ', getMimfStampingMatrixToEdit[0].pps_whse_info.PartNumber)
+            console.log('MaterialType: ', getMimfStampingMatrixToEdit[0].pps_whse_info.MaterialType)
             if(getMimfStampingMatrixToEdit.length > 0){
-                $('#txtMimfStampingMatrixItemCode').val(getMimfStampingMatrixToEdit[0].item_code)
-                $('#txtMimfStampingMatrixItemName').val(getMimfStampingMatrixToEdit[0].item_name)
-                $('#txtMimfStampingMatrixPinkg').val(getMimfStampingMatrixToEdit[0].pin_kg)
-                $('#txtMimfStampingMatrixPartCode').val(getMimfStampingMatrixToEdit[0].part_code)
-                $('#txtMimfStampingMatrixMaterialName').val(getMimfStampingMatrixToEdit[0].material_name)
+                setTimeout(() => {     
+                    $('#txtMimfStampingMatrixItemCode').val(getMimfStampingMatrixToEdit[0].item_code)
+                    $('#slctMimfStampingMatrixItemName').val(getMimfStampingMatrixToEdit[0].item_name).trigger('change')
+                    $('#txtMimfStampingMatrixPinkg').val(getMimfStampingMatrixToEdit[0].pin_kg)
+                    $('#slctMimfStampingMatrixPartNumber').val(getMimfStampingMatrixToEdit[0].pps_whse_info.id).trigger('change')
+                    $('#txtMimfStampingMatrixMaterialType').val(getMimfStampingMatrixToEdit[0].pps_whse_info.MaterialType )
+                }, 300);
             }
         },
     })

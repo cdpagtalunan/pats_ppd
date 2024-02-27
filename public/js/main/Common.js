@@ -26,22 +26,7 @@ $('input[type="number"]').on('keydown', function(e){
 
 
 
-function resetMatProcValues() {
-    // Reset values
-    $("#formAddMatProc")[0].reset();
 
-    // Reset hidden input fields
-    $("#selAddMatProcProcess").val("").trigger('change');
-    $("#selAddMatProcMachine").val("").trigger('change');
-    $('select[name="material_name[]"]').val(0).trigger('change');
-    $('#txtAddMatProcId').val('');
-    $('#txtAddMatProcStep').prop('readonly', true);
-}
-
-$("#modalAddMatProc").on('hidden.bs.modal', function () {
-    console.log('hidden.bs.modal');
-    resetMatProcValues();
-});
 
 function resetFormProcessValues() {
     // Reset values

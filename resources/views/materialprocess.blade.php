@@ -435,14 +435,16 @@
                               </div>
                               <div class="form-group">
                                 <label>Station</label>
-                                <select class="form-control select2bs4" id="selAddMatStation" name="station[]" multiple>
+                                <select class="form-control select2bs44" id="selAddMatStation" name="">
                                 </select>
                               </div>
                               <div class="form-group">
                                 <label>Material Name</label>
                                 <select class="form-control select2bs4" id="selAddMatProcMatName" name="material_name[]" multiple>
-
                                 </select>
+                                {{-- <select class="form-control select2bs4" id="selAddMatProcMatName" name="" multiple="">
+
+                                </select> --}}
                               </div>
                              
                           </div>
@@ -740,216 +742,252 @@
     let dataTableMatProcess;
     let selectedDeviceId = 0;
     let selectedDeviceName = '';
+    let selectedProcess;
+    let selectMultiple = false;
+
+   
 
     $(document).ready(function () {
 
 
-      // GetUserList($(".selUser"));
+        // GetUserList($(".selUser"));
 
-      // GetCboMachine($(".selectMachine"));
+        // GetCboMachine($(".selectMachine"));
 
-      // GetMaterialKittingList($(".selWBSMatKitItem"));
-      // GetSakidashiList($(".selWBSSakIssuItem"));
-      // GetEmbossList($(".selWBSEmbossIssuItem"));
+        // GetMaterialKittingList($(".selWBSMatKitItem"));
+        // GetSakidashiList($(".selWBSSakIssuItem"));
+        // GetEmbossList($(".selWBSEmbossIssuItem"));
 
-      $(document).on('click','#tblDevices tbody tr',function(e){
-        $(this).closest('tbody').find('tr').removeClass('table-active');
-        $(this).closest('tr').addClass('table-active');
-        selectedDeviceId = $(this).closest('tbody tr.table-active').find('.td_device_id').val();
-        selectedDeviceName = $(this).closest('tbody tr.table-active').find('.td_device_name').val();
+        $(document).on('click', '#tblDevices tbody tr', function (e) {
+            $(this).closest('tbody').find('tr').removeClass('table-active');
+            $(this).closest('tr').addClass('table-active');
+            selectedDeviceId = $(this).closest('tbody tr.table-active').find('.td_device_id').val();
+            selectedDeviceName = $(this).closest('tbody tr.table-active').find('.td_device_name').val();
+            selectedProcess = $(this).closest('tbody tr.table-active').find('.td_process').val();
 
-        $("#uSelectedDeviceName").text(selectedDeviceName);
-        $("#txtAddSubDeviceDeviceId").val(selectedDeviceId);
-        $("#txtAddSubDeviceDeviceName").val(selectedDeviceName);
-        getMaterialProcessForInputs();
+            // console.log( selectedProcess);
+            $("#uSelectedDeviceName").text(selectedDeviceName);
+            $("#txtAddSubDeviceDeviceId").val(selectedDeviceId);
+            $("#txtAddSubDeviceDeviceName").val(selectedDeviceName);
+            getMaterialProcessForInputs(selectedProcess);
 
-        dataTableMatProcess.draw();
-      });
+        });
 
-      $("#chkAddMatProcHasEmboss").click(function(){
-        if($(this).prop('checked') == true){
-          // $("#selAddMatProcEmbossItem").prop('disabled', false);
-          // $("#selAddMatProcMatKitItem").prop('disabled', true);
-          // $("#selAddMatProcSakIssuItem").prop('disabled', true);
-          // alert('check');
-          $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', false);
-          $("#chkAddMatProcReqOQCBeforeEmboss").prop('checked', false);
-        }
-        else{
-          // $("#selAddMatProcEmbossItem").prop('disabled', true);
-          // $("#selAddMatProcMatKitItem").prop('disabled', false);
-          // $("#selAddMatProcSakIssuItem").prop('disabled', false);
-          // alert('uncheck');
-          $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', true);
-          $("#chkAddMatProcReqOQCBeforeEmboss").prop('checked', false);
-        }
-      });
+        $("#chkAddMatProcHasEmboss").click(function () {
+            if ($(this).prop('checked') == true) {
+                // $("#selAddMatProcEmbossItem").prop('disabled', false);
+                // $("#selAddMatProcMatKitItem").prop('disabled', true);
+                // $("#selAddMatProcSakIssuItem").prop('disabled', true);
+                // alert('check');
+                $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', false);
+                $("#chkAddMatProcReqOQCBeforeEmboss").prop('checked', false);
+            } else {
+                // $("#selAddMatProcEmbossItem").prop('disabled', true);
+                // $("#selAddMatProcMatKitItem").prop('disabled', false);
+                // $("#selAddMatProcSakIssuItem").prop('disabled', false);
+                // alert('uncheck');
+                $("#chkAddMatProcReqOQCBeforeEmboss").prop('disabled', true);
+                $("#chkAddMatProcReqOQCBeforeEmboss").prop('checked', false);
+            }
+        });
 
-      $("#chkEditMatProcHasEmboss").click(function(){
-        if($(this).prop('checked') == true){
-          $("#chkEditMatProcReqOQCBeforeEmboss").prop('disabled', false);
-        }
-        else{
-          $("#chkEditMatProcReqOQCBeforeEmboss").prop('disabled', true);
-        }
-      });
+        $("#chkEditMatProcHasEmboss").click(function () {
+            if ($(this).prop('checked') == true) {
+                $("#chkEditMatProcReqOQCBeforeEmboss").prop('disabled', false);
+            } else {
+                $("#chkEditMatProcReqOQCBeforeEmboss").prop('disabled', true);
+            }
+        });
 
-      $("#chkEditMatProcHasEmboss").click(function(){
-        if($(this).prop('checked') == true){
-          // $("#selEditMatProcEmbossItem").prop('disabled', false);
-          // $("#selEditMatProcMatKitItem").prop('disabled', true);
-          // $("#selEditMatProcSakIssuItem").prop('disabled', true);
-          // alert('check');
-        }
-        else{
-          // $("#selEditMatProcEmbossItem").prop('disabled', true);
-          // $("#selEditMatProcMatKitItem").prop('disabled', false);
-          // $("#selEditMatProcSakIssuItem").prop('disabled', false);
-          // alert('uncheck');
-        }
-      });
+        $("#chkEditMatProcHasEmboss").click(function () {
+            if ($(this).prop('checked') == true) {
+                // $("#selEditMatProcEmbossItem").prop('disabled', false);
+                // $("#selEditMatProcMatKitItem").prop('disabled', true);
+                // $("#selEditMatProcSakIssuItem").prop('disabled', true);
+                // alert('check');
+            } else {
+                // $("#selEditMatProcEmbossItem").prop('disabled', true);
+                // $("#selEditMatProcMatKitItem").prop('disabled', false);
+                // $("#selEditMatProcSakIssuItem").prop('disabled', false);
+                // alert('uncheck');
+            }
+        });
 
-      $(document).on('click','#tblMatProcesses tbody tr',function(e){
-        $(this).closest('tbody').find('tr').removeClass('table-active');
-        $(this).closest('tr').addClass('table-active');
-      });
+        $(document).on('click', '#tblMatProcesses tbody tr', function (e) {
+            $(this).closest('tbody').find('tr').removeClass('table-active');
+            $(this).closest('tr').addClass('table-active');
+        });
 
-      dataTableDevices = $("#tblDevices").DataTable({
-        "processing" : true,
-          "serverSide" : true,
-          "ajax" : {
-            url: "view_devices",
-            // data: function (param){
-            //     param.status = $("#selEmpStat").val();
-            // }
-          },
-          fixedHeader: true,
-          "columns":[
+        dataTableDevices = $("#tblDevices").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "view_devices",
+                // data: function (param){
+                //     param.status = $("#selEmpStat").val();
+                // }
+            },
+            fixedHeader: true,
+            "columns": [
 
-            { "data" : "action", orderable:false, searchable:false },
-            { "data" : "label" },
-            { "data" : "code" },
-            { "data" : "name" },
-            { "data" : "qty_per_reel" },
-            { "data" : "qty_per_box" },
-            { "data" : "virgin",  orderable:false, searchable:false},
-            { "data" : "recycle",  orderable:false, searchable:false },
-            { "data" : "process_name" },
-          ],
-          "columnDefs": [
-            { className: "bg-info dt-center", "targets": [ 4,5 ] },
-          ],
-          // "scrollY": "400px",
-          // "scrollCollapse": true,
-        });//end of dataTableDevices
+                {
+                    "data": "action",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    "data": "label"
+                },
+                {
+                    "data": "code"
+                },
+                {
+                    "data": "name"
+                },
+                {
+                    "data": "qty_per_reel"
+                },
+                {
+                    "data": "qty_per_box"
+                },
+                {
+                    "data": "virgin",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    "data": "recycle",
+                    orderable: false,
+                    searchable: false
+                },
+                {
+                    "data": "process_name"
+                },
+            ],
+            "columnDefs": [{
+                className: "bg-info dt-center",
+                "targets": [4, 5]
+            }, ],
+            // "scrollY": "400px",
+            // "scrollCollapse": true,
+        }); //end of dataTableDevices
 
         // Add Device
-        $("#formAddDevice").submit(function(event){
-          event.preventDefault();
-          AddDevice();
+        $("#formAddDevice").submit(function (event) {
+            event.preventDefault();
+            AddDevice();
         });
 
-        $("#btnShowAddDeviceModal").click(function(){
-          $("#txtAddDeviceName").removeClass('is-invalid');
-          $("#txtAddDeviceName").attr('title', '');
-          $("#txtAddDeviceBarcode").removeClass('is-invalid');
-          $("#txtAddDeviceBarcode").attr('title', '');
+        $("#btnShowAddDeviceModal").click(function () {
+            $("#txtAddDeviceName").removeClass('is-invalid');
+            $("#txtAddDeviceName").attr('title', '');
+            $("#txtAddDeviceBarcode").removeClass('is-invalid');
+            $("#txtAddDeviceBarcode").attr('title', '');
         });
 
-        $("#btnShowImport").click(function(){
-          $(".thNoOfInserted").text('0');
-          $(".thNoOfUpdated").text('0');
-          $(".thNoOfFailed").text('0');
-          $("#tblImportResult tbody").html('');
+        $("#btnShowImport").click(function () {
+            $(".thNoOfInserted").text('0');
+            $(".thNoOfUpdated").text('0');
+            $(".thNoOfFailed").text('0');
+            $("#tblImportResult tbody").html('');
         });
 
         // Edit Device
-        $(document).on('click', '.aEditDevice', function(){
-          let deviceId = $(this).attr('device-id');
-          $("#txtEditDeviceId").val(deviceId);
-          GetDeviceByIdToEdit(deviceId);
-          $("#txtEditDeviceName").removeClass('is-invalid');
-          $("#txtEditDeviceName").attr('title', '');
-          $("#txtEditDeviceBarcode").removeClass('is-invalid');
-          $("#txtEditDeviceBarcode").attr('title', '');
+        $(document).on('click', '.aEditDevice', function () {
+            let deviceId = $(this).attr('device-id');
+            $("#txtEditDeviceId").val(deviceId);
+            GetDeviceByIdToEdit(deviceId);
+            $("#txtEditDeviceName").removeClass('is-invalid');
+            $("#txtEditDeviceName").attr('title', '');
+            $("#txtEditDeviceBarcode").removeClass('is-invalid');
+            $("#txtEditDeviceBarcode").attr('title', '');
         });
 
-        $("#chkEditUserWithEmail").click(function(){
-          if($(this).prop('checked')) {
-            $("#txtEditUserEmail").removeAttr('disabled');
-            $("#txtEditUserEmail").val($("#txtEditUserCurrEmail").val());
-          }
-          else{
-            $("#txtEditUserEmail").prop('disabled', 'disabled');
-            $("#txtEditUserEmail").val('');
-          }
+        $("#chkEditUserWithEmail").click(function () {
+            if ($(this).prop('checked')) {
+                $("#txtEditUserEmail").removeAttr('disabled');
+                $("#txtEditUserEmail").val($("#txtEditUserCurrEmail").val());
+            } else {
+                $("#txtEditUserEmail").prop('disabled', 'disabled');
+                $("#txtEditUserEmail").val('');
+            }
         });
 
-        $("#formEditDevice").submit(function(event){
-          event.preventDefault();
-          EditDevice();
+        $("#formEditDevice").submit(function (event) {
+            event.preventDefault();
+            EditDevice();
         });
 
         // Change Device Status
-        $(document).on('click', '.aChangeDeviceStat', function(){
-          let deviceStat = $(this).attr('status');
-          let deviceId = $(this).attr('device-id');
+        $(document).on('click', '.aChangeDeviceStat', function () {
+            let deviceStat = $(this).attr('status');
+            let deviceId = $(this).attr('device-id');
 
-          $("#txtChangeDeviceStatDeviceId").val(deviceId);
-          $("#txtChangeDeviceStatDeviceStat").val(deviceStat);
+            $("#txtChangeDeviceStatDeviceId").val(deviceId);
+            $("#txtChangeDeviceStatDeviceStat").val(deviceStat);
 
-          if(deviceStat == 1){
-            $("#lblChangeDeviceStatLabel").text('Are you sure to activate?');
-            $("#h4ChangeDeviceTitle").html('<i class="fa fa-user"></i> Activate Device');
-          }
-          else{
-            $("#lblChangeDeviceStatLabel").text('Are you sure to deactivate?');
-            $("#h4ChangeDeviceTitle").html('<i class="fa fa-user"></i> Deactivate Device');
-          }
+            if (deviceStat == 1) {
+                $("#lblChangeDeviceStatLabel").text('Are you sure to activate?');
+                $("#h4ChangeDeviceTitle").html('<i class="fa fa-user"></i> Activate Device');
+            } else {
+                $("#lblChangeDeviceStatLabel").text('Are you sure to deactivate?');
+                $("#h4ChangeDeviceTitle").html('<i class="fa fa-user"></i> Deactivate Device');
+            }
 
-          $('#modalChangeDeviceStat').modal('show');
+            $('#modalChangeDeviceStat').modal('show');
         });
 
-        $("#formChangeDeviceStat").submit(function(event){
-          event.preventDefault();
-          ChangeDeviceStatus();
+        $("#formChangeDeviceStat").submit(function (event) {
+            event.preventDefault();
+            ChangeDeviceStatus();
         });
-      });
+    });
 
 
-      // Material Process
-      $(document).ready(function(){
+    // Material Process
+    $(document).ready(function () {
         // GetCboStationSubStation($(".selectSubStation"), 1);
         let groupColumnMatProc = 2;
         dataTableMatProcess = $("#tblMatProcesses").DataTable({
-          "processing" : true,
-          "serverSide" : true,
-          "ajax" : {
-            url: "view_material_process_by_device_id",
-            data: function (param){
-                param.device_id = selectedDeviceId;
-                param.status = $("#selFilterMatProcStat").val();
-            }
-          },
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "view_material_process_by_device_id",
+                data: function (param) {
+                    param.device_id = selectedDeviceId;
+                    param.status = $("#selFilterMatProcStat").val();
+                }
+            },
 
-          "columns":[
-            { "data" : "action", },
-            // { "data" : "mat_status" },
-            { "data" : "step" },
-            { "data" : "process_details.process_name"},
-            { "data" : "mat_details"},
-            { "data" : "mach_details" },
-            { "data" : "stat_details" },
-          ],
-          "columnDefs": [
-              {
+            "columns": [{
+                    "data": "action",
+                },
+                // { "data" : "mat_status" },
+                {
+                    "data": "step"
+                },
+                {
+                    "data": "process_details.process_name"
+                },
+                {
+                    "data": "mat_details"
+                },
+                {
+                    "data": "mach_details"
+                },
+                {
+                    "data": "stat_details"
+                },
+            ],
+            "columnDefs": [{
                 "targets": [4],
                 "data": null,
                 "defaultContent": "N/A"
-              }
-          ],
-          "order": [[ 1, 'asc' ]],
-        });//end of dataTableSubStations
+            }],
+            "order": [
+                [1, 'asc']
+            ],
+        }); //end of dataTableSubStations
 
         // $(document).on('click', '.aShowDeviceDevProc', function(){
         //   let deviceId = $(this).attr('device-id');
@@ -963,110 +1001,107 @@
         //   dataTableMatProcess.draw();
         // });
 
-        $("#selFilterMatProcStat").change(function(){
-          dataTableMatProcess.draw();
+        $("#selFilterMatProcStat").change(function () {
+            dataTableMatProcess.draw();
         });
 
-        $("#btnShowAddMatProcModal").click(function(){
+        $("#btnShowAddMatProcModal").click(function () {
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": true,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "3000",
+                "timeOut": "3000",
+                "extendedTimeOut": "3000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut",
+            };
 
-          toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "3000",
-            "timeOut": "3000",
-            "extendedTimeOut": "3000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut",
-          };
+            if (selectedDeviceId != 0) {
 
-          if(selectedDeviceId != 0){
-            $("#txtAddMatProcDevId").val(selectedDeviceId);
-            $("#txtAddMatProcDeviceName").val(selectedDeviceName);
+                $("#txtAddMatProcDevId").val(selectedDeviceId);
+                $("#txtAddMatProcDeviceName").val(selectedDeviceName);
 
-            $("#txtAddMatProcDevId").removeClass('is-invalid');
-            $("#txtAddMatProcDevId").attr('title', '');
-            $("#txtAddMatProcDeviceName").removeClass('is-invalid');
-            $("#txtAddMatProcDeviceName").attr('title', '');
+                $("#txtAddMatProcDevId").removeClass('is-invalid');
+                $("#txtAddMatProcDevId").attr('title', '');
+                $("#txtAddMatProcDeviceName").removeClass('is-invalid');
+                $("#txtAddMatProcDeviceName").attr('title', '');
 
 
-            // getMaterialProcessForAdd(selectedDeviceId);
-            getStepCount(selectedDeviceId);
-            $('#modalAddMatProc').modal('show');
+                // getMaterialProcessForAdd(selectedDeviceId);
+                getStepCount(selectedDeviceId);
+                $('#modalAddMatProc').modal('show');
 
-          }
-          else{
-            toastr.warning('No Selected Device!');
-          }
+            } else {
+                toastr.warning('No Selected Device!');
+            }
         });
 
-        $(document).on('click', '.aEditMatProc', function(){
-          let matProcId = $(this).data('id');
+        $(document).on('click', '.aEditMatProc', function () {
+            let matProcId = $(this).data('id');
 
-          if(selectedDeviceId != 0){
-            $("#txtEditMatProcId").val(matProcId);
-            // $("#modalEditMatProc").modal('show');
-            $("#modalAddMatProc").modal('show');
-            $("#txtEditMatProcDevId").val(selectedDeviceId);
-            $("#txtEditMatProcDeviceName").val(selectedDeviceName);
+            if (selectedDeviceId != 0) {
+                $("#txtEditMatProcId").val(matProcId);
+                // $("#modalEditMatProc").modal('show');
+                $("#modalAddMatProc").modal('show');
+                $("#txtEditMatProcDevId").val(selectedDeviceId);
+                $("#txtEditMatProcDeviceName").val(selectedDeviceName);
 
-            $("#txtEditMatProcDevId").removeClass('is-invalid');
-            $("#txtEditMatProcDevId").attr('title', '');
-            $("#txtEditMatProcDeviceName").removeClass('is-invalid');
-            $("#txtEditMatProcDeviceName").attr('title', '');
-            GetMatProcByIdToEdit(matProcId, selectedDeviceName);
-          }
-          else{
-            toastr.warning('No Selected Device!');
-          }
+                $("#txtEditMatProcDevId").removeClass('is-invalid');
+                $("#txtEditMatProcDevId").attr('title', '');
+                $("#txtEditMatProcDeviceName").removeClass('is-invalid');
+                $("#txtEditMatProcDeviceName").attr('title', '');
+                GetMatProcByIdToEdit(matProcId, selectedDeviceName);
+            } else {
+                toastr.warning('No Selected Device!');
+            }
         });
 
         // Add Material Process
-        $("#formAddMatProc").submit(function(event){
-          event.preventDefault();
-          // console.log($(this).serialize());
-          AddMaterialProcess();
+        $("#formAddMatProc").submit(function (event) {
+            event.preventDefault();
+            // console.log($(this).serialize());
+            AddMaterialProcess();
         });
 
         // Edit Material Process
-        $("#formEditMatProc").submit(function(event){
-          event.preventDefault();
-          EditMaterialProcess();
+        $("#formEditMatProc").submit(function (event) {
+            event.preventDefault();
+            EditMaterialProcess();
         });
 
-        $("#formChangeMatProcStat").submit(function(event){
-          event.preventDefault();
-          ChangeMatProcStat();
+        $("#formChangeMatProcStat").submit(function (event) {
+            event.preventDefault();
+            ChangeMatProcStat();
         });
 
         // Change MatProc Status
-        $(document).on('click', '.aChangeMatProcStat', function(){
-          let matProcStat = $(this).data('status');
-          let matProcId = $(this).data('id');
+        $(document).on('click', '.aChangeMatProcStat', function () {
+            let matProcStat = $(this).data('status');
+            let matProcId = $(this).data('id');
 
-          $("#txtChangeMatProcStatMatProcId").val(matProcId);
-          $("#txtChangeMatProcStatMatProcStat").val(matProcStat);
+            $("#txtChangeMatProcStatMatProcId").val(matProcId);
+            $("#txtChangeMatProcStatMatProcStat").val(matProcStat);
 
-          if(matProcStat == 0){
-            $("#lblChangeMatProcStatLabel").text('Are you sure to activate?');
-            $("#h4ChangeMatProcTitle").html('<i class="fa fa-default"></i> Activate Material Process');
-          }
-          else{
-            $("#lblChangeMatProcStatLabel").text('Are you sure to deactivate?');
-            $("#h4ChangeMatProcTitle").html('<i class="fa fa-default"></i> Deactivate Material Process');
-          }
+            if (matProcStat == 0) {
+                $("#lblChangeMatProcStatLabel").text('Are you sure to activate?');
+                $("#h4ChangeMatProcTitle").html('<i class="fa fa-default"></i> Activate Material Process');
+            } else {
+                $("#lblChangeMatProcStatLabel").text('Are you sure to deactivate?');
+                $("#h4ChangeMatProcTitle").html('<i class="fa fa-default"></i> Deactivate Material Process');
+            }
 
-          $('#modalChangeMatProcStat').modal('show');
+            $('#modalChangeMatProcStat').modal('show');
         });
 
-        $("#formImportPackingMatrix").submit(function(event){
+        $("#formImportPackingMatrix").submit(function (event) {
             event.preventDefault();
             $.ajax({
                 url: 'import_packing_matrix_updater',
@@ -1076,66 +1111,73 @@
                 cache: false,
                 contentType: false,
                 processData: false,
-                beforeSend: function(){
+                beforeSend: function () {
                     // alert('Loading...');
                     $("#tblImportResult tbody").html('');
                 },
-                success: function(JsonObject){
-                    if(JsonObject['result'] == 1){
-                      // let importText = 'Importing Success!<br># of Inserted: ' + JsonObject['inserted_barcode'].length + '<br># of Updated: ' + JsonObject['updated_barcode'].length + '<br># of Failed: ' + JsonObject['failed_barcode'].length;
-                      toastr.success('Importing Success!');
-                      dataTableDevices.draw();
-                      // $("#modalImportPackingMatrix").modal('hide');
-                      $(".thNoOfInserted").text(JsonObject['inserted_barcode'].length);
-                      $(".thNoOfUpdated").text(JsonObject['updated_barcode'].length);
-                      $(".thNoOfFailed").text(JsonObject['failed_barcode'].length);
+                success: function (JsonObject) {
+                    if (JsonObject['result'] == 1) {
+                        // let importText = 'Importing Success!<br># of Inserted: ' + JsonObject['inserted_barcode'].length + '<br># of Updated: ' + JsonObject['updated_barcode'].length + '<br># of Failed: ' + JsonObject['failed_barcode'].length;
+                        toastr.success('Importing Success!');
+                        dataTableDevices.draw();
+                        // $("#modalImportPackingMatrix").modal('hide');
+                        $(".thNoOfInserted").text(JsonObject['inserted_barcode'].length);
+                        $(".thNoOfUpdated").text(JsonObject['updated_barcode'].length);
+                        $(".thNoOfFailed").text(JsonObject['failed_barcode'].length);
 
-                      let trFailedResults = '';
+                        let trFailedResults = '';
 
-                      for(let index = 0; index < JsonObject['failed_barcode'].length; index++){
-                        trFailedResults += '<tr><td colspan="2" style="color: red;"><center>' + JsonObject['failed_barcode'][index] + '</center></td></tr>';
-                      }
+                        for (let index = 0; index < JsonObject['failed_barcode'].length; index++) {
+                            trFailedResults += '<tr><td colspan="2" style="color: red;"><center>' + JsonObject['failed_barcode'][index] + '</center></td></tr>';
+                        }
 
-                      $("#tblImportResult tbody").html(trFailedResults);
-                    }
-                    else{
-                      toastr.error('Importing Failed!');
+                        $("#tblImportResult tbody").html(trFailedResults);
+                    } else {
+                        toastr.error('Importing Failed!');
                     }
                 },
-                error: function(data, xhr, status){
+                error: function (data, xhr, status) {
                     console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
                 }
             });
         });
 
 
-        $(document).on('click','#btnAddMatProcScanMachineCode',function(e){
-          $('#txt_qrcode_scanner').val('');
-          $('#mdl_qrcode_scanner').attr('data-formid','fn_scan_machine_code').modal('show');
+        $(document).on('click', '#btnAddMatProcScanMachineCode', function (e) {
+            $('#txt_qrcode_scanner').val('');
+            $('#mdl_qrcode_scanner').attr('data-formid', 'fn_scan_machine_code').modal('show');
         });
 
-        $(document).on('click','#btnAddMatProcScanAShiftUserCode',function(e){
-          $('#txt_qrcode_scanner').val('');
-          $('#mdl_qrcode_scanner').attr('data-formid','fn_scan_a_shift_user_code').modal('show');
+        $(document).on('click', '#btnAddMatProcScanAShiftUserCode', function (e) {
+            $('#txt_qrcode_scanner').val('');
+            $('#mdl_qrcode_scanner').attr('data-formid', 'fn_scan_a_shift_user_code').modal('show');
         });
 
-        $(document).on('click','#btnAddMatProcScanBShiftUserCode',function(e){
-          $('#txt_qrcode_scanner').val('');
-          $('#mdl_qrcode_scanner').attr('data-formid','fn_scan_b_shift_user_code').modal('show');
+        $(document).on('click', '#btnAddMatProcScanBShiftUserCode', function (e) {
+            $('#txt_qrcode_scanner').val('');
+            $('#mdl_qrcode_scanner').attr('data-formid', 'fn_scan_b_shift_user_code').modal('show');
         });
 
-        $("#btnMaximizeColMatProc").click(function(){
-          $("#colDevice").removeClass('col-md-6').addClass('col-md-2');
-          $("#colMaterialProcess").removeClass('col-md-6').addClass('col-md-10');
-          $(this).css({display: 'none'});
-          $("#btnMinimizeColMatProc").css({display: 'block'});
+        $("#btnMaximizeColMatProc").click(function () {
+            $("#colDevice").removeClass('col-md-6').addClass('col-md-2');
+            $("#colMaterialProcess").removeClass('col-md-6').addClass('col-md-10');
+            $(this).css({
+                display: 'none'
+            });
+            $("#btnMinimizeColMatProc").css({
+                display: 'block'
+            });
         });
 
-        $("#btnMinimizeColMatProc").click(function(){
-          $("#colDevice").removeClass('col-md-2').addClass('col-md-6');
-          $("#colMaterialProcess").removeClass('col-md-10').addClass('col-md-6');
-          $(this).css({display: 'none'});
-          $("#btnMaximizeColMatProc").css({display: 'block'});
+        $("#btnMinimizeColMatProc").click(function () {
+            $("#colDevice").removeClass('col-md-2').addClass('col-md-6');
+            $("#colMaterialProcess").removeClass('col-md-10').addClass('col-md-6');
+            $(this).css({
+                display: 'none'
+            });
+            $("#btnMaximizeColMatProc").css({
+                display: 'block'
+            });
         });
 
 
@@ -1144,7 +1186,7 @@
             // Reset values
             $("#formAddDevice")[0].reset();
             $('#txtDeviceId').val('');
-            
+
             // Remove invalid & title validation
             $("#txtAddDeviceName").removeClass('is-invalid');
             $("#txtAddDeviceName").attr('title', '');
@@ -1159,8 +1201,39 @@
             resetDeviceAddValues();
         });
 
+        function resetMatProcValues() {
+            // Reset values
+            $("#formAddMatProc")[0].reset();
 
-      });
+            // Reset hidden input fields
+            $("#selAddMatProcProcess").val("").trigger('change');
+            $("#selAddMatProcMachine").val("").trigger('change');
+            $('select[id="selAddMatProcMatName"]').val([]).trigger('change');
+            $('select[id="selAddMatStation"]').val([]).trigger('change');
+            $('#txtAddMatProcId').val('');
+            $('#txtAddMatProcStep').prop('readonly', true);
+        }
+
+        $("#modalAddMatProc").on('hidden.bs.modal', function () {
+            console.log('hidden.bs.modal resetMatProcValues');
+            resetMatProcValues();
+        });
+
+
+    });
+
+    $(document).keydown(function (e) {
+        var nodeName = e.target.nodeName.toLowerCase();
+
+        if (e.keyCode === 8) {
+            if ((nodeName === 'select' && e.target.type === 'select') ||
+                nodeName === 'select') {
+                console.log('object');
+            } else {
+                e.preventDefault();
+            }
+        }
+    });
   </script>
   @endsection
 @endauth

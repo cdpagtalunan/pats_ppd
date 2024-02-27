@@ -32,17 +32,64 @@ class SecondMoldingController extends Controller
     }
 
     public function checkMaterialLotNumberOfFirstMolding(Request $request){
-        return DB::select("SELECT 
-                    CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot, first_moldings.id AS first_molding_id, first_moldings.first_molding_device_id AS first_molding_device_id 
+        $isProductionLotNumberSizeExisted = isset($request->production_lot_number_size) ? true : false;
+        if($isProductionLotNumberSizeExisted){
+            $result = DB::select("SELECT 
+                        CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot, 
+                        first_moldings.id AS first_molding_id, 
+                        first_moldings.first_molding_device_id AS first_molding_device_id,
+                        first_moldings.shipment_output AS first_molding_shipment_output,
+                        first_molding_details.size_category AS first_molding_size_category, 
+                        first_molding_details.output AS first_molding_output,
+                        stations.station_name AS station
+                    FROM first_moldings
+                    INNER JOIN first_molding_devices
+                        ON first_molding_devices.id = first_moldings.first_molding_device_id
+                    INNER JOIN first_molding_details
+                        ON first_molding_details.first_molding_id = first_moldings.id
+                    INNER JOIN stations
+                        ON stations.id = first_molding_details.station
+                    WHERE first_moldings.production_lot = '$request->production_lot_number'
+                    AND first_moldings.production_lot_extension = '$request->production_lot_number_extension'
+                    AND stations.station_name = 'Camera Inspection'
+                    AND first_moldings.status = 3 -- Done
+                    AND first_molding_details.size_category = '$request->production_lot_number_size'
+                    AND first_moldings.deleted_at IS NULL
+                    AND first_molding_details.deleted_at IS NULL
+                    -- LIMIT 1
+            ");
+        }else{
+            $result = DB::select("SELECT 
+                        CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot, 
+                        first_moldings.id AS first_molding_id, 
+                        first_moldings.first_molding_device_id AS first_molding_device_id 
+                    FROM first_moldings
+                    INNER JOIN first_molding_devices
+                        ON first_molding_devices.id = first_moldings.first_molding_device_id
+                    WHERE first_moldings.production_lot = '$request->production_lot_number'
+                    AND first_moldings.production_lot_extension = '$request->production_lot_number_extension'
+                    AND first_moldings.status = 3 -- Done
+                    AND first_moldings.deleted_at IS NULL
+                    LIMIT 1
+            ");
+        }
+
+        $cameraInspectionCountResult = DB::select("SELECT COUNT(first_molding_details.id) AS camera_inspection_count
                 FROM first_moldings
-                INNER JOIN first_molding_devices
-                    ON first_molding_devices.id = first_moldings.first_molding_device_id
+                INNER JOIN first_molding_details
+                    ON first_molding_details.first_molding_id = first_moldings.id
+                INNER JOIN stations
+                    ON stations.id = first_molding_details.station
                 WHERE first_moldings.production_lot = '$request->production_lot_number'
                 AND first_moldings.production_lot_extension = '$request->production_lot_number_extension'
+                AND stations.station_name = 'Camera Inspection'
                 AND first_moldings.status = 3 -- Done
                 AND first_moldings.deleted_at IS NULL
-                LIMIT 1
+                AND first_molding_details.deleted_at IS NULL
+                -- LIMIT 1
         ");
+        
+        return response()->json(['data' => $result, 'cameraInspectionCountResult' => $cameraInspectionCountResult]);
     }
 
     public function getRevisionNumberBasedOnDrawingNumber(Request $request){
@@ -145,6 +192,7 @@ class SecondMoldingController extends Controller
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
         session_start();
+        // return $data;
 
         /* For Insert */
         if(!isset($request->second_molding_id)){
@@ -204,7 +252,10 @@ class SecondMoldingController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $imploded_machine = implode($request->machine_number, ' , '); // chris
+                    $implodedMachine = implode($request->machine_number, ' , '); // chris
+                    $implodedLotNumberEight = implode($request->lot_number_eight, ', ');
+                    $implodedLotNumberEightQuantity = implode($request->lot_number_eight_quantity, ', ');
+                    $implodedLotNumberEightCategory = implode($request->lot_number_eight_size_category, ', ');
                     $secondMoldingId = SecMoldingRuncard::insertGetId([
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
@@ -212,13 +263,15 @@ class SecondMoldingController extends Controller
                         'pmi_po_number' => $request->pmi_po_number,
                         'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
-                        'machine_number' => $imploded_machine,  // chris
+                        'machine_number' => $implodedMachine,  // chris
                         'material_lot_number' => $request->material_lot_number,
                         'material_name' => $request->material_name,
                         'drawing_number' => $request->drawing_number,
                         'revision_number' => $request->revision_number,
                         'production_lot' => $request->production_lot,
-                        'lot_number_eight' => $request->lot_number_eight,
+                        'lot_number_eight' => $implodedLotNumberEight,
+                        'lot_number_eight_quantity' => $implodedLotNumberEightQuantity,
+                        'lot_number_eight_size_category' => $implodedLotNumberEightCategory,
                         'lot_number_eight_first_molding_id' => $request->lot_number_eight_first_molding_id,
                         'lot_number_nine' => $request->lot_number_nine,
                         'lot_number_nine_first_molding_id' => $request->lot_number_nine_first_molding_id,
@@ -252,6 +305,7 @@ class SecondMoldingController extends Controller
             }
         }
         else{ /** For edit */
+            // return $data;
             $rules = [
                 'second_molding_id' => 'required',
                 'device_name' => 'required',
@@ -309,7 +363,10 @@ class SecondMoldingController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
-                    $imploded_machine = implode($request->machine_number, ' , '); // Chris
+                    $implodedMachine = implode($request->machine_number, ' , '); // Chris
+                    $implodedLotNumberEight = implode($request->lot_number_eight, ', ');
+                    $implodedLotNumberEightQuantity = implode($request->lot_number_eight_quantity, ', ');
+                    $implodedLotNumberEightCategory = implode($request->lot_number_eight_size_category, ', ');
                     SecMoldingRuncard::where('id', $request->second_molding_id)->update([
                         'device_name' => $request->device_name,
                         'parts_code' => $request->parts_code,
@@ -317,13 +374,15 @@ class SecondMoldingController extends Controller
                         'po_number' => $request->po_number,
                         'required_output' => $request->required_output,
                         'po_quantity' => $request->po_quantity,
-                        'machine_number' => $imploded_machine, // chris
+                        'machine_number' => $implodedMachine, // chris
                         'material_lot_number' => $request->material_lot_number,
                         'material_name' => $request->material_name,
                         'drawing_number' => $request->drawing_number,
                         'revision_number' => $request->revision_number,
                         'production_lot' => $request->production_lot,
-                        'lot_number_eight' => $request->lot_number_eight,
+                        'lot_number_eight' => $implodedLotNumberEight,
+                        'lot_number_eight_quantity' => $implodedLotNumberEightQuantity,
+                        'lot_number_eight_size_category' => $implodedLotNumberEightCategory,
                         'lot_number_eight_first_molding_id' => $request->lot_number_eight_first_molding_id,
                         'lot_number_nine' => $request->lot_number_nine,
                         'lot_number_nine_first_molding_id' => $request->lot_number_nine_first_molding_id,

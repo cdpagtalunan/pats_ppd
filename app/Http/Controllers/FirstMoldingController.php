@@ -2,30 +2,29 @@
 
 namespace App\Http\Controllers;
 use DataTables;
-
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use Illuminate\Http\Request;
+use App\Http\Requests\FirstMoldingStationRequest;
+use App\Http\Requests\FirstMoldingRequest;
 use App\Models\Mimf;
 use App\Models\Station;
 use App\Models\TblDieset;
 use App\Models\FirstMolding;
-
-use Illuminate\Http\Request;
 use App\Models\TblPoReceived;
-use Illuminate\Support\Carbon;
 use App\Models\FirstMoldingDetail;
 use App\Models\FirstMoldingDevice;
-use Illuminate\Support\Facades\DB;
 use App\Models\FirstStampingProduction;
 use App\Models\FirstMoldingMaterialList;
 
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\FirstMoldingRequest;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use App\Http\Requests\FirstMoldingStationRequest;
+
 
 
 class FirstMoldingController extends Controller
 {
-    public function getFirstMoldingDevices(Request $request)
+    public function getFirstMoldingDevices(Request $request) //FirstMoldingDevice::
     {
         $first_molding_device = FirstMoldingDevice::where('process_type',1)->whereNull('deleted_at')->get();
         foreach ($first_molding_device as $key => $value_first_molding_device) {
@@ -49,7 +48,6 @@ class FirstMoldingController extends Controller
     public function getFirstMoldingDevicesById(Request $request)
     {
         return $first_molding_device = FirstMoldingDevice::where('id',$request->first_molding_device_id)->get();
-
     }
 
     public function loadFirstMoldingDetails(Request $request)
@@ -72,22 +70,20 @@ class FirstMoldingController extends Controller
             $result .= '<center>';
             switch ($row->status) {
                 case 0:
-                    // $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
                     $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
                     break;
                 case 1:
-                    // $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
                     $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
-                    // $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
                     break;
                 case 2:
                     $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
                     break;
                 case 3:
-                    // $result .= "";
                     $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
-                    $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
-                    break;
+                    if($row->first_molding_device_id > 1){
+                        $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' test='".$row->first_molding_device_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
+                    }
+                    break; 
                 default:
                     $result .= "";
                     break;
@@ -432,31 +428,59 @@ class FirstMoldingController extends Controller
                 "sublot_qty": 2223,
                 "sublot_counter": "1/1"
             }
+            return $material_station_by_device_name = DB::connection('mysql')
+            ->select("  SELECT material_processes.*, devices.*, stations.station_name AS 'station_name',material.material_type,material.id as 'material_id' FROM material_processes
+                        INNER JOIN devices
+                        ON devices.id = material_processes.device_id
+                        INNER JOIN material_process_materials material
+                        ON material.mat_proc_id = material_processes.id
+                        WHERE devices.name = '$request->device_name' AND material_processes.status = 0
+                        ORDER BY material.id ASC
+            ");
+
         */
         try{
-            $stamping_prod = FirstStampingProduction::where('prod_lot_no',$request->contact_lot_num)->whereNull('deleted_at')->get(['status']);
-            if( count($stamping_prod) > 0 ){
-                $current_status = $stamping_prod[0]->status;
-                if($current_status == 2 || $current_status == 4){
-                    return response()->json([
-                        "result" => 1,
-                        "stamping_prodn_status" => $current_status,
-                    ]);
-                }else{
-                    return response()->json([
-                        "result" => 2,
-                        "stamping_prodn_status" => $current_status,
-                    ]);
-                }
-            }else{
+            $get_first_molding_device =  FirstMoldingDevice::where('id',$request->first_molding_device_id)->get(['contact_name']);
+            $stamping_prod = FirstStampingProduction::where('prod_lot_no',$request->contact_lot_num)->whereNull('deleted_at')->get(['status','material_name']);
+            $current_status = $stamping_prod[0]->status;
+
+            if( count($get_first_molding_device) == 0 ){
+                return response()->json([
+                    "result" => 0,
+                    "error_msg" => "First Molding Device Name does not exist.",
+                ],500);
+            }
+
+            if( count($stamping_prod) == 0 ){
                 return response()->json([
                     "result" => 0,
                     "error_msg" => "Prodn Lot Number does not exist.",
                 ],500);
             }
+
+            if($get_first_molding_device[0]->contact_name != $stamping_prod[0]->material_name ){
+                return response()->json([
+                    "result" => 0,
+                    "error_msg" => "2nd Stamping Material Name and First Molding Contact Name not match. Please check the Matrix !",
+                ],500);
+            }
+        /*    */
+
+            if($current_status == 2 || $current_status == 4){
+                return response()->json([
+                    "result" => 1,
+                    "stamping_prodn_status" => $current_status,
+                ]);
+            }else{
+                return response()->json([
+                    "result" => 2,
+                    "stamping_prodn_status" => $current_status,
+                ]);
+            }
+
         }catch(Exemption $e){
             return $e;
         }
-
     }
+
 }

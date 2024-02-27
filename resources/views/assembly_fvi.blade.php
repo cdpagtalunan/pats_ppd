@@ -30,6 +30,15 @@
             text-align: center;
             vertical-align: middle;
         }
+        .select2-container--bootstrap-5 .select2-selection--single .select2-selection__rendered {
+                font-size: .85rem;
+                padding: .0em 0.55vmax;
+                margin-bottom: 0px;
+            }
+
+            .select2-container--bootstrap-5 .select2-selection--multiple{
+                pointer-events: none;
+            }
     </style>
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -64,7 +73,7 @@
                                         <label>PO Number</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
-                                                <button type="button" class="btn btn-primary btnSearchPO"
+                                                <button type="button" class="btn btn-primary" id="btnSearchPO"
                                                     title="Click to Scan PO Code"><i
                                                         class="fa fa-qrcode"></i></button>
                                             </div>
@@ -140,11 +149,12 @@
                     <div class="row">
                         <div class="col-sm-4 border px-4">
                             <form id="formEditFVIDetails">
+                                @csrf
                                 <div class="row">
-                                    <input type="text" id="txtHiddenFviId" name="fvi_id">
+                                    <input type="hidden" id="txtHiddenFviId" name="fvi_id">
                                     <div class="col pt-3">
                                         <span class="badge badge-secondary">1.</span> Visual Inspection Details
-                                        <button type="button" id="btn_edit_material_details_primary" class="btn btn-sm btn-link float-right"><i class="fa fa-edit"></i> Edit</button>
+                                        <button type="button" id="btnEditFviDetails" class="btn btn-sm btn-link float-right"><i class="fa fa-edit"></i> Edit</button>
                                     </div>
 
                                     <div class="row">
@@ -231,6 +241,48 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row row_container">
+                                        <div class="col">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <button style="width:30px" type="button"
+                                                        class="btn btn-sm py-0 btn-info table-btns btnViewDocuments"
+                                                        id="btnViewADrawing" data-input-id="selADrawing">
+                                                        <i class="fa fa-file" title="View"></i>
+                                                    </button>
+                                                    <span class="input-group-text w-100">A Drawing</span>
+                                                </div>
+                                                {{-- <input type="text" class="form-control" id="txtADrawingNo"
+                                                    name="txt_Adrawing_no" readonly=""> --}}
+                                                    <select class="form-control" name="a_drawing" id="selADrawing">
+                                                        
+                                                    </select>
+                                                <input type="text" value="N/A" class="form-control form-control-sm"
+                                                    id="txtARevNo" name="a_revision" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row row_container">
+                                        <div class="col">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
+                                                    <button style="width:30px" type="button"
+                                                        class="btn btn-sm py-0 btn-info table-btns btnViewDocuments"
+                                                        id="btnViewGDrawing" data-input-id="selGDrawing">
+                                                        <i class="fa fa-file" title="View"></i>
+                                                    </button>
+                                                    <span class="input-group-text w-100">G Drawing</span>
+                                                </div>
+                                                {{-- <input type="text" class="form-control" id="txtGDrawingNo"
+                                                    name="txt_Gdrawing_no" readonly=""> --}}
+                                                    <select class="form-control" name="g_drawing" id="selGDrawing">
+
+                                                    </select>
+                                                <input type="text" value="N/A" class="form-control form-control-sm"
+                                                    id="txtGRevNo" name="g_revision" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div class="row">
                                         <div class="col">
                                             <div class="input-group input-group-sm mb-3">
@@ -239,7 +291,7 @@
                                                         At</span>
                                                 </div>
                                                 <input type="text" class="form-control form-control-sm"
-                                                    id="txt_created_at" name="txtFVICreatedAt" readonly="true"
+                                                    id="txtFVICreatedAt" name="txt_created_at" readonly="true"
                                                     placeholder="Auto generated">
                                             </div>
                                         </div>
@@ -256,16 +308,21 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="row d-none mb-3" id="divBtnVisualDetails">
+                                        <div class="col text-right">
+                                            <button type="button" class="btn btn-sm btn-success" id="btnSaveVisualDetails">Save</button>
+                                            <button type="button" class="btn btn-sm btn-secondary" id="btnCancelVisualDetails">Cancel</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
-
                         </div>
                         <div class="col-sm-8">
                             <div class="row">
                                 <div class="col border py-3 px-4 border-left-0 border-bottom-0">
                                     <div class="mb-3">
                                         <span class="badge badge-secondary">2.</span> Runcards
-                                        <button class="btn btn-primary btn-sm float-right" id="btnAddFVIRuncard" ><i class="fa fa-plus" ></i> Add Runcard</button>
+                                        <button class="btn btn-primary btn-sm float-right" id="btnAddFVIRuncard" disabled><i class="fa fa-plus" ></i> Add Runcard</button>
                                     </div>
                                     <div class="table-responsive">
                                         <table class="table table-sm small table-bordered table-hover" id="tblFVIRuncards" style="width: 100%;">
@@ -281,12 +338,29 @@
                                                     <th>Remarks</th>
                                                 </tr>
                                             </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th style="border-top: 1px solid #dee2e6"></th>
+                                                    <th style="border-top: 1px solid #dee2e6"></th>
+                                                    <th style="border-top: 1px solid #dee2e6">Total Count:</th>
+                                                    <th style="border-top: 1px solid #dee2e6;" title="Total Input Quantity" class="text-primary text-center"></th>
+                                                    <th style="border-top: 1px solid #dee2e6;" title="Total Output Quantity" class="text-success text-center"></th>
+                                                    <th style="border-top: 1px solid #dee2e6" title="Total NG Quantity" class="text-danger text-center"></th>
+                                                    <th style="border-top: 1px solid #dee2e6" ></th>
+                                                    <th style="border-top: 1px solid #dee2e6"></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success btn-sm" id="btnSubmitToLotApp">Submit to OQC Lot App</button>
+                    <button type="button" class="btn btn-default btn-sm" data-bs-dismiss="modal" aria-label="Close">Close</button>
+
                 </div>
             </div>
         </div>
@@ -305,10 +379,13 @@
                     <!-- <br> -->
                     <!-- <h5 class="modal-title h5OIHeaderTitle">Overall Inspection - <span>0</span> Selected Runcards</h5> -->
                 </div>
-                <div class="modal-body">
-                    <form id="formFVIRuncard">
+                <form id="formFVIRuncard">
+                    @csrf
+                    <div class="modal-body">
                         <div class="row">
                             <div class="col">
+                                <input type="hidden" id="txtRuncardId" name="runcard_id">
+                                <input type="hidden" id="txtRuncardStationId" name="runcard_station_id">
                                 <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">Process</span>
@@ -327,8 +404,7 @@
 
                                             <div class="input-group-append">
                                                 <button class="btn btn-info" type="button" title="Scan code"
-                                                    id="btnScanQrRuncardNumber"><i
-                                                        class="fa fa-qrcode"></i></button>
+                                                    id="btnScanQrRuncardNumber"><i class="fa fa-qrcode"></i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -348,13 +424,15 @@
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
+                                                <span class="input-group-text w-100" id="basic-addon1">Operator
+                                                    Name</span>
                                             </div>
                                             {{-- <select class="form-control selectUser select2"
                                                 id="sel_edit_prod_runcard_terminal_area" name="terminal_area" readonly>
                                                 <option value=""> N/A </option>
                                             </select> --}}
-                                            <input type="text" class="form-control form-control-sm" id="txtOpertaorName" name="operator_name">
+                                            <input type="text" class="form-control form-control-sm" id="txtRuncardOperatorName"
+                                                name="operator_name" readonly>
                                             <!-- <div class="input-group-append">
                                           <button class="btn btn-info" type="button" title="Scan code" id="btn_scan_add_runcard_operator_code"><i class="fa fa-qrcode"></i></button>
                                         </div> -->
@@ -368,7 +446,7 @@
                                                 <span class="input-group-text w-100" id="basic-addon1">Input</span>
                                             </div>
                                             <input type="number" class="form-control form-control-sm"
-                                                id="txt_edit_prod_runcard_station_input" name="qty_input" readonly
+                                                id="txtRuncardInput" name="qty_input" readonly
                                                 required min="0">
                                         </div>
                                     </div>
@@ -380,7 +458,7 @@
                                                 <span class="input-group-text w-100" id="basic-addon1">Output</span>
                                             </div>
                                             <input type="number" class="form-control form-control-sm"
-                                                id="txt_edit_prod_runcard_station_output" name="qty_output" readonly
+                                                id="txtRuncardOutput" name="qty_output" readonly
                                                 required min="0">
                                         </div>
                                     </div>
@@ -392,12 +470,12 @@
                                                 <span class="input-group-text w-100" id="basic-addon1">NG Qty</span>
                                             </div>
                                             <input type="number" class="form-control form-control-sm"
-                                                id="txt_edit_prod_runcard_station_ng" name="qty_ng" min="0" value="0"
+                                                id="txtRuncardNg" name="qty_ng" min="0" value="0"
                                                 readonly="true" required>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
@@ -410,14 +488,14 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Remarks</span>
                                             </div>
-                                            <textarea class="form-control form-control-sm" id="txt_fvi_remarks"
+                                            <textarea class="form-control form-control-sm" id="txtRuncardRemarks"
                                                 name="remarks" rows="5"></textarea>
                                         </div>
                                     </div>
@@ -428,18 +506,16 @@
                                         <label>Total No. of NG: <span id="pRCStatTotNoOfNG"
                                                 style="color: green;">0</span></label>
                                     </div>
-                                    <div style="float: right;">
+                                    {{-- <div style="float: right;">
                                         <button type="button" id="btnAddMODTable" class="btn btn-xs btn-info"
                                             title="Add MOD"><i class="fa fa-plus"></i> Add MOD</button>
-                                    </div>
+                                    </div> --}}
                                     <br><br>
-                                    <table class="table table-sm" id="tblEditProdRunStaMOD">
+                                    <table class="table table-sm small table-bordered table-hover w-100" id="tblRunStaMOD">
                                         <thead>
                                             <tr>
                                                 <th style="width: 70%;">MOD</th>
                                                 <th style="width: 20%;">QTY</th>
-                                                <!-- <th style="width: 20%;">Type of NG</th> -->
-                                                <th style="width: 10%;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -459,25 +535,335 @@
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
+                        <button type="button" class="btn btn-success" id="btnSaveRuncardDetails">Save</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalScanning" tabindex="-1" role="dialog"  data-form-function="" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-top" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <input type="text" class="w-100 hidden_scanner_input" id="txtScannedItem" name="" autocomplete="off">
+                    {{-- <input type="text" class="w-100" id="txtScannedItem" name="" autocomplete="off"> --}}
+                    {{-- <input type="text" class="w-100" id="txtScannedItem" name="" autocomplete="off" value='{"po_number":"450238368400010","po_quantity":"500","device_name":"CN171S-007-1002-VE(01)","part_code":"107976201","runcard_no":"83684-3","shipment_output":"10","insp_name":"Michael Legaspi"}'> --}}
+                    <div class="text-center text-secondary">
+                        <span id="modalTitle">Please scan operator ID.</span>
+                        <br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-     
+
 @endsection
 
 @section('js_content')
 <script>
+    var dtVisualInspection;
+    var dtFVIRuncards;
+    let dtRuncardStationMod;
+    let runcardModList = [];
+    var checked_draw_count = [];
+    let outputQty = 0;
+    var token = "{{ csrf_token() }}";
+
     $(document).ready(function(){
+
+        
+
+        dtVisualInspection = $("#tblVisualInspection").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "ajax": {
+                url: "view_visual_inspection",
+                data: function (param) {
+                    param.po = $("#txtSearchPO").val();
+                }
+            },
+            fixedHeader: true,
+            "columns": [
+                { data: "action", orderable:false, searchable:false },
+                { data: "status" },
+                { data: "lot_no" },
+                { data: "ttlLotQty" },
+                { data: "ttlLotQty" },
+                { data: "remarks" }
+            ],
+            "rowCallback": function(row,data,index ){
+                let json = jQuery.parseJSON( data['ttlLotQty'] )
+                console.log('data',typeof json);
+                console.log('json', json[0]);
+                $("td:eq(3)",row).html(json[0]['ttl_output']);
+                $("td:eq(4)",row).html(json[0]['ttl_ng']);
+            },
+        }); //end of dataTableDevices
+
+        dtFVIRuncards = $("#tblFVIRuncards").DataTable({
+            "processing": true,
+            "serverSide": true,
+            "paging": false,
+            "ajax": {
+                url: "view_fvi_runcards",
+                data: function (param) {
+                    param.fvi_id = $("#txtHiddenFviId").val();
+                }
+            },
+            fixedHeader: true,
+            "columns": [
+                { data: "fk_runcard_runcard_no"},
+                { data: "created_at" },
+                { data: "operator_name" },
+                { data: "fk_runcard_station_input_quantity" },
+                { data: "fk_runcard_station_output_quantity" },
+                { data: "fk_runcard_station_ng_quantity" },
+                { data: "mods" },
+                { data: "remarks" }
+            ],
+            'drawCallback': function( settings ) {
+                let dtApi = this.api();
+                let dtDatas = dtApi.rows( {page:'current'} ).data();
+                let totalNGQty = 0;
+                let totalOutput = 0;
+                let totalInput = 0;
+                if(dtDatas.length>0){
+                    for(let x = 0; x < dtDatas.length; x++){
+                        let ngQty = dtDatas[x]['fk_runcard_station_ng_quantity'];
+                        let input = dtDatas[x]['fk_runcard_station_input_quantity'];
+                        let output = dtDatas[x]['fk_runcard_station_output_quantity'];
+                        totalNGQty = Number(totalNGQty) + Number(ngQty)
+                        totalOutput = Number(totalOutput) + Number(output)
+                        totalInput = Number(totalInput) + Number(input)
+                    }
+                    console.log('totalNGQty', totalNGQty);
+                    console.log('totalOutput', totalOutput);
+
+                  
+                }
+                $(dtApi.column(3).footer()).html(`${totalInput}`)
+                $(dtApi.column(4).footer()).html(`${totalOutput}`)
+                $(dtApi.column(5).footer()).html(`${totalNGQty}`)
+                // else{
+                //     $(dtApi.column(3).footer()).html(`${totalInput}`)
+                //     $(dtApi.column(4).footer()).html(`${totalOutput}`)
+                //     $(dtApi.column(5).footer()).html(`${totalNGQty}`)
+                // }
+
+                outputQty = totalOutput;
+
+            }
+        }); //end of dataTableDevices
+
+		dtRuncardStationMod = $('#tblRunStaMOD').DataTable({
+			"ordering": false,
+            "paging": false,
+			"columns": [
+				{ "data": "mod" },
+				{ "data": "qty" },
+			],
+		});
+
+        
+
         $('#btnAddFVI').on('click', function(){
+            if(
+                $('#txtSearchPO').val() == "" ||
+                $('#txtPoQty').val() == "" ||
+                $('#txtDeviceCode').val() == "" ||
+                $('#txtDeviceName').val() == ""
+            ){
+                toastr.error('Please Scan PO Number!');
+                return;
+            }
+            $('#txtFVIPoNum').val($('#txtSearchPO').val());
+            $('#txtFVIPoQTy').val($('#txtPoQty').val());
+            $('#txtFVIDevCode').val($('#txtDeviceCode').val());
+            $('#txtFVIDevName').val($('#txtDeviceName').val());
+
+            getDocumentRequirement($('#txtDeviceName').val());
+            getAssemblyLine();
             $('#modalFVI').modal('show');
+            
         });
 
         $('#btnAddFVIRuncard').on('click', function(e){
             e.preventDefault();
-            $('#modalFVIRuncard').modal('show');
+            validateRuncardOutput($('#txtFVIDevName').val(), $('#txtFVIDevCode').val(), "btnAdd");
+            // $('#modalFVIRuncard').modal('show');
         });
+
+        $('#btnSearchPO').on('click', function(){
+            $('#modalScanning').modal('show');
+            $('#modalScanning').attr('data-form-function', "searchPO");
+            $('#modalTitle').html("Please Scan PO Number");
+        });
+
+        $('#modalScanning').on('shown.bs.modal', function () {
+            $('#txtScannedItem').focus();
+        });
+
+        $('#btnEditFviDetails').on('click', function(e){
+            e.preventDefault();
+            $('#txtFVIRemarks').prop('readonly', false);
+            $('#selFVIAssLine').prop('disabled', false);
+            $('#divBtnVisualDetails').removeClass('d-none');
+        });
+
+        $('#btnCancelVisualDetails').on('click', function(e){
+            e.preventDefault();
+            $('#txtFVIRemarks').prop('readonly', true);
+            $('#selFVIAssLine').prop('disabled', true);
+            $('#divBtnVisualDetails').addClass('d-none');
+        });
+
+        checkDrawing();
+        function checkDrawing(){
+            $('.btnViewDocuments').each(function(e){
+                checked_draw_count[$(this).data('inputId')] = false;
+            });
+            console.log(checked_draw_count);
+        }
+
+        $('.btnViewDocuments').on('click', function(e){
+            e.preventDefault();
+            let inputId = $(this).data('inputId');
+            let selVal = $(`#${inputId}`).val();
+
+            console.log('inputId', inputId);
+            console.log('inputVal', selVal);
+
+            redirect_to_req_drawing( inputId, selVal );
+        });
+
+        $('#btnSaveVisualDetails').on('click', function(e){
+            e.preventDefault();
+            let dataProceed = false;
+            $('.btnViewDocuments').each(function(e){
+                $(this).data('inputId');
+
+                console.log(checked_draw_count[$(this).data('inputId')]);
+                if(checked_draw_count[$(this).data('inputId')] == false){
+                    alert('Please check all drawings first.')
+                    return false;
+                }
+                else{
+                    dataProceed = true;
+                }
+
+            });
+            if(dataProceed){
+                saveVisualDetails($('#formEditFVIDetails'));
+            }
+        });
+
+        $('#btnScanQrRuncardNumber').on('click', function(e){
+            e.preventDefault();
+            $('#modalScanning').modal('show');
+            $('#modalScanning').attr('data-form-function', "scanRuncard");
+            $('#modalTitle').html("Please Scan Runcard");
+            runcardModList = [];
+			dtRuncardStationMod.clear().draw();
+
+        });
+
+        $('#btnSaveRuncardDetails').on('click', function(e){
+            e.preventDefault();
+            validateRuncardOutput($('#txtFVIDevName').val(), $('#txtFVIDevCode').val(), "btnSaveRuncard");
+
+            // saveRuncard($('#formFVIRuncard'));
+        });
+
+        $(document).on('click', '.btnViewFvi', function(e){
+            let fviId = $(this).data('id');
+            let fviStatus = $(this).data('status');
+
+            getFviDetailsById(fviId, fviStatus);
+        });
+
+
+        $("#modalFVI").on('hidden.bs.modal', function () {
+            console.log('hidden.bs.modal modalFVI');
+            $('#formEditFVIDetails')[0].reset();
+            $('#txtHiddenFviId').val('')
+            $('#txtFVIRemarks').prop('readonly', true);
+            $('#selFVIAssLine').prop('disabled', true);
+            $('#btnEditFviDetails').prop('disabled', false);
+            $('#btnAddFVIRuncard').prop('disabled', true);
+            $('#divBtnVisualDetails').addClass('d-none');
+            $('textarea', $('#formEditFVIDetails')).removeClass('is-invalid')
+            $('select', $('#formEditFVIDetails')).removeClass('is-invalid')
+            dtFVIRuncards.draw();
+        });
+        $("#modalFVIRuncard").on('hidden.bs.modal', function () {
+            console.log('hidden.bs.modal modalFVIRuncard');
+            $('#formFVIRuncard')[0].reset();
+            $('#txtRuncardId').val('')
+            $('#txtRuncardStationId').val('')
+            runcardModList = [];
+			dtRuncardStationMod.clear().draw();
+            
+        });
+
+        $('#btnSubmitToLotApp').on('click', function(e){
+            e.preventDefault();
+            validateRuncardOutput($('#txtFVIDevName').val(), $('#txtFVIDevCode').val(), "btnSubmitToLotApp");
+        });
+    });
+
+    //   $('#txtScannedItem').on('keyup', function (e) {
+    $(document).on('keyup', '#txtScannedItem', function (e) {
+        if (e.keyCode == 13) {
+            let modalVal = $('#modalScanning').attr('data-form-function');
+            console.log(modalVal);
+            if (modalVal == "searchPO") {
+                try {
+                    scannedItem = JSON.parse($('#txtScannedItem').val());
+                    console.log(scannedItem);
+                    $('#txtSearchPO').val(scannedItem['po_number'])
+                    $('#txtDeviceName').val(scannedItem['device_name'])
+                    $('#txtDeviceCode').val(scannedItem['part_code'])
+                    $('#txtPoQty').val(scannedItem['po_quantity'])
+
+                    dtVisualInspection.draw();
+                    $('#modalScanning').modal('hide');
+                } catch (e) {
+                    toastr.error('Invalid Sticker');
+                }
+            } 
+            else if (modalVal == "scanRuncard") {
+                try {
+                    scannedItem = JSON.parse($('#txtScannedItem').val());
+                    loadRuncardInfo(scannedItem);
+                } catch (e) {
+                    toastr.error('Invalid Sticker');
+                }
+            }
+            $('#txtScannedItem').val('');
+        }
+    });
+
+    $(document).on('keyup', '#txtScanUserId', function(e){
+        if(e.keyCode == 13){
+            validateUser($(this).val().toUpperCase(), [0,2,5], function(result){
+                if(result == true){
+                    $('#modalScanQRSave').modal('hide');
+                    SubmitToLotApp($(this).val());
+                }
+                else{ // Error Handler
+                    toastr.error('User not authorize!');
+                }
+
+            });
+        }
     });
 </script>
 @endsection

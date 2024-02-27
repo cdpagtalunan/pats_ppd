@@ -15,10 +15,9 @@ class CreateMimfStampingMatricesTable extends Migration
     {
         Schema::create('mimf_stamping_matrices', function (Blueprint $table) {
             $table->id();
+            $table->string('pps_whse_id')->nullable()->comment = 'tbl_Warehouse';
             $table->string('item_code')->nullable();
             $table->string('item_name')->nullable();
-            $table->string('part_code')->nullable();
-            $table->string('material_name')->nullable();
             $table->string('pin_kg')->nullable();
             $table->string('created_by')->nullable()->comment = 'user login';
             $table->string('updated_by')->nullable()->comment = 'user login';

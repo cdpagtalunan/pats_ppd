@@ -9,6 +9,7 @@ use App\Models\Station;
 use App\Models\EEDMSMachine;
 use Illuminate\Http\Request;
 use App\Models\MaterialProcess;
+use App\Models\FirstMoldingDevice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MaterialProcessMachine;
@@ -200,6 +201,7 @@ class MaterialProcessController extends Controller
         else{
             DB::beginTransaction();
 
+            // return $request->all();
             try{
                 $mat_proc_array = array(
                     'step'      => $request->step,
@@ -221,7 +223,7 @@ class MaterialProcessController extends Controller
                     MaterialProcessMachine::where('mat_proc_id', $request->mat_proc_id)->delete();
                     // if(isset($request->material_name)){
                     //     for ($i=0; $i < count($request->material_name); $i++) { 
-                    //          $exploded_material = explode(' || ',$request->material_name[$i]);
+                    //          $exploded_material = explode(' || ',$request->material_name[$i]); material_name
                     //         MaterialProcessMaterial::insert([
                     //             'mat_proc_id'   => $request->mat_proc_id,
                     //             'material_code' => $exploded_material[0],
@@ -273,23 +275,60 @@ class MaterialProcessController extends Controller
                 }
 
                 if(isset($request->material_name)){
-                    for ($i=0; $i < count($request->material_name); $i++) { 
-                        $exploded_material = explode(' || ',$request->material_name[$i]);
-                        MaterialProcessMaterial::insert([
-                            'mat_proc_id'   => $material_process_id,
-                            'material_code' => $exploded_material[0],
-                            'material_type' => $exploded_material[1],
-                            'created_by'    => Auth::user()->id,
-                            'created_at'    => NOW()
-                        ]);
-                    }
+                    // if(is_array($request->material_name)){
+                        for ($i=0; $i < count($request->material_name); $i++) { 
+                            $exploded_material = explode(' || ',$request->material_name[$i]);
+                            MaterialProcessMaterial::insert([
+                                'mat_proc_id'   => $material_process_id,
+                                'material_code' => $exploded_material[0],
+                                'material_type' => $exploded_material[1],
+                                'created_by'    => Auth::user()->id,
+                                'created_at'    => NOW()
+                            ]);
+                            //Add Molding Devices for Production History Module
+                            if($request->process == 4){
+                                $is_exist_first_molding_device = FirstMoldingDevice::where('device_name',$request->device_name)->exists();
+                                if( !isset( $is_exist_first_molding_device ) ){
+                                    FirstMoldingDevice::insert([
+                                        'device_name' => $request->device_name,
+                                        'contact_name' => $exploded_material[1],
+                                        'process_type' => 1,
+                                        'created_at'    => NOW(),
+                                    ]);
+                                }
+                            }
+                        }
+                    // }
+                    // else{
+                    //     $exploded_material = explode(' || ', $request->material_name);
+
+                    //     MaterialProcessMaterial::insert([
+                    //         'mat_proc_id'   => $material_process_id,
+                    //         'material_code' => $exploded_material[0],
+                    //         'material_type' => $exploded_material[1],
+                    //         'created_by'    => Auth::user()->id,
+                    //         'created_at'    => NOW()
+                    //     ]);
+                    // }
+                    
                 }
 
                 if(isset($request->station)){
-                    for ($j=0; $j < count($request->station); $j++) { 
+                
+
+                    if(is_array($request->station)){
+                        for ($j=0; $j < count($request->station); $j++) { 
+                            MaterialProcessStation::insert([
+                                'mat_proc_id'   => $material_process_id,
+                                'station_id' => $request->station[$j],
+                                'created_at'    => NOW()
+                            ]);
+                        }
+                    }
+                    else{
                         MaterialProcessStation::insert([
                             'mat_proc_id'   => $material_process_id,
-                            'station_id' => $request->station[$j],
+                            'station_id' => $request->station,
                             'created_at'    => NOW()
                         ]);
                     }
@@ -297,8 +336,8 @@ class MaterialProcessController extends Controller
               
 
               
-                DB::commit();
-
+                // DB::commit();
+                DB::rollback();
                 return response()->json([
                     'result' => 1,
                     'msg'    => 'Transaction Successful'
@@ -313,6 +352,7 @@ class MaterialProcessController extends Controller
 
     public function get_mat_proc_data(Request $request){
         $material_process_details = MaterialProcess::with([
+            'device_details',
             'material_details'=> function($query){
                 $query->where('status', 0);
             },

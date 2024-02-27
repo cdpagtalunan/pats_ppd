@@ -2,17 +2,23 @@
 
 namespace App\Http\Controllers;
 
+
 use DataTables;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Models\User;
 use App\Models\Station;
 use App\Models\FirstMolding;
-use Illuminate\Http\Request;
 use App\Models\FirstMoldingDetail;
-use Illuminate\Support\Facades\DB;
 use App\Models\FirstMoldingStation;
-use Illuminate\Support\Facades\Auth;
 use App\Models\FirstMoldingDetailMod;
 use App\Http\Requests\FirstMoldingStationRequest;
+
+
+
 
 class FirstMoldingStationController extends Controller
 {
@@ -26,12 +32,15 @@ class FirstMoldingStationController extends Controller
             $result = '';
             $result .= '<center>';
             if($row->belongsToFirstMolding['status'] != 3){
-                // $result .= '<button type="button" class="btn btn-info btn-sm mr-1" first-molding-station-id='.$row->id.' id="btnEditFirstMoldingStation"><i class="fa-solid fa-pen-to-square"></i></button>';
-                $result .= '<button type="button" class="btn btn-outline-info btn-sm mb-1" first-molding-station-id='.$row->id.' test-data='.$row->belongsToFirstMolding['status'].' view-data="true" id="btnViewFirstMoldingStation"><i class="fa-solid fa-eye"></i></button>';
+                $result .= '<button type="button" class="btn btn-outline-info btn-sm mb-1" first-molding-station-id='.$row->id.' view-data="true" id="btnViewFirstMoldingStation"><i class="fa-solid fa-eye"></i></button>';
                 $result .= '<button type="button" class="btn btn-outline-danger btn-sm mb-1" first-molding-station-id='.$row->id.' id="btnDeleteFirstMoldingStation"><i class="fa-solid fa-times"></i></button>';
                 // $result .= '';
             }else{
-                $result .= '';
+                if($row->size_category != ""){
+                    $result .= "<button class='btn btn-success btn-sm mr-1'  first-molding-station-id=".$row->id." id='btnPrintFirstMoldingStation'><i class='fa-solid fa-print' disabled></i></button>";
+                }else{
+                    $result .= '';
+                }
             }
             $result .= '</center>';
             return $result;
@@ -145,8 +154,9 @@ class FirstMoldingStationController extends Controller
 
     public function saveFirstMoldingStation(FirstMoldingStationRequest $request)
     {
+        // return $request->all();
+
         date_default_timezone_set('Asia/Manila');
-        // return $request->is_partial;
         DB::beginTransaction();
         try{
             $arr_ng_qty = [];
@@ -173,6 +183,18 @@ class FirstMoldingStationController extends Controller
                 return response()->json( [ 'result' => 2,'error_msg' => 'Station is already exists' ] ,409);
             }
 
+            if($request->station == 7 ){ //nmodify Camera Inspection
+                $validation = array(
+                    'size_category' => ['required'],
+                );
+
+                $validator = Validator::make($request->all(), $validation);
+
+                if ($validator->fails()) {
+                    return response()->json(['result' => '0', 'errors' => $validator->messages()],422);
+                }
+            }
+
             if( isset($request->first_molding_detail_id) ){ //Edit
                 $first_molding_detail_id = FirstMoldingDetail::where('id',$request->first_molding_detail_id)
                 ->update([
@@ -180,6 +202,7 @@ class FirstMoldingStationController extends Controller
                     'station' => $request->station,
                     'date' => $request->date,
                     'operator_name' => $request->operator_name,
+                    'size_category' => $request->size_category,
                     'input' => $request->input,
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
@@ -196,6 +219,7 @@ class FirstMoldingStationController extends Controller
                     'station' => $request->station,
                     'date' => $request->date,
                     'operator_name' => $request->operator_name,
+                    'size_category' => $request->size_category,
                     'input' => $request->input,
                     'ng_qty' => $request->ng_qty,
                     'output' => $request->output,
@@ -232,7 +256,6 @@ class FirstMoldingStationController extends Controller
                     $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
                 }
             }
-
             /*
                 TODO: Save the Step Number to First Molding Detail Table
             */
@@ -247,7 +270,6 @@ class FirstMoldingStationController extends Controller
                         WHERE devices.name = '$device_name' AND stations.id = $request->station
                         AND material_processes.process = 4 AND material_processes.status = 0
             ");
-
             $station_step = $material_processes_by_device_name[0]->step;
 
             $first_molding_detail_id = FirstMoldingDetail::where('id',$first_molding_detail_id)
@@ -280,18 +302,19 @@ class FirstMoldingStationController extends Controller
 
                 //Read all NG QTY from First Molding Details Table
                 $arr_first_molding_station_ng_qty = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
-                                                                                            ->whereNull('deleted_at')->get(['ng_qty']);
-                $arr_first_molding_station_current_data = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
-                                                                                            ->where('step',$station_step)
-                                                                                            ->whereNull('deleted_at')->get(['ng_qty','output','input']);
+                                                                        ->whereNull('deleted_at')->get(['ng_qty']);
                 foreach ($arr_first_molding_station_ng_qty as $key => $value_first_molding_station_ng_qty) {
                     $arr_ng_qty [] = $value_first_molding_station_ng_qty->ng_qty;
                 }
+                //Read all Output and Input even partial Output Qty
+                $arr_first_molding_station_current_data = FirstMoldingDetail::where('first_molding_id',$request->first_molding_id)
+                                                                            ->where('step',$station_step)
+                                                                            ->whereNull('deleted_at')->get(['output','input']);
                 foreach ($arr_first_molding_station_current_data as $key => $value) {
                     $arr_output [] = $value->output;
                     $arr_input [] = $value->input;
                 }
-                //Calculate the NG QTY then save to First Molding Table
+                //Calculate the  NG, Output and Input QTY then save to First Molding Table
                 $sum_ng_qty = array_sum($arr_ng_qty);
                 $sum_output = array_sum($arr_output);
                 $sum_input = array_sum($arr_input);
@@ -421,6 +444,7 @@ class FirstMoldingStationController extends Controller
         ");
 
         foreach ($material_station_by_device_name as $key => $value_material_station_by_device_name) {
+
             $arr_material_station_by_device_name_id[] = $value_material_station_by_device_name->station_id;
             $arr_material_station_by_device_name_value[] = $value_material_station_by_device_name->station_name;
         }
@@ -466,4 +490,89 @@ class FirstMoldingStationController extends Controller
             return response()->json(['is_success' => "false", 'exceptionError' => $e->getMessage()]);
         }
     }
+
+    public function dasd(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        DB::beginTransaction();
+        try {
+            DB::commit();
+            return response()->json(['hasError' => 0]);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
+    public function getFirstMoldingStationQrCode (Request $request)
+    {
+        $first_molding = FirstMoldingDetail::rightJoin('first_moldings', function($join) {
+            $join->on('first_moldings.id', '=', 'first_molding_details.first_molding_id');
+        })
+        ->leftJoin('first_molding_devices', function($join) {
+            $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
+        })
+        ->where('first_molding_details.id',$request->first_molding_detail_id)
+        ->whereNull('first_moldings.deleted_at')
+        ->first([
+        'po_no AS po','item_code AS code','item_name AS name',
+        'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
+        'po_qty AS qty','first_molding_details.output AS output_qty','first_molding_devices.device_name AS device_name',
+        'first_molding_details.size_category AS size',
+        ]);
+
+        $qrcode = QrCode::format('png')
+        ->size(250)->errorCorrection('H')
+        ->generate($first_molding);
+
+        $qr_code = "data:image/png;base64," . base64_encode($qrcode);
+
+        $data[] = array(
+            'img' => $qr_code,
+            'text' =>  "<strong>$first_molding->po</strong><br>
+            <strong>$first_molding->code</strong><br>
+            <strong>$first_molding->device_name</strong><br>
+            <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
+            <strong>$first_molding->qty</strong><br>
+            <strong>$first_molding->output_qty</strong><br>
+            <strong>$first_molding->size</strong><br>
+            "
+        );
+
+        $label = "
+            <table class='table table-sm table-borderless' style='width: 100%;'>
+                <tr>
+                    <td>PO No.:</td>
+                    <td>$first_molding->po</td>
+                </tr>
+                <tr>
+                    <td>Material Code:</td>
+                    <td>$first_molding->code</td>
+                </tr>
+                <tr>
+                    <td>Material Name:</td>
+                    <td>$first_molding->device_name</td>
+                </tr>
+                <tr>
+                    <td>Production Lot #:</td>
+                    <td>".$first_molding->lot_no."".$first_molding->lot_no_ext."</td>
+                </tr>
+                <tr>
+                    <td>Shipment Output:</td>
+                    <td>$first_molding->output_qty</td>
+                </tr>
+                <tr>
+                    <td>PO Quantity:</td>
+                    <td>$first_molding->qty</td>
+                </tr>
+                <tr>
+                    <td>Size</td>
+                    <td>$first_molding->size</td>
+                </tr>
+            </table>
+        ";
+
+        return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'first_molding_data' => $first_molding]);
+    }
+
+
 }

@@ -261,11 +261,15 @@
 
                     getValidateTotalNgQty(first_molding_station_detail.ng_qty,totalNumberOfMOD);
                 }
+
+                let station = first_molding_station_detail.station;
+
                 formModal.firstMoldingStation.find('#first_molding_id').val(first_molding_station_detail.id);
                 formModal.firstMoldingStation.find('#first_molding_id').val(first_molding_station_detail.first_molding_id);
                 formModal.firstMoldingStation.find('#first_molding_detail_id').val(first_molding_station_detail.id);
                 formModal.firstMoldingStation.find('#date').val(first_molding_station_detail.date);
                 // formModal.firstMoldingStation.find('#operator_name').val(first_molding_station_detail.operator_name);
+                formModal.firstMoldingStation.find('#size_category').val(first_molding_station_detail.size_category);
                 formModal.firstMoldingStation.find('#input').val(first_molding_station_detail.input);
                 formModal.firstMoldingStation.find('#ng_qty').val(first_molding_station_detail.ng_qty);
                 formModal.firstMoldingStation.find('#output').val(first_molding_station_detail.output);
@@ -273,7 +277,7 @@
                 formModal.firstMoldingStation.find('#remarks').val(first_molding_station_detail.remarks);
 
                 setTimeout(() => {
-                    formModal.firstMoldingStation.find('#station').val(first_molding_station_detail.station);
+                    formModal.firstMoldingStation.find('#station').val(station);
                 }, 300);
                 // getStation();
 
@@ -286,6 +290,7 @@
                 }
                 $('#modalFirstMoldingStation').modal('show');
                 getFirstMoldingOperationNames(formModal.firstMoldingStation.find('#operator_name'),first_molding_station_detail.operator_name);
+                fnIsSelectCameraInspection(station);
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }
@@ -426,6 +431,7 @@
                     errorHandler( errors.input,formModal.firstMoldingStation.find('#input') );
                     errorHandler( errors.ng_qty,formModal.firstMoldingStation.find('#ng_qty') );
                     errorHandler( errors.output,formModal.firstMoldingStation.find('#output') );
+                    errorHandler( errors.size_category,formModal.firstMoldingStation.find('#size_category') );
                 }else if(data.status === 409){
                     // toastr.error(`Error: ${data.status}`);
                     Swal.fire({
@@ -527,6 +533,7 @@
                     formModal.firstMolding.find('#virgin_qty').val(response.virgin_qty);
                     formModal.firstMolding.find('#recycle_qty').val(response.recycled_qty);
                     formModal.firstMolding.find('#pmi_po_no').val(response.pmi_po_no);
+                    $('#global_po_qty').val(poQty);
                     $('#global_target_qty').val(productOfPoNumber);
                 }else{
                     toastr.error(response.error_msg)
@@ -541,6 +548,8 @@
                     formModal.firstMolding.find('#virgin_qty').val('');
                     formModal.firstMolding.find('#recycle_qty').val('');
                     $('#global_target_qty').val('');
+                    $('#global_po_qty').val('');
+
 
                 }
             }
@@ -654,12 +663,13 @@
                 formModal.firstMolding.find('#drawing_no').val(drawingNo);
                 formModal.firstMolding.find('#revision_no').val(revNo);
                 //Auto generated production lot number: DiesetRevisionNumberYYMMDD
-                formModal.firstMolding.find('#production_lot').val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
+                formModal.firstMolding.find('#production_lot').val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}-`);
             }
         });
     }
 
-    const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo){
+    const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){
+
         let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
         // if(scanFirstMoldingContactLotNo.length < 0){
         //     Swal.fire({
@@ -674,7 +684,7 @@
         $.ajax({
             type: "GET",
             url: "validate_scan_first_molding_contact_lot_num", //nmodify
-            data: {"contact_lot_num" :contactLotNo },
+            data: {"contact_lot_num" :contactLotNo ,"first_molding_device_id": firstMoldingDeviceId},
             dataType: "json",
             success: function (response) {
                 console.log(response);
@@ -733,5 +743,14 @@
             }
         });
     }
+
+    const fnIsSelectCameraInspection = function (stationId) {
+        if(stationId === "7"){ //nmodify Camera Inspection
+            formModal.firstMoldingStation.find('#isSelectCameraInspection').removeClass('d-none',true);
+        }else{
+            formModal.firstMoldingStation.find('#isSelectCameraInspection').addClass('d-none',true);
+        }
+    }
+
 
 // })
