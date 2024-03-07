@@ -96,7 +96,8 @@
                                                             <th>Action</th>
                                                             <th>CTRL No.</th>
                                                             <th>Date Issuance</th>
-                                                            <th>WO / P.O No</th>
+                                                            <th>YEC P.O No</th>
+                                                            <th>PMI P.O No</th>
                                                             <th>Prod'n Qty.</th>
                                                             <th>Device Code</th>
                                                             <th>Device Name</th>
@@ -502,6 +503,7 @@
                         { "data" : "action", orderable:false, searchable:false },
                         { "data" : "control_no" },
                         { "data" : "date_issuance" },
+                        { "data" : "yec_po_no" },
                         { "data" : "pmi_po_no" },
                         { "data" : "prodn_qty" },
                         { "data" : "device_code" },
@@ -688,52 +690,53 @@
 
                 $('#formMimf').submit(function (e) { 
                     e.preventDefault()
-                    $('#mdlScanEmployeeID').modal('show')
-                    $('#mdlScanEmployeeID').on('shown.bs.modal', function () {
-                        $('#txtScanEmployeeID').focus()
-                        const mdlEmployeeId = document.querySelector("#mdlScanEmployeeID");
-                        const inptScanEmployeeId = document.querySelector("#txtScanEmployeeID");
-                        let focus = false
+                    UpdateMimf()
+                    // $('#mdlScanEmployeeID').modal('show')
+                    // $('#mdlScanEmployeeID').on('shown.bs.modal', function () {
+                    //     $('#txtScanEmployeeID').focus()
+                    //     const mdlEmployeeId = document.querySelector("#mdlScanEmployeeID");
+                    //     const inptScanEmployeeId = document.querySelector("#txtScanEmployeeID");
+                    //     let focus = false
     
-                        mdlEmployeeId.addEventListener("mouseover", () => {
-                            if (inptScanEmployeeId === document.activeElement) {
-                                focus = true
-                            } else {
-                                focus = false
-                            }
-                        })
+                    //     mdlEmployeeId.addEventListener("mouseover", () => {
+                    //         if (inptScanEmployeeId === document.activeElement) {
+                    //             focus = true
+                    //         } else {
+                    //             focus = false
+                    //         }
+                    //     })
     
-                        mdlEmployeeId.addEventListener("click", () => {
-                            if (focus) {
-                                inptScanEmployeeId.focus()
-                            }
-                        })             
-                    })
+                    //     mdlEmployeeId.addEventListener("click", () => {
+                    //         if (focus) {
+                    //             inptScanEmployeeId.focus()
+                    //         }
+                    //     })             
+                    // })
                 })
 
-                $('#txtScanEmployeeID').on('keypress',function(e){
-                    if( e.keyCode == 13 ){
-                        $.ajax({
-                            url: "employee_id",
-                            type: "get",
-                            data: {
-                                user_id : $('#txtScanEmployeeID').val().toUpperCase(),
-                            },
-                            dataType: "json",
-                            success: function (response) {
-                                let userDetails = response['userDetails']
-                                if(userDetails != null){
-                                    $('#txtEmployeeNo').val(userDetails.employee_id)
-                                    UpdateMimf()
-                                }else{
-                                    toastr.error('Only PPC Sr. Planner, PPC Planner and PPC Clerk are authorized to save!')
-                                }
-                            }
-                        })
-                        $('#txtScanEmployeeID').val('')
-                        $('#mdlScanEmployeeID').modal('hide')
-                    }
-                })
+                // $('#txtScanEmployeeID').on('keypress',function(e){
+                //     if( e.keyCode == 13 ){
+                //         $.ajax({
+                //             url: "employee_id",
+                //             type: "get",
+                //             data: {
+                //                 user_id : $('#txtScanEmployeeID').val().toUpperCase(),
+                //             },
+                //             dataType: "json",
+                //             success: function (response) {
+                //                 let userDetails = response['userDetails']
+                //                 if(userDetails != null){
+                //                     $('#txtEmployeeNo').val(userDetails.employee_id)
+                //                     UpdateMimf()
+                //                 }else{
+                //                     toastr.error('Only PPC Sr. Planner, PPC Planner and PPC Clerk are authorized to save!')
+                //                 }
+                //             }
+                //         })
+                //         $('#txtScanEmployeeID').val('')
+                //         $('#mdlScanEmployeeID').modal('hide')
+                //     }
+                // })
 
                 // ======================= START MIMF DATA TABLE =======================
                 dataTableMimfStampingMatrix = $("#tableMimfStampingMatrix").DataTable({
@@ -768,6 +771,7 @@
                         dataType: "json",
                         success: function (response) {
                             let getItemCode = response['getItemCode']
+                            console.log('getItemCode',getItemCode);
                             if(getItemCode != undefined){
                                 $('#txtMimfStampingMatrixItemCode').val(getItemCode.ItemCode)
                             }

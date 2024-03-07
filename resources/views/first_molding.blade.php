@@ -160,7 +160,6 @@
             </section>
         </div>
 
-    {{-- @include('component.modal') --}}
     <div class="modal fade" id="modalFirstMolding" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-xl-custom">
             <div class="modal-content">
@@ -250,10 +249,10 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-30">
-                                                <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Contact Lot Qty</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no">
+                                            <input type="text" class="form-control form-control-sm" id="contact_lot_qty" name="contact_lot_qty" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -268,21 +267,29 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Shift </span>
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="shift" name="shift" readonly>
+                                            <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Machine #</span>
                                             </div>
                                             <select type="text" class="form-control form-control-sm" id="machine_no" name="machine_no" placeholder="Machine #" sytle="width:100%">
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Shift </span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="shift" name="shift" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -540,6 +547,7 @@
                                                         <th>Station</th>
                                                         <th>Date</th>
                                                         <th>Name</th>
+                                                        <th>Size</th>
                                                         <th>Input</th>
                                                         <th>NG Qty</th>
                                                         <th>Output</th>
@@ -575,7 +583,6 @@
             </div>
             <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
 
     <div class="modal fade" id="modalFirstMoldingStation" tabindex="-1" role="dialog" aria-hidden="true">
@@ -985,10 +992,10 @@
                     fixedHeader: true,
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
-                        // { "data" : "status" },
                         { "data" : "stations" },
                         { "data" : "date" },
                         { "data" : "operator_names" },
+                        { "data" : "size_category" },
                         { "data" : "input" },
                         { "data" : "ng_qty" },
                         { "data" : "output" },
@@ -1501,6 +1508,8 @@
                     e.preventDefault();
                     let stationId = $(this).val();
                     fnIsSelectCameraInspection(stationId);
+                    // alert('dsad')
+                    console.log(stationId);
                 });
 
             });

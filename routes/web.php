@@ -130,6 +130,7 @@ Route::view('/pats_shipment_con','pats_shipment_confirmation')->name('pats_shipm
 
 /* TRACEABILITY REPORT */
 Route::view('/cn171_traceability_report','cn171_traceability_report')->name('cn171_traceability_report');
+Route::view('/molding_traceability_report','molding_traceability_report')->name('molding_traceability_report');
 
 /* 5S CHECKSHEET VIEW */
 Route::view('/5s_checksheet','5s_checksheet')->name('5s_checksheet');

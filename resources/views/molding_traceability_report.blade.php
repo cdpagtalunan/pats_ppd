@@ -18,7 +18,7 @@
                 </div>
             </div><!-- /.container-fluid -->
         </section>
-  
+
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
@@ -28,7 +28,7 @@
                         <!-- general form elements -->
                         <div class="card card">
                             <div class="card-header">
-                                Stamping Traceability Report
+                                Molding Traceability Report
                             </div>
                             <!-- Start Page Content -->
                             <div class="card-body">
@@ -56,8 +56,8 @@
                                 </div>
                             </div>
                             <!-- !-- End Page Content -->
-                            
-                        </div>                    
+                        </div>
+                    
                         <!-- /.card -->
                     </div>
                     <!-- /.row -->
@@ -88,7 +88,6 @@
                     
             });
 
-            
             $('#txtViewDatePickerTo').datepicker({
                         format: 'yyyy-mm-dd',
                         // format: 'yyyy-mm-dd',

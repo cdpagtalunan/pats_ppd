@@ -233,7 +233,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,8,9,10]))
+                    @if (in_array(Auth::user()->position, [0,7,8,9,10]))
                         <li class="nav-header mt-3"><strong>PPC</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -442,7 +442,14 @@
                             {{-- <i class="fas fa-map-marked-alt"> </i> --}}
                             {{-- <i class="fas fa-cog"> </i> --}}
                             <i class="far fa-circle nav-icon ml-2">  </i>
-                            <p> Export CN171 Traceability Report</p>
+                            <p>Stamping Traceability Report</p>
+                        </a>
+
+                        <a href="{{ route('molding_traceability_report') }}" class="nav-link">
+                            {{-- <i class="fas fa-map-marked-alt"> </i> --}}
+                            {{-- <i class="fas fa-cog"> </i> --}}
+                            <i class="far fa-circle nav-icon ml-2">  </i>
+                            <p>Molding Traceability Report</p>
                         </a>
                     </li>
                     {{-- <li class="nav-item has-treeview">
@@ -452,7 +459,6 @@
                         </a>
 
                         <ul class="nav nav-treeview">
-                           
                         </ul>
                     </li> --}}
                 @endif

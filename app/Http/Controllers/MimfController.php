@@ -23,6 +23,7 @@ class MimfController extends Controller
         date_default_timezone_set('Asia/Manila');
         
         $get_mimfs = Mimf::with([
+            'pps_po_received_info',
             'pps_po_received_info.matrix_info',
             'pps_po_received_info.mimf_stamping_matrix_info.pps_whse_info',
             'pps_po_received_info.pps_dieset_info.pps_warehouse_info',
@@ -69,9 +70,16 @@ class MimfController extends Controller
             $result .= '</center>';
             return $result;
         })
+        ->addColumn('yec_po_no', function($get_mimf){
+            $result = '<center>';
+            $result .= $get_mimf->pps_po_received_info->ProductPONo;
+            $result .= '</center>';
+            return $result;
+        })
         
         ->rawColumns([
             'action',
+            'yec_po_no',
             'po_balance'
         ])
         ->make(true);
@@ -104,7 +112,7 @@ class MimfController extends Controller
     public function employeeID(Request $request){
         date_default_timezone_set('Asia/Manila');
 
-        $user_details = User::where('employee_id', $request->user_id)->where('position', [0,7,8,10])->first();
+        $user_details = User::where('employee_id', $request->user_id)->where('position', [0,7,8,10])->get();
         return response()->json(['userDetails' => $user_details]);
     }
 
@@ -340,7 +348,7 @@ class MimfController extends Controller
             ->select("SELECT DISTINCT ItemName
                 FROM tbl_POReceived
                 WHERE logdel = '0'
-                ORDER BY tbl_POReceived.ItemName ASC
+                -- ORDER BY tbl_POReceived.ItemName ASC
             ");
 
             return response()->json(['getItemName'  => $get_itemname]);

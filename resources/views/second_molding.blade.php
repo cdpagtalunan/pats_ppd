@@ -1053,7 +1053,7 @@
                                                     <input type="text" class="form-control form-control-sm" id="textLotNumberEight" name="lot_number_eight[]" value="${arrayLotNumberEight[i]}" style="width: 10%;" readonly placeholder="Lot #">
                                                     <input type="text" class="form-control form-control-sm" id="textLotNumberEightSizeCategory" name="lot_number_eight_size_category[]" value="${arrayLotNumberEightCategory[i]}" style="width: 10%;" readonly placeholder="Sizing">
                                                     <input type="text" class="form-control form-control-sm" id="textLotNumberEightQuantity" name="lot_number_eight_quantity[]" value="${arrayLotNumberEightQuantity[i]}" readonly placeholder="Quantity">
-                                                    <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" readonly placeholder="Lot #">
+                                                    <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" value="${responseData[0].lot_number_eight_first_molding_id}" readonly placeholder="Lot #">
                                                     <button class="btn btn-xs btn-danger buttonRemoveLotNumber" title="Remove" type="button"><i class="fa fa-times"></i></button>
                                                     <button class="btn btn-info" 
                                                         type="button" title="Scan code" 
