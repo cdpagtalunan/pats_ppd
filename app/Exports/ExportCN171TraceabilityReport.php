@@ -6,11 +6,6 @@ namespace App\Exports;
 // use Maatwebsite\Excel\Concerns\FromView;
 // use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
-
-use App\Model\DERework;
-use App\Model\PartsPrep;
-use App\Model\DefectEscalation;
-
 use Illuminate\Support\Facades\DB;
 use App\Model\WBSSakidashiIssuance;
 use Illuminate\Contracts\View\View;

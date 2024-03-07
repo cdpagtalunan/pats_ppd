@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class IqcInspectionsMod extends Model
 {
-    use HasFactory;
+    protected $table = "iqc_inspections_mods";
+    protected $connection = "mysql";
 }

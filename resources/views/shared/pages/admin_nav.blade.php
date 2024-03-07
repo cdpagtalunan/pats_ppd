@@ -81,6 +81,13 @@
                                         <p>IQC (2nd Stamping)</p>
                                     </a>
                                 </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('export_iqc_inspection_data') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Export IQC Data</p>
+                                    </a>
+                                </li>
+
                             </ul>
                         </li>
 
@@ -139,6 +146,12 @@
                                     <a href="{{ route('second_stamping_oqc_inspection') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>OQC 2nd Stamping</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('export_oqc_inspection_data') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Export OQC Data</p>
                                     </a>
                                 </li>
                             </ul>
@@ -235,7 +248,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,8,9,10]))
+                    @if (in_array(Auth::user()->position, [0,7,8,9,10]))
                         <li class="nav-header mt-3"><strong>PPC</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -433,6 +446,12 @@
                                     <p>Packing and Shipping</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route("ppts_export_packing_and_shipping") }}" class="nav-link">
+                                    <i class="far fa-circle nav-icon ml-2"> </i>
+                                    <p>Export Packing and Shipping Report</p>
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 @endif
@@ -441,22 +460,16 @@
                     <li class="nav-header mt-3"><strong>TRACEABILITY REPORT</strong></li>
                     <li class="nav-item">
                         <a href="{{ route('cn171_traceability_report') }}" class="nav-link">
-                            {{-- <i class="fas fa-map-marked-alt"> </i> --}}
-                            {{-- <i class="fas fa-cog"> </i> --}}
                             <i class="far fa-circle nav-icon ml-2">  </i>
                             <p> Export CN171 Traceability Report</p>
+                        </a> 
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('molding_traceability_report') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon ml-2">  </i>
+                            <p>Molding Traceability Report</p>
                         </a>
                     </li>
-                    {{-- <li class="nav-item has-treeview">
-                        <a href="#" class="nav-link">
-                            <i class="fas fa-shipping-fast"> </i>
-                            <p> CN171 Traceability Report</p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"> </i>
-                        </a>
-
-                        <ul class="nav nav-treeview">
-                           
-                        </ul>
-                    </li> --}}
                 @endif
                 @endauth
 

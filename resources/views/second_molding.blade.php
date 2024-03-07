@@ -448,7 +448,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content modal-lg">
                     <div class="modal-header">
-                        <h5 class="modal-title"><i class="fas fa-object-group text-info"></i> Stations</h5>
+                        <h5 class="modal-title"><i class="fas fa-object-group"></i> Stations</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -528,7 +528,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
+                            <div class="row" id="divYield">
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend w-50">
@@ -548,6 +548,141 @@
                                     <textarea type="text" class="form-control form-control-sm" rows="2" id="textRemarks" name="remarks"></textarea>
                                     </div>
                                 </div>
+                            </div>
+
+                            <div class="row" id="divSamplingPlan">
+                                <h5><i class="fa-solid fa-chart-simple"></i>&nbsp;Sampling Plan</h5>
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Type of Inspection</span>
+                                        </div>
+                                        <select class="form-select form-control-sm selectTypeOfInspection" id="selectTypeOfInspection" name="type_of_inspection">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Severity of Inspection</span>
+                                        </div>
+                                        <select class="form-select form-control-sm selectSeverityOfInspection" id="selectSeverityOfInspection" name="severity_of_inspection">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Inspection Level</span>
+                                        </div>
+                                        <select class="form-select form-control-sm selectInspectionLevel" id="selectInspectionLevel" name="inspection_level">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Lot Qty.</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="textLotQuantity" name="lot_quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">AQL</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textAQL" name="aql" min="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Sample Size</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="textSampleSize" name="sample_size">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Accept</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textAccept" name="accept" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Reject</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textReject" name="reject" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Lot Inspected</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textLotInspected" name="lot_inspected" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Lot Accepted</span>
+                                        </div>
+                                        <select class="form-select form-control-sm" id="selectLotAccepted" name="lot_accepted">
+                                            <option selected disabled>- Select -</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Judgement</span>
+                                        </div>
+                                        <select class="form-select form-control-sm" id="selectJudgement" name="judgement" style="background-color: #e9ecef; pointer-events: none;" readonly>
+                                            <option selected disabled>- Select -</option>
+                                            <option value="0">Reject</option>
+                                            <option value="1">Accepted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
                             </div>
 
                             <div class="row">
@@ -606,8 +741,6 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
-
-        
     @endsection
 
     @section('js_content')
@@ -1053,7 +1186,7 @@
                                                     <input type="text" class="form-control form-control-sm" id="textLotNumberEight" name="lot_number_eight[]" value="${arrayLotNumberEight[i]}" style="width: 10%;" readonly placeholder="Lot #">
                                                     <input type="text" class="form-control form-control-sm" id="textLotNumberEightSizeCategory" name="lot_number_eight_size_category[]" value="${arrayLotNumberEightCategory[i]}" style="width: 10%;" readonly placeholder="Sizing">
                                                     <input type="text" class="form-control form-control-sm" id="textLotNumberEightQuantity" name="lot_number_eight_quantity[]" value="${arrayLotNumberEightQuantity[i]}" readonly placeholder="Quantity">
-                                                    <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" readonly placeholder="Lot #">
+                                                    <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" value="${responseData[0].lot_number_eight_first_molding_id}" readonly placeholder="Lot #">
                                                     <button class="btn btn-xs btn-danger buttonRemoveLotNumber" title="Remove" type="button"><i class="fa fa-times"></i></button>
                                                     <button class="btn btn-info" 
                                                         type="button" title="Scan code" 
@@ -1206,12 +1339,22 @@
                         $(api.column(5).footer()).html(`${countNGQuantity}`)
                         $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
                     }
-
                 });
                 /**
                  * DataTables of Second Molding Station
                  * End
                 */
+
+                /**
+                 * Sampling Plan
+                */
+                GetInspectionType($('.selectTypeOfInspection'))
+                GetSeverityInspection($('.selectSeverityOfInspection'))
+                GetInspectionLevel($('.selectInspectionLevel'))
+
+                $('#selectLotAccepted').on('change', function(){
+                    $(`#selectJudgement`).find(`option[value=${$(this).val()}]`).prop("selected", true);
+                });
 
                 /**
                  * Get Id of Second Molding after click 
@@ -1758,7 +1901,6 @@
                         }
                     }
                 });
-                
             });
         </script>
     @endsection

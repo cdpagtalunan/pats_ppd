@@ -105,8 +105,9 @@
                                                     <th>Status</th>
                                                     <th>Device Name</th>
                                                     <th>PO Number</th>
-                                                    <th>Required Output</th>
-                                                    {{-- <th>Runcard #</th> --}}
+                                                    <th>Runcard #</th>
+                                                    <th>Lot Qty</th>
+                                                    {{-- <th>Required Output</th> --}}
                                                 </tr>
                                             </thead>
                                         </table>
@@ -175,25 +176,25 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated">
+                                                <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated" readonly>
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Required Qty</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtRequiredOutput" name="required_output" placeholder="Auto generated">
+                                                <input type="text" class="form-control form-control-sm" id="txtRequiredOutput" name="required_output" placeholder="Auto generated" readonly>
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Runcard No.</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Auto generated">
+                                                <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Auto generated" readonly>
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Shipment Output</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtShipmentOutput" name="shipment_output">
+                                                <input type="text" class="form-control form-control-sm" id="txtShipmentOutput" name="shipment_output" placeholder="Auto generated" readonly>
                                             </div>
 
                                             <div id="pSeriesName" style="border:2px; border-style:dashed; padding:2px;">
@@ -248,7 +249,7 @@
                                                         </div>
                                                         <input type="text" class="form-control form-control-sm" id="txtSZeroSevenMatName" name="s_zero_seven_material_name" value="CN171S-07#IN-VE" readonly>
                                                     </div>
-                                                    
+
                                                     <div class="input-group input-group-sm mt-1 mb-2">
                                                         <div class="input-group-prepend w-50">
                                                             <span class="input-group-text w-100" id="basic-addon1">Lot No</span>
@@ -390,7 +391,7 @@
                         </div>
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                            <button type="button" id="btnSubmitAssemblyRuncardData" class="btn btn-primary" disabled><i class="fa fa-check"></i> Submit</button>
+                            <button type="button" id="btnSubmitAssemblyRuncardData" class="btn btn-primary"><i class="fa fa-check"></i> Submit</button>
                         </div>
                     </form>
                 </div>
@@ -745,17 +746,108 @@
             </div><!-- /.modal-dialog -->
         </div>
 
+        <!-- CONFIRM SUBMIT MODAL START -->
+        <div class="modal fade" id="modalConfirmSubmit">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary">
+                        <h4 class="modal-title"><i class="fa-solid fa-file-circle-check"></i>&nbsp;&nbsp;Confirmation</h4>
+                        <button type="button" style="color: #fff" class="close" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" id="FrmConfirmSubmit">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row d-flex justify-content-center">
+                                <label class="text-secondary mt-2">Are you sure you want to proceed?</label>
+                                <input type="hidden" class="form-control" name="cnfrm_assy_id" id="cnfrmtxtId">
+                                {{-- <input type="hidden" class="form-control" name="cnfrm_ipqc_production_lot" id="cnfrmtxtIPQCProdLot">
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_process_category" id="cnfrmtxtIPQCProcessCat"> --}}
+                                <input type="hidden" class="form-control" name="cnfrm_ipqc_status" id="cnfrmtxtStatus">
+                            </div>
+                        </div>
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="btnConfirmSubmit" class="btn btn-primary"><i id="ConfirmSubmitIcon"
+                                    class="fa fa-check"></i> Proceed</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- CONFIRM SUBMIT MODAL END -->
+
     @endsection
 
     @section('js_content')
         <script>
             $(document).ready(function(){
 
-                $( '.select2bs5' ).select2( {
+                $('.select2bs5').select2( {
                     theme: 'bootstrap-5'
-                } );
+                });
 
-                // PACOPYA BOSS MIGZ
+                dtAssemblyRuncard = $("#tblAssemblyRuncard").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_assembly_runcard",
+                        data: function (param){
+                            param.device_name = $("#txtSelectDeviceName").val();
+                        }
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "status" },
+                        { "data" : "device_name" },
+                        { "data" : "po_number" },
+                        // { "data" : "required_output" },
+                        { "data" : "runcard_no" },
+                        { "data" : "shipment_output" },
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": "_all"},
+                        {
+                            "targets": [2],
+                            "data": null,
+                            "defaultContent": "---"
+                        },
+                    ],
+                });
+
+                dtAssemblyRuncardStation = $("#tblAssemblyRuncardStation").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_assembly_runcard_stations",
+                        data: function (param){
+                            param.assy_runcard_id = $("#txtAssyRuncardId").val();
+                        },
+                    },
+                    fixedHeader: true,
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "station_name" },
+                        { "data" : "date" },
+                        { "data" : "operator" },
+                        { "data" : "input_quantity" },
+                        { "data" : "ng_quantity" },
+                        { "data" : "output_quantity" },
+                        { "data" : "remarks" },
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": "_all"},
+                        {
+                            "targets": [2],
+                            "data": null,
+                            "defaultContent": "---"
+                        },
+                    ],
+                });
+
                 // let totalNumberOfMOD = 0;
                 $("#buttonAddAssemblyModeOfDefect").click(function(){
                     let totalNumberOfMOD = 0;
@@ -780,7 +872,7 @@
                     // $('.select2bs5').select2({
                     //     theme: 'bootstrap-5'
                     // });
-                    
+
                     // $('#tableAssemblyStationMOD .textMODQuantity').each(function() {
                     //     if($(this).val() === null || $(this).val() === ""){
                     //         $("#tableAssemblyStationMOD tbody").empty();
@@ -932,66 +1024,6 @@
 
                 });
 
-                // PACOPYA BOSS MIGZ END
-
-                dtAssemblyRuncard = $("#tblAssemblyRuncard").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_assembly_runcard",
-                        data: function (param){
-                            param.device_name = $("#txtSelectDeviceName").val();
-                        }
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status" },
-                        { "data" : "device_name" },
-                        { "data" : "po_number" },
-                        { "data" : "required_output" },
-                        // { "data" : "runcard_no" },
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": "_all"},
-                        {
-                            "targets": [2],
-                            "data": null,
-                            "defaultContent": "---"
-                        },
-                    ],
-                });
-
-                dtAssemblyRuncardStation = $("#tblAssemblyRuncardStation").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_assembly_runcard_stations",
-                        data: function (param){
-                            param.assy_runcard_id = $("#txtAssyRuncardId").val();
-                        },
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "station_name" },
-                        { "data" : "date" },
-                        { "data" : "operator" },
-                        { "data" : "input_quantity" },
-                        { "data" : "ng_quantity" },
-                        { "data" : "output_quantity" },
-                        { "data" : "remarks" },
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": "_all"},
-                        {
-                            "targets": [2],
-                            "data": null,
-                            "defaultContent": "---"
-                        },
-                    ],
-                });
-
                 // NEW CODE TESTIN
                 $('#btnScanPZeroTwoProdLot, #btnScanSZeroSevenProdLot, #btnScanSZeroTwoProdLot').each(function(e){
                     $(this).on('click',function (e) {
@@ -1007,7 +1039,7 @@
                 $('#textQrScanner').keyup(delay(function(e){
                     const qrScannerValue = $('#textQrScanner').val();
                     let ScanQrCodeVal = JSON.parse(qrScannerValue)
-                            getLotNo =  ScanQrCodeVal.lot_no
+                            // getLotNo =  ScanQrCodeVal.lot_no
                         // qrScannerValue = qrScannerValue.lot_no;
                         // console.log(qrScannerValue.lot_no);
                     let formId = $('#modalQrScanner').attr('data-form-id');
@@ -1015,13 +1047,17 @@
                         $('#textQrScanner').val(''); // Clear after enter
                         switch (formId) {
                             case 'ScanPZeroTwoProdLot':
-                                verifyProdLotfromMolding(getLotNo, formId, 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
+                                production_lot_no = ScanQrCodeVal.production_lot;
+                                verifyProdLotfromMolding(production_lot_no, '', formId, 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
                                 break;
                             case 'ScanSZeroSevenProdLot':
-                                verifyProdLotfromMolding(getLotNo, formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO','txtSZeroSevenDeviceQty');
+                                production_lot_no = ScanQrCodeVal.production_lot;
+                                verifyProdLotfromMolding(production_lot_no, '', formId, 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO','txtSZeroSevenDeviceQty');
                                 break;
                             case 'ScanSZeroTwoProdLot':
-                                verifyProdLotfromMolding(getLotNo, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+                                production_lot_no = ScanQrCodeVal.lot_no;
+                                production_lot_ext = ScanQrCodeVal.lot_no_ext;
+                                verifyProdLotfromMolding(production_lot_no, production_lot_ext, formId, 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
                                 break;
                             default:
                                 break;
@@ -1030,19 +1066,22 @@
                 }, 100));
                 // NEW CODE TESTIN
 
-                const verifyProdLotfromMolding = (getLotNo, ScanProdLotValue, textLotNumberValue, textLotNumberIdValue, SecondMoldingDeviceName, DevicePO, DeviceQty) => {
+                const verifyProdLotfromMolding = (production_lot_no, production_lot_ext, ScanProdLotValue, textLotNumberValue, textLotNumberIdValue, SecondMoldingDeviceName, DevicePO, DeviceQty) => {
                     let route;
                     if(ScanProdLotValue == 'ScanSZeroTwoProdLot'){ //
                         route = 'chk_device_prod_lot_from_first_molding';
+                        // production_lot_no = ScanQrCodeVal.lot_no;
                     }else if(ScanProdLotValue == 'ScanPZeroTwoProdLot' || ScanProdLotValue == 'ScanSZeroSevenProdLot'){
                         route = 'chk_device_prod_lot_from_sec_molding';
+                        // production_lot_no = ScanQrCodeVal.production_lot;
                     }
 
                     $.ajax({
                         type: "get",
                         url: route,
                         data: {
-                            production_lot: getLotNo,
+                            production_lot: production_lot_no,
+                            production_lot_ext: production_lot_ext,
                         },
                         dataType: "json",
                         success: function (response) {
@@ -1101,8 +1140,8 @@
 
                             $('#txtSearchDeviceCode').val(device_details[0].code);
                             $('#txtSearchMaterialName').val(material_details);
-                            $('#txtSearchReqOutput').val(device_details[0].qty_per_box);
-                            
+                            $('#txtSearchReqOutput').val(device_details[0].qty_per_reel);
+
                             // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
                             // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
@@ -1190,7 +1229,7 @@
                             }else{
                                 $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(500);
                                 let txtRuncard = txtPONumber.slice(5,10);
-                                
+
                                 $.ajax({
                                     type: "get",
                                     url: "get_assembly_runcard_data",
@@ -1201,7 +1240,7 @@
                                     success: function (response) {
                                         let result = response['assembly_runcard_data'];
                                         runcardCount = result.length;
-                                        
+
                                         if(result.length == 0){
                                             runcardCount = 1;
                                         }else{
@@ -1238,7 +1277,7 @@
                         //     data: "data",
                         //     dataType: "json",
                         //     success: function (response) {
-                                
+
                         //     }
                         // });
                     }
@@ -1246,7 +1285,7 @@
                         toastr.error('Please Select Device Name')
                     }
                 });
-                
+
 
                 $(document).on('click', '#btnSubmitAssemblyRuncardData',function(e){
                     let _token = '{{ csrf_token() }}';
@@ -1271,9 +1310,23 @@
                     });
                 });
 
+                // clark ongoing
                 $('#btnAddRuncardStation').on('click', function(e){
                      $('#modalAddStation').modal('show');
                      let runcard_id = $(this).attr('runcard_id');
+
+                    $.ajax({
+                    type: "get",
+                    url: "chck_existing_stations",
+                    data: {
+                        "data" : runcard_id,
+                    },
+                    dataType: "json",
+                    success: function (response){
+                        // txtSelectRuncardStation
+                    }
+                    });
+
                      $('#txtStationAssyRuncardId').val(runcard_id);
                      $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
                 });
@@ -1332,33 +1385,44 @@
 
                 $(document).on('click', '#btnSaveNewAssemblyRuncardStation',function(e){
                     e.preventDefault();
-                    $.ajax({
-                        type:"POST",
-                        url: "add_assembly_runcard_station_data",
-                        data: $('#formAddAssemblyRuncardStation').serialize(),
-                        dataType: "json",
-                        success: function(response){
-                            if (response['result'] == 1) {
-                                toastr.success('Successful!');
-                                $("#modalAddStation").modal('hide');
-                                dtAssemblyRuncardStation.draw();
-
-                                // $.ajax({
-                                //     type:"GET",
-                                //     url: "chck_existing_stations",
-                                //     data: $('#formCNAssemblyRuncard').find('formCNAssemblyRuncard')
-                                //     dataType: "json",
-                                //     success: function(response){
-                                        
-                                //     }
-                                // });
-
-                            }else{
-                                toastr.error('Error!, Please Contanct ISS Local 208');
-                            }
-                            // console.log('station success');
-                        }
-                    });
+                    // let AssyRuncardId = $('#txtStationAssyRuncardId').val();
+                    // let AssyStationId = $('#txtAssyRuncardStationId').val();
+                    // let AssyStationNo = $('#txtSelectRuncardStation').val();
+                    // // NEED TO PLACE VALIDATION FOR EXISTING STATIONS
+                    // $.ajax({
+                    //     type:"GET",
+                    //     url: "chck_existing_stations",
+                    //     data: {
+                    //         'id'         : AssyRuncardId,
+                    //         'station_id' : AssyStationId,
+                    //         'station_no' : AssyStationNo,
+                    //     },
+                    //     dataType: "json",
+                    //     success: function(response){
+                    //         let result = response['result'];
+                        //comment for now
+                            // if(result = 1){
+                                $.ajax({
+                                    type:"POST",
+                                    url: "add_assembly_runcard_station_data",
+                                    data: $('#formAddAssemblyRuncardStation').serialize(),
+                                    dataType: "json",
+                                    success: function(response){
+                                        if (response['result'] == 1) {
+                                            toastr.success('Successful!');
+                                            $('#txtShipmentOutput').val(response['shipment_output']);
+                                            $("#modalAddStation").modal('hide');
+                                            dtAssemblyRuncardStation.draw();
+                                        }else{
+                                            toastr.error('Error!, Please Contanct ISS Local 208');
+                                        }
+                                    }
+                                });
+                            // }else if(result = 2){
+                            //     toastr.error('Error!, Please put the pre-requisite station data first');
+                            // }
+                        // }
+                    // });
                 });
 
                 $(document).on('click', '.btnUpdateAssemblyRuncardData',function(e){
@@ -1372,16 +1436,16 @@
                         },
                         dataType: "json",
                         beforeSend: function(){
-                            $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
+                            // $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
                         },
                         success: function(response){
                             const assy_runcard_data = response['assembly_runcard_data'];
                             if(assy_runcard_data[0].assembly_runcard_station.length > 2){
-                                $('#btnSubmitAssemblyRuncardData').prop('disabled', false);
+                                // $('#btnSubmitAssemblyRuncardData').prop('disabled', false);
                                 $('#btnAddRuncardStation').prop('disabled', true);
                             }else{
                                 //Enable Adding of Runcard Station
-                                $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
+                                // $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
                                 $('#btnAddRuncardStation').prop('disabled', false);
                             }
 
@@ -1418,8 +1482,14 @@
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
-                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_two_prod_lot, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+                            let s_zero_two_prod_lot = assy_runcard_data[0].s_zero_two_prod_lot;
+                                s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
+                                s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
+
+                                // s_zero_two_prod_lot_ext = s_zero_two_prod_lot.split('-');
+                                s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
+                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
+                            verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
 
                             dtAssemblyRuncardStation.draw();
                         },
@@ -1561,10 +1631,51 @@
                     }
                     $('#txtOutputQuantity').val(output_value);
                     $('#txtStationYield').val(`${station_yield.toFixed(2)}%`);
-
-
-
                 };
+
+                $(document).on('click', '#btnSubmitIPQCData', function(e){
+                    // let ipqc_id = $(this).attr('ipqc_data-id');
+                    let assy_runcard_id = $(this).attr('assembly_runcard-id');
+                    let assy_runcard_status = $(this).attr('assembly_runcard-status');
+                    $("#cnfrmtxtId").val(assy_runcard_id);
+                    $("#cnfrmtxtStatus").val(assy_runcard_status);
+                    // $.ajax({
+                    //     type: "get",
+                    //     url: "get_assembly_data",
+                    //     data: {
+                    //         runcard_id: assy_runcard_id,
+                    //     },
+                    //     dataType: "json",
+                    //     success: function (response) {
+                    //         let ipqc_data = response['ipqc_data'][0];
+                    //         $("#cnfrmtxtId").val(ipqc_data.id);
+                    //         // $("#cnfrmtxtIPQCProdLot").val(ipqc_data.production_lot);
+                    //         $("#cnfrmtxtStatus").val(ipqc_data.status);
+                    //         // $("#cnfrmtxtIPQCProcessCat").val(ipqc_data.process_category);
+                    //     }
+                    // });
+                    $("#modalConfirmSubmit").modal('show');
+                });
+
+                $("#FrmConfirmSubmit").submit(function(event) {
+                    event.preventDefault();
+                    $.ajax({
+                        url: "update_assembly_status",
+                        method: "post",
+                        data: $('#FrmConfirmSubmit').serialize(),
+                        dataType: "json",
+                        success: function (response) {
+                            let result = response['result'];
+                            if (result == 'Successful') {
+                                toastr.success('Successful!');
+                                dtAssemblyRuncard.draw();
+                                $("#modalConfirmSubmit").modal('hide');
+                            }else{
+                                toastr.error('Error!, Please Contanct ISS Local 208');
+                            }
+                        }
+                    });
+                });
 
                 $(document).on('click', '#btnPrintAssemblyRuncard', function(e){
                     e.preventDefault();
@@ -1594,7 +1705,6 @@
                             $('#modalAssemblyPrintQr').modal('show');
                         }
                     });
-
                 });
 
                 $('#btnAssemblyPrintQrCode').on('click', function(){

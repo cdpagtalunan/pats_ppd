@@ -31,7 +31,10 @@
 
 <script src="{{ asset('public/template/moment/moment.min.js') }}"></script>
 
-<script src="{{ asset('public/template/jquerymask/js/jquery.mask.min.js') }}"></script>
+
+<script src="{{ asset('public/template/jquerymask/js/jquery.mask.min.js') }}"></script> <!-- Only use for Second Molding -->
+<script src="{{ asset('public/template/jquerytimepicker/js/jquery.timepicker.js') }}"></script> <!-- Only use for Second Molding -->
+<script src="{{ asset('public/template/thirsttrap/js/thirsttrap2.js') }}"></script> <!-- Only use for Second Molding -->
 
 
 <!-- Custom JS -->

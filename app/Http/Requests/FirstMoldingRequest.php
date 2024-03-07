@@ -26,6 +26,7 @@ class FirstMoldingRequest extends FormRequest
         return [
             'first_molding_device_id'=>'required',
             'contact_lot_number'=>'required',
+            'contact_lot_qty'=>'required',
             'production_lot'=>'required',
             'production_lot_extension'=>'required',
             // 'contact_name'=>'required',

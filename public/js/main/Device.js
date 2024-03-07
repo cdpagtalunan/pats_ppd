@@ -36,7 +36,7 @@ function AddDevice(){
                     $("#txtAddDeviceCode").addClass('is-invalid');
                     $("#txtAddDeviceCode").attr('title', JsonObject['error']['code']);
                 }
-                
+
                 if(JsonObject['error']['stamp_step'] === undefined){
                     $("#selStampStep").removeClass('is-invalid');
                     $("#selStampStep").attr('title', '');
@@ -95,8 +95,8 @@ function GetDeviceByIdToEdit(deviceId){
 
             let result = JsonObject['device'];
             // if(result.length > 0){
-                
-                
+
+
                 $("#txtDeviceId").val(result.id);
                 $("#txtAddDeviceCode").val(result.code);
                 $("#txtAddDeviceName").val(result.name);

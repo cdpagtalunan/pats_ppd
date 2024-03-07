@@ -26,7 +26,7 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1>Molding Packing</h1>
+					<h1>Packing and Shipping</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
@@ -48,7 +48,7 @@
  				<div class="col-12">
  					<!-- general form elements -->
  					<div>
-						<iframe  src="http://rapidx/cn_ppts/iframe_request?username={{ Auth::user()->username }}&emp_id={{ Auth::user()->employee_id }}&iframe=packing" style="border: none;" no-border height="850" width="100%">></iframe>
+						<iframe src="http://rapidx/cn_ppts/iframe_request?username={{ Auth::user()->username }}&emp_id={{ Auth::user()->employee_id }}&iframe=packing" style="border: none;" no-border height="850" width="100%"></iframe>
  					</div>
 				</div>
 			</div>

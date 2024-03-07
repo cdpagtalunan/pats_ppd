@@ -43,7 +43,7 @@ class MaterialProcessController extends Controller
             $result = "";
             $result .= "<center>";
             $result .= "<button class='btn btn-sm btn-info aEditMatProc mr-1' data-id='$material_process_details->id'><i class='fa-solid fa-pen-to-square'></i></button>";
-            
+
             if($material_process_details->status == 0){
                 $result .= "<button class='btn btn-sm btn-danger aChangeMatProcStat' data-id='$material_process_details->id' data-status='1'><i class='fa-solid fa-ban'></i></button>";
             }
@@ -156,7 +156,7 @@ class MaterialProcessController extends Controller
         $process_details = Process::where('status', 0)->get();
 
         $stations = Station::where('status', 0)->get();
-        
+
         return response()->json([
             'machine_details'  => $machine_details,
             'material_details' => $merged_materials,
@@ -192,7 +192,7 @@ class MaterialProcessController extends Controller
                 // 'name' => ['required', 'string', 'max:255', 'unique:devices'],
                 'process' => ['required', 'string', 'max:255']
         );
-        
+
         $validator = Validator::make($data, $validation);
 
         if ($validator->fails()) {
@@ -222,7 +222,7 @@ class MaterialProcessController extends Controller
 
                     MaterialProcessMachine::where('mat_proc_id', $request->mat_proc_id)->delete();
                     // if(isset($request->material_name)){
-                    //     for ($i=0; $i < count($request->material_name); $i++) { 
+                    //     for ($i=0; $i < count($request->material_name); $i++) {
                     //          $exploded_material = explode(' || ',$request->material_name[$i]); material_name
                     //         MaterialProcessMaterial::insert([
                     //             'mat_proc_id'   => $request->mat_proc_id,
@@ -235,7 +235,7 @@ class MaterialProcessController extends Controller
 
                     MaterialProcessStation::where('mat_proc_id',  $request->mat_proc_id)->delete();
                     // if(isset($request->station)){
-                    //     for ($j=0; $j < count($request->station); $j++) { 
+                    //     for ($j=0; $j < count($request->station); $j++) {
                     //         MaterialProcessStation::insert([
                     //             'mat_proc_id'   => $request->mat_proc_id,
                     //             'station_id' => $request->station[$j]
@@ -251,17 +251,17 @@ class MaterialProcessController extends Controller
                     // if(isset($request->machine)){
                     //     $machine_info = DB::connection('mysql_rapid_eedms')
                     //     ->select('SELECT machine_name FROM generallogistics WHERE machine_code_number = "'.$request->machine.'"');
-    
+
                     //     $mat_proc_array['machine_name'] = $machine_info[0]->machine_name;
                     // }
-    
+
                     $mat_proc_id = MaterialProcess::insertGetId($mat_proc_array);
                     $material_process_id = $mat_proc_id;
-    
+
 
                 }
                 if(isset($request->machine)){
-                    for ($h=0; $h < count($request->machine); $h++) { 
+                    for ($h=0; $h < count($request->machine); $h++) {
                         $exploded_machine = explode(' || ',$request->machine[$h]);
                         MaterialProcessMachine::insert([
                             'mat_proc_id'   => $material_process_id,
@@ -275,7 +275,7 @@ class MaterialProcessController extends Controller
 
                 if(isset($request->material_name)){
                     // if(is_array($request->material_name)){
-                        for ($i=0; $i < count($request->material_name); $i++) { 
+                        for ($i=0; $i < count($request->material_name); $i++) {
                             $exploded_material = explode(' || ',$request->material_name[$i]);
                             MaterialProcessMaterial::insert([
                                 'mat_proc_id'   => $material_process_id,
@@ -309,14 +309,14 @@ class MaterialProcessController extends Controller
                     //         'created_at'    => NOW()
                     //     ]);
                     // }
-                    
+
                 }
 
                 if(isset($request->station)){
-                
+
 
                     if(is_array($request->station)){
-                        for ($j=0; $j < count($request->station); $j++) { 
+                        for ($j=0; $j < count($request->station); $j++) {
                             MaterialProcessStation::insert([
                                 'mat_proc_id'   => $material_process_id,
                                 'station_id' => $request->station[$j],
@@ -332,11 +332,10 @@ class MaterialProcessController extends Controller
                         ]);
                     }
                 }
-              
 
-              
-                // DB::commit();
-                DB::rollback();
+
+
+                DB::commit();
                 return response()->json([
                     'result' => 1,
                     'msg'    => 'Transaction Successful'
@@ -373,7 +372,7 @@ class MaterialProcessController extends Controller
 
     public function change_mat_proc_status(Request $request){
         DB::beginTransaction();
-        
+
         try{
             MaterialProcess::where('id', $request->material_process_id)
             ->update([

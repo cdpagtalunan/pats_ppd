@@ -13,6 +13,7 @@ use App\Models\SecMoldingRuncard;
 use App\Models\AssemblyRuncard;
 use App\Models\AssemblyRuncardStation;
 use App\Models\AssemblyRuncardStationsMods;
+use App\Models\Station;
 
 use App\Models\Process;
 use App\Models\Device;
@@ -45,14 +46,15 @@ class AssemblyRuncardController extends Controller
         $device_name_by_prod_lot = FirstMolding::with('firstMoldingDevice')
                                             ->whereNull('deleted_at')
                                             ->where('production_lot', $request->production_lot)
+                                            ->where('production_lot_extension', $request->production_lot_ext)
                                             ->get();
 // return $device_name_by_prod_lot;
         if($device_name_by_prod_lot->isEmpty()){
-            $device_name    = '';
-            $production_lot = '';
-            $device_id      = '';
-            $yec_po_number  = '';
-            $pmi_po_number  = '';
+            $device_name      = '';
+            $production_lot   = '';
+            $device_id        = '';
+            $yec_po_number    = '';
+            $pmi_po_number    = '';
             $shipment_output  = '';
         }else{
             $device_name     = $device_name_by_prod_lot[0]->firstMoldingDevice->device_name;
@@ -62,8 +64,8 @@ class AssemblyRuncardController extends Controller
             $pmi_po_number   = $device_name_by_prod_lot[0]->pmi_po_no;
             $shipment_output = $device_name_by_prod_lot[0]->shipment_output;
         }
-    
-        return response()->json(['device_name' => $device_name, 
+
+        return response()->json(['device_name' => $device_name,
                                 'production_lot'  => $production_lot,
                                 'device_id'       => $device_id,
                                 'yec_po_number'   => $yec_po_number,
@@ -95,7 +97,7 @@ class AssemblyRuncardController extends Controller
             $shipment_output = $device_name_by_prod_lot[0]->shipment_output;
         }
 
-        return response()->json(['device_name'    => $device_name, 
+        return response()->json(['device_name'    => $device_name,
                                 'production_lot'  => $production_lot,
                                 'device_id'       => $device_id,
                                 'yec_po_number'   => $yec_po_number,
@@ -119,7 +121,7 @@ class AssemblyRuncardController extends Controller
     public function get_assembly_runcard_data(Request $request){
         // $assembly_runcard_data = AssemblyRuncard::when($request->assy_runcard_station_id, function ($with_query) use ($request){
         //                                             return $with_query-> with(['assembly_runcard_station.station_name','assembly_runcard_station.user','assembly_runcard_station' => function($station_id_query) use ($request){
-        //                                                     return $station_id_query->where('id', $request->assy_runcard_station_id); 
+        //                                                     return $station_id_query->where('id', $request->assy_runcard_station_id);
         //                                                 }]);
         //                                         })
         //                                         ->whereNull('deleted_at')
@@ -159,7 +161,7 @@ class AssemblyRuncardController extends Controller
         }else{
             $mode_of_defect_data = [];
         }
-                                                
+
         return response()->json(['assembly_runcard_data' => $assembly_runcard_data, 'mode_of_defect_data' => $mode_of_defect_data]);
     }
 
@@ -181,18 +183,23 @@ class AssemblyRuncardController extends Controller
                             <i class='fa-solid fa-pen-to-square'></i>
                         </button>";
 
-                if($row->status == 1){
+                if($row->status == 1 || $row->status == 2){
                     $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' id='btnPrintAssemblyRuncard'>
                                     <i class='fa-solid fa-print' disabled></i>
                                 </button>";
+
+                    $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' assembly_runcard-status='".$row->status."' id='btnSubmitIPQCData'>
+                                    <i class='fa-solid fa-circle-check'></i>
+                                </button>";
                 }
+
                 $result .= "</center>";
-                
+
                 return $result;
             })
             ->addColumn('status', function ($row){
                 $result = "";
-                
+
                 switch($row->status){
                     case 0: //Pending
                         $result .= '<center><span class="badge badge-pill badge-info">For Station Process</span></center>';
@@ -200,10 +207,10 @@ class AssemblyRuncardController extends Controller
                     case 1: //Mass Prod
                         $result .= '<center><span class="badge badge-pill badge-primary">For Mass Production</span></center>';
                         break;
-                    case 2: //Resetup
-                        $result .= '<center><span class="badge badge-pill badge-warning">For Re-setup</span></center>';
-                        break;
-                    case 3: //Done
+                    // case 2: //Resetup
+                    //     $result .= '<center><span class="badge badge-pill badge-warning">For Re-setup</span></center>';
+                    //     break;
+                    case 2: //Done
                         $result .= '<center><span class="badge badge-pill badge-success">Done</span></center>';
                         break;
                 }
@@ -268,13 +275,13 @@ class AssemblyRuncardController extends Controller
     public function add_assembly_runcard_data(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
-        
+
         if($request->series_name == 'CN171P-007-1002-VE(01)'){
             $validate_array = ['po_number' => 'required', 'p_zero_two_prod_lot' => 'required'];
         }else{
             $validate_array = ['po_number' => 'required', 's_zero_seven_prod_lot' => 'required', 's_zero_two_prod_lot' => 'required'];
         }
-        
+
         $validator = Validator::make($data, $validate_array);
 
         if ($validator->fails()) {
@@ -340,7 +347,7 @@ class AssemblyRuncardController extends Controller
         $data = $request->all();
 
         // return $data;
-        
+
         $validator = Validator::make($data, [
             'runcard_station' => 'required'
         ]);
@@ -352,7 +359,7 @@ class AssemblyRuncardController extends Controller
         // }else if($request->runcard_station == 6){//Visual Inspection
         //     $validate_array = ['runcard_station' => 'required', ];
         // }
-        
+
         // $validator = Validator::make($data, $validate_array);
 
         if ($validator->fails()) {
@@ -392,6 +399,11 @@ class AssemblyRuncardController extends Controller
                                             'created_at'            => date('Y-m-d H:i:s'),
                                             'updated_at'            => date('Y-m-d H:i:s'),
                         ]);
+
+                        AssemblyRuncard::where('id', $request->station_assy_runcard_id)
+                            ->update([
+                                    'shipment_output' => $request->output_qty,
+                            ]);
                     }
                 }else{
                     $assy_runcard_station_id = AssemblyRuncardStation::where('id', $request->assy_runcard_station_id)
@@ -418,11 +430,16 @@ class AssemblyRuncardController extends Controller
                                             'last_updated_by'       => Auth::user()->id,
                                             'updated_at'            => date('Y-m-d H:i:s'),
                                         ]);
+
+                        AssemblyRuncard::where('id', $request->station_assy_runcard_id)
+                            ->update([
+                                    'shipment_output' => $request->output_qty,
+                        ]);
                 }
 
                 if(isset($request->mod_id)){
                     $is_id_deleted = AssemblyRuncardStationsMods::where('assembly_runcard_stations_id', $assy_runcard_station_id)->delete();
-                    
+
                     // return $request->mod_id;
                     foreach ($request->mod_id as $key => $value) {
                         AssemblyRuncardStationsMods::insert([
@@ -442,22 +459,40 @@ class AssemblyRuncardController extends Controller
                         $is_id_deleted = AssemblyRuncardStationsMods::where('assembly_runcard_stations_id', $assy_runcard_station_id)->delete(); //returns true/false
                     }
                 }
-                
-                return response()->json(['result' => 1]);
+
+                return response()->json(['result' => 1, 'station' => $request->runcard_station,  'shipment_output' => $request->output_qty]);
             } catch (\Throwable $th) {
                 return $th;
             }
         }
     }
 
-    // public function chck_existing_stations(Request $request){
-    //     $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name','assembly_runcard_station.user','assembly_runcard_station'])
-    //                                             ->whereNull('deleted_at')
-    //                                             ->where('id', $request->assy_runcard_id)
-    //                                             ->get();
-                                                
-    //     return response()->json(['assembly_runcard_data' => $assembly_runcard_data]);
-    // }
+    public function chck_existing_stations(Request $request){
+        // $station = Station::where('id', $request->station_no)->where('status', 0)->first();
+                    // Device::
+
+        // if(isset($request->station_id)){
+            // $is_station1_exist = AssemblyRuncard::whereNull('deleted_at')
+            //                                       ->where('id', $request->id)
+            //                                       ->first();
+
+            $assembly_runcard_data = AssemblyRuncard::with(['device_details.material_process','assembly_runcard_station' => function ($query) use ($request){
+                                                        return $query->with(['station_name'])->where('station', $request->station_no); } ])
+                                                    ->whereNull('deleted_at')
+                                                    ->where('id', $request->id)
+                                                    ->first();
+
+            $station_name = $assembly_runcard_data->assembly_runcard_station[0]->station_name[0]->station_name;
+            // $existing_station =
+            return $station_name;
+            // return response()->json(['result' => $assembly_runcard_data]);
+        // }
+        // else if($station->station_name ==){
+        //     return response()->json(['result' => 1]);
+        // }else{
+        //     return response()->json(['result' => 0]);
+        // }
+    }
 
     public function update_assy_runcard_status(Request $request){
         date_default_timezone_set('Asia/Manila');
@@ -478,6 +513,27 @@ class AssemblyRuncardController extends Controller
 
                     DB::commit();
         return response()->json(['result' => 1]);
+    }
+
+    public function update_assembly_status(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        // session_start();
+        AssemblyRuncard::where('id', $request->cnfrm_assy_id)
+                    ->update([
+                        'status'              => 2,
+                        'last_updated_by'     => Auth::user()->id,
+                        'updated_at'          => date('Y-m-d H:i:s'),
+                    ]);
+
+        AssemblyRuncardStation::where('assembly_runcards_id', $request->cnfrm_assy_id)
+                    ->update([
+                        'status' => 2,
+                        'last_updated_by'     => Auth::user()->id,
+                        'updated_at'          => date('Y-m-d H:i:s'),
+                    ]);
+
+                    DB::commit();
+        return response()->json(['result' => 'Successful']);
     }
 
     public function get_assembly_qr_code (Request $request)

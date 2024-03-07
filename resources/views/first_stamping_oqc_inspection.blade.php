@@ -186,11 +186,11 @@
                     <form method="post" id="formOqcInspection" autocomplete="off">
                         @csrf
 
-                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
-                        <input type="text" class="form-control form-control-sm" id="txtProdId" name="prod_id">
-                        <input type="text" class="form-control form-control-sm" id="txtStatus" name="status">
-                        <input type="text" class="form-control form-control-sm" id="txtCheckButton" name="check_button">
-                        <input type="text" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
+                        <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
+                        <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
+                        <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
+                        <input type="hidden" class="form-control form-control-sm" id="txtCheckButton" name="check_button">
+                        <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">

@@ -67,6 +67,7 @@ const saveVisualDetails = (form) => {
                 toastr.success(`${response['msg']}`);
                 $('#txtHiddenFviId').val(`${response['id']}`)
                 $('#txtFVILotNo').val(`${response['lot_no']}`)
+                $('#txtFVIBundleNo').val(`${response['bundle_no']}`)
                 let dt = moment(response['created_at']).format('MM/DD/YYYY HH:mm');
                 $('#txtFVICreatedAt').val(`${dt}`)
                 $('#txtFVIAppDT').val(`${dt}`)
@@ -117,7 +118,7 @@ const loadRuncardInfo = (scannedData) => {
             }
 
             $('#txtRuncardNumber').val(`${response['runcard']['runcard_no']}`)
-            $('#txtRuncardOperatorName').val(scannedData['insp_name'])
+            $('#txtRuncardOperatorName').val(scannedData['operator_name'])
             $('#txtRuncardInput').val(`${response['runcard']['fk_station_input_quantity']}`)
             $('#txtRuncardOutput').val(`${response['runcard']['fk_station_output_quantity']}`)
             for (let index = 0; index < response['runcardMod'].length; index++) {
@@ -179,7 +180,6 @@ const getFviDetailsById = (id, status) => {
         dataType: "json",
         beforeSend: function(){
             getDocumentRequirement($('#txtDeviceName').val());
-            getAssemblyLine();
         },
         success: function (response) {
             $('#txtHiddenFviId').val(response['id']);
@@ -189,6 +189,7 @@ const getFviDetailsById = (id, status) => {
             $('#txtFVIDevName', $('#formEditFVIDetails')).val(response['device_name']);
             $('#txtFVIDevCode', $('#formEditFVIDetails')).val(response['device_code']);
             $('#txtFVILotNo', $('#formEditFVIDetails')).val(response['lot_no']);
+            $('#txtFVIBundleNo', $('#formEditFVIDetails')).val(response['bundle_no']);
             $('#txtFVIRemarks', $('#formEditFVIDetails')).val(response['remarks']);
             $('#selFVIAssLine', $('#formEditFVIDetails')).val(response['assembly_line']).trigger('change');
 
@@ -205,6 +206,11 @@ const getFviDetailsById = (id, status) => {
 
             $('#btnEditFviDetails').prop('disabled', true);
             $('#btnAddFVIRuncard').prop('disabled', false);
+            // setTimeout(() => {
+            //     $('#selFVIAssLine', $('#formEditFVIDetails')).prop('disabled', true);
+                
+            // }, 500);
+
             
             if(status == 1){
                 $('#btnAddFVIRuncard').prop('disabled', true);
@@ -295,6 +301,7 @@ const validateRuncardOutput = (devName, devCode, fn) => {
 }
 
 const SubmitToLotApp = (idNum) => {
+    // console.log(idNum);
     $.ajax({
         type: "post",
         url: "submit_to_oqc_lot_app",
@@ -308,8 +315,35 @@ const SubmitToLotApp = (idNum) => {
             if(response['result'] == true){
                 toastr.success('Succesfully Submitted!');
                 $('#modalFVI').modal('hide');
+                $('#modalScanQRSave').modal('hide');
                 dtVisualInspection.draw();
             }
+        }
+    });
+}
+
+const loadSearchPo = (poNumber) => {
+    $.ajax({
+        type: "get",
+        url: "search_po",
+        data: {
+            "po_number" : poNumber
+        },
+        dataType: "json",
+        success: function (response) {
+            if(response['details'] != null){
+                console.log('response', response);
+                $('#txtSearchPO').val(response['details']['po_number'])
+                $('#txtDeviceName').val(response['details']['device_name'])
+                $('#txtDeviceCode').val(response['details']['part_code'])
+                $('#txtPoQty').val(response['details']['po_quantity'])
+                dtVisualInspection.draw();
+            }
+            else{
+                toastr.error('PO Not Found!');
+            }
+            
+
         }
     });
 }

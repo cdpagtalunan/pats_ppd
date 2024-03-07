@@ -46,7 +46,21 @@ class AssemblyFviController extends Controller
             return $fvi_runcards;
 
         })
-        ->rawColumns(['action', 'ttlLotQty'])
+        ->addColumn('lot_status', function($fvi_data){
+            $result = "";
+            $result .= "<center>";
+            if($fvi_data->status == 0){
+                
+                $result .='<span class="badge badge-pill badge-info">For Lot Application</span>';
+            }
+            else if($fvi_data->status == 1){
+                $result .='<span class="badge badge-pill badge-success">Done</span>';
+                
+            }
+            $result .= "</center>";
+            return $result;
+        })
+        ->rawColumns(['action', 'ttlLotQty', 'lot_status'])
         ->make('true');
     }
 
@@ -152,6 +166,7 @@ class AssemblyFviController extends Controller
              
             try{
                 $lot_ext;
+                $bundle_ext;
 
                 $get_lot_extension = DB::connection('mysql')
                 ->table('assembly_fvis')
@@ -167,23 +182,57 @@ class AssemblyFviController extends Controller
                     $lot_ext = $get_lot_extension + 1;
                 }
 
+                $get_bundle_lot = DB::connection('mysql')
+                ->table('assembly_fvis')
+                ->where('created_at', 'LIKE', "2024-02-23%")
+                ->whereNull('deleted_at')
+                ->get()
+                ->count('id');
+
+                if($get_bundle_lot == 0){
+                    $bundle_ext = 1;
+                }
+                else{
+                    $bundle_ext = $get_bundle_lot + 1;
+                }
+
+                $dt = Carbon::now();
+
+                $year = $dt->year;
+                
+                $substr_year = substr(strval($year), 3, 4);
+                $month = $dt->month;
+                if($month == 10){
+                    $month = "X";
+                }
+                else if($month == 11){
+                    $month = "Y";
+                }
+                else if($month == 12){
+                    $month = "Z";
+                }
+
+                $day = $dt->day;
+                $bundle_lot_no = $substr_year.$month.str_pad($day, 2, '0', STR_PAD_LEFT)."-".str_pad($bundle_ext, 3, '0', STR_PAD_LEFT);
+
                 $fvi_lot_no = substr($request->txt_po_number, 5, -5) ." LOT-".str_pad($lot_ext, 3, '0', STR_PAD_LEFT);
 
-                $fvi_details_array = array(
-                    'po_no'         => $request->txt_po_number,
-                    'device_name'   => $request->txt_use_for_device,
-                    'device_code'   => $request->txt_device_code,
-                    'po_qty'        => $request->txt_po_qty,
-                    'lot_no'        => $fvi_lot_no,
-                    'remarks'       => $request->txt_remarks,
-                    'assembly_line' => $request->sel_assembly_line,
-                    'a_drawing_no'  => $request->a_drawing,
-                    'a_drawing_rev' => $request->a_revision,
-                    'g_drawing_rev' => $request->g_drawing,
-                    'g_drawing_no'  => $request->g_revision,
-                    'created_by'    => session()->get('user_id'),
-                    'created_at'    => NOW()
-                );
+                // $fvi_details_array = array(
+                //     'po_no'         => $request->txt_po_number,
+                //     'device_name'   => $request->txt_use_for_device,
+                //     'device_code'   => $request->txt_device_code,
+                //     'po_qty'        => $request->txt_po_qty,
+                //     'lot_no'        => $fvi_lot_no,
+                //     'bundle_no'     => $bundle_lot_no,
+                //     'remarks'       => $request->txt_remarks,
+                //     'assembly_line' => $request->sel_assembly_line,
+                //     'a_drawing_no'  => $request->a_drawing,
+                //     'a_drawing_rev' => $request->a_revision,
+                //     'g_drawing_rev' => $request->g_drawing,
+                //     'g_drawing_no'  => $request->g_revision,
+                //     'created_by'    => session()->get('user_id'),
+                //     'created_at'    => NOW()
+                // );
 
                 // $id = AssemblyFvi::insertGetId($fvi_details_array);
 
@@ -193,12 +242,13 @@ class AssemblyFviController extends Controller
                 $data->device_code   = $request->txt_device_code;
                 $data->po_qty        = $request->txt_po_qty;
                 $data->lot_no        = $fvi_lot_no;
+                $data->bundle_no     = $bundle_lot_no;
                 $data->remarks       = $request->txt_remarks;
                 $data->assembly_line = $request->sel_assembly_line;
                 $data->a_drawing_no  = $request->a_drawing;
                 $data->a_drawing_rev = $request->a_revision;
-                $data->g_drawing_no = $request->g_drawing;
-                $data->g_drawing_rev  = $request->g_revision;
+                $data->g_drawing_no  = $request->g_drawing;
+                $data->g_drawing_rev = $request->g_revision;
                 $data->created_by    = session()->get('user_id');
                 $data->created_at    = NOW();
 
@@ -210,6 +260,7 @@ class AssemblyFviController extends Controller
                     'result'     => true,
                     'id'         => $data->id,
                     'lot_no'     => $data->lot_no,
+                    'bundle_no'  => $data->bundle_no,
                     'created_at' => $data->created_at,
                     'msg'        => 'Successfully Saved!'
                 ]);
@@ -355,5 +406,19 @@ class AssemblyFviController extends Controller
         }
 
      
+    }
+
+    public function search_po(Request $request){
+        // return $request->all();
+
+        $details = DB::connection('mysql')
+        ->table('assembly_runcards')
+        ->where('po_number', $request->po_number)
+        ->whereNull('deleted_at')
+        ->first();
+
+        return response()->json([
+            'details' => $details
+        ]);
     }
 }

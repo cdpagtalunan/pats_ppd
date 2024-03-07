@@ -100,7 +100,8 @@
                                                 <div class="col-sm-2">
                                                     <label>PO Number</label>
                                                     <div class="input-group">
-                                                      <input type="text" class="form-control" id="global_po_no" name="global_po_no">
+                                                      <input type="text" class="form-control" id="global_po_no" name="global_po_no" list="datalist_mimf_po_num">
+						                              <datalist id="datalist_mimf_po_num"></datalist>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
@@ -160,7 +161,6 @@
             </section>
         </div>
 
-    {{-- @include('component.modal') --}}
     <div class="modal fade" id="modalFirstMolding" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered modal-xl-custom">
             <div class="modal-content">
@@ -250,10 +250,10 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-30">
-                                                <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Contact Lot Qty</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no">
+                                            <input type="text" class="form-control form-control-sm" id="contact_lot_qty" name="contact_lot_qty" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -268,21 +268,29 @@
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Shift </span>
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm" id="shift" name="shift" readonly>
+                                            <input type="text" class="form-control form-control-sm" id="revision_no" name="revision_no">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-12">
+                                    <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Machine #</span>
                                             </div>
                                             <select type="text" class="form-control form-control-sm" id="machine_no" name="machine_no" placeholder="Machine #" sytle="width:100%">
                                             </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Shift </span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="shift" name="shift" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -540,6 +548,7 @@
                                                         <th>Station</th>
                                                         <th>Date</th>
                                                         <th>Name</th>
+                                                        <th>Size</th>
                                                         <th>Input</th>
                                                         <th>NG Qty</th>
                                                         <th>Output</th>
@@ -575,7 +584,6 @@
             </div>
             <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
     </div>
 
     <div class="modal fade" id="modalFirstMoldingStation" tabindex="-1" role="dialog" aria-hidden="true">
@@ -1266,19 +1274,13 @@
                     getValidateTotalNgQty (ngQty,totalNumberOfMOD);
                 });
 
-                // formModal.firstMolding.find('#pmi_po_no').on('keydown',function (e) {
-                //     if(e.keyCode == 13){
-                //         e.preventDefault();
-                //         let  deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
-                //         getPmiPoReceivedDetails( $(this).val(),deviceId);
-                //     }
-                // });
-
-                $('#global_po_no').on('keydown',function (e) { //nmodify
+                $('#global_po_no').on('keydown',function (e) {
+                    let globalPoNo = $(this).val();
+                    fnGetDatalistMimfPoNum(globalPoNo);
                     if(e.keyCode == 13){
                         e.preventDefault();
                         let  deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
-                        getPmiPoReceivedDetails( $(this).val(),deviceId);
+                        getPmiPoReceivedDetails(globalPoNo,deviceId);
                         dt.firstMolding.draw();
                     }
                 });
@@ -1394,16 +1396,37 @@
                         $('#mdlScanQrCodeFirstMolding').modal('hide');
                     }
                 });
+                const validateMaterialLotNo = function (firstMoldingMaterialLotNo){ //nmodify
+                    $.ajax({
+                        type: "GET",
+                        url: "validate_material_lot_no",
+                        data: {"first_molding_material_lot_no" : firstMoldingMaterialLotNo},
+                        dataType: "json",
+                        success: function (response) {
+                            let is_exist_lot_no = ( response['is_exist_lot_no'] > 0 ) ? 'true' : 'false';
+                            if(is_exist_lot_no === 'true'){
+                                toastr.success(`Scan Successfully`);
+                                $('#virgin_material').val(firstMoldingMaterialLotNo);
+                                $('#modalMaterialLotNum').modal('hide');
+                            }else{
+                                toastr.error(`Error: Invalid Material Lot Number,Please check to Rapid Issuance Module`);
+                            }
+
+                        },error: function (data, xhr, status){
+                            toastr.error(`Error: ${data.status}`);
+                        }
+                    });
+                    $('#txtLotNum').val('');
+                }
 
                 $('#txtLotNum').on('keyup', function(e){
                     try {
                             if(e.keyCode == 13){
                             let scanFirstMoldingMaterialLotNo = $(this).val()
                             let arrFirstMoldingMaterialLotNo = scanFirstMoldingMaterialLotNo.split("|");
+                            validateMaterialLotNo(arrFirstMoldingMaterialLotNo[0])
+                            console.log('dsad',arrFirstMoldingMaterialLotNo[0]);
 
-                            $('#virgin_material').val(arrFirstMoldingMaterialLotNo[0]);
-                            $(this).val('');
-                            $('#modalMaterialLotNum').modal('hide');
                         }
                     }catch (error) {
                         console.log(error);
@@ -1500,6 +1523,11 @@
                     let stationId = $(this).val();
                     fnIsSelectCameraInspection(stationId);
                 });
+
+                // $('#global_po_no').val();
+                // $(selector).keyup(function (e) {
+
+                // });
 
             });
         </script>

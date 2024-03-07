@@ -35,9 +35,9 @@ use App\Http\Controllers\PackingListDetailsController;
 use App\Http\Controllers\StampingChecksheetController;
 use App\Http\Controllers\FirstMoldingStationController;
 use App\Http\Controllers\SecondMoldingStationController;
+use App\Http\Controllers\StampingWorkingReportController;
 use App\Http\Controllers\MoldingIpqcInspectionController;
 use App\Http\Controllers\AssemblyOqcLotAppController;
-
 
 // use App\Http\Controllers\IpqcFirstMoldingController;
 // use App\Http\Controllers\IpqcSecondMoldingController;
@@ -45,6 +45,8 @@ use App\Http\Controllers\AssemblyOqcLotAppController;
 use App\Http\Controllers\PackingDetailsMoldingController;
 use App\Http\Controllers\DestinationPortDetailsController;
 use App\Http\Controllers\ExportTraceabilityReportController;
+use App\Http\Controllers\ExportOqcInspectionController;
+use App\Http\Controllers\ExportIqcInspectionController;
 
 
 /*
@@ -81,6 +83,7 @@ Route::view('/process','process')->name('process');
 
 Route::view('/first_stamping_iqc_inspection','first_stamping_iqc_inspection')->name('first_stamping_iqc_inspection');
 Route::view('/second_stamping_iqc_inspection','second_stamping_iqc_inspection')->name('second_stamping_iqc_inspection');
+Route::view('/export_iqc_inspection_data','export_iqc_inspection_data')->name('export_iqc_inspection_data');
 
 // Route::post('/edit_user_authentication', [UserController::class, 'editUserAuthentication'])->name('edit_user_authentication');
 
@@ -96,7 +99,7 @@ Route::view('/ipqc_inspection_2nd_stamping','ipqc_inspection_2nd_stamping')->nam
 /* STAMPING VIEW - OQC Inspection */
 Route::view('/first_stamping_oqc_inspection','first_stamping_oqc_inspection')->name('first_stamping_oqc_inspection');
 Route::view('/second_stamping_oqc_inspection','second_stamping_oqc_inspection')->name('second_stamping_oqc_inspection');
-// Route::view('/oqc_inspection_molding','oqc_inspection_molding')->name('oqc_inspection_molding');
+Route::view('/export_oqc_inspection_data','export_oqc_inspection_data')->name('export_oqc_inspection_data');
 
 /* PACKING  */
 Route::view('/packing_details','packing_details')->name('packing_details');
@@ -124,12 +127,14 @@ Route::view('/assembly','assembly')->name('assembly');
 /* * PPTS VIEW */
 Route::view('/ppts_oqc_inspection','ppts_oqc_inspection')->name('ppts_oqc_inspection');
 Route::view('/ppts_packing_and_shipping','ppts_packing_and_shipping')->name('ppts_packing_and_shipping');
+Route::view('/ppts_export_packing_and_shipping','ppts_export_packing_and_shipping')->name('ppts_export_packing_and_shipping');
 
 /* *PATS SHIPMENT CONFIRMATION */
 Route::view('/pats_shipment_con','pats_shipment_confirmation')->name('pats_shipment_con');
 
 /* TRACEABILITY REPORT */
 Route::view('/cn171_traceability_report','cn171_traceability_report')->name('cn171_traceability_report');
+Route::view('/molding_traceability_report','molding_traceability_report')->name('molding_traceability_report');
 
 /* 5S CHECKSHEET VIEW */
 Route::view('/5s_checksheet','5s_checksheet')->name('5s_checksheet');
@@ -454,6 +459,8 @@ Route::controller(FirstMoldingController::class)->group(function () {
     Route::get('/get_machine_from_material_process', 'getMachineFromMaterialProcess')->name('get_machine_from_material_process');
     Route::get('/update_first_molding_shipment_machine_ouput', 'updateFirstMoldingShipmentMachineOuput')->name('update_first_molding_shipment_machine_ouput');
     Route::get('/validate_scan_first_molding_contact_lot_num', 'validateScanFirstMoldingContactLotNum')->name('validate_scan_first_molding_contact_lot_num');
+    Route::get('/get_datalist_mimf_po_num', 'getDatalistMimfPoNum')->name('get_datalist_mimf_po_num');
+    Route::get('/validate_material_lot_no', 'validateMaterialLotNo')->name('validate_material_lot_no');
 
     Route::post('/save_first_molding', 'saveFirstMolding')->name('save_first_molding');
 });
@@ -504,6 +511,14 @@ Route::controller(SecondMoldingStationController::class)->group(function () {
     Route::get('/get_second_molding_station_by_id', 'getSecondMoldingStationById')->name('get_second_molding_station_by_id');
 });
 
+/* Stamping Working Report Controller */
+Route::controller(StampingWorkingReportController::class)->group(function () {
+    // Route::get('/view_second_molding_station', 'viewSecondMoldingStation')->name('view_second_molding_station');
+    Route::post('/save_stamping_working_report_details', 'saveStampingWorkingReportDetails')->name('save_stamping_working_report_details');
+    // Route::get('/get_second_molding_station_by_id', 'getSecondMoldingStationById')->name('get_second_molding_station_by_id');
+});
+
+
 /* CN Assembly Controller */
 Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/get_data_from_2nd_molding', 'get_data_from_2nd_molding')->name('get_data_from_2nd_molding');
@@ -520,7 +535,8 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/get_assembly_qr_code', 'get_assembly_qr_code')->name('get_assembly_qr_code');
     Route::get('/get_total_yield', 'get_total_yield')->name('get_total_yield');
     Route::get('/connect_ypics', 'connect_ypics')->name('connect_ypics');
-    // Route::get('/chck_existing_stations', 'chck_existing_stations')->name('chck_existing_stations'); //CLARK DITO KANA
+    Route::get('/chck_existing_stations', 'chck_existing_stations')->name('chck_existing_stations');
+    Route::post('/update_assembly_status', 'update_assembly_status')->name('update_assembly_status'); //CLARK DITO KANA
 });
 
 // MODE OF DEFECTS CONTROLLER
@@ -556,6 +572,7 @@ Route::view('/production_history','production_history')->name('production_histor
 //EXPORT CN171 REPORT
 Route::controller(ExportTraceabilityReportController::class)->group(function () {
     Route::get('/export_cn171_traceability_report/{po_number}/{date_from}/{date_to}', 'exportCN171TraceabilityReport')->name('export_cn171_traceability_report');
+    Route::get('/export_molding_traceability_report/{po_number}/{date_from}/{date_to}/{device_name}', 'exportMoldingTraceabilityReport')->name('export_molding_traceability_report');
 });
 // Route::get('/export_cn171_traceability_report/{po_number}', 'ExportTraceabilityReportController@export_cn171_traceability_report');3
 
@@ -623,17 +640,35 @@ Route::controller(AssemblyFviController::class)->group(function () {
     Route::get('/get_fvi_details_by_id', 'get_fvi_details_by_id')->name('get_fvi_details_by_id');
     Route::get('/validate_runcard_output', 'validate_runcard_output')->name('validate_runcard_output');
     Route::post('/submit_to_oqc_lot_app', 'submit_to_oqc_lot_app')->name('submit_to_oqc_lot_app');
+    Route::get('/search_po', 'search_po')->name('search_po');
 
 
 });
 
 // ASSEMBLY OQC LOT APP
 Route::controller(AssemblyOqcLotAppController::class)->group(function () {
+    Route::get('/get_po_number_from_assy_fvi', 'get_po_number_from_assy_fvi')->name('get_po_number_from_assy_fvi');
     Route::get('/get_data_from_assy_fvi', 'get_data_from_assy_fvi')->name('get_data_from_assy_fvi');
     Route::get('/view_assy_oqc_lot_app', 'view_assy_oqc_lot_app')->name('view_assy_oqc_lot_app');
     Route::get('/view_assy_oqc_lot_app_summary', 'view_assy_oqc_lot_app_summary')->name('view_assy_oqc_lot_app_summary');
     Route::post('/add_oqc_lot_app', 'add_oqc_lot_app')->name('add_oqc_lot_app');
+    Route::post('/update_lot_app_status', 'update_lot_app_status')->name('update_lot_app_status');
     Route::get('/get_user_name', 'get_user_name')->name('get_user_name');
+    Route::get('/gen_oqclotapp_qrsticker', 'gen_oqclotapp_qrsticker')->name('gen_oqclotapp_qrsticker');
+    Route::get('/gen_oqclotapp_inner_box_qrsticker', 'gen_oqclotapp_inner_box_qrsticker')->name('gen_oqclotapp_inner_box_qrsticker');
 });
+
+// EXPORT OQC Inspection DATA
+Route::controller(ExportOqcInspectionController::class)->group(function () {
+    Route::get('/search_oqc_inspection_po_no', 'searchOqcInspectionPoNo')->name('search_oqc_inspection_po_no');
+    Route::get('/export_oqc_inspection/{po}/{processType}/{from}/{to}', 'exportOqcInspection');
+});
+
+// EXPORT IQC Inspection DATA
+Route::controller(ExportIqcInspectionController::class)->group(function () {
+    Route::get('/search_iqc_inspection_material_name', 'searchIqcInspectionMaterialName')->name('search_iqc_inspection_material_name');
+    Route::get('/export_iqc_inspection/{materialName}/{processType}/{from}/{to}', 'exportIqcInspection');
+});
+
 
 

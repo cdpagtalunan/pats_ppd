@@ -7,13 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 // use App\Models\WbsOqcInspection;
 use App\Models\User;
+use App\Models\DropdownOqcAql;
 use App\Models\PackingDetails;
 use App\Models\PreliminaryPacking;
 use App\Models\OqcInspectionReelLot;
 use App\Models\OqcInspectionPrintLot;
 use App\Models\PackingDetailsMolding;
 use App\Models\FirstStampingProduction;
+use App\Models\DropdownOqcInspectionType;
 use App\Models\OqcInspectionModeOfDefect;
+use App\Models\DropdownOqcInspectionLevel;
+use App\Models\DropdownOqcSeverityInspection;
 
 class OQCInspection extends Model
 {
@@ -34,6 +38,22 @@ class OQCInspection extends Model
 
     public function mod_oqc_inspection_details(){
         return $this->hasMany(OqcInspectionModeOfDefect::class, 'oqc_inspection_id','id');
+    }
+
+    public function oqc_inspection_aql_info(){
+        return $this->hasOne(DropdownOqcAql::class,'id', 'aql');
+    }
+
+    public function oqc_inspection_severity_inspection_info(){
+        return $this->hasOne(DropdownOqcSeverityInspection::class,'id', 'severity_of_inspection');
+    }
+
+    public function oqc_inspection_type_info(){
+        return $this->hasOne(DropdownOqcInspectionType::class,'id', 'type_of_inspection');
+    }
+
+    public function oqc_inspection_level_info(){
+        return $this->hasOne(DropdownOqcInspectionLevel::class,'id', 'inspection_lvl');
     }
 
     public function stamping_production_info(){

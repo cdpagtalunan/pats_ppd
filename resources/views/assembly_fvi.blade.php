@@ -220,6 +220,17 @@
                                         <div class="col">
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
+                                                    <span class="input-group-text w-100" id="basic-addon1">Bundle No.</span>
+                                                </div>
+                                                <input type="text" class="form-control form-control-sm" id="txtFVIBundleNo"
+                                                    name="txt_bundle_no" placeholder="Auto generated" readonly="readonly">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="input-group input-group-sm mb-3">
+                                                <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100"
                                                         id="basic-addon1">Remarks</span>
                                                 </div>
@@ -579,6 +590,8 @@
 
     $(document).ready(function(){
 
+        getAssemblyLine();
+
         
 
         dtVisualInspection = $("#tblVisualInspection").DataTable({
@@ -593,11 +606,18 @@
             fixedHeader: true,
             "columns": [
                 { data: "action", orderable:false, searchable:false },
-                { data: "status" },
+                { data: "lot_status" },
                 { data: "lot_no" },
                 { data: "ttlLotQty" },
                 { data: "ttlLotQty" },
                 { data: "remarks" }
+            ],
+            "columnDefs": [
+                {
+                    "targets": [3,4],
+                    "data": null,
+                    "defaultContent": "---"
+                },
             ],
             "rowCallback": function(row,data,index ){
                 let json = jQuery.parseJSON( data['ttlLotQty'] )
@@ -628,6 +648,9 @@
                 { data: "fk_runcard_station_ng_quantity" },
                 { data: "mods" },
                 { data: "remarks" }
+            ],
+            "columnDefs": [
+                {"className": "dt-center", "targets": [0,1,2,3,4,5]},
             ],
             'drawCallback': function( settings ) {
                 let dtApi = this.api();
@@ -690,7 +713,7 @@
             $('#txtFVIDevName').val($('#txtDeviceName').val());
 
             getDocumentRequirement($('#txtDeviceName').val());
-            getAssemblyLine();
+            // getAssemblyLine();
             $('#modalFVI').modal('show');
             
         });
@@ -828,12 +851,13 @@
                 try {
                     scannedItem = JSON.parse($('#txtScannedItem').val());
                     console.log(scannedItem);
-                    $('#txtSearchPO').val(scannedItem['po_number'])
-                    $('#txtDeviceName').val(scannedItem['device_name'])
-                    $('#txtDeviceCode').val(scannedItem['part_code'])
-                    $('#txtPoQty').val(scannedItem['po_quantity'])
+                    loadSearchPo(scannedItem['po_number']);
+                    // $('#txtSearchPO').val(scannedItem['po_number'])
+                    // $('#txtDeviceName').val(scannedItem['device_name'])
+                    // $('#txtDeviceCode').val(scannedItem['part_code'])
+                    // $('#txtPoQty').val(scannedItem['po_quantity'])
 
-                    dtVisualInspection.draw();
+                    // dtVisualInspection.draw();
                     $('#modalScanning').modal('hide');
                 } catch (e) {
                     toastr.error('Invalid Sticker');
@@ -853,18 +877,34 @@
 
     $(document).on('keyup', '#txtScanUserId', function(e){
         if(e.keyCode == 13){
-            validateUser($(this).val().toUpperCase(), [0,2,5], function(result){
+            validateUser($('#txtScanUserId').val().toUpperCase(), [0,2,5], function(result){
                 if(result == true){
                     $('#modalScanQRSave').modal('hide');
-                    SubmitToLotApp($(this).val());
+                    SubmitToLotApp($('#txtScanUserId').val().toUpperCase());
                 }
                 else{ // Error Handler
                     toastr.error('User not authorize!');
                 }
 
             });
+
+            setTimeout(() => {
+                $('#txtScanUserId').val('');
+            }, 500);
+        }
+    });
+
+    
+</script>
+@if (in_array(Auth::user()->position, [0,2]) || in_array(Auth::user()->user_level_id, [1,2]))
+<script>
+    $('#txtSearchPO').prop('readonly', false);
+    $('#txtSearchPO').on('keyup', function(e){
+        if(e.keyCode == 13){
+            loadSearchPo($(this).val());
         }
     });
 </script>
+@endif
 @endsection
 @endauth

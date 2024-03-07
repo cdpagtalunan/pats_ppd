@@ -103,6 +103,7 @@
 
                 formModal.firstMolding.find('#first_molding_id').val(data.id);
                 formModal.firstMolding.find('#contact_lot_number').val(data.contact_lot_number);
+                formModal.firstMolding.find('#contact_lot_qty').val(data.contact_lot_qty);
                 formModal.firstMolding.find('#production_lot').val(data.production_lot);
                 formModal.firstMolding.find('#production_lot_extension').val(data.production_lot_extension);
                 formModal.firstMolding.find('#shift').val(data.shift);
@@ -303,6 +304,10 @@
             url: "save_first_molding",
             data: formModal.firstMolding.serialize(),
             dataType: "json",
+            beforeSend: function(){
+                $("#btnRuncardDetailsIcon").addClass('fa fa-spinner fa-pulse');
+                $("#btnRuncardDetails").prop('disabled', 'disabled');
+            },
             success: function (response) {
                 console.log(response);
                 if (response['result'] === 1){
@@ -344,10 +349,15 @@
                     errorHandler( errors.po_qty,formModal.firstMolding.find('#po_qty') );
                     errorHandler( errors.material_yield,formModal.firstMolding.find('#material_yield') );
                     errorHandler( errors.required_output,formModal.firstMolding.find('#required_output') );
+
+                    $("#btnRuncardDetailsIcon").removeClass('fa fa-spinner fa-pulse');
+                    $("#btnRuncardDetails").removeAttr('disabled');
+                    $("#btnRuncardDetailsIcon").addClass('fa fa-floppy-disk');
                 }else{
+                    $("#btnRuncardDetailsIcon").addClass('fa fa-spinner fa-pulse');
+                    $("#btnRuncardDetails").prop('disabled', 'disabled');
                     toastr.error(`Error: ${data.status}`);
                 }
-
             }
         });
     }
@@ -672,6 +682,9 @@
     const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){
 
         let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
+        let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
+        // console.log(JSON.parse(scanFirstMoldingContactLotNo).output_qty);
+
         // if(scanFirstMoldingContactLotNo.length < 0){
         //     Swal.fire({
         //         position: "center",
@@ -691,6 +704,7 @@
                 console.log(response);
                 if(response.result == 1){
                     formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
+                    formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
                     toastr.success('Scanned Successfully !')
                 }else{
                     Swal.fire({
@@ -746,12 +760,24 @@
     }
 
     const fnIsSelectCameraInspection = function (stationId) {
-        if(stationId === "7"){ //nmodify Camera Inspection
+        if(stationId === "5"){ //nmodify Camera Inspection
             formModal.firstMoldingStation.find('#isSelectCameraInspection').removeClass('d-none',true);
         }else{
             formModal.firstMoldingStation.find('#isSelectCameraInspection').addClass('d-none',true);
         }
     }
 
-
-// })
+    const fnGetDatalistMimfPoNum = function (globalPoNo){
+        $.ajax({
+            type: "GET",
+            url: "get_datalist_mimf_po_num",
+            data: {"pmi_po_no" : globalPoNo},
+            dataType: "json",
+            success: function (response) {
+                $('#datalist_mimf_po_num').empty();
+                for(i=0;i<response['pmi_po_num'].length;i++){
+                    $('#datalist_mimf_po_num').append('<option>'+response['pmi_po_num'][i]+'</option>');
+                }
+            }
+        });
+    }

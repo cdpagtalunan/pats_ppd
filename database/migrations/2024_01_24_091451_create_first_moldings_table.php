@@ -17,6 +17,7 @@ class CreateFirstMoldingsTable extends Migration
             $table->bigIncrements('id');
             $table->bigInteger('first_molding_device_id')->unsigned()->comment = '1-CN171S-08#IN-VE, 2-CN171S-09#IN-R-VE, 3-CN171S-10#IN-L-VE';
             $table->string('contact_lot_number')->nullable();
+            $table->float('contact_lot_qty')->nullable()->default(0);
             $table->string('production_lot')->nullable();
             $table->tinyInteger('status')->nullable()->default(0)->comment ='';
             $table->string('remarks')->nullable();
