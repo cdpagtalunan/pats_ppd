@@ -26,20 +26,21 @@ class ExportTraceabilityReportController extends Controller
         // return $request->date_to;
 
         $stamping_data = FirstStampingProduction::with([
-        'receiving_info',
-        'receiving_info.iqc_info',
-        'receiving_info.iqc_info.user_iqc',
-        'stamping_ipqc', 
-        'user', 
-        'stamping_ipqc.ipqc_insp_name', 
-        'oqc_details', 
-        'oqc_details.packing_info',
-        'oqc_details.packing_info.user_validated_by_info',
-        'oqc_details.first_molding_info', 
-        ])
-        ->where('po_num', $request->po_number)
-        ->whereBetween('prod_date', [$request->date_from,$request->date_to])
-        ->get();
+            'receiving_info',
+            'receiving_info.iqc_info',
+            'receiving_info.iqc_info.user_iqc',
+            'stamping_ipqc', 
+            'user', 
+            'stamping_ipqc.ipqc_insp_name', 
+            'oqc_details', 
+            'oqc_details.packing_info',
+            'oqc_details.packing_info.user_validated_by_info',
+            'oqc_details.first_molding_info',
+            'oqc_details.first_molding_info.user_validated_by_info'
+            ])
+            ->where('po_num', $request->po_number)
+            ->whereBetween('prod_date', [$request->date_from,$request->date_to])
+            ->get();
         
         // return $stamping_data;
 

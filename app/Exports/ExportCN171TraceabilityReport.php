@@ -478,11 +478,18 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                         }
 
                         if (isset($stamping_data[$i]->oqc_details)) {
-                            
                             $event->sheet->setCellValue('BD'.$start_col, $stamping_data[$i]->oqc_details->inspector);
                             $event->sheet->setCellValue('BE'.$start_col, $stamping_data[$i]->oqc_details->date_inspected);
                             $event->sheet->setCellValue('BF'.$start_col, $stamping_data[$i]->oqc_details->num_of_defects);
                             $event->sheet->setCellValue('BG'.$start_col, ("=(AZ".$start_col."-BF".$start_col.")/AZ".$start_col.""));
+
+                            if (isset($stamping_data[$i]->oqc_details->first_molding_info)){
+                                $second_molding_packing_date = substr($stamping_data[$i]->oqc_details->first_molding_info->date_counted,0,10);
+
+                                $event->sheet->setCellValue('BH'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->user_validated_by_info->firstname);
+                                $event->sheet->setCellValue('BI'.$start_col, $second_molding_packing_date);
+                                $event->sheet->setCellValue('BJ'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->shipment_output);
+                            }
                         }
 
                     }

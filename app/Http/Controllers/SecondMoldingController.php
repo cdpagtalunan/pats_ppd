@@ -555,7 +555,7 @@ class SecondMoldingController extends Controller
         $getShipmentOuputOfNonVisualInspection = DB::connection('mysql')
             ->table('sec_molding_runcard_stations')
             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-            ->where('station', '!=', 6) // 6-Visual Inspection
+            ->where('station', '!=', 4) // 4-Visual Inspection
             ->orderBy('id', 'desc') // get last station
             ->select(
                 'sec_molding_runcard_stations.output_quantity',
@@ -566,7 +566,7 @@ class SecondMoldingController extends Controller
         $getShipmentOuputOfVisualInspection = DB::connection('mysql')
             ->table('sec_molding_runcard_stations')
             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-            ->where('station', 6) // 1-Machine Final Overmold, 7-Camera Inspection
+            ->where('station', 4) // 1-Machine Final Overmold, 7-Camera Inspection
             ->select(
                 'sec_molding_runcard_stations.output_quantity',
                 'sec_molding_runcard_stations.station'

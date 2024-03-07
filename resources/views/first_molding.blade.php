@@ -993,10 +993,10 @@
                     fixedHeader: true,
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
-                        // { "data" : "status" },
                         { "data" : "stations" },
                         { "data" : "date" },
                         { "data" : "operator_names" },
+                        { "data" : "size_category" },
                         { "data" : "input" },
                         { "data" : "ng_qty" },
                         { "data" : "output" },
@@ -1364,6 +1364,8 @@
                             let contact_name = response[0].contact_name
                             let device_name = response[0].device_name
 
+                            // $('#tblFirstMoldingDetails').empty();
+                            dt.firstMolding.draw();
                             $('#btnAddFirstMolding').prop('disabled',false);
                             $('#global_contact_name').val(contact_name);
                             $('#global_input_device_name').val(device_name);
@@ -1522,6 +1524,8 @@
                     e.preventDefault();
                     let stationId = $(this).val();
                     fnIsSelectCameraInspection(stationId);
+                    // alert('dsad')
+                    console.log(stationId);
                 });
 
                 // $('#global_po_no').val();

@@ -167,15 +167,32 @@ class PackingDetailsMoldingController extends Controller
 
         $data = $request->all();
 
-        // return $data;
+        // $sublot_details = StampingProductionSublot::with(['stamping_info'])
+        // ->where('stamp_prod_id', $request->stamping_details_id)
+        // ->get();
 
-        $array = [
-            'checkedby'             => $request->scanned_emp_id,
-            'date_checked'          => date('Y-m-d H:i:s'),
-            'status'                => 1,
-        ];
+        // return $sublot_details;
+        $packing_details = FirstStampingProduction::
+            where('id', $request->stamping_details_id)
+            ->where('stamping_cat', 2)
+            ->get();
 
-        PackingDetailsMolding::where('id', $request->molding_id)->update($array);
+        // return $packing_details;
+
+        for ($i=0; $i <count($packing_details) ; $i++) { 
+            $shipment_output = $packing_details[$i]->ship_output;
+
+            $array = [
+                'checkedby'             => $request->scanned_emp_id,
+                'shipment_output'       => $shipment_output,
+                'date_checked'          => date('Y-m-d H:i:s'),
+                'status'                => 1,
+            ];
+            PackingDetailsMolding::where('id', $request->molding_id)->update($array);
+        }
+
+       
+
 
         return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
     }

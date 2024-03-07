@@ -1423,6 +1423,33 @@
                             // }
                         // }
                     // });
+                    $.ajax({
+                        type:"POST",
+                        url: "add_assembly_runcard_station_data",
+                        data: $('#formAddAssemblyRuncardStation').serialize(),
+                        dataType: "json",
+                        success: function(response){
+                            if (response['result'] == 1) {
+                                toastr.success('Successful!');
+                                $("#modalAddStation").modal('hide');
+                                dtAssemblyRuncardStation.draw();
+
+                                // $.ajax({
+                                //     type:"GET",
+                                //     url: "chck_existing_stations",
+                                //     data: $('#formCNAssemblyRuncard').find('formCNAssemblyRuncard')
+                                //     dataType: "json",
+                                //     success: function(response){
+
+                                //     }
+                                // });
+
+                            }else{
+                                toastr.error('Error!, Please Contanct ISS Local 208');
+                            }
+                            // console.log('station success');
+                        }
+                    });
                 });
 
                 $(document).on('click', '.btnUpdateAssemblyRuncardData',function(e){

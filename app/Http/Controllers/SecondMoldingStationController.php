@@ -125,26 +125,31 @@ class SecondMoldingStationController extends Controller
                     ->exists();
 
                     /**
-                     * If Station is 1-Machine Final Overmold or 7-Camera Inspection
+                     * If Station is 1-Machine Final Overmold or 5-Camera Inspection
                      * already exist then return hasError to true
                      * Note: change the station(id) of Visual Inspection for live
                      */
-                    if($request->station != 6 && $checkIfStationExist){ // 1-Machine Final Overmold, 7-Camera Inspection, 6-Visual Inspection
+                    if($request->station != 4 && $checkIfStationExist){ // 1-Machine Final Overmold, 5-Camera Inspection, 4-Visual Inspection
                         DB::rollback();
                         return response()->json(['hasError' => true, 'checkIfStationExist' => $checkIfStationExist]);
                     }
                     
                     /**
+
                      * If Station is 6-Visual Inspection or checkIfStationExist is false
                      * execute the query and return hasError for every condition
+
+                     * If Station is 4-Visual Inspection or checkIfStationExist 
+                     * is false execute the query and return hasError for every condition
+
                      * Note: change the station(id) of Visual Inspection for live
                      */
-                    if($request->station == 6 || !$checkIfStationExist){ // 6-Visual Inspection
+                    if($request->station == 4 || !$checkIfStationExist){ // 4-Visual Inspection
                         /* Validation of input quantity(current) and output quantity(last station) */
                         $getOutputQtyOfLastStationNonVisual = DB::connection('mysql')
                             ->table('sec_molding_runcard_stations')
                             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                            ->whereIn('sec_molding_runcard_stations.station', [1, 7]) // 1-Machine Final Overmold or 7-Camera Inspection
+                            ->whereIn('sec_molding_runcard_stations.station', [1, 5]) // 1-Machine Final Overmold or 5-Camera Inspection
                             ->orderBy('id', 'desc')
                             ->select(
                                 'sec_molding_runcard_stations.station',
@@ -211,7 +216,7 @@ class SecondMoldingStationController extends Controller
                         $getComputedInputQtyOfVisual = DB::connection('mysql')
                             ->table('sec_molding_runcard_stations')
                             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                            ->where('sec_molding_runcard_stations.station', 6) // 6-Visual Inspection
+                            ->where('sec_molding_runcard_stations.station', 4) // 4-Visual Inspection
                             ->select(
                                 DB::raw('SUM(input_quantity) AS computed_input_quantity'),
                             )
@@ -229,11 +234,11 @@ class SecondMoldingStationController extends Controller
                          * Computation of last station(Visual Inspection)
                          * Note: change the station(id) of Visual Inspection for live
                          */
-                        if($request->station == 6){
+                        if($request->station == 4){
                             $computedShipmentOutput = DB::connection('mysql')
                                 ->table('sec_molding_runcard_stations')
                                 ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                                ->where('sec_molding_runcard_stations.station', 6)
+                                ->where('sec_molding_runcard_stations.station', 4) // 4-Visual Inspection
                                 ->select(
                                     DB::raw('SUM(output_quantity) AS shipmentOutput'),
                                 )
@@ -379,7 +384,8 @@ class SecondMoldingStationController extends Controller
                     /**
                      * Note: change the station(id) of Visual Inspection for live
                      */
-                    if($request->station == 6){ // 6-Visual Inspection
+
+                    if($request->station == 4){ // 4-Visual Inspection
                         $updateNGAndOutputQuantity = DB::connection('mysql')
                             ->table('sec_molding_runcards')
                             ->where('sec_molding_runcards.id', $request->second_molding_id)->update([
