@@ -227,7 +227,7 @@ class StampingChecksheetController extends Controller
         $checksheet_details = DB::connection('mysql')
         ->table('stamping5s_checksheets AS a')
         ->leftJoin('users AS b', 'a.checked_by', '=', 'b.id')
-        ->select('a.*', 'b.firstname', 'b.lastname')
+        ->select('a.*', 'b.firstname AS checkedby_fname', 'b.lastname as checkedby_lname')
         ->where('a.id', $request->id)
         ->first();
 

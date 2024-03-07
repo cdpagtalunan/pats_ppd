@@ -626,7 +626,7 @@ function GetInspectionType(cboElement){
             result = '';
 
             if(response['collectInspectionType'].length > 0){
-                result = '<option selected disabled> --- Select --- </option>';
+                result = '<option selected disabled> - Select - </option>';
                 for(let index = 0; index < response['collectInspectionType'].length; index++){
                     result += '<option value="' + response['collectInspectionType'][index].id+'">'+ response['collectInspectionType'][index].inspection_type+'</option>'
                 }
@@ -655,7 +655,7 @@ function GetInspectionLevel(cboElement){
             result = '';
 
             if(response['collectInspectionLevel'].length > 0){
-                result = '<option selected disabled> --- Select --- </option>';
+                result = '<option selected disabled> - Select - </option>';
                 for(let index = 0; index < response['collectInspectionLevel'].length; index++){
                     result += '<option value="' + response['collectInspectionLevel'][index].id+'">'+ response['collectInspectionLevel'][index].inspection_level+'</option>'
                 }
@@ -684,7 +684,7 @@ function GetSeverityInspection(cboElement){
             result = '';
 
             if(response['collectSeverityInspection'].length > 0){
-                result = '<option selected disabled> --- Select --- </option>';
+                result = '<option selected disabled> - Select - </option>';
                 for(let index = 0; index < response['collectSeverityInspection'].length; index++){
                     result += '<option value="' + response['collectSeverityInspection'][index].id+'">'+ response['collectSeverityInspection'][index].severity_inspection+'</option>'
                 }

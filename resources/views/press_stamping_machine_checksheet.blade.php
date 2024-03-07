@@ -217,7 +217,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Machine</span>
@@ -226,7 +226,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">UNIT NO</span>
@@ -240,7 +240,7 @@
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Division</span>
@@ -252,7 +252,7 @@
                                 </div>
 
                                 <div class="row mt-2">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Month</span>
@@ -261,7 +261,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">AREA</span>
@@ -269,7 +269,7 @@
                                             <input type="text" class="form-control form-control-sm" id="txtArea" name="machine_area" value="Stamping" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">CONFORMED BY</span>
@@ -279,7 +279,7 @@
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">CONDUCTED BY (OPERATOR)</span>
@@ -287,7 +287,7 @@
                                             <input type="text" class="form-control form-control-sm" id="txtConductedBy" name="conducted_by" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">CHECKED BY (ENGINEER)</span>
@@ -295,7 +295,7 @@
                                             <input type="text" class="form-control form-control-sm" id="txtCheckedBy" name="checked_by" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">CONFORMED BY (QC)</span>
@@ -305,7 +305,7 @@
                                     </div>
                                 </div>
                                 <div class="row mt-2">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Date/Time</span>
@@ -321,7 +321,7 @@
                             <div id="KyoriHeaderId" class="card-header text-block-header">
                                 <div class="col-sm-12">
                                     <div class="row">
-                                        <div class="col-sm-8">
+                                        <div class="col-sm-6 col-md-6 col-lg-6">
                                             <b>
                                             GENERAL INSTRUCTION : <br>
                                             1. CONDUCT CHECKING BASED ON REQUIRED FREQUENCY INDICATED HEREIN.<br>
@@ -332,12 +332,12 @@
                                             6. MONTHLY CHECKING SHALL BE CONDUCTED ON THE FIRST WORKING DAY OF THE CALENDAR MONTH.
                                             </b>
                                         </div>
-                                        <div class="col-sm-1">
+                                        <div class="col-sm-2 col-md-2 col-lg-2">
                                             <b>
                                             Legend :
                                             </b>
                                         </div>
-                                        <div class="col-sm-3">
+                                        <div class="col-sm-4 col-md-4 col-lg-4">
                                             <b>
                                             ✓ = OK <br> X = NG <br> NP = NO PRODUCTION <br> N/A = NOT APPLICABLE
                                             </b>

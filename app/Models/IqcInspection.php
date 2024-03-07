@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\IqcInspectionsMod;
 use App\Models\User;
+use App\Models\DropdownIqcAql;
+use App\Models\IqcInspectionsMod;
 use App\Models\TblWarehouseTransaction;
+use App\Models\DropdownIqcInspectionLevel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -59,5 +61,13 @@ class IqcInspection extends Model
 
     public function user_iqc(){
         return $this->hasOne(User::class, 'id', 'inspector');
+    }
+
+    public function iqc_inspection_mods_info(){
+        return $this->hasMany(IqcInspectionsMod::class, 'iqc_inspection_id', 'id')->whereNull('deleted_at');
+    }
+
+    public function iqc_inspection_level_info(){
+        return $this->hasOne(DropdownIqcInspectionLevel::class, 'id', 'inspection_lvl')->whereNull('deleted_at');
     }
 }

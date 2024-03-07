@@ -85,11 +85,19 @@ const getChecksheet = (id, checkFunction) => {
             $('#modalAddChecksheet').modal('show');
 
             $('#txtCheckId').val(`${response['id']}`);
-            $('#txtCheckBy').val(`${response['firstname']} ${response['lastname']}`);
+            // $('#txtCheckBy').val(`${response['checked_by']}`);
+
+            if(response['checked_by'] != null){
+                $('#txtCheckBy').val(`${response['checkedby_fname']} ${response['checkedby_lname']}`);
+
+            }
             $('#txtCheckDate').val(response['date']);
             $('#txtCheckCondBy').val(response['conducted_by']);
             $('#txtShift').val(response['shift']);
-            $('#selMachine').val(response['machine_id']).trigger('change');
+            setTimeout(() => {
+                
+                $('#selMachine').val(response['machine_id']).trigger('change');
+            }, 500);
             $('#txtRemarks').val(response['remarks']);
             // $("input[name=checkA1_1]").val();
             $(`input:radio[name="checkA1_1"][value="${response['checksheet_A_1_1']}"]`).prop('checked', true);

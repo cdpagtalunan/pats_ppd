@@ -19,7 +19,7 @@ class AssemblyFvi extends Model
     }
     
     public function oqc_lot_app(){
-        return $this->hasOne(AssemblyOqcLotApp::class, 'assy_fvi_id', 'id');
+        return $this->hasOne(AssemblyOqcLotApp::class, 'assy_fvi_id', 'id')->whereNull('deleted_at');
     }
 
 }

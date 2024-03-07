@@ -304,6 +304,10 @@
             url: "save_first_molding",
             data: formModal.firstMolding.serialize(),
             dataType: "json",
+            beforeSend: function(){
+                $("#btnRuncardDetailsIcon").addClass('fa fa-spinner fa-pulse');
+                $("#btnRuncardDetails").prop('disabled', 'disabled');
+            },
             success: function (response) {
                 console.log(response);
                 if (response['result'] === 1){
@@ -345,7 +349,13 @@
                     errorHandler( errors.po_qty,formModal.firstMolding.find('#po_qty') );
                     errorHandler( errors.material_yield,formModal.firstMolding.find('#material_yield') );
                     errorHandler( errors.required_output,formModal.firstMolding.find('#required_output') );
+
+                    $("#btnRuncardDetailsIcon").removeClass('fa fa-spinner fa-pulse');
+                    $("#btnRuncardDetails").removeAttr('disabled');
+                    $("#btnRuncardDetailsIcon").addClass('fa fa-floppy-disk');
                 }else{
+                    $("#btnRuncardDetailsIcon").addClass('fa fa-spinner fa-pulse');
+                    $("#btnRuncardDetails").prop('disabled', 'disabled');
                     toastr.error(`Error: ${data.status}`);
                 }
             }
@@ -757,5 +767,17 @@
         }
     }
 
-
-// })
+    const fnGetDatalistMimfPoNum = function (globalPoNo){
+        $.ajax({
+            type: "GET",
+            url: "get_datalist_mimf_po_num",
+            data: {"pmi_po_no" : globalPoNo},
+            dataType: "json",
+            success: function (response) {
+                $('#datalist_mimf_po_num').empty();
+                for(i=0;i<response['pmi_po_num'].length;i++){
+                    $('#datalist_mimf_po_num').append('<option>'+response['pmi_po_num'][i]+'</option>');
+                }
+            }
+        });
+    }

@@ -197,37 +197,32 @@
                                                 <div class="fw-lighter fst-italic"><span class="text-danger">*</span>Put the complete details of activity / Do not leave empty space without details</div>
                                             </div>
                                             <div class="col-6">
-                                                <div class="row">
-                                                    <div class="col-5">
-                                                        <div class="input-group input-group-sm">
-                                                            <span class="input-group-text w-50">Machine No.</span>
-                                                            <input type="text" class="form-control form-control-sm w-50" id="textSequenceNumber" name="machine_number" placeholder="Machine No.">
-                                                        </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <div class="input-group input-group-sm">
+                                                        <span class="input-group-text" style="width: 50%;">Machine No.</span>
+                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textMachineNumber" name="machine_number" placeholder="Machine No.">
                                                     </div>
-                                                    <div class="col-3">
-                                                        <div class="input-group input-group-sm">
-                                                            <span class="input-group-text w-30">Year</span>
-                                                            <input type="text" class="form-control form-control-sm w-70" readonly id="textSequenceNumber" name="year" value="<?php echo date('Y'); ?>" placeholder="Year">
-                                                        </div>
+                                                    <div class="input-group input-group-sm" style="width: 50%;">
+                                                        <span class="input-group-text" style="width: 50%;">Year</span>
+                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textYear" readonly name="year" value="<?php echo date('Y'); ?>" placeholder="Year">
                                                     </div>
-                                                    <div class="col-2">
-                                                        <div class="input-group input-group-sm">
-                                                            <span class="input-group-text w-30">Month</span>
-                                                            <input type="text" class="form-control form-control-sm w-70" readonly id="textSequenceNumber" name="month" value="<?php echo date('m'); ?>" placeholder="Month">
-                                                        </div>
+                                                    <div class="input-group input-group-sm" style="width: 50%;">
+                                                        <span class="input-group-text" style="width: 50%;">Month</span>
+                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textMonth" readonly name="month" value="<?php echo date('m'); ?>" placeholder="Month">
                                                     </div>
-                                                    <div class="col-2">
-                                                        <div class="input-group input-group-sm">
-                                                            <span class="input-group-text w-30">Day</span>
-                                                            <input type="text" class="form-control form-control-sm w-70" readonly id="textSequenceNumber" name="day" value="<?php echo date('d'); ?>" placeholder="Day">
-                                                        </div>
+                                                    <div class="input-group input-group-sm mr-1" style="width: 50%;">
+                                                        <span class="input-group-text" style="width: 50%;">Day</span>
+                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textDay" readonly name="day" value="<?php echo date('d'); ?>" placeholder="Day">
                                                     </div>
+                                                    <button type="submit" class="btn btn-primary btn-sm d-flex justify-content-center align-items-center">
+                                                        <i class="fa fa-plus" ></i>&nbsp;Save
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="row py-3 border">
                                             <div class="text-end">
-                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" id="buttonAddStampingWorkingReportDetails" data-bs-target="#modalStampingWorkingReportDetails" style="margin-bottom: 5px;">
+                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalStampingWorkingReportDetails" style="margin-bottom: 5px;">
                                                     <i class="fa fa-plus" ></i> Add
                                                 </button>
                                             </div>
@@ -280,7 +275,7 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form id="formAddStampingWorkingReportDetails">
+                    <form id="formStampingWorkingReportDetails">
                         @csrf
                         <div class="modal-body">
                             <input type="text" class="d-none" id="textStampingWorkingReportsId" name="stamping_working_report_id">
@@ -289,20 +284,20 @@
                             <div class="row">
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Time</span>
+                                        <span class="input-group-text" style="width: 50%;">Time</span>
+                                        <div id="divTime" class="d-flex" style="width: 50% !important;">
+                                            <input type="text" class="time start ui-timepicker-input" id="textTimeStart" style="border: 1px solid #ced4da;" name="time_start" placeholder="Start" autocomplete="off">
+                                            <input type="text" class="time end ui-timepicker-input" id="textTimeEnd" style="border: 1px solid #ced4da;" name="time_end" placeholder="End" autocomplete="off">
                                         </div>
-                                        <input type="time" class="form-control form-control-sm" id="textTime" name="time" placeholder="Time">
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Work Details</span>
-                                        </div>
-                                        <select type="text" class="form-control form-control-sm" id="selectWorkDetails" name="work_details" placeholder="Work Details">
+                                        <span class="input-group-text" style="width: 50%;">Total minutes</span>
+                                        <input type="text" class="form-control form-control-sm" id="textTotalMinutes" style="width: 50% !important;" readonly name="total_minutes" placeholder="Total minutes (Auto Generated)" autocomplete="off">
+                                    </div>
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text" style="width: 50%;">Work Details</span>
+                                        <select type="text" class="form-control form-control-sm" style="width: 50% !important;" id="selectWorkDetails" name="work_details" placeholder="Work Details">
                                             <option value="0" selected disabled>Select One</option>
                                             <option value="1">A</option>
                                             <option value="2">A1</option>
@@ -328,26 +323,127 @@
                                             <option value="22">K</option>
                                         </select>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
                                     <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Sequence No.</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textSequenceNumber" name="sequence_number" placeholder="Sequence No.">
+                                        <span class="input-group-text" style="width: 50%;">Sequence No.</span>
+                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textSequenceNumber" name="sequence_number" placeholder="Sequence No.">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success" id="buttonAddStampingWorkingReportDetails"><i class="fa-solid fa-floppy-disk"></i> Add</button>
+                            <button type="submit" class="btn btn-success" id="buttonAddStampingWorkingReportDetails"><i class="fa-solid fa-floppy-disk"></i> Save</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     @endsection
+    @section('js_content')
+        <script>
+            $(document).ready(function () {
+                let divTimeEl = document.getElementById('divTime');
+                let divTime = new Datepair(divTimeEl);
+                $('#divTime #textTimeStart').timepicker({
+                    'showDuration': true,
+                    'minTime': '7:30am',
+                    'maxTime': '12:00am',
+                    'timeFormat': 'g:ia',
+                    'forceRoundTime': true,
+                    'step': 5,
+                }).on('changeTime', function() {
+                    let milliseconds = divTime.getTimeDiff();
+                    let minutes = (milliseconds/1000)/60;
+                });
+
+                $('#divTime #textTimeEnd').timepicker({
+                    'showDuration': true,
+                    'minTime': '7:30am',
+                    'maxTime': '12:00am',
+                    'timeFormat': 'g:ia',
+                    'forceRoundTime': true,
+                    'step': 5,
+                }).on('blur', function() {
+                    let milliseconds = divTime.getTimeDiff();
+                    let minutes = (milliseconds/1000)/60;
+                    $('#textTotalMinutes').val(`${minutes} mins`);
+                });
+
+                // dataTables = $("#tableStation").DataTable({
+                //     "processing" : true,
+                //     "serverSide" : true,
+                //     "ajax" : {
+                //         url: "view_second_molding_station",
+                //         data: function (param){
+                //             param.sec_molding_runcard_id = $('#textSecondMoldingId', $('#formSecondMolding')).val();
+                //         }
+                //     },
+                //     fixedHeader: true,
+                //     "columns":[
+                //         { "data" : "action", orderable:false, searchable:false },
+                //         { "data" : "station_name" },
+                //         { "data" : "date" },
+                //         { "data" : "concatted_operator_name",},
+                //         { "data" : "input_quantity" },
+                //         { "data" : "ng_quantity" },
+                //         { "data" : "output_quantity" },
+                //         { "data" : "remarks" },
+                //     ],
+                //     footerCallback: function (row, data, start, end, display) {
+                //         let api = this.api();
+
+                //         let countNGQuantity = 0;
+                //         let countVisualInspectionQuantity = 0;
+                //         if(data.length > 0){
+                //             for (let index = 0; index < data.length; index++) {
+                //                 countNGQuantity += parseInt(data[index].ng_quantity);
+                //                 if(data[index].station_name == "Visual Inspection"){
+                //                     countVisualInspectionQuantity += parseInt(data[index].output_quantity);
+                //                 }
+                //             }
+                //         }
+                //         // console.log('countNGQuantity ', countNGQuantity);
+                //         $(api.column(5).footer()).html(`${countNGQuantity}`)
+                //         $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
+                //     }
+                // });
+
+                $('#formStampingWorkingReportDetails').submit(function (e) {
+                    e.preventDefault();
+                    let data = $(this).serialize();
+                    console.log(`data ${data}`);
+                    $.ajax({
+                        type: "POST",
+                        url: "save_stamping_working_report_details",
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+                            if(!response.validationHasError){
+                                if(!response.hasError){
+                                    toastr.success('Successfully saved');
+                                    getSecondMoldingById(response['second_molding_id'], true);
+                                    dataTablesSecondMoldingStation.draw();
+                                    $('#modalStampingWorkingReportDetails').modal('hide');
+                                }
+                                else{
+                                    toastr.error('Saving failed');
+                                }
+                            }else{
+                                toastr.error('Please input required fields');
+                                if(response['error']['device_name'] === undefined){
+                                    isResponseError('textDeviceName', false);
+                                }
+                                else{
+                                    isResponseError('textDeviceName', true);
+                                }
+                            }
+                        }
+                    });
+                });
+                resetFormValuesOnModalClose('modalSecondMoldingStation', 'formAddStation');
+                
+            }); // End Document Ready
+        </script>
+    @endsection
 @endauth
+

@@ -68,6 +68,7 @@ class SecondMoldingStationController extends Controller
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();
+        return $data;
 
         if(!isset($request->second_molding_station_id)){
             // return 'insert';
@@ -82,6 +83,37 @@ class SecondMoldingStationController extends Controller
                 'station_yield' => 'required',
                 'remarks' => '',
             ];
+
+            /**
+             * If Station is 10-1st OQC Inspection
+             * then add validation
+             * Note: change the station(id) for 1st OQC Inspection for live
+             */
+            if($request->station == 10){
+                $rules['type_of_inspection'] = 'required';
+                $rules['severity_of_inspection'] = 'required';
+                $rules['inspection_level'] = 'required';
+                $rules['lot_quantity'] = 'required';
+                $rules['aql'] = 'required';
+                $rules['sample_size'] = 'required';
+                $rules['accept'] = 'required';
+                $rules['reject'] = 'required';
+                $rules['lot_inspected'] = 'required';
+                $rules['lot_accepted'] = 'required';
+                $rules['judgement'] = 'required';
+            }else{
+                $rules['type_of_inspection'] = '';
+                $rules['severity_of_inspection'] = '';
+                $rules['inspection_level'] = '';
+                $rules['lot_quantity'] = '';
+                $rules['aql'] = '';
+                $rules['sample_size'] = '';
+                $rules['accept'] = '';
+                $rules['reject'] = '';
+                $rules['lot_inspected'] = '';
+                $rules['lot_accepted'] = '';
+                $rules['judgement'] = '';
+            }
             $validator = Validator::make($data, $rules);
             if ($validator->fails()) {
                 return response()->json(['validationHasError' => true, 'error' => $validator->messages()]);
@@ -103,8 +135,13 @@ class SecondMoldingStationController extends Controller
                     }
                     
                     /**
+
+                     * If Station is 6-Visual Inspection or checkIfStationExist is false
+                     * execute the query and return hasError for every condition
+
                      * If Station is 4-Visual Inspection or checkIfStationExist 
                      * is false execute the query and return hasError for every condition
+
                      * Note: change the station(id) of Visual Inspection for live
                      */
                     if($request->station == 4 || !$checkIfStationExist){ // 4-Visual Inspection
@@ -142,6 +179,17 @@ class SecondMoldingStationController extends Controller
                             'output_quantity' => $request->output_quantity,
                             'station_yield' => $request->station_yield,
                             'remarks' => $request->remarks,
+                            'type_of_inspection' => $request->type_of_inspection,
+                            'severity_of_inspection' => $request->severity_of_inspection,
+                            'inspection_level' => $request->inspection_level,
+                            'lot_quantity' => $request->lot_quantity,
+                            'aql' => $request->aql,
+                            'sample_size' => $request->sample_size,
+                            'accept' => $request->accept,
+                            'reject' => $request->reject,
+                            'lot_inspected' => $request->lot_inspected,
+                            'lot_accepted' => $request->lot_accepted,
+                            'judgement' => $request->judgement,
                             'created_by' => Auth::user()->id,
                             'created_at' => date('Y-m-d H:i:s'),
                         ]);
@@ -270,6 +318,36 @@ class SecondMoldingStationController extends Controller
                 'station_yield' => 'required',
                 'remarks' => '',
             ];
+            /**
+             * If Station is 10-1st OQC Inspection
+             * then add validation
+             * Note: change the station(id) for 1st OQC Inspection for live
+             */
+            if($request->station == 10){
+                $rules['type_of_inspection'] = 'required';
+                $rules['severity_of_inspection'] = 'required';
+                $rules['inspection_level'] = 'required';
+                $rules['lot_quantity'] = 'required';
+                $rules['aql'] = 'required';
+                $rules['sample_size'] = 'required';
+                $rules['accept'] = 'required';
+                $rules['reject'] = 'required';
+                $rules['lot_inspected'] = 'required';
+                $rules['lot_accepted'] = 'required';
+                $rules['judgement'] = 'required';
+            }else{
+                $rules['type_of_inspection'] = '';
+                $rules['severity_of_inspection'] = '';
+                $rules['inspection_level'] = '';
+                $rules['lot_quantity'] = '';
+                $rules['aql'] = '';
+                $rules['sample_size'] = '';
+                $rules['accept'] = '';
+                $rules['reject'] = '';
+                $rules['lot_inspected'] = '';
+                $rules['lot_accepted'] = '';
+                $rules['judgement'] = '';
+            }
             $validator = Validator::make($data, $rules);
             if ($validator->fails()) {
                 return response()->json(['validationHasError' => true, 'error' => $validator->messages()]);
@@ -287,6 +365,17 @@ class SecondMoldingStationController extends Controller
                         'output_quantity' => $request->output_quantity,
                         'station_yield' => $request->station_yield,
                         'remarks' => $request->remarks,
+                        'type_of_inspection' => $request->type_of_inspection,
+                        'severity_of_inspection' => $request->severity_of_inspection,
+                        'inspection_level' => $request->inspection_level,
+                        'lot_quantity' => $request->lot_quantity,
+                        'aql' => $request->aql,
+                        'sample_size' => $request->sample_size,
+                        'accept' => $request->accept,
+                        'reject' => $request->reject,
+                        'lot_inspected' => $request->lot_inspected,
+                        'lot_accepted' => $request->lot_accepted,
+                        'judgement' => $request->judgement,
     
                         'last_updated_by' => Auth::user()->id,
                         'updated_at' => date('Y-m-d H:i:s'),
@@ -295,6 +384,7 @@ class SecondMoldingStationController extends Controller
                     /**
                      * Note: change the station(id) of Visual Inspection for live
                      */
+
                     if($request->station == 4){ // 4-Visual Inspection
                         $updateNGAndOutputQuantity = DB::connection('mysql')
                             ->table('sec_molding_runcards')
@@ -366,19 +456,6 @@ class SecondMoldingStationController extends Controller
     public function getSecondMoldingStationById(Request $request){
         // $secondMoldingStationResult = SecMoldingRuncardStation::with('sec_molding_runcard_station_mods')
         // ->get();
-
-        // $secondMoldingStationResult = DB::connection('mysql')
-        // ->select("SELECT 
-        //                 sec_molding_runcard_stations.*,
-        //                 sec_molding_runcard_station_mods.id AS sec_molding_runcard_station_mod_id,
-        //                 sec_molding_runcard_station_mods.mod_id AS mod_id,
-        //                 sec_molding_runcard_station_mods.mod_quantity AS mod_quantity
-        //             FROM sec_molding_runcard_stations
-        //             INNER JOIN sec_molding_runcard_station_mods
-        //                 ON sec_molding_runcard_station_mods.sec_molding_runcard_station_id = sec_molding_runcard_stations.id
-        //             WHERE sec_molding_runcard_stations.id = $request->second_molding_station_id
-        //             AND sec_molding_runcard_stations.deleted_at IS NULL
-        // ");
         
         $secondMoldingStationResult = DB::connection('mysql')
         ->table('sec_molding_runcard_stations')
@@ -394,18 +471,6 @@ class SecondMoldingStationController extends Controller
         ->get();
         return response()->json(['data' => $secondMoldingStationResult]);
 
-        // $secondMoldingStationResult = DB::connection('mysql')
-        // ->table('sec_molding_runcards')
-        // ->leftJoin('sec_molding_runcard_stations', 'sec_molding_runcards.id', '=', 'sec_molding_runcard_stations.sec_molding_runcard_id')
-        // ->where('sec_molding_runcards.id', 1)
-        // ->groupBy('sec_molding_runcards.id')
-        // ->select(
-        //     'sec_molding_runcards.id',
-        //     'sec_molding_runcards.device_name',
-        //     DB::raw("CONCAT('[', GROUP_CONCAT(JSON_OBJECT('id', sec_molding_runcard_stations.id, 'date', sec_molding_runcard_stations.date, 'station_yield', sec_molding_runcard_stations.station_yield) ORDER BY sec_molding_runcards.id separator ','), ']') AS sec_molding_runcard_stations"),
-        // )
-        // ->get();    
-        // return response()->json(['data' => $secondMoldingStationResult]);
 
         // $stations = DB::table('sec_molding_runcard_stations')
         //     ->select('sec_molding_runcard_id')

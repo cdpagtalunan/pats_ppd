@@ -17,7 +17,7 @@ class CreateAssemblyOqcLotAppsTable extends Migration
             $table->bigIncrements('id');
             $table->foreignId('assy_fvi_id')->references('id')->on('assembly_fvis')->comment ='assembly_fvis (table)';
             $table->string('po_no', 30)->nullable();
-            $table->smallInteger('status')->nullable()->comment = '0 = Prodn Approval, 1 = QC Approval, 2 = Done';
+            $table->smallInteger('status')->nullable()->comment = '0 = For Application, 1 = For Submission to OQC, 2 = For Reinspection, 3 = Done, 4 = Lot App Rejected';
             $table->smallInteger('submission')->nullable();
             $table->smallInteger('device_cat')->nullable()->comment = '1-Automotive,2-Non-Automotive';
             $table->smallInteger('cert_lot')->nullable()->comment = '1-New Operator,2-New product/model,3-Evaluation lot,4-Re-inspection,5-Flexibility';
@@ -27,6 +27,7 @@ class CreateAssemblyOqcLotAppsTable extends Migration
             $table->string('reel_lot')->nullable();
             $table->string('print_lot');
             $table->string('lot_qty');
+            $table->string('output_quantity');
             $table->string('direction')->nullable();
             $table->string('drawing', 100);
             $table->string('ttl_reel')->nullable();

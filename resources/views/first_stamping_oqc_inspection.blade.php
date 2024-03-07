@@ -191,7 +191,6 @@
                         <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
                         <input type="hidden" class="form-control form-control-sm" id="txtCheckButton" name="check_button">
                         <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
-
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend w-25">

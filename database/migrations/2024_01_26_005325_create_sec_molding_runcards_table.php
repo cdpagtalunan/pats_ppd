@@ -50,6 +50,18 @@ class CreateSecMoldingRuncardsTable extends Migration
             $table->integer('shipment_output')->nullable();
             $table->float('material_yield')->nullable();
 
+            $table->string('type_of_inspection')->nullable();
+            $table->string('severity_of_inspection')->nullable();
+            $table->string('inspection_level')->nullable();
+            $table->string('lot_quantity')->nullable();
+            $table->string('aql')->nullable();
+            $table->string('sample_size')->nullable();
+            $table->string('accept')->nullable();
+            $table->string('reject')->nullable();
+            $table->string('lot_inspected')->nullable();
+            $table->string('lot_accepted')->nullable()->comment = "0-Rejected, 1-Acceepted";
+            $table->string('judgement')->nullable()->comment = "0-Rejected, 1-Accepted";
+
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();
             $table->tinyInteger('status')->default(0)->comment ='';

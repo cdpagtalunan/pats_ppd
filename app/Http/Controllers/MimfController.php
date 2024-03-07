@@ -64,6 +64,14 @@ class MimfController extends Controller
             $result .= '</center>';
             return $result;
         })
+
+        ->addColumn('yec_po_no', function($get_mimf){
+            $result = '<center>';
+            $result .= $get_mimf->pps_po_received_info->ProductPONo;
+            $result .= '</center>';
+            return $result;
+        })
+
         ->addColumn('po_balance', function($get_mimf){
             $result = '<center>';
             $result .= $get_mimf->pps_po_received_info->POBalance;

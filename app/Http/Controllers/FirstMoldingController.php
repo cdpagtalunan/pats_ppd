@@ -83,7 +83,7 @@ class FirstMoldingController extends Controller
                     if($row->first_molding_device_id > 1){
                         $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' test='".$row->first_molding_device_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
                     }
-                    break; 
+                    break;
                 default:
                     $result .= "";
                     break;
@@ -482,5 +482,45 @@ class FirstMoldingController extends Controller
             return $e;
         }
     }
+
+
+    public function getDatalistMimfPoNum (Request $request){
+        date_default_timezone_set('Asia/Manila');
+        try {
+            $first_molding = DB::connection('mysql')
+            ->select('
+                    SELECT  pmi_po_no
+                    FROM mimfs
+                    WHERE pmi_po_no LIKE "%'.$request->pmi_po_no.'%"
+                    LIMIT 0,20
+            ');
+
+            foreach ($first_molding as $key => $value) {
+                $arr_first_molding[] = $value->pmi_po_no;
+            }
+            return response()->json(['is_success'=>'true','pmi_po_num' => $arr_first_molding]);
+        } catch (\Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+    public function validateMaterialLotNo(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        try {
+            // 3918K56 Lot_number 3707K30	
+            // return $request->first_molding_material_lot_no;
+            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+            ->select('
+                SELECT  whs_transaction.Lot_number
+                FROM tbl_WarehouseTransaction whs_transaction
+                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                WHERE whs_transaction.Lot_number = "'.$request->first_molding_material_lot_no.'"
+                ORDER BY whs.PartNumber DESC
+            ');
+            return response()->json(['is_success' => 'true', 'is_exist_lot_no' => count($tbl_whs_trasanction)]);
+        } catch (\Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
 
 }

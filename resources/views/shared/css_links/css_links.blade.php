@@ -39,3 +39,5 @@
 
 <!-- Datepicker -->
 <link rel="stylesheet" href="{{ asset('public/css/datepicker.css') }}">
+
+<link rel="stylesheet" href="{{ asset('public/template/jquerytimepicker/css/jquery.timepicker.css') }}"> <!-- Only use for Second Molding -->
