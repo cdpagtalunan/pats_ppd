@@ -494,7 +494,9 @@ class FirstMoldingController extends Controller
                     WHERE pmi_po_no LIKE "%'.$request->pmi_po_no.'%"
                     LIMIT 0,20
             ');
-
+            if(count ($first_molding)  == 0 ){
+                return response()->json(['is_success' => 'false', 'exceptionError' => 'First Molding not exists']);
+            }
             foreach ($first_molding as $key => $value) {
                 $arr_first_molding[] = $value->pmi_po_no;
             }
@@ -506,7 +508,7 @@ class FirstMoldingController extends Controller
     public function validateMaterialLotNo(Request $request){
         date_default_timezone_set('Asia/Manila');
         try {
-            // 3918K56 Lot_number 3707K30	
+            // 3918K56 Lot_number 3707K30
             // return $request->first_molding_material_lot_no;
             $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('

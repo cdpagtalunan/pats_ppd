@@ -269,8 +269,12 @@
                 "iqc_inspection_id" : iqcInpectionId,
             },
             dataType: "json",
+            beforeSend: function(){
+                $('#modal-loading').modal('show');
+            },
             success: function (response) {
                 console.log(response);
+                $('#modal-loading').modal('hide');
                 $('#modalSaveIqcInspection').modal('show');
                 let partCode = response[0]['partcode'];
                 let partName = response[0]['partname'];
@@ -373,6 +377,10 @@
                 }
                 console.log('arrTableMod.lotNo',arrTableMod.lotNo);
                 console.log('arrTableMod.lotQty',arrTableMod.lotQty);
+            },error: function (data, xhr, status){
+                toastr.error(`Error: ${data.status}`);
+                $('#modal-loading').modal('hide');
+
             }
         });
     }
@@ -492,7 +500,11 @@
             cache: false,
             contentType: false,
             processData: false,
+            beforeSend: function(){
+                $('#modal-loading').modal('show');
+            },
             success: function (response) {
+                $('#modal-loading').modal('hide');
                 if (response['result'] === 1){
                     $('#modalSaveIqcInspection').modal('hide');
                     dataTable.iqcInspection.draw();
@@ -510,6 +522,7 @@
             },error: function (data, xhr, status){
                 let errors = data.responseJSON.errors ;
                 toastr.error(`Saving Failed, Please fill up all required fields`);
+                $('#modal-loading').modal('hide');
                 if(data.status === 422){
                     errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#receiving_detail_id'));
                     errorHandler(errors.whs_transaction_id,form.iqcInspection.find('#receiving_detail_id'));

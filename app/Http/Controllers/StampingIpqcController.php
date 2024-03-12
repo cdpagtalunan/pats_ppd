@@ -47,7 +47,7 @@ class StampingIpqcController extends Controller
                                     ->where('po_num', $request->po_number)
                                     ->whereIn('status', $request->fs_prod_status)
                                     ->get();
-                                    
+
             // return $first_stamping_data;
 
             return DataTables::of($first_stamping_data)
@@ -228,7 +228,7 @@ class StampingIpqcController extends Controller
         return response()->json(['fs_production_data' => $data_mapped]);
     }
 
-    public function add_ipqc_inspection(Request $request){
+    public function add_stamping_ipqc_inspection(Request $request){
         date_default_timezone_set('Asia/Manila');
         session_start();
 

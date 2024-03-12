@@ -306,7 +306,11 @@
     </div>
     <!-- /.modal -->
 
+<<<<<<< HEAD
+     {{-- * ADD --}}
+=======
      {{-- * view --}}
+>>>>>>> migz_v1
      <div class="modal fade" id="modalViewPackingListDetails" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">

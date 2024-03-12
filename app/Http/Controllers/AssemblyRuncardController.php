@@ -31,6 +31,8 @@ class AssemblyRuncardController extends Controller
         $material_type = implode(',',$material_name);
 
         $station_details = $matrix_data[0]->material_process[0]->station_details;
+
+        // return $matrix_data;
         return response()->json(['device_details' => $matrix_data, 'material_details' => $material_type]);
     }
 
@@ -301,7 +303,7 @@ class AssemblyRuncardController extends Controller
                 if(!isset($request->assy_runcard_id)){
                     AssemblyRuncard::insert([
                                     'device_name'            => $request->device_name,
-                                    'part_code'              => $request->device_code,
+                                    'parts_code'              => $request->device_code,
                                     'po_number'              => $request->po_number,
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
@@ -380,7 +382,6 @@ class AssemblyRuncardController extends Controller
                     if(AssemblyRuncardStation::where('assembly_runcards_id', $request->station_assy_runcard_id)->where('station', $request->runcard_station)->exists()){
                         return response()->json(['result' => 2]);
                     }else{
-
                         // $isFirstStationExist = AssemblyRuncardStation::where('')
                         // device_details[0].material_process[index].station_details[0].stations['id']
 
@@ -478,7 +479,6 @@ class AssemblyRuncardController extends Controller
     }
 
     public function chck_existing_stations(Request $request){
-
         $assy_runcard_details = AssemblyRuncard::with('device_details.material_process')->where('id', $request->runcard_id)->first();
         $mat_process_steps = [];
         foreach ($assy_runcard_details->device_details->material_process as $processes){

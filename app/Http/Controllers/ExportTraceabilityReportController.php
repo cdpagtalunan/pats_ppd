@@ -66,8 +66,6 @@ class ExportTraceabilityReportController extends Controller
 
         $device_name = $request->device_name.'#IN-VE';
 
-        // return $request->date_to;
-
         //QUERY BUILDER
         $secondMoldingData = DB::connection('mysql')
         ->table('sec_molding_runcards as a')
@@ -113,8 +111,7 @@ class ExportTraceabilityReportController extends Controller
         $secondMoldingCameraData = DB::connection('mysql')
         ->table('sec_molding_runcard_stations as a')
         ->join('users as b', 'a.operator_name', 'b.id')
-        // ->where('station', 5)live
-        ->where('station', 7)
+        ->where('station', 5)
         ->select(
                 'a.sec_molding_runcard_id as sec_molding_runcard_id',
                 'b.firstname as camera_operator',
@@ -129,8 +126,7 @@ class ExportTraceabilityReportController extends Controller
         $secondMoldingVisualData = DB::connection('mysql')
         ->table('sec_molding_runcard_stations as a')
         ->join('users as b', 'a.operator_name', 'b.id')
-        // ->where('station', 4) live
-        ->where('station', 6)
+        ->where('station', 4)
         ->select(
                 'a.sec_molding_runcard_id as sec_molding_runcard_id',
                 'b.firstname as visual_operator',
@@ -164,8 +160,7 @@ class ExportTraceabilityReportController extends Controller
         ->table('assembly_runcard_stations as a')
         ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
         ->join('users as c', 'a.operator_name', 'c.id')
-        // ->where('station', 9) live
-        ->where('station', 5)
+        ->where('station', 9)
         ->select(
                 'a.assembly_runcards_id as assembly_runcards_id',
                 'b.s_zero_seven_prod_lot as s_lot_no',
@@ -183,8 +178,7 @@ class ExportTraceabilityReportController extends Controller
         ->table('assembly_runcard_stations as a')
         ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
         ->join('users as c', 'a.operator_name', 'c.id')
-        // ->where('station', 7) live
-        ->where('station', 3)
+        ->where('station', 7)
         ->select(
                 'a.assembly_runcards_id as assembly_runcards_id',
                 'b.s_zero_seven_prod_lot as s_lot_no',
@@ -202,8 +196,7 @@ class ExportTraceabilityReportController extends Controller
         ->table('assembly_runcard_stations as a')
         ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
         ->join('users as c', 'a.operator_name', 'c.id')
-        // ->where('station', 4) live
-        ->where('station', 6)
+        ->where('station', 4)
         ->select(
                 'a.assembly_runcards_id as assembly_runcards_id',
                 'b.s_zero_seven_prod_lot as s_lot_no',
@@ -214,8 +207,6 @@ class ExportTraceabilityReportController extends Controller
         )
         ->groupBy('assembly_runcards_id','s_lot_no','p_lot_no','visual_operator')
         ->get();
-        
-
         // return $assemblyVisualData;
 
         // QUERY BUILDER END

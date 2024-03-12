@@ -45,10 +45,8 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
     protected $secondMoldingInitialData;
     protected $secondMoldingCameraData;
     protected $secondMoldingVisualData;
-    protected $secondMoldingFirstOqcData;
     protected $assemblyMarkingData;
     protected $assemblyMOData;
-    protected $assemblyVisualData;
 
     // protected $device_name;
 
@@ -58,7 +56,6 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
     $secondMoldingInitialData,
     $secondMoldingCameraData,
     $secondMoldingVisualData,
-    $secondMoldingFirstOqcData,
     $assemblyMarkingData,
     $assemblyMOData,
     $assemblyVisualData
@@ -68,7 +65,6 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
         $this->secondMoldingInitialData = $secondMoldingInitialData;
         $this->secondMoldingCameraData = $secondMoldingCameraData;
         $this->secondMoldingVisualData = $secondMoldingVisualData;
-        $this->secondMoldingFirstOqcData = $secondMoldingFirstOqcData;
         $this->assemblyMarkingData = $assemblyMarkingData;
         $this->assemblyMOData = $assemblyMOData;
         $this->assemblyVisualData = $assemblyVisualData;
@@ -90,7 +86,6 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
         $secondMoldingInitialData = $this->secondMoldingInitialData;
         $secondMoldingCameraData = $this->secondMoldingCameraData;
         $secondMoldingVisualData = $this->secondMoldingVisualData;
-        $secondMoldingFirstOqcData = $this->secondMoldingFirstOqcData;
         $assemblyMarkingData = $this->assemblyMarkingData;
         $assemblyMOData = $this->assemblyMOData;
         $assemblyVisualData = $this->assemblyVisualData;
@@ -193,7 +188,7 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                 $arial_font12_bold,
                 $arial_font12,
                 $hv_center,
-                $hlv_center, 
+                $hlv_center,
                 $hrv_center,
                 $styleBorderBottomThin,
                 $styleBorderAll,
@@ -206,11 +201,10 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                 $secondMoldingInitialData,
                 $secondMoldingCameraData,
                 $secondMoldingVisualData,
-                $secondMoldingFirstOqcData,
                 $assemblyMarkingData,
                 $assemblyMOData,
                 $assemblyVisualData
-            ) {         
+            ) {
                 if($material == 'CN171S-07#IN-VE'){ // CN171S
                     $event->sheet->getColumnDimension('A')->setWidth(15);
                     $event->sheet->getColumnDimension('B')->setWidth(15);
@@ -328,7 +322,7 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                     $event->sheet->setCellValue('AD3',"Rotary Machine");
                     $event->sheet->setCellValue('AE3',"Camera Inspection");
                     $event->sheet->setCellValue('AF3',"Visual Inspection");
-                    
+
                     $event->sheet->setCellValue('AG2',"Lot Marking");
                     $event->sheet->setCellValue('AG3',"MO Assembly");
                     $event->sheet->setCellValue('AH3',"Visual Inspection");
@@ -348,7 +342,7 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                     $assemblyMOYield = '';
                     $assemblyVisualSum = '';
                     $assemblyVisualYield = '';
-                    for ($i=0; $i < count($secondMoldingData); $i++) { 
+                    for ($i=0; $i < count($secondMoldingData); $i++) {
                         $created_at = substr($secondMoldingData[$i]->created_at,0,10);
 
                         $event->sheet->setCellValue('A'.$start_col, $created_at);
@@ -366,7 +360,7 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
 
 
 
-                        for ($p=0; $p <count($secondMoldingInitialData); $p++) { 
+                        for ($p=0; $p <count($secondMoldingInitialData); $p++) {
                             if ($secondMoldingData[$i]->id == $secondMoldingInitialData[$p]->sec_molding_runcard_id) {
                                 $event->sheet->setCellValue('D'.$start_col, $secondMoldingInitialData[$p]->initial_sum);
                             }
@@ -382,34 +376,19 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                             }
                         }
 
-                        for ($o=0; $o <count($secondMoldingVisualData); $o++) { 
+                        for ($o=0; $o <count($secondMoldingVisualData); $o++) {
                             if ($secondMoldingData[$i]->id == $secondMoldingVisualData[$o]->sec_molding_runcard_id) {
                                     $event->sheet->setCellValue('G'.$start_col, $secondMoldingVisualData[$o]->visual_sum);
-                                    $event->sheet->setCellValue('H'.$start_col, $secondMoldingVisualData[$o]->visual_yield / 100);
+                                    $event->sheet->setCellValue('H'.$start_col, $secondMoldingVisualData[$o]->visual_yield/100);
                                     $event->sheet->setCellValue('AF'.$start_col, $secondMoldingVisualData[$o]->visual_operator);
                             }
                         }
-
-                        for ($v=0; $v <count($secondMoldingFirstOqcData); $v++) { 
-                            if ($secondMoldingData[$i]->id == $secondMoldingFirstOqcData[$v]->sec_molding_runcard_id){
-
-                                $dppm = ($secondMoldingFirstOqcData[$v]->no_of_defects / $secondMoldingFirstOqcData[$v]->sample_size) * 1000000;
-                                $lar = ($secondMoldingFirstOqcData[$v]->lot_accepted / $secondMoldingFirstOqcData[$v]->lot_inspected) * 100;
-                                
-                                $event->sheet->setCellValue('J'.$start_col, $secondMoldingFirstOqcData[$v]->first_oqc_sum);
-                                $event->sheet->setCellValue('K'.$start_col, $dppm);
-                                $event->sheet->setCellValue('L'.$start_col, $lar.'%');
-
-                            }
-                        }
-
-
                         if(isset($assemblyMarkingData)){
-                            for ($z=0; $z <count($assemblyMarkingData); $z++) { 
+                            for ($z=0; $z <count($assemblyMarkingData); $z++) {
                                 if($assemblyMarkingData[$z]->s_lot_no != null && $assemblyMarkingData[$z]->s_lot_no == $secondMoldingData[$i]->production_lot){
                                     $assemblyMarkingSum = $assemblyMarkingData[$z]->marking_sum;
                                     $assemblyMarkingYield = $assemblyMarkingData[$z]->marking_yield;
-        
+
                                     $event->sheet->setCellValue('M'.$start_col, $assemblyMarkingSum);
                                     $event->sheet->setCellValue('N'.$start_col, $assemblyMarkingYield.'%');
                                     $event->sheet->setCellValue('AG'.$start_col, $assemblyMarkingData[$z]->marking_operator);
@@ -417,20 +396,20 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                 else if($assemblyMarkingData[$z]->p_lot_no != null && $assemblyMarkingData[$z]->p_lot_no == $secondMoldingData[$i]->production_lot){
                                     $assemblyMarkingSum = $assemblyMarkingData[$z]->marking_sum;
                                     $assemblyMarkingYield = $assemblyMarkingData[$z]->marking_yield;
-        
+
                                     $event->sheet->setCellValue('M'.$start_col, $assemblyMarkingSum);
                                     $event->sheet->setCellValue('N'.$start_col, $assemblyMarkingYield.'%');
                                     $event->sheet->setCellValue('AG'.$start_col, $assemblyMarkingData[$z]->marking_operator);
                                 }
-                            }                            
+                            }
                         }
-                
+
                         if(isset($assemblyMOData)){
-                            for ($x=0; $x <count($assemblyMOData); $x++) { 
+                            for ($x=0; $x <count($assemblyMOData); $x++) {
                                 if($assemblyMOData[$x]->s_lot_no != null && $assemblyMOData[$x]->s_lot_no == $secondMoldingData[$i]->production_lot){
                                     $assemblyMOSum = $assemblyMOData[$x]->mo_assembly_sum;
                                     $assemblyMOYield = $assemblyMOData[$x]->mo_assembly_yield;
-        
+
                                     $event->sheet->setCellValue('O'.$start_col, $assemblyMOSum);
                                     $event->sheet->setCellValue('P'.$start_col, $assemblyMOYield.'%');
                                     $event->sheet->setCellValue('AG'.$start_col, $assemblyMOData[$x]->mo_operator);
@@ -438,21 +417,21 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                 else if($assemblyMOData[$x]->p_lot_no != null && $assemblyMOData[$x]->p_lot_no == $secondMoldingData[$i]->production_lot){
                                     $assemblyMOSum = $assemblyMOData[$x]->mo_assembly_sum;
                                     $assemblyMOYield = $assemblyMOData[$x]->mo_assembly_yield;
-        
+
                                     $event->sheet->setCellValue('O'.$start_col, $assemblyMOSum);
                                     $event->sheet->setCellValue('P'.$start_col, $assemblyMOYield.'%');
                                     $event->sheet->setCellValue('AG'.$start_col, $assemblyMOData[$x]->mo_operator);
                                 }
                             }
-                            
+
                         }
-                    
+
                         if(isset($assemblyVisualData)){
-                            for ($c=0; $c <count($assemblyVisualData); $c++) { 
+                            for ($c=0; $c <count($assemblyVisualData); $c++) {
                                 if($assemblyVisualData[$c]->s_lot_no != null && $assemblyVisualData[$c]->s_lot_no == $secondMoldingData[$i]->production_lot){
                                     $assemblyVisualSum = $assemblyVisualData[$c]->visual_sum;
                                     $assemblyVisualYield = $assemblyVisualData[$c]->visual_yield;
-        
+
                                     $event->sheet->setCellValue('Q'.$start_col, $assemblyVisualSum);
                                     $event->sheet->setCellValue('R'.$start_col, $assemblyVisualYield.'%');
                                     $event->sheet->setCellValue('AH'.$start_col, $assemblyVisualData[$c]->visual_operator);
@@ -460,15 +439,19 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                 else if($assemblyVisualData[$c]->p_lot_no != null && $assemblyVisualData[$c]->p_lot_no == $secondMoldingData[$i]->production_lot){
                                     $assemblyVisualSum = $assemblyVisualData[$c]->visual_sum;
                                     $assemblyVisualYield = $assemblyVisualData[$c]->visual_yield;
-        
+
                                     $event->sheet->setCellValue('Q'.$start_col, $assemblyVisualSum);
                                     $event->sheet->setCellValue('R'.$start_col, $assemblyVisualYield.'%');
                                     $event->sheet->setCellValue('AH'.$start_col, $assemblyVisualData[$c]->visual_operator);
                                 }
                             }
                         }
-                        
+
                         //KULANG 3/10/24
+
+                        // $event->sheet->setCellValue('J'.$start_col, $assemblyVisualSum); // 1ST OQC
+                        // $event->sheet->setCellValue('K'.$start_col, $assemblyVisualSum); // DPPM (NO. OF DEFECTS / SAMPLES * 1000000)
+                        // $event->sheet->setCellValue('L'.$start_col, $assemblyVisualSum); // LAR (ACCEPTED LOT / TOTAL LOT INSPECTED * 100%)
 
                         // $event->sheet->setCellValue('J'.$start_col, $assemblyVisualSum); // FINAL OQC
                         // $event->sheet->setCellValue('K'.$start_col, $assemblyVisualSum); // DPPM (NO. OF DEFECTS / SAMPLES * 1000000)
@@ -481,20 +464,16 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                         $start_col++;
                     }
 
-                    $event->sheet->getDelegate()->getStyle('H4'.':'.'H'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
-                    $event->sheet->getDelegate()->getStyle('I4'.':'.'I'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
-                    $event->sheet->getDelegate()->getStyle('L4'.':'.'L'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
-                    $event->sheet->getDelegate()->getStyle('N4'.':'.'N'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
-                    $event->sheet->getDelegate()->getStyle('P4'.':'.'P'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
-                    $event->sheet->getDelegate()->getStyle('R4'.':'.'R'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
-                    $event->sheet->getDelegate()->getStyle('S4'.':'.'S'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
+                    $event->sheet->getDelegate()->getStyle('H4'.':'.'H'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
+                    $event->sheet->getDelegate()->getStyle('I4'.':'.'I'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
+                    $event->sheet->getDelegate()->getStyle('S4'.':'.'S'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
                     $event->sheet->getDelegate()->getStyle('A4'.':'.'AN'.$start_col)->getAlignment()->setWrapText(true);
                     $event->sheet->getDelegate()->getStyle('A2:AN3')->applyFromArray($hv_center);
                     $event->sheet->getDelegate()->getStyle('A4'.':'.'AN'.$start_col)->applyFromArray($hv_center);
                     $event->sheet->getDelegate()->getStyle('A2:AN3')->getAlignment()->setWrapText(true);
                     $event->sheet->getDelegate()->getStyle('A2:AN3')->applyFromArray($styleBorderAll);
                 }
-                
+
                 else{ // CN171P
                     // $event->sheet->getColumnDimension('A')->setWidth(15);
                     // $event->sheet->getColumnDimension('B')->setWidth(15);

@@ -15,16 +15,19 @@ class CreateStampingHistoriesTable extends Migration
     {
         Schema::create('stamping_histories', function (Blueprint $table) {
             $table->id();
+            $table->string('rack_no')->nullable();
             $table->string('part_name')->nullable();
             $table->string('die_code_no')->nullable();
             $table->string('date')->nullable();
             $table->string('total_shot')->nullable();
+            $table->string('total_shot_accumulated')->nullable();
             $table->string('operator')->nullable();
             $table->string('machine_no')->nullable();
             $table->string('die_height')->nullable();
             $table->string('revolution_no')->nullable();
             $table->string('rev_no')->nullable();
-            $table->string('neraiti')->nullable()->comment = '1-Yes, 2-None';
+            $table->string('item')->nullable();
+            $table->string('neraiti')->nullable();
             $table->string('remarks')->nullable();
             $table->string('scan_by')->nullable()->comment = 'scan id to save';
             $table->string('created_by')->nullable()->comment = 'user login';

@@ -105,6 +105,12 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-2">
+                                                    <label>Series Name</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="global_series_name" name="global_series_name" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2">
                                                     <label>PO Qty</label>
                                                     <div class="input-group">
                                                         <input type="text" class="form-control" id="global_po_qty" name="global_po_qty" readonly>
@@ -116,6 +122,7 @@
                                                         <input type="text" class="form-control" id="global_target_qty" name="global_target_qty" readonly>
                                                     </div>
                                                 </div>
+
                                               </div>
                                             </div>
                                           </div>
@@ -893,6 +900,7 @@
                     $('#global_po_no').val('');
                     $('#global_po_qty').val('');
                     $('#global_target_qty').val('');
+                    $('#global_series_name').val('');
 
                 })
 
@@ -993,10 +1001,10 @@
                     fixedHeader: true,
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
-                        // { "data" : "status" },
                         { "data" : "stations" },
                         { "data" : "date" },
                         { "data" : "operator_names" },
+                        { "data" : "size_category" },
                         { "data" : "input" },
                         { "data" : "ng_qty" },
                         { "data" : "output" },
@@ -1234,6 +1242,7 @@
 
                 $('#btnSubmitFirstMoldingStation').click(function (e) {
                     e.preventDefault();
+
                     Swal.fire({
                         // title: "Are you sure?",
                         text: "Are you sure you want to submit this process ?",
@@ -1245,9 +1254,10 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             /*
-                            TODO : Scan Emp ID
+                                TODO : Scan Emp ID
                             */
-                            firstMoldingUpdateStatus();
+                            $('#txtScanUserId').attr('is_submit','true'); //resources/views/shared/pages
+                            $('#modalScanQRSave').modal('show');
                         }
                     });
                 });
@@ -1364,6 +1374,8 @@
                             let contact_name = response[0].contact_name
                             let device_name = response[0].device_name
 
+                            // $('#tblFirstMoldingDetails').empty();
+                            dt.firstMolding.draw();
                             $('#btnAddFirstMolding').prop('disabled',false);
                             $('#global_contact_name').val(contact_name);
                             $('#global_input_device_name').val(device_name);
@@ -1396,7 +1408,7 @@
                         $('#mdlScanQrCodeFirstMolding').modal('hide');
                     }
                 });
-                const validateMaterialLotNo = function (firstMoldingMaterialLotNo){ //nmodify
+                const validateMaterialLotNo = function (firstMoldingMaterialLotNo){
                     $.ajax({
                         type: "GET",
                         url: "validate_material_lot_no",
@@ -1425,8 +1437,6 @@
                             let scanFirstMoldingMaterialLotNo = $(this).val()
                             let arrFirstMoldingMaterialLotNo = scanFirstMoldingMaterialLotNo.split("|");
                             validateMaterialLotNo(arrFirstMoldingMaterialLotNo[0])
-                            console.log('dsad',arrFirstMoldingMaterialLotNo[0]);
-
                         }
                     }catch (error) {
                         console.log(error);
@@ -1480,25 +1490,36 @@
                     formModal.firstMolding.find('#total_machine_output').val(inputTotalMachineOuput);
                 });
 
-                $('#txtScanUserId').on('keyup', function(e){
+                $('#txtScanUserId').on('keyup', function(e){ //resources/views/shared/pages
                     if(e.keyCode == 13){
-                        // console.log($(this).val());
-                        validateUser($(this).val(), [0], function(result){
-                            if(result == true){
-                                saveFirstMolding();
-                            }
-                            else{ // Error Handler
-                                toastr.error('User not authorize!');
-                            }
-                        });
+                        console.log($(this).val());
+                        if( $(this).attr('is_submit') === 'true' ){
+                            validateUser($(this).val(), [0], function(result){
+                                if(result == true){
+                                    firstMoldingUpdateStatus();
+                                }
+                                else{ // Error Handler
+                                    toastr.error('User not authorize!');
+                                }
+                            });
+                        }else{
+                            validateUser($(this).val(), [0], function(result){
+                                if(result == true){
+                                    saveFirstMolding();
+                                }
+                                else{ // Error Handler
+                                    toastr.error('User not authorize!');
+                                }
+                            });
+                        }
                         $(this).val('');
                     }
                 });
 
                 formModal.firstMolding.submit(function (e) {
                     e.preventDefault();
+                    $('#txtScanUserId').attr('is_submit','false'); //resources/views/shared/pages
                     $('#modalScanQRSave').modal('show');
-
                 });
 
                 formModal.firstMoldingStation.submit(function (e) {
@@ -1522,6 +1543,8 @@
                     e.preventDefault();
                     let stationId = $(this).val();
                     fnIsSelectCameraInspection(stationId);
+                    // alert('dsad')
+                    console.log(stationId);
                 });
 
                 // $('#global_po_no').val();

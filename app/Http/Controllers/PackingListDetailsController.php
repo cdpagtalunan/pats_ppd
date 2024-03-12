@@ -26,7 +26,7 @@ class PackingListDetailsController extends Controller
         $customer_details = CustomerDetails::
         where('status',0)
         ->get();
-        
+
         return response()->json(['customerDetails' => $customer_details]);
     }
     public function getCarrierDetails(Request $request){
@@ -140,7 +140,7 @@ class PackingListDetailsController extends Controller
         ->get();
 
         // return $prelim_packing_data;
-    
+
             return DataTables::of($prelim_packing_data)
             ->addColumn('action', function($prelim_packing_data){
                 $result = "";
@@ -178,7 +178,7 @@ class PackingListDetailsController extends Controller
     public function addPackingListData(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
-        
+
 
         $prod_id = [
             "prod_id" => [],
@@ -188,7 +188,7 @@ class PackingListDetailsController extends Controller
         $time = substr($request->pickup_date_and_time,11,16);
 
         if(count($request->packing_list_data_array) > 0){
-            for ($i=0; $i < count($request->packing_list_data_array); $i++) { 
+            for ($i=0; $i < count($request->packing_list_data_array); $i++) {
                 array_push($prod_id['prod_id'], $request->packing_list_data_array);
             }
         }
@@ -219,7 +219,7 @@ class PackingListDetailsController extends Controller
 
         $validator = Validator::make($data, $rules);
         if($validator->passes()){
-            for ($i=0; $i <count($prod_data); $i++) { 
+            for ($i=0; $i <count($prod_data); $i++) {
                     $oqc_id = $prod_data[$i]->id;
                     $prod_id = $prod_data[$i]->stamping_production_info->id;
                     $po_no = $prod_data[$i]->po_no;
@@ -230,7 +230,7 @@ class PackingListDetailsController extends Controller
                     $no_of_cuts = $prod_data[$i]->stamping_production_info->no_of_cuts;
                     $qty = $prod_data[$i]->stamping_production_info->ship_output;
                     $po_qty = $prod_data[$i]->stamping_production_info->po_qty;
-            
+
                         $array = [
                             'control_no'            => $request->ctrl_num,
                             'prod_id'               => $prod_id,
@@ -265,22 +265,22 @@ class PackingListDetailsController extends Controller
                             'no_of_cuts'            => $no_of_cuts,
                             'print_count'           => 0,
                         ];
-                        
-                        
+
+
                         $array_for_preliminary = [
                             'status' => 2,
                         ];
-                        
+
                         // return $oqc_id;
-                        
+
                         PackingListDetails::insert($array);
                         PackingDetails::insert($array_for_final_packing); // FINAL PACKING DETAILS
-                        
+
                         PreliminaryPacking::where('oqc_id', $oqc_id)
                         ->update($array_for_preliminary);
-                        
+
                         // ReceivingDetails::insert($array_for_final_packing);
-                
+
             }
             return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
         }
@@ -288,14 +288,14 @@ class PackingListDetailsController extends Controller
             return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
         }
 
-        
+
     }
 
     public function getPackingListDetailsbyCtrl(Request $request){
         $packing_list_data_by_ctrl = PackingListDetails::
         where('control_no', $request->packing_list_ctrl_no)
         ->get();
-        
+
         return DataTables::of($packing_list_data_by_ctrl)
             ->addColumn('action', function($packing_list_data_by_ctrl){
                 $result = "";
@@ -307,7 +307,7 @@ class PackingListDetailsController extends Controller
             ->addColumn('status', function($packing_list_data_by_ctrl){
                 $result = "";
                 $result .= "<center>";
-        
+
                 $result .= '<span class="badge bg-success">Completed</span>';
 
                 $result .= "</center>";
