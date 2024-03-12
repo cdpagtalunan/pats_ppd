@@ -527,7 +527,7 @@
                 if( response.result_count === 1 ){
                     let poQty = parseFloat(response.order_qty);
                     let multiplier = 0;
-                    if( deviceId == 1 ){ //CN171S-08#IN-VE
+                    if( deviceId == 1 ){ //CN171S-08#IN-VE, id table first molding devices
                         multiplier = 5 ;
                     }else{
                         multiplier = 1 ;
@@ -680,9 +680,12 @@
     }
 
     const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){
-
+        /**
+            TODO: Validate Contact Lot Num
+        */
         let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
         let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
+
         /**
             TODO: Validate Contact Lot Num
         */
@@ -758,7 +761,10 @@
     }
 
     const fnIsSelectCameraInspection = function (stationId) {
-        if(stationId === "5"){ //nmodify Camera Inspection
+        // TODO: 5 = LIVE 7-TEST
+        console.log('stationId',stationId);
+        // if(stationId == "5"){ //nmodify Camera Inspection
+        if(stationId === "7"){ //nmodify Camera Inspection pats_ppd rev
             formModal.firstMoldingStation.find('#isSelectCameraInspection').removeClass('d-none',true);
         }else{
             formModal.firstMoldingStation.find('#isSelectCameraInspection').addClass('d-none',true);

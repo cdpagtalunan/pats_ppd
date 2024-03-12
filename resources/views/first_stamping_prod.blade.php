@@ -842,9 +842,15 @@
                             return;
                         }
                         else{
-                            validateScannedMaterial($('#txtMatName').val(),explodedMat[3], '1st Stamping');
-                            $('#txtMaterialLot').val(explodedMat[0]);
-                            $('#txtMaterialLotQty').val(explodedMat[1]);
+                            validateScannedMaterial($('#txtMatName').val(),explodedMat[3], '1st Stamping', function(result){
+                                if(result == true){
+                                    $('#txtMaterialLot').val(explodedMat[0]);
+                                    $('#txtMaterialLotQty').val(explodedMat[1]);
+                                }
+                                else{
+                                    toastr.error('Scanned material is not for this Device');
+                                }
+                            });
                         }
 
                         // console.log(explodedMat);

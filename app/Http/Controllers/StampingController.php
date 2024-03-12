@@ -707,6 +707,7 @@ class StampingController extends Controller
         ->select('material_process_materials.material_type', 'material_process_materials.material_code', 'devices.code', 'devices.name', 'processes.process_name')
         ->where('processes.process_name', $request->process_name)
         ->where('devices.name', $request->device_name)
+        ->where('material_process_materials.material_type', $request->material_name)
         ->get();
 
         return response()->json(['data' => $matrix_details]);

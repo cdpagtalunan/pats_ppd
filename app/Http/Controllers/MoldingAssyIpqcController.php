@@ -315,8 +315,21 @@ class MoldingAssyIpqcController extends Controller
 
             }else if($request->cnfrm_ipqc_status == 2){
                 //For Re-Setup
-                $prod_lot_tbl_status = 2;
+                // $prod_lot_tbl_status = 2;
                 $ipqc_status = 4;
+
+                if($request->cnfrm_ipqc_status == 2){ //IF STATUS IS SUBMIT-REJECTED JUDGEMENT
+                    if($request->cnfrm_ipqc_process_category == 1){ //UPDATE FIRST MOLDING STATUS
+                        FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                            ->update(['status' => $request->cnfrm_ipqc_status]);
+                    }else if($request->cnfrm_ipqc_process_category == 2){ //UPDATE SECOND MOLDING STATUS
+                        SecMoldingRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                            ->update(['status' => $request->cnfrm_ipqc_status]);
+                    }else if($request->cnfrm_ipqc_process_category == 3){ //UPDATE ASSEMBLY STATUS
+                        AssemblyRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                            ->update(['status' => $request->cnfrm_ipqc_status]);
+                    }
+                }
             }
 
             MoldingAssyIpqcInspection::where('id', $request->cnfrm_ipqc_id)
@@ -325,19 +338,6 @@ class MoldingAssyIpqcController extends Controller
                         'last_updated_by'     => Auth::user()->id,
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
-
-            if($request->cnfrm_ipqc_status == 2){ //IF STATUS IS SUBMIT-REJECTED JUDGEMENT
-                if($request->cnfrm_ipqc_process_category == 1){ //UPDATE FIRST MOLDING STATUS
-                    FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $prod_lot_tbl_status]);
-                }else if($request->cnfrm_ipqc_process_category == 2){ //UPDATE SECOND MOLDING STATUS
-                    SecMoldingRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $prod_lot_tbl_status]);
-                }else if($request->cnfrm_ipqc_process_category == 3){ //UPDATE ASSEMBLY STATUS
-                    AssemblyRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $prod_lot_tbl_status]);
-                }
-            }
 
             DB::commit();
         return response()->json(['result' => 'Successful']);

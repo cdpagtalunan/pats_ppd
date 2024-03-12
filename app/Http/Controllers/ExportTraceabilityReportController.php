@@ -70,10 +70,8 @@ class ExportTraceabilityReportController extends Controller
         $secondMoldingData = DB::connection('mysql')
         ->table('sec_molding_runcards as a')
         ->join('users as b', 'a.created_by', 'b.id',)
-        // ->join('sec_molding_runcard_stations as c', 'a.id', c.sec_molding_runcard_id')
         ->where('pmi_po_number', $request->po_number)
         ->where('device_name', $device_name)
-        // ->where('station', 1)
         ->whereBetween('a.created_at', [$request->date_from, $request->date_to])
         ->select(
                 'a.id as id',
@@ -88,7 +86,6 @@ class ExportTraceabilityReportController extends Controller
                 'a.me_name_lot_number_one as me_name_lot_number_one',
                 'a.me_name_lot_number_second as me_name_lot_number_second',
                 'a.created_at as created_at',
-                // DB::raw('SUM(c.input_quantity) AS initial_sum'),
                 'b.firstname as r_machine_operator'
                 )
         ->groupBy('a.id')
@@ -139,7 +136,25 @@ class ExportTraceabilityReportController extends Controller
         ->groupBy('a.sec_molding_runcard_id','b.firstname')
         ->get();
 
-        // return $secondMoldingVisualData;
+        $secondMoldingFirstOqcData = DB::connection('mysql')
+        ->table('sec_molding_runcard_stations as a')
+        ->join('users as b', 'a.operator_name', 'b.id')
+        // ->where('station', 4) live
+        ->where('station', 10)
+        ->select(
+                'a.sec_molding_runcard_id as sec_molding_runcard_id',
+                'b.firstname as first_oqc_operator',
+                'a.sample_size as sample_size',
+                'a.ng_quantity as no_of_defects',
+                'a.lot_accepted  as lot_accepted',
+                'a.lot_inspected as lot_inspected',
+                DB::raw('SUM(a.input_quantity) as first_oqc_sum'),
+                DB::raw('SUM(a.station_yield)/COUNT(a.station_yield) as first_oqc_yield')
+                )
+        ->groupBy('a.sec_molding_runcard_id','b.firstname')
+        ->get();
+
+        // return $secondMoldingFirstOqcData;
 
         $assemblyMarkingData = DB::connection('mysql')
         ->table('assembly_runcard_stations as a')
@@ -192,7 +207,6 @@ class ExportTraceabilityReportController extends Controller
         )
         ->groupBy('assembly_runcards_id','s_lot_no','p_lot_no','visual_operator')
         ->get();
-
         // return $assemblyVisualData;
 
         // QUERY BUILDER END
@@ -299,14 +313,15 @@ class ExportTraceabilityReportController extends Controller
         // return $assemblyVisualData;
 
         return Excel::download(new ExportMoldingTraceabilityReport(
-            $device_name,
-            $secondMoldingData,
-            $secondMoldingInitialData,
-            $secondMoldingCameraData,
-            $secondMoldingVisualData,
-            $assemblyMarkingData,
-            $assemblyMOData,
-            $assemblyVisualData
+                $device_name,
+                $secondMoldingData,
+                $secondMoldingInitialData,
+                $secondMoldingCameraData,
+                $secondMoldingVisualData,
+                $secondMoldingFirstOqcData,
+                $assemblyMarkingData,
+                $assemblyMOData,
+                $assemblyVisualData
         ), 
         'Traceability Report.xlsx');
     }
