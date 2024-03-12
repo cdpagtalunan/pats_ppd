@@ -1306,7 +1306,7 @@
                                 $('#formCNAssemblyRuncard').find('#txtRuncardNo').val('');
                                 $('#formCNAssemblyRuncard').find('#txtPoQuantity').val('');
                             }else{
-                                $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(500);
+                                $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(data['PO_QTY']);
                                 let txtRuncard = txtPONumber.slice(5,10);
 
                                 $.ajax({
