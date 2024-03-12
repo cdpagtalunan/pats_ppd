@@ -21,7 +21,7 @@ class AssemblyRuncardStation extends Model
     }
 
     public function station_name(){
-        return $this->hasMany(Station::class, 'id', 'station');
+        return $this->hasOne(Station::class, 'id', 'station');
     }
 
     // public function station_details(){

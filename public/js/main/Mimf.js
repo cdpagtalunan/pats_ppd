@@ -196,12 +196,12 @@ function UpdateMimf(){
                 }
 
                 if(response['error']['mimf_delivery'] === undefined){
-                    $("#txtMimfDelivery").removeClass('is-invalid')
-                    $("#txtMimfDelivery").attr('title', '')
+                    $("#dateMimfDelivery").removeClass('is-invalid')
+                    $("#dateMimfDelivery").attr('title', '')
                 }
                 else{
-                    $("#txtMimfDelivery").addClass('is-invalid')
-                    $("#txtMimfDelivery").attr('title', response['error']['mimf_delivery'])
+                    $("#dateMimfDelivery").addClass('is-invalid')
+                    $("#dateMimfDelivery").attr('title', response['error']['mimf_delivery'])
                 }
 
                 if(response['error']['mimf_remark'] === undefined){
@@ -276,7 +276,7 @@ function GetMimfById(mimfID,whseID,matrixID,poReceivedID,ppdMimfStampingMatrixID
                 $('#txtMimfVirginMaterial').val(getMimfToEdit[0].virgin_material)
                 $('#txtMimfRecycled').val(getMimfToEdit[0].recycled)
                 $('#dateMimfProdn').val(getMimfToEdit[0].prodn)
-                $('#txtMimfDelivery').val(getMimfToEdit[0].delivery)
+                $('#dateMimfDelivery').val(getMimfToEdit[0].delivery)
                 $('#txtMimfRemark').val(getMimfToEdit[0].remarks)
             }
         },

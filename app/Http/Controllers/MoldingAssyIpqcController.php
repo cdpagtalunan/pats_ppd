@@ -66,7 +66,7 @@ class MoldingAssyIpqcController extends Controller
         })
         ->addColumn('ipqc_status', function ($view_ipqc_data) {
             $result = "";
-            
+
             switch($view_ipqc_data->status){
                 case 0: //Default Value: Not Yet Inpected or Inserted Data But Not Updated = Not Ready
                     $result .= '<center><span class="badge badge-pill badge-info">For IPQC Inspection</span></center>';
@@ -176,7 +176,7 @@ class MoldingAssyIpqcController extends Controller
                                                     ->where('production_lot', $request->production_lot)
                                                     ->whereNull('deleted_at')
                                                     ->get();
-              
+
         }else if($request->process_category == 2){
             $result = SecMoldingRuncard::with(['device_id' => function($query) use ($request) { $query->where('name', $request->device_name); }])
                                                     ->where('device_name', $request->device_name)
@@ -305,7 +305,7 @@ class MoldingAssyIpqcController extends Controller
             return response()->json(['result' => 'Update Successful']);
         }
     }
-    
+
     //====================================== UPDATE IPQC STATUS FOR FIRST MOLDING =========================
     public function update_ipqc_inspection_status(Request $request){
         date_default_timezone_set('Asia/Manila');
@@ -315,8 +315,21 @@ class MoldingAssyIpqcController extends Controller
 
             }else if($request->cnfrm_ipqc_status == 2){
                 //For Re-Setup
-                $prod_lot_tbl_status = 2;
+                // $prod_lot_tbl_status = 2;
                 $ipqc_status = 4;
+
+                if($request->cnfrm_ipqc_status == 2){ //IF STATUS IS SUBMIT-REJECTED JUDGEMENT
+                    if($request->cnfrm_ipqc_process_category == 1){ //UPDATE FIRST MOLDING STATUS
+                        FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                            ->update(['status' => $request->cnfrm_ipqc_status]);
+                    }else if($request->cnfrm_ipqc_process_category == 2){ //UPDATE SECOND MOLDING STATUS
+                        SecMoldingRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                            ->update(['status' => $request->cnfrm_ipqc_status]);
+                    }else if($request->cnfrm_ipqc_process_category == 3){ //UPDATE ASSEMBLY STATUS
+                        AssemblyRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                            ->update(['status' => $request->cnfrm_ipqc_status]);
+                    }
+                }
             }
 
             MoldingAssyIpqcInspection::where('id', $request->cnfrm_ipqc_id)
@@ -326,24 +339,11 @@ class MoldingAssyIpqcController extends Controller
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
 
-            if($request->cnfrm_ipqc_status == 2){ //IF STATUS IS SUBMIT-REJECTED JUDGEMENT
-                if($request->cnfrm_ipqc_process_category == 1){ //UPDATE FIRST MOLDING STATUS
-                    FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $prod_lot_tbl_status]);
-                }else if($request->cnfrm_ipqc_process_category == 2){ //UPDATE SECOND MOLDING STATUS
-                    SecMoldingRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $prod_lot_tbl_status]);
-                }else if($request->cnfrm_ipqc_process_category == 3){ //UPDATE ASSEMBLY STATUS
-                    AssemblyRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                        ->update(['status' => $prod_lot_tbl_status]);
-                }
-            }
-
             DB::commit();
         return response()->json(['result' => 'Successful']);
     }
 
-    
+
     //====================================== DOWNLOAD FILE ======================================
     public function download_file(Request $request, $id){
         $ipqc_data_for_download = MoldingAssyIpqcInspection::where('id', $id)->first();
@@ -371,7 +371,7 @@ class MoldingAssyIpqcController extends Controller
     //                     'last_updated_by'     => Auth::user()->id,
     //                     'updated_at'          => date('Y-m-d H:i:s'),
     //                 ]);
-        
+
     //         if($request->cnfrm_ipqc_status == 2){
     //             FirstMolding::where('production_lot', $request->cnfrm_ipqc_production_lot)
     //             ->update(['status' => $first_molding_status]);
@@ -404,11 +404,11 @@ class MoldingAssyIpqcController extends Controller
 
     //         SecMoldingRuncard::where('id', $request->cnfrm_second_molding_id)
     //         ->update(['status' => $second_molding_status]);
-        
+
     //         DB::commit();
     //     return response()->json(['result' => 'Successful']);
     // }
-    
+
     // //================================= UPDATE IPQC STATUS FOR ASSEMBLY =============================
     // public function update_assembly_ipqc_inspection_status(Request $request){
     //     date_default_timezone_set('Asia/Manila');
@@ -432,7 +432,7 @@ class MoldingAssyIpqcController extends Controller
 
     //         AssemblyRuncard::where('id', $request->cnfrm_first_molding_id)
     //         ->update(['status' => $first_molding_status]);
-        
+
     //         DB::commit();
     //     return response()->json(['result' => 'Successful']);
     // }

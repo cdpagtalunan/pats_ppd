@@ -64,11 +64,45 @@ class SecondMoldingStationController extends Controller
         ->make(true);
     }
 
+    public function getStationIdByStepNumber($second_molding_id = '', $step = []){
+        $getDeviceName = DB::table('sec_molding_runcards')
+            ->where('sec_molding_runcards.id', $second_molding_id)
+            ->select(
+                'sec_molding_runcards.device_name',
+            )
+            ->first();
+        // return response()->json(['getDeviceName'=>$getDeviceName]);
+
+        $getDeviceIdByDeviceName = DB::table('devices')
+            ->where('devices.name', $getDeviceName->device_name)
+            ->select(
+                'devices.id',
+            )
+            ->first();
+        // return response()->json(['getDeviceIdByDeviceName'=>$getDeviceIdByDeviceName]);
+
+        /**
+         * Step 1 - Machine Final Overmold
+         * Step 2 - Camera Inspection
+         * Step 3 - Visual Inspection
+         * Step 4 - 1st OQC Inspection
+         * 
+         * This will check if step number is in correct order
+         */
+        $getStationIdFromMaterialProcessStations = DB::table('material_processes')
+            ->where('material_processes.device_id', $getDeviceIdByDeviceName->id)
+            ->whereIn('material_processes.step', $step)
+            ->join('material_process_stations', 'material_processes.id', '=', 'material_process_stations.mat_proc_id')
+            ->pluck('station_id');
+        // return response()->json(['getStationIdFromMaterialProcessStations'=>$getStationIdFromMaterialProcessStations]);
+        return $getStationIdFromMaterialProcessStations;
+    }
+
     public function saveSecondMoldingStation(Request $request){
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();
-        return $data;
+        // return $data;
 
         if(!isset($request->second_molding_station_id)){
             // return 'insert';
@@ -85,11 +119,15 @@ class SecondMoldingStationController extends Controller
             ];
 
             /**
-             * If Station is 10-1st OQC Inspection
+             * Step 1 - Machine Final Overmold
+             * Step 2 - Camera Inspection
+             * Step 3 - Visual Inspection
+             * Step 4 - 1st OQC Inspection
+             * 
+             * If Step value is 4-1st OQC Inspection
              * then add validation
-             * Note: change the station(id) for 1st OQC Inspection for live
              */
-            if($request->station == 10){
+            if($request->step == 4){
                 $rules['type_of_inspection'] = 'required';
                 $rules['severity_of_inspection'] = 'required';
                 $rules['inspection_level'] = 'required';
@@ -120,38 +158,90 @@ class SecondMoldingStationController extends Controller
             } else {
                 DB::beginTransaction();
                 try {
+                    $getStationIdByStepOne = $this->getStationIdByStepNumber($request->second_molding_id, [1]);
+                    $checkIfStepOneIsExist = DB::table('sec_molding_runcard_stations')
+                        ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                        ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepOne)
+                        ->exists();
+
+                    $getStationIdByStepTwo = $this->getStationIdByStepNumber($request->second_molding_id, [2]);
+                    $checkIfStepTwoIsExist = DB::table('sec_molding_runcard_stations')
+                        ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                        ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepTwo)
+                        ->exists();
+                    // return response()->json(['checkIfStepTwoIsExist' => $checkIfStepTwoIsExist]);
+
+                    $getStationIdByStepThree = $this->getStationIdByStepNumber($request->second_molding_id, [3]);
+                    $checkIfStepThreeAsVisualInspectionIsExist = DB::table('sec_molding_runcard_stations')
+                        ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                        ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepThree)
+                        ->exists();
+                    // return response()->json(['checkIfStepThreeAsVisualInspectionIsExist' => $checkIfStepThreeAsVisualInspectionIsExist]);
+
+                    $getStationIdByStepFour = $this->getStationIdByStepNumber($request->second_molding_id, [4]);
+                    $checkIfStepFourAsFirstOQCInspectionIsExist = DB::table('sec_molding_runcard_stations')
+                        ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                        ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepFour)
+                        ->exists();
+                    
+                    switch ($request->step) {
+                        case 1:
+                            // Check if Step 1 is existed then return wrongStep
+                            if($checkIfStepOneIsExist){
+                                return response()->json(['hasError' => true, 'wrongStep' => true, 'step' => $request->step]);
+                            }
+                            break;
+                        case 2:
+                            // Check if Step 1 is not existed or if Step 2 is existed then return wrongStep
+                            if(!$checkIfStepOneIsExist || $checkIfStepTwoIsExist){
+                                return response()->json(['hasError' => true, 'wrongStep' => true, 'step' => $request->step]);
+                            }
+                            break;
+                        case 3:
+                            // Check if Step 1 and 2 is not existed then return wrongStep
+                            if(!$checkIfStepOneIsExist || !$checkIfStepTwoIsExist){
+                                return response()->json(['hasError' => true, 'wrongStep' => true, 'step' => $request->step]);
+                            }
+                            break;
+                        case 4:
+                            // Check if Step 1, 2, 3 is not existed or if Step 4 is existed then return wrongStep
+                            if(!$checkIfStepOneIsExist || !$checkIfStepTwoIsExist || !$checkIfStepThreeAsVisualInspectionIsExist || $checkIfStepFourAsFirstOQCInspectionIsExist){
+                                return response()->json(['hasError' => true, 'wrongStep' => true, 'step' => $request->step]);
+                            }
+                            break;
+                        
+                        default:
+                            # code...
+                            break;
+                    }
+
                     $checkIfStationExist = SecMoldingRuncardStation::where('sec_molding_runcard_id', $request->second_molding_id)
-                    ->where('station', $request->station)
-                    ->exists();
+                        ->where('station', $request->station)
+                        ->exists();
 
                     /**
-                     * If Station is 1-Machine Final Overmold or 7-Camera Inspection
-                     * already exist then return hasError to true
-                     * Note: change the station(id) of Visual Inspection for live
-                     */
-                    if($request->station != 6 && $checkIfStationExist){ // 1-Machine Final Overmold, 7-Camera Inspection, 6-Visual Inspection
-                        DB::rollback();
-                        return response()->json(['hasError' => true, 'checkIfStationExist' => $checkIfStationExist]);
-                    }
-                    
-                    /**
-                     * If Station is 6-Visual Inspection or checkIfStationExist is false
+                     * Step 1 - Machine Final Overmold
+                     * Step 2 - Camera Inspection
+                     * Step 3 - Visual Inspection
+                     * Step 4 - 1st OQC Inspection
+                     * 
+                     * If Step value is 3-Visual Inspection or $checkIfStationExist is false
                      * execute the query and return hasError for every condition
-                     * Note: change the station(id) of Visual Inspection for live
                      */
-                    if($request->station == 6 || !$checkIfStationExist){ // 6-Visual Inspection
+                    if($request->step == 3 || !$checkIfStationExist){
                         /* Validation of input quantity(current) and output quantity(last station) */
+                        $getStationIdByStepOneAndTwoAsNonVisual = $this->getStationIdByStepNumber($request->second_molding_id, [1,2]);
                         $getOutputQtyOfLastStationNonVisual = DB::connection('mysql')
                             ->table('sec_molding_runcard_stations')
                             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                            ->whereIn('sec_molding_runcard_stations.station', [1, 7]) // 1-Machine Final Overmold or 7-Camera Inspection
+                            ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepOneAndTwoAsNonVisual)
                             ->orderBy('id', 'desc')
                             ->select(
                                 'sec_molding_runcard_stations.station',
                                 'sec_molding_runcard_stations.output_quantity',
                             )
                             ->get();
-                        // return response()->json(['getOutputQtyOfLastStationNonVisual' => $getOutputQtyOfLastStationNonVisual]);
+                        
 
                         if(count($getOutputQtyOfLastStationNonVisual) > 0){
                             if((int)$request->input_quantity > (int)$getOutputQtyOfLastStationNonVisual[0]->output_quantity){
@@ -206,12 +296,16 @@ class SecondMoldingStationController extends Controller
                         }
 
                         /**
-                         * Note: change the station(id) of Visual Inspection for live
+                         * Step 1 - Machine Final Overmold
+                         * Step 2 - Camera Inspection
+                         * Step 3 - Visual Inspection
+                         * Step 4 - 1st OQC Inspection
                          */
+                        $getStationIdByStepThreeAsVisualInspection = $this->getStationIdByStepNumber($request->second_molding_id, [3]);
                         $getComputedInputQtyOfVisual = DB::connection('mysql')
                             ->table('sec_molding_runcard_stations')
                             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                            ->where('sec_molding_runcard_stations.station', 6) // 6-Visual Inspection
+                            ->where('sec_molding_runcard_stations.station', $getStationIdByStepThreeAsVisualInspection)
                             ->select(
                                 DB::raw('SUM(input_quantity) AS computed_input_quantity'),
                             )
@@ -226,14 +320,18 @@ class SecondMoldingStationController extends Controller
                         }
 
                         /**
+                         * Step 1 - Machine Final Overmold
+                         * Step 2 - Camera Inspection
+                         * Step 3 - Visual Inspection
+                         * Step 4 - 1st OQC Inspection
+                         * 
                          * Computation of last station(Visual Inspection)
-                         * Note: change the station(id) of Visual Inspection for live
                          */
-                        if($request->station == 6){
+                        if($request->step == 3){
                             $computedShipmentOutput = DB::connection('mysql')
                                 ->table('sec_molding_runcard_stations')
                                 ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                                ->where('sec_molding_runcard_stations.station', 6)
+                                ->where('sec_molding_runcard_stations.station', $getStationIdByStepThreeAsVisualInspection)
                                 ->select(
                                     DB::raw('SUM(output_quantity) AS shipmentOutput'),
                                 )

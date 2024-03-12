@@ -159,11 +159,11 @@
 
                     <form method="post" id="formMimf" autocomplete="off">
                         @csrf
-                        <input type="hidden" class="col-1 mimfClass" id="txtPpsDiesetId" name="pps_dieset_id" placeholder="For Molding">
-                        <input type="hidden" class="col-1 mimfClass" id="txtPpdMatrixId" name="ppd_matrix_id" placeholder="For Molding">
+                        <input type="hidden" class="col-1 mimfClass" id="txtMimfId" name="mimf_id">
                         <input type="hidden" class="col-1 mimfClass" id="MimfStampingMatrix" name="pps_whse_id">
                         <input type="hidden" class="col-1 mimfClass" id="txtPpsPoReceivedId" name="pps_po_rcvd_id">
-                        <input type="hidden" class="col-1 mimfClass" id="txtMimfId" name="mimf_id">
+                        <input type="hidden" class="col-1 mimfClass" id="txtPpsDiesetId" name="pps_dieset_id" placeholder="For Molding">
+                        <input type="hidden" class="col-1 mimfClass" id="txtPpdMatrixId" name="ppd_matrix_id" placeholder="For Molding">
                         <input type="hidden" class="col-1" id="txtMimfStampingMatrixStatus" name="mimf_stamping_matrix_status" required>
                         <input type="hidden" class="col-1 mimfClass" id="txtPpdMimfStampingMatrixId" name="ppd_mimf_stamping_matrix_id" placeholder="For Stamping">
                         <input type="hidden" class="col-1 mimfClass" id="txtEmployeeNo" name="employee_no">
@@ -293,7 +293,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100">
                                                 <strong>
-                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Needed KGS(MIMF) * Virgin Material(Matrix) .">&nbsp;</i>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Needed KGS(MIMF) * Virgin Material(Matrix).">&nbsp;</i>
                                                     Virgin Material
                                                 </strong>
                                             </span>
@@ -305,7 +305,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100">
                                                 <strong>
-                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Needed KGS(MIMF) * Recycle(Matrix) .">&nbsp;</i>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Needed KGS(MIMF) * Recycle(Matrix).">&nbsp;</i>
                                                     Recycled
                                                 </strong>
                                             </span>
@@ -324,7 +324,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong class="ml-4">Delivery</strong></span>
                                         </div>
-                                        <input type="text" class="form-control mimfClass" id="txtMimfDelivery" name="mimf_delivery">
+                                        <input type="date" class="form-control mimfClass" id="dateMimfDelivery" name="mimf_delivery">
                                     </div>
 
                                     <div class="input-group mb-3">

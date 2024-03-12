@@ -210,6 +210,7 @@ const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue, scann
 }
 
 const getMaterialProcessStation = () => {
+    let result = `<option value="0" selected disabled> - Please select one - </option>`;
     $.ajax({
         type: "get",
         url: "get_material_process_station",
@@ -219,13 +220,13 @@ const getMaterialProcessStation = () => {
         },
         dataType: "json",
         success: function (response) {
-            let result = '';
+            
             if(response['data'].length > 0){
                 for (let i = 0; i < response['data'].length; i++) {
-                    result += `<option value="${response['data'][i].station_id}">${response['data'][i].station_name}</option>`;
+                    result += `<option value="${response['data'][i].station_id}" step="${response['data'][i].step}">${response['data'][i].station_name}</option>`;
                 }
             }else{
-                result += '<option value=""> - No data found - </option>';
+                result =+ `<option value="0" selected disabled> - No data found - </option>`;
             }
             $('#textStation').html(result);
         }

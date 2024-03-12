@@ -583,13 +583,13 @@ const validateScannedMaterial = (deviceName, MaterialName, process, callback) =>
         success: function (response) {
             let value
             if(response['data'].length > 0){
-                
+                value = true;
             }
             else{
                 value = false;
             }
 
-            callback(true);
+            callback(value);
         },
         error: function(data, xhr, status){
             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
