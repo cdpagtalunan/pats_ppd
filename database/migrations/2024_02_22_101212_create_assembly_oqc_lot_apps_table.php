@@ -27,7 +27,7 @@ class CreateAssemblyOqcLotAppsTable extends Migration
             $table->string('reel_lot')->nullable();
             $table->string('print_lot');
             $table->string('lot_qty');
-            $table->string('output_quantity');
+            $table->string('output_qty');
             $table->string('direction')->nullable();
             $table->string('drawing', 100);
             $table->string('ttl_reel')->nullable();

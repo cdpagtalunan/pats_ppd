@@ -48,7 +48,15 @@
  				<div class="col-12">
  					<!-- general form elements -->
  					<div>
-						<iframe  src="http://rapidx/cn_ppts/iframe_request?username={{ Auth::user()->username }}&emp_id={{ Auth::user()->employee_id }}&iframe=oqc" style="border: none;" no-border height="850" width="100%">></iframe>
+						{{-- 
+							* This Link will give the table and db_name of the oqc lot application 
+							* This format is required and standard to run the iframe of cn_ppts/oqc_inspection
+						--}}
+						<iframe  src="http://rapidx/cn_ppts/iframe_request?username={{ Auth::user()->username }}
+							&emp_id={{ Auth::user()->employee_id }}
+							&iframe=oqc
+							&system_table=assembly_oqc_lot_apps
+							&system_db=db_pats_cn_ppd" style="border: none;" no-border height="850" width="100%">></iframe>
  					</div>
 				</div>
 			</div>

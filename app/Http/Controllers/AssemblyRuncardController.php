@@ -130,9 +130,12 @@ class AssemblyRuncardController extends Controller
         //                                         ->where('id', $request->assy_runcard_id)
         //                                         ->get();
 
-        $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name' ,'assembly_runcard_station.user', 'assembly_runcard_station' => function($station_id_query) use ($request){
-                                                            return $station_id_query->where('id', $request->assy_runcard_station_id);
-                                                }])
+        $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name' ,'assembly_runcard_station.user'])
+                                                ->when($request->assy_runcard_station_id, function ($station_query) use ($request){
+                                                    return $station_query ->with(['assembly_runcard_station' => function($station_id_query) use ($request){
+                                                        return $station_id_query->where('id', $request->assy_runcard_station_id);
+                                                    }]);
+                                                })
                                                 ->whereNull('deleted_at')
                                                 ->when($request->assy_runcard_id, function ($query) use ($request){
                                                         return $query ->where('id', $request->assy_runcard_id);
@@ -181,20 +184,25 @@ class AssemblyRuncardController extends Controller
             return DataTables::of($AssemblyRuncardData)
             ->addColumn('action', function($row){
                 $result = '';
-                $result .= "
-                    <center>
-                        <button class='btn btn-primary btn-sm mr-1 btnUpdateAssemblyRuncardData' assembly_runcard-id='$row->id'>
-                            <i class='fa-solid fa-pen-to-square'></i>
-                        </button>";
+                $result .= "<center>";
 
-                if($row->status == 1 || $row->status == 2){
+                if($row->status == 1 || $row->status == 3){
+                    $result .= "<button class='btn btn-primary btn-sm mr-1 btnUpdateAssemblyRuncardData' assembly_runcard-id='$row->id'>
+                                    <i class='fa-solid fa-pen-to-square'></i>
+                                </button>";
+
                     $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' id='btnPrintAssemblyRuncard'>
                                     <i class='fa-solid fa-print' disabled></i>
                                 </button>";
+                                
+                    if($row->status == 1){
+                        $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' assembly_runcard-status='".$row->status."' id='btnSubmitIPQCData'>
+                                        <i class='fa-solid fa-circle-check'></i>
+                                    </button>";
+                    }
+                }
+                if($row->status == 2){
 
-                    $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' assembly_runcard-status='".$row->status."' id='btnSubmitIPQCData'>
-                                    <i class='fa-solid fa-circle-check'></i>
-                                </button>";
                 }
 
                 $result .= "</center>";
@@ -211,11 +219,11 @@ class AssemblyRuncardController extends Controller
                     case 1: //Mass Prod
                         $result .= '<center><span class="badge badge-pill badge-primary">For Mass Production</span></center>';
                         break;
-                    // case 2: //Resetup
-                    //     $result .= '<center><span class="badge badge-pill badge-warning">For Re-setup</span></center>';
-                    //     break;
-                    case 2: //Done
-                        $result .= '<center><span class="badge badge-pill badge-success">Done</span></center>';
+                    case 2: //Resetup
+                        $result .= '<center><span class="badge badge-pill badge-success">For Re-setup</span></center>';
+                        break;
+                    case 3: //Done
+                        $result .= '<center><span class="badge badge-pill badge-warning">Done</span></center>';
                         break;
                 }
                 return $result;
@@ -380,7 +388,7 @@ class AssemblyRuncardController extends Controller
                         $assy_runcard_station_id = AssemblyRuncardStation::insertGetId([
                                             'assembly_runcards_id'  => $request->station_assy_runcard_id,
                                             'station'               => $request->runcard_station,
-                                            'station_step'                  => $request->step,
+                                            'station_step'          => $request->step,
                                             'date'                  => $request->date,
                                             'operator_name'         => Auth::user()->id,
                                             'input_quantity'        => $request->input_qty,
@@ -471,25 +479,54 @@ class AssemblyRuncardController extends Controller
     }
 
     public function chck_existing_stations(Request $request){
-        $steps = [];
-        $existing_station = AssemblyRuncardStation::whereNull('deleted_at')->where('assembly_runcards_id', $request->runcard_id)->get();
-        foreach ($existing_station as $station) {
-            $steps[] = $station->station_step;
+        $assy_runcard_details = AssemblyRuncard::with('device_details.material_process')->where('id', $request->runcard_id)->first();
+        $mat_process_steps = [];
+        foreach ($assy_runcard_details->device_details->material_process as $processes){
+            $mat_process_steps[] = $processes->step;
         }
 
-        if(in_array(1, $steps)){
-            if(in_array(2, $steps)){
-                if(in_array(3, $steps)){
-                    // $current_step = 0;
-                }else{
-                    $current_step = 3;
-                }
-            }else{
-                $current_step = 2;
+        // return $assy_runcard_details;
+        // $assy_runcard_details = $assy_runcard_details->
+        $existing_station = AssemblyRuncardStation::whereNull('deleted_at')->where('assembly_runcards_id', $request->runcard_id)->get();
+        $steps = [];
+        foreach ($existing_station as $station){
+            $steps[] = $station->station_step;
+        }
+        $mat_process_steps[] = $steps;
+
+        // return $mat_process_steps;
+        // situation #1 CN171P UPTO STEP 2 ONLY
+        // situation #2 CN171S UPTO STEP 3
+        // $current_step = 0;
+        if(in_array($steps, $mat_process_steps)){
+            if(count($steps) < count($mat_process_steps)){
+                $current_step = count($steps)+1;
+            }else if(count($steps) == count($mat_process_steps)){
+                $current_step = 0; //END STATION STEP
             }
         }else{
-            $current_step = 1;
+            $current_step = 1; //END STATION STEP
         }
+
+        // if(in_array(1, $steps) && in_array(1, $mat_process_steps)){
+        //     if(in_array(2, $steps)){
+        //         if(in_array(3, $steps)){
+        //             $current_step = 0; //END STATION STEP
+        //         }else if(in_array(3, $mat_process_steps)){
+        //             $current_step = 3; //STATION STEP 3
+        //         }else{
+        //             $current_step = 0; //END STATION STEP
+        //         }
+        //     }else if(in_array(2, $mat_process_steps)){
+        //         $current_step = 2;
+        //     }else{
+        //         $current_step = 0; //END STATION STEP
+        //     }
+        // }else if(in_array(1, $mat_process_steps)){
+        //     $current_step = 1;
+        // }else{
+        //     $current_step = 0; //END STATION STEP
+        // }
         return response()->json(['current_step' => $current_step]);
     }
 
@@ -519,14 +556,14 @@ class AssemblyRuncardController extends Controller
         // session_start();
         AssemblyRuncard::where('id', $request->cnfrm_assy_id)
                     ->update([
-                        'status'              => 2,
+                        'status'              => 3,
                         'last_updated_by'     => Auth::user()->id,
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
 
         AssemblyRuncardStation::where('assembly_runcards_id', $request->cnfrm_assy_id)
                     ->update([
-                        'status' => 2,
+                        'status' => 3,
                         'last_updated_by'     => Auth::user()->id,
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);

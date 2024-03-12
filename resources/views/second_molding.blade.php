@@ -469,6 +469,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row d-none">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Step</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="textStep" name="step" readonly>
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="row">
                                 <div class="col">
@@ -550,140 +560,141 @@
                                 </div>
                             </div>
 
-                            <div class="row" id="divSamplingPlan">
-                                <h5><i class="fa-solid fa-chart-simple"></i>&nbsp;Sampling Plan</h5>
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100" id="basic-addon1">Type of Inspection</span>
+                            <div class="row" id="divSamplingPlan" style="display: none;">
+                                <div class="row">
+                                    <h5><i class="fa-solid fa-chart-simple"></i>&nbsp;Sampling Plan</h5>
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Type of Inspection</span>
+                                            </div>
+                                            <select class="form-select form-control-sm selectTypeOfInspection" id="selectTypeOfInspection" name="type_of_inspection">
+                                            </select>
                                         </div>
-                                        <select class="form-select form-control-sm selectTypeOfInspection" id="selectTypeOfInspection" name="type_of_inspection">
-                                        </select>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Severity of Inspection</span>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Severity of Inspection</span>
+                                            </div>
+                                            <select class="form-select form-control-sm selectSeverityOfInspection" id="selectSeverityOfInspection" name="severity_of_inspection">
+                                            </select>
                                         </div>
-                                        <select class="form-select form-control-sm selectSeverityOfInspection" id="selectSeverityOfInspection" name="severity_of_inspection">
-                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Inspection Level</span>
+                                            </div>
+                                            <select class="form-select form-control-sm selectInspectionLevel" id="selectInspectionLevel" name="inspection_level">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Lot Qty.</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="textLotQuantity" name="lot_quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">AQL</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="textAQL" name="aql" min="0">
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Sample Size</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="textSampleSize" name="sample_size">
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Accept</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="textAccept" name="accept" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Reject</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="textReject" name="reject" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Lot Inspected</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm" id="textLotInspected" name="lot_inspected" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="1">
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Lot Accepted</span>
+                                            </div>
+                                            <select class="form-select form-control-sm" id="selectLotAccepted" name="lot_accepted">
+                                                <option selected disabled>- Select -</option>
+                                                <option value="0">0</option>
+                                                <option value="1">1</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100">Judgement</span>
+                                            </div>
+                                            <select class="form-select form-control-sm" id="selectJudgement" name="judgement" style="background-color: #e9ecef; pointer-events: none;" readonly>
+                                                <option selected disabled>- Select -</option>
+                                                <option value="0">Reject</option>
+                                                <option value="1">Accepted</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Inspection Level</span>
-                                        </div>
-                                        <select class="form-select form-control-sm selectInspectionLevel" id="selectInspectionLevel" name="inspection_level">
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Lot Qty.</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textLotQuantity" name="lot_quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">AQL</span>
-                                        </div>
-                                        <input type="number" class="form-control form-control-sm" id="textAQL" name="aql" min="0">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Sample Size</span>
-                                        </div>
-                                        <input type="text" class="form-control form-control-sm" id="textSampleSize" name="sample_size">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Accept</span>
-                                        </div>
-                                        <input type="number" class="form-control form-control-sm" id="textAccept" name="accept" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Reject</span>
-                                        </div>
-                                        <input type="number" class="form-control form-control-sm" id="textReject" name="reject" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Lot Inspected</span>
-                                        </div>
-                                        <input type="number" class="form-control form-control-sm" id="textLotInspected" name="lot_inspected" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="1">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Lot Accepted</span>
-                                        </div>
-                                        <select class="form-select form-control-sm" id="selectLotAccepted" name="lot_accepted">
-                                            <option selected disabled>- Select -</option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend w-50">
-                                            <span class="input-group-text w-100">Judgement</span>
-                                        </div>
-                                        <select class="form-select form-control-sm" id="selectJudgement" name="judgement" style="background-color: #e9ecef; pointer-events: none;" readonly>
-                                            <option selected disabled>- Select -</option>
-                                            <option value="0">Reject</option>
-                                            <option value="1">Accepted</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                            </div>
 
                             <div class="row">
                                 <div class="col">
@@ -1348,13 +1359,28 @@
                 /**
                  * Sampling Plan
                 */
-                GetInspectionType($('.selectTypeOfInspection'))
-                GetSeverityInspection($('.selectSeverityOfInspection'))
-                GetInspectionLevel($('.selectInspectionLevel'))
+                GetInspectionType($('.selectTypeOfInspection'));
+                GetSeverityInspection($('.selectSeverityOfInspection'));
+                GetInspectionLevel($('.selectInspectionLevel'));
 
                 $('#selectLotAccepted').on('change', function(){
                     $(`#selectJudgement`).find(`option[value=${$(this).val()}]`).prop("selected", true);
                 });
+
+                $('#textStation').on('change', function(){
+                    console.log(`this ${$(this).val()}`);
+                    console.log(`step ${$(this).find(':selected').attr('step')}`);
+                    if($(this).val() == 10 || $(this).find(`:selected`).text() == '1st OQC Inspection'){
+                        // $('#divSamplingPlan').removeClass('d-none');
+                        $('#divSamplingPlan').fadeIn();
+                    }else{
+                        // $('#divSamplingPlan').addClass('d-none');
+                        $('#divSamplingPlan').fadeOut();
+                    }
+                    $('#textStep').val($(this).find(':selected').attr('step'));
+                });
+
+                
 
                 /**
                  * Get Id of Second Molding after click 
@@ -1389,6 +1415,12 @@
                             if(response['getShipmentOuputOfVisualInspection'].length > 0){
                                 console.log('object 1 ', response['getShipmentOuputOfVisualInspection'][0].output_quantity);
                                 $('#textInputQuantity', $('#formAddStation')).val(response['getShipmentOuputOfVisualInspection'][0].output_quantity).trigger('keyup');
+
+                                if(response['disabledInputQuantity']){
+                                    $('#textInputQuantity', $('#formAddStation')).prop('readonly', true);
+                                }else{
+                                    $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
+                                }
                             }else{
                                 if(response['data'].length > 0){
                                     console.log('object 2 ', response['data'][0].station);
@@ -1431,9 +1463,13 @@
                                     getSecondMoldingById(response['second_molding_id'], true);
                                     dataTablesSecondMoldingStation.draw();
                                     $('#modalSecondMoldingStation').modal('hide');
-                                }else if(response['checkIfStationExist']){
+                                }else if(response['wrongStep']){
+                                    toastr.warning('Step number should be correct!');
+                                }
+                                else if(response['checkIfStationExist']){
                                     toastr.warning('Station already exist!');
-                                }else if(response['stationOutputQuantityIsHigher']){
+                                }
+                                else if(response['stationOutputQuantityIsHigher']){
                                     toastr.warning('Station input quantity is higher than the last');
                                 }
                                 else if(response['sessionError']){
@@ -1449,6 +1485,74 @@
                                 }
                                 else{
                                     isResponseError('textDeviceName', true);
+                                }
+                                
+                                if(response['error']['type_of_inspection'] === undefined){
+                                    isResponseError('selectTypeOfInspection', false);
+                                }
+                                else{
+                                    isResponseError('selectTypeOfInspection', true);
+                                }
+                                if(response['error']['severity_of_inspection'] === undefined){
+                                    isResponseError('selectSeverityOfInspection', false);
+                                }
+                                else{
+                                    isResponseError('selectSeverityOfInspection', true);
+                                }
+                                if(response['error']['inspection_level'] === undefined){
+                                    isResponseError('selectInspectionLevel', false);
+                                }
+                                else{
+                                    isResponseError('selectInspectionLevel', true);
+                                }
+                                if(response['error']['lot_quantity'] === undefined){
+                                    isResponseError('textLotQuantity', false);
+                                }
+                                else{
+                                    isResponseError('textLotQuantity', true);
+                                }
+                                if(response['error']['aql'] === undefined){
+                                    isResponseError('textAQL', false);
+                                }
+                                else{
+                                    isResponseError('textAQL', true);
+                                }
+                                if(response['error']['sample_size'] === undefined){
+                                    isResponseError('textSampleSize', false);
+                                }
+                                else{
+                                    isResponseError('textSampleSize', true);
+                                }
+                                if(response['error']['accept'] === undefined){
+                                    isResponseError('textAccept', false);
+                                }
+                                else{
+                                    isResponseError('textAccept', true);
+                                }
+                                if(response['error']['reject'] === undefined){
+                                    isResponseError('textReject', false);
+                                }
+                                else{
+                                    isResponseError('textReject', true);
+                                }
+                                
+                                if(response['error']['lot_inspected'] === undefined){
+                                    isResponseError('textLotInspected', false);
+                                }
+                                else{
+                                    isResponseError('textLotInspected', true);
+                                }
+                                if(response['error']['lot_accepted'] === undefined){
+                                    isResponseError('selectLotAccepted', false);
+                                }
+                                else{
+                                    isResponseError('selectLotAccepted', true);
+                                }
+                                if(response['error']['judgement'] === undefined){
+                                    isResponseError('selectJudgement', false);
+                                }
+                                else{
+                                    isResponseError('selectJudgement', true);
                                 }
                             }
                         }
@@ -1663,6 +1767,11 @@
                             second_molding_station_id: id,
                         },
                         dataType: "json",
+                        beforeSend: function(){
+                            // GetInspectionType($('.selectTypeOfInspection'));
+                            // GetSeverityInspection($('.selectSeverityOfInspection'));
+                            // GetInspectionLevel($('.selectInspectionLevel'));
+                        },
                         success: function (response) {
                             let responseData = response['data'];
                             console.log('laravel relationship like ',responseData);
@@ -1676,6 +1785,18 @@
                                 $('#textNGQuantity', $('#formAddStation')).val(responseData[0].ng_quantity);
                                 $('#textStationYield', $('#formAddStation')).val(responseData[0].station_yield);
                                 $('#textRemarks', $('#formAddStation')).val(responseData[0].remarks);
+
+                                $('#selectTypeOfInspection', $('#formAddStation')).val(responseData[0].type_of_inspection).trigger('change');
+                                $('#selectSeverityOfInspection', $('#formAddStation')).val(responseData[0].severity_of_inspection).trigger('change');
+                                $('#selectInspectionLevel', $('#formAddStation')).val(responseData[0].inspection_level).trigger('change');
+                                $('#textLotQuantity', $('#formAddStation')).val(responseData[0].lot_quantity);
+                                $('#textAQL', $('#formAddStation')).val(responseData[0].aql);
+                                $('#textSampleSize', $('#formAddStation')).val(responseData[0].sample_size);
+                                $('#textAccept', $('#formAddStation')).val(responseData[0].accept);
+                                $('#textReject', $('#formAddStation')).val(responseData[0].reject);
+                                $('#textLotInspected', $('#formAddStation')).val(responseData[0].lot_inspected);
+                                $('#selectLotAccepted', $('#formAddStation')).val(responseData[0].lot_accepted).trigger('change');
+                                $('#selectJudgement', $('#formAddStation')).val(responseData[0].judgement).trigger('change');
                                 let rowModeOfDefect = '';
                                 if(responseData[0].sec_molding_runcard_station_mod_id != null){
                                     for (let i = 0; i < response['data'].length; i++) {

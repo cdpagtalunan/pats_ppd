@@ -552,10 +552,36 @@ class SecondMoldingController extends Controller
         $data = $request->all();
         // $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
 
+        $getDeviceName = DB::table('sec_molding_runcards')
+            ->where('sec_molding_runcards.id', $request->second_molding_id)
+            ->select(
+                'sec_molding_runcards.device_name',
+            )
+            ->first();
+
+        $getDeviceIdByDeviceName = DB::table('devices')
+            ->where('devices.name', $getDeviceName->device_name)
+            ->select(
+                'devices.id',
+            )
+            ->first();
+        /**
+         * Step 1 - Machine Final Overmold
+         * Step 2 - Camera Inspection
+         * Step 3 - Visual Inspection
+         * Step 4 - 1st OQC Inspection
+         */
+        $getStationIdByStepThree = DB::table('material_processes')
+                ->where('material_processes.device_id', $getDeviceIdByDeviceName->id)
+                ->where('material_processes.step', 3)
+                ->join('material_process_stations', 'material_processes.id', '=', 'material_process_stations.mat_proc_id')
+                ->pluck('station_id');
+        // return response()->json(['getStationIdByStepThree' => $getStationIdByStepThree]);
+
         $getShipmentOuputOfNonVisualInspection = DB::connection('mysql')
             ->table('sec_molding_runcard_stations')
             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-            ->where('station', '!=', 4) // 4-Visual Inspection
+            ->whereNotIn('station', $getStationIdByStepThree)
             ->orderBy('id', 'desc') // get last station
             ->select(
                 'sec_molding_runcard_stations.output_quantity',
@@ -563,16 +589,38 @@ class SecondMoldingController extends Controller
                 )
             ->get();
 
-        $getShipmentOuputOfVisualInspection = DB::connection('mysql')
-            ->table('sec_molding_runcard_stations')
+        $checkIfVisualInspectionIsExist = DB::table('sec_molding_runcard_stations')
             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-            ->where('station', 4) // 1-Machine Final Overmold, 7-Camera Inspection
-            ->select(
-                'sec_molding_runcard_stations.output_quantity',
-                'sec_molding_runcard_stations.station'
-                )
-            ->get();
-        return response()->json(['data' => $getShipmentOuputOfNonVisualInspection, 'getShipmentOuputOfVisualInspection' => $getShipmentOuputOfVisualInspection]);
+            ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepThree)
+            ->exists();
+        
+        $disabledInputQuantity = false;
+        if(!$checkIfVisualInspectionIsExist){
+            $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                ->whereIn('station', $getStationIdByStepThree)
+                ->orderBy('id', 'desc') // get last station
+                ->select(
+                    'sec_molding_runcard_stations.output_quantity',
+                    'sec_molding_runcard_stations.station'
+                    )
+                ->get();
+        }else{
+            $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                ->whereIn('station', $getStationIdByStepThree)
+                ->orderBy('id', 'desc') // get last station
+                // ->groupBy('sec_molding_runcard_stations.id')
+                ->select(
+                    DB::raw('SUM(sec_molding_runcard_stations.output_quantity) AS output_quantity'),
+                    'sec_molding_runcard_stations.station'
+                    )
+                ->get();
+            if((int)$getShipmentOuputOfVisualInspection[0]->output_quantity == (int)$getShipmentOuputOfNonVisualInspection[0]->output_quantity){
+                $disabledInputQuantity = true;
+            }
+        }
+        return response()->json(['data' => $getShipmentOuputOfNonVisualInspection, 'getShipmentOuputOfVisualInspection' => $getShipmentOuputOfVisualInspection, 'disabledInputQuantity'=>$disabledInputQuantity]);
     }
 
     public function getUser(){

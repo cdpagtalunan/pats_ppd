@@ -59,7 +59,7 @@ class AssemblyOqcLotAppController extends Controller
                                 <i class="fa-solid fa-circle-check"></i>
                             </button>';
             }else if($fvi_inspection->oqc_lot_app->status == 3){
-                
+
                 $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-primary btn_print_lotapp_inner_box" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print Lot Tray QR Sticker"><i class="fa fa-print fa-sm"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-warning btn_print_lotapp" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print OQC Lot Application QR STICKER"><i class="fa fa-print fa-sm"></i></button>';
@@ -98,13 +98,13 @@ class AssemblyOqcLotAppController extends Controller
                     $result ='<span class="badge badge-pill badge-info">For Application</span>';
                     break;
                 case 1:
-                    $result ='<span class="badge badge-pill badge-primary">For Submission to OQC</span>';
+                    $result ='<span class="badge badge-pill badge-primary">For OQC Submission</span>';
                     break;
                 case 2:
-                    $result ='<span class="badge badge-pill badge-warning">For Re-inspection</span>';
+                    $result ='<span class="badge badge-pill badge-success">Done</span>';
                     break;
                 case 3:
-                    $result ='<span class="badge badge-pill badge-success">Done</span>';
+                    $result ='<span class="badge badge-pill badge-warning">For Re-inspection</span>';
                     break;
                 case 4:
                     $result ='<span class="badge badge-pill badge-danger">Lot App Rejected</span>';
@@ -304,13 +304,13 @@ class AssemblyOqcLotAppController extends Controller
             // }
 
             if($request->guaranteed_lot == 1){
-                $status = 2;
+                $status = 3; //for reinspection
             }else if($request->guaranteed_lot == 2){
-                $status = 1;
+                $status = 1; //for oqc submission
             }
 
             if($request->submission_count > 2 && $request->guaranteed_lot == 1){
-                $status = 4;
+                $status = 4; //lot app rejected
                 // $submission_count = 3;
             }else{
                 $submission_count = $request->submission_count;
@@ -407,8 +407,6 @@ class AssemblyOqcLotAppController extends Controller
                     //     ]);
                     // }
                 }
-
-
         } catch (\Throwable $th) {
             return $th;
         }
@@ -419,7 +417,7 @@ class AssemblyOqcLotAppController extends Controller
         // session_start();
         AssemblyOqcLotApp::where('id', $request->cnfrm_assy_id)
                     ->update([
-                        'status'              => 3,
+                        'status'              => 2,
                         'updated_at'          => date('Y-m-d H:i:s'),
                     ]);
 
