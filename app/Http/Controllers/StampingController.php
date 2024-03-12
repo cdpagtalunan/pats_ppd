@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Storage;
 class StampingController extends Controller
 {
     public function view_stamp_prod(Request $request){
+
+        // return $request_po;
+
         $stamping_data = FirstStampingProduction::with([
             'first_stamping_history',
             'oqc_details'
@@ -594,6 +597,8 @@ class StampingController extends Controller
 
     public function get_2_stamp_reqs(Request $request){
 
+        // return $po;
+
         $data = json_decode($request->params);
         $po;
         if(isset($data->po_no)){
@@ -602,6 +607,8 @@ class StampingController extends Controller
         else{
             $po = $data;
         }
+
+        // return $po;
 
         // $po_details = DB::connection('mysql')
         // ->select("

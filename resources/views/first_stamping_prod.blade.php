@@ -665,8 +665,10 @@
 
                 $('#btnAddProdData').on('click', function(e){
 
-                    if($('#txtTtlShipOutput').val() >= $('#txtSearchPO').val()){
+                    if( Number($('#txtTtlShipOutput').val()) >= Number($('#txtSearchPO').val())){
                         toastr.error('Total Machine Output is greater than PO Quantity.');
+                        console.log('txtTtlShipOutput', $('#txtTtlShipOutput').val());
+                        console.log('txtSearchPO', $('#txtSearchPO').val());
                         return;
                     }
 

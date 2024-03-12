@@ -182,6 +182,7 @@ class DailyChecksheetController extends Controller
         // return $data;
 
         if($request->machine == 4 && $request->unit_no == 3){
+            // return 'komatsu';
             $daily_checksheet_array = array(
                 'unit_no'    => $request->unit_no,
                 'machine_id'             => $request->machine,
@@ -211,6 +212,7 @@ class DailyChecksheetController extends Controller
                 'created_at'       => NOW()
             );
         }else if ($request->machine == 2 && $request->unit_no == 4){
+            // return 'a';
             $daily_checksheet_array = array(
                 'unit_no'    => $request->unit_no,
                 'machine_id'             => $request->machine,

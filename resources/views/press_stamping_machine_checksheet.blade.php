@@ -368,7 +368,7 @@
                                                                     ACTUAL MEAS.
                                                                 </div>
                                                                 <div class="col-6">
-                                                                    <input type="number" name="actual_measurement" id="txtActualMeasurement" autocomplete="off">
+                                                                    <input type="text" name="actual_measurement" id="txtActualMeasurement" autocomplete="off">
                                                                 </div>
                                                             </div>
                                                             <div class="row">

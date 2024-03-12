@@ -31,6 +31,8 @@ class AssemblyRuncardController extends Controller
         $material_type = implode(',',$material_name);
 
         $station_details = $matrix_data[0]->material_process[0]->station_details;
+
+        // return $matrix_data;
         return response()->json(['device_details' => $matrix_data, 'material_details' => $material_type]);
     }
 
@@ -48,7 +50,7 @@ class AssemblyRuncardController extends Controller
                                             ->where('production_lot', $request->production_lot)
                                             ->where('production_lot_extension', $request->production_lot_ext)
                                             ->get();
-// return $device_name_by_prod_lot;
+    // return $device_name_by_prod_lot;
         if($device_name_by_prod_lot->isEmpty()){
             $device_name      = '';
             $production_lot   = '';
@@ -128,7 +130,9 @@ class AssemblyRuncardController extends Controller
         //                                         ->where('id', $request->assy_runcard_id)
         //                                         ->get();
 
-        $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name','assembly_runcard_station.user'])
+        $assembly_runcard_data = AssemblyRuncard::with(['assembly_runcard_station.station_name' ,'assembly_runcard_station.user', 'assembly_runcard_station' => function($station_id_query) use ($request){
+                                                            return $station_id_query->where('id', $request->assy_runcard_station_id);
+                                                }])
                                                 ->whereNull('deleted_at')
                                                 ->when($request->assy_runcard_id, function ($query) use ($request){
                                                         return $query ->where('id', $request->assy_runcard_id);
@@ -291,7 +295,7 @@ class AssemblyRuncardController extends Controller
                 if(!isset($request->assy_runcard_id)){
                     AssemblyRuncard::insert([
                                     'device_name'            => $request->device_name,
-                                    'part_code'              => $request->device_code,
+                                    'parts_code'              => $request->device_code,
                                     'po_number'              => $request->po_number,
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
@@ -370,13 +374,13 @@ class AssemblyRuncardController extends Controller
                     if(AssemblyRuncardStation::where('assembly_runcards_id', $request->station_assy_runcard_id)->where('station', $request->runcard_station)->exists()){
                         return response()->json(['result' => 2]);
                     }else{
-
                         // $isFirstStationExist = AssemblyRuncardStation::where('')
                         // device_details[0].material_process[index].station_details[0].stations['id']
 
                         $assy_runcard_station_id = AssemblyRuncardStation::insertGetId([
                                             'assembly_runcards_id'  => $request->station_assy_runcard_id,
                                             'station'               => $request->runcard_station,
+                                            'station_step'                  => $request->step,
                                             'date'                  => $request->date,
                                             'operator_name'         => Auth::user()->id,
                                             'input_quantity'        => $request->input_qty,
@@ -391,8 +395,8 @@ class AssemblyRuncardController extends Controller
                                             'doc_no_r_drawing'      => $request->doc_no_r_drawing,
                                             'doc_no_a_drawing'      => $request->doc_no_a_drawing,
                                             'doc_no_g_drawing'      => $request->doc_no_g_drawing,
-                                            'date_code'             => $request->date_code,
-                                            'bundle_qty'            => $request->bundle_quantity,
+                                            // 'date_code'             => $request->date_code,
+                                            // 'bundle_qty'            => $request->bundle_quantity,
                                             'remarks'               => $request->remarks,
                                             'created_by'            => Auth::user()->id,
                                             'last_updated_by'       => Auth::user()->id,
@@ -409,7 +413,6 @@ class AssemblyRuncardController extends Controller
                     $assy_runcard_station_id = AssemblyRuncardStation::where('id', $request->assy_runcard_station_id)
                                         ->where('assembly_runcards_id', $request->station_assy_runcard_id)
                                         ->update([
-                                            'station'               => $request->runcard_station,
                                             'date'                  => $request->date,
                                             'operator_name'         => Auth::user()->id,
                                             'input_quantity'        => $request->input_qty,
@@ -424,8 +427,8 @@ class AssemblyRuncardController extends Controller
                                             'doc_no_r_drawing'      => $request->doc_no_r_drawing,
                                             'doc_no_a_drawing'      => $request->doc_no_a_drawing,
                                             'doc_no_g_drawing'      => $request->doc_no_g_drawing,
-                                            'date_code'             => $request->date_code,
-                                            'bundle_qty'            => $request->bundle_quantity,
+                                            // 'date_code'             => $request->date_code,
+                                            // 'bundle_qty'            => $request->bundle_quantity,
                                             'remarks'               => $request->remarks,
                                             'last_updated_by'       => Auth::user()->id,
                                             'updated_at'            => date('Y-m-d H:i:s'),
@@ -468,30 +471,26 @@ class AssemblyRuncardController extends Controller
     }
 
     public function chck_existing_stations(Request $request){
-        // $station = Station::where('id', $request->station_no)->where('status', 0)->first();
-                    // Device::
+        $steps = [];
+        $existing_station = AssemblyRuncardStation::whereNull('deleted_at')->where('assembly_runcards_id', $request->runcard_id)->get();
+        foreach ($existing_station as $station) {
+            $steps[] = $station->station_step;
+        }
 
-        // if(isset($request->station_id)){
-            // $is_station1_exist = AssemblyRuncard::whereNull('deleted_at')
-            //                                       ->where('id', $request->id)
-            //                                       ->first();
-
-            $assembly_runcard_data = AssemblyRuncard::with(['device_details.material_process','assembly_runcard_station' => function ($query) use ($request){
-                                                        return $query->with(['station_name'])->where('station', $request->station_no); } ])
-                                                    ->whereNull('deleted_at')
-                                                    ->where('id', $request->id)
-                                                    ->first();
-
-            $station_name = $assembly_runcard_data->assembly_runcard_station[0]->station_name[0]->station_name;
-            // $existing_station =
-            return $station_name;
-            // return response()->json(['result' => $assembly_runcard_data]);
-        // }
-        // else if($station->station_name ==){
-        //     return response()->json(['result' => 1]);
-        // }else{
-        //     return response()->json(['result' => 0]);
-        // }
+        if(in_array(1, $steps)){
+            if(in_array(2, $steps)){
+                if(in_array(3, $steps)){
+                    // $current_step = 0;
+                }else{
+                    $current_step = 3;
+                }
+            }else{
+                $current_step = 2;
+            }
+        }else{
+            $current_step = 1;
+        }
+        return response()->json(['current_step' => $current_step]);
     }
 
     public function update_assy_runcard_status(Request $request){

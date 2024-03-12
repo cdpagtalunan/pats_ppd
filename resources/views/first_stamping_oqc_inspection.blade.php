@@ -848,6 +848,7 @@
                 })
 
                 $('#btnViewRDrawings').on('click', function(){
+                    console.log('b drawing click');
                     redirect_to_drawing($('#txtBDrawingNo').val(), 0)
                     SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
                 })

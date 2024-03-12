@@ -1,6 +1,6 @@
 <!-- MODALS -->
 <div class="modal fade" id="modalSaveIqcInspection" tabindex="-1" role="dialog" aria-hidden="true"  data-bs-backdrop="static">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl-custom">
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title"><i class="fa fa-edit"></i> IQC Inspection</h4>
@@ -10,7 +10,7 @@
             </div>
             <form method="post" id="formSaveIqcInspection" autocomplete="off">
                 @csrf
-                <div class="modal-body">
+                <div class="modal-body modal-body-custom">
                     <div class="row d-none">
                         <div class="col-sm-6 mt-3">
                             <div class="input-group input-group-sm mb-3">
@@ -351,6 +351,17 @@
                             class="fa fa-check"></i> Save</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="modal-loading" data-bs-keyboard="false" data-bs-backdrop="static">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+        <div class="modal-body text-center">
+            <div class="loading-spinner mb-2"></div>
+            <div>Loading</div>
+        </div>
         </div>
     </div>
 </div>

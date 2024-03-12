@@ -57,6 +57,7 @@ class PackingListDetailsController extends Controller
         $user_details = User::
         where('status',1)
         ->where('position', 10)
+        ->orWhere('position', 7)
         ->get();
 
         // return $user_details;

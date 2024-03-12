@@ -272,52 +272,53 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-            /*
-                $('a[href="#menu1"]').click(function (e) {
-                    e.preventDefault();
-                    $('#txtSearchLotNum').val('');
+                /*
+                    $('a[href="#menu1"]').click(function (e) {
+                        e.preventDefault();
+                        $('#txtSearchLotNum').val('');
 
-                    dataTable.iqcInspection.draw();
-                });
-                $('a[href="#menu2"]').click(function (e) {
-                    e.preventDefault();
-                    $('#txtSearchLotNum').val('');
-                    dataTable.iqcInspected.draw();
-                });
-
-                $('#modalLotNum').on('shown.bs.modal', function () {
-                    $('#txtLotNum').focus();
-                    const mdlScanLotNum = document.querySelector("#modalLotNum");
-                    const inptScanLotNum = document.querySelector("#txtLotNum");
-                    let focus = false
-
-                    mdlScanLotNum.addEventListener("mouseover", () => {
-                        if (inptScanLotNum === document.activeElement) {
-                            focus = true
-                        } else {
-                            focus = false
-                        }
-                    });
-
-                    mdlScanLotNum.addEventListener("click", () => {
-                        if (focus) {
-                            inptScanLotNum.focus()
-                        }
-                    });
-                });
-
-                $('#txtLotNum').on('keyup', function(e){
-
-                    if(e.keyCode == 13){
-                        // getSecondStampReq($(this).val());
-                        $('#txtSearchLotNum').val($(this).val());
                         dataTable.iqcInspection.draw();
+                    });
+                    $('a[href="#menu2"]').click(function (e) {
+                        e.preventDefault();
+                        $('#txtSearchLotNum').val('');
                         dataTable.iqcInspected.draw();
-                        $('#txtLotNum').val('');
-                        $('#modalLotNum').modal('hide');
-                    }
-                });
-            */
+                    });
+
+                    $('#modalLotNum').on('shown.bs.modal', function () {
+                        $('#txtLotNum').focus();
+                        const mdlScanLotNum = document.querySelector("#modalLotNum");
+                        const inptScanLotNum = document.querySelector("#txtLotNum");
+                        let focus = false
+
+                        mdlScanLotNum.addEventListener("mouseover", () => {
+                            if (inptScanLotNum === document.activeElement) {
+                                focus = true
+                            } else {
+                                focus = false
+                            }
+                        });
+
+                        mdlScanLotNum.addEventListener("click", () => {
+                            if (focus) {
+                                inptScanLotNum.focus()
+                            }
+                        });
+                    });
+
+                    $('#txtLotNum').on('keyup', function(e){
+
+                        if(e.keyCode == 13){
+                            // getSecondStampReq($(this).val());
+                            $('#txtSearchLotNum').val($(this).val());
+                            dataTable.iqcInspection.draw();
+                            dataTable.iqcInspected.draw();
+                            $('#txtLotNum').val('');
+                            $('#modalLotNum').modal('hide');
+                        }
+                    });
+                */
+                // $('#modal-loading').modal('show');
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 

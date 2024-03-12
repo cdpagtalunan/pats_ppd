@@ -66,44 +66,6 @@ class ExportTraceabilityReportController extends Controller
 
         $device_name = $request->device_name.'#IN-VE';
 
-        // SUPER RAW QUERY 
-
-        // $secondMoldingData = DB::connection('mysql')
-        // ->select("SELECT sec_molding_runcards.*,
-        // b.firstname as r_machine_operator,
-        // sec_molding_runcards.total_machine_output as prod_qty
-        // FROM sec_molding_runcards
-        // INNER JOIN sec_molding_runcard_stations as a ON sec_molding_runcards.id = a.id
-        // INNER JOIN users as b ON sec_molding_runcards.created_by = b.id
-        // WHERE sec_molding_runcards.pmi_po_number = '$request->po_number' 
-        // AND sec_molding_runcards.device_name = '$device_name'
-        // AND sec_molding_runcards.created_at BETWEEN '$request->date_from'AND '$request->date_to'
-        // ");
-
-        $secondMoldingInitialData = DB::connection('mysql')
-        ->select("SELECT sec_molding_runcard_id, b.firstname as r_machine_operator,
-            SUM(input_quantity) as initial_sum,
-            SUM(station_yield)/COUNT(station_yield) as initial_yield
-            FROM sec_molding_runcard_stations
-            INNER JOIN users as b ON operator_name = b.id
-            WHERE station = 1
-            GROUP BY sec_molding_runcard_id,b.firstname
-        ");
-
-        // return $secondMoldingInitialData;
-
-        // $secondMoldingCameraData = DB::connection('mysql')
-        // ->select("SELECT sec_molding_runcard_id, b.firstname as camera_operator,
-        //     SUM(input_quantity) as camera_sum,
-        //     SUM(station_yield)/COUNT(station_yield) as camera_yield
-        //     FROM sec_molding_runcard_stations
-        //     INNER JOIN users as b ON operator_name = b.id
-        //     WHERE station = 7
-        //     GROUP BY sec_molding_runcard_id,b.firstname
-        // ");
-
-        // return $secondMoldingCameraData;
-
         //QUERY BUILDER
         $secondMoldingData = DB::connection('mysql')
         ->table('sec_molding_runcards as a')
@@ -129,7 +91,7 @@ class ExportTraceabilityReportController extends Controller
                 // DB::raw('SUM(c.input_quantity) AS initial_sum'),
                 'b.firstname as r_machine_operator'
                 )
-        // ->groupBy('c.sec_molding_runcard_id')
+        ->groupBy('a.id')
         ->get();
 
         // return $secondMoldingData;
@@ -152,7 +114,7 @@ class ExportTraceabilityReportController extends Controller
         $secondMoldingCameraData = DB::connection('mysql')
         ->table('sec_molding_runcard_stations as a')
         ->join('users as b', 'a.operator_name', 'b.id')
-        ->where('station', 7)
+        ->where('station', 5)
         ->select(
                 'a.sec_molding_runcard_id as sec_molding_runcard_id',
                 'b.firstname as camera_operator',
@@ -165,65 +127,174 @@ class ExportTraceabilityReportController extends Controller
         // return $secondMoldingCameraData;
 
         $secondMoldingVisualData = DB::connection('mysql')
-        ->select("SELECT sec_molding_runcard_id, b.firstname as visual_operator,
-            SUM(input_quantity) as visual_sum,
-            SUM(station_yield)/COUNT(station_yield) as visual_yield
-            FROM sec_molding_runcard_stations
-            INNER JOIN users as b ON operator_name = b.id
-            WHERE station = 6
-            GROUP BY sec_molding_runcard_id,b.firstname
-        ");
+        ->table('sec_molding_runcard_stations as a')
+        ->join('users as b', 'a.operator_name', 'b.id')
+        ->where('station', 4)
+        ->select(
+                'a.sec_molding_runcard_id as sec_molding_runcard_id',
+                'b.firstname as visual_operator',
+                DB::raw('SUM(a.input_quantity) as visual_sum'),
+                DB::raw('SUM(a.station_yield)/COUNT(a.station_yield) as visual_yield')
+                )
+        ->groupBy('a.sec_molding_runcard_id','b.firstname')
+        ->get();
 
         // return $secondMoldingVisualData;
 
         $assemblyMarkingData = DB::connection('mysql')
-            ->select("SELECT 
-            assembly_runcards_id,
-            a.s_zero_seven_prod_lot as s_lot_no,
-            a.p_zero_two_prod_lot as p_lot_no,
-            b.firstname as marking_operator,
-            SUM(input_quantity) as marking_sum,
-            SUM(station_yield) as marking_yield
-            FROM assembly_runcard_stations
-            INNER JOIN assembly_runcards as a ON assembly_runcard_stations.assembly_runcards_id = a.id
-            INNER JOIN users as b ON assembly_runcard_stations.operator_name = b.id
-            WHERE station = 5
-            GROUP BY assembly_runcards_id,s_lot_no,p_lot_no,marking_operator
-        ");
+        ->table('assembly_runcard_stations as a')
+        ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
+        ->join('users as c', 'a.operator_name', 'c.id')
+        ->where('station', 9)
+        ->select(
+                'a.assembly_runcards_id as assembly_runcards_id',
+                'b.s_zero_seven_prod_lot as s_lot_no',
+                'b.p_zero_two_prod_lot as p_lot_no',
+                'c.firstname as marking_operator',
+                DB::raw('SUM(a.input_quantity) as marking_sum'),
+                DB::raw('SUM(a.station_yield) as marking_yield')
+        )
+        ->groupBy('assembly_runcards_id','s_lot_no','p_lot_no','marking_operator')
+        ->get();
 
         // return $assemblyMarkingData;
 
         $assemblyMOData = DB::connection('mysql')
-            ->select("SELECT 
-            assembly_runcards_id,
-            a.s_zero_seven_prod_lot as s_lot_no,
-            a.p_zero_two_prod_lot as p_lot_no,
-            b.firstname as mo_operator,
-            SUM(input_quantity) as mo_assembly_sum,
-            SUM(station_yield) as mo_assembly_yield
-            FROM assembly_runcard_stations
-            INNER JOIN assembly_runcards as a ON assembly_runcard_stations.assembly_runcards_id = a.id
-            INNER JOIN users as b ON assembly_runcard_stations.operator_name = b.id
-            WHERE station = 3
-            GROUP BY assembly_runcards_id,s_lot_no,p_lot_no,mo_operator
-        ");
+        ->table('assembly_runcard_stations as a')
+        ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
+        ->join('users as c', 'a.operator_name', 'c.id')
+        ->where('station', 7)
+        ->select(
+                'a.assembly_runcards_id as assembly_runcards_id',
+                'b.s_zero_seven_prod_lot as s_lot_no',
+                'b.p_zero_two_prod_lot as p_lot_no',
+                'c.firstname as mo_operator',
+                DB::raw('SUM(a.input_quantity) as mo_assembly_sum'),
+                DB::raw('SUM(a.station_yield) as mo_assembly_yield')
+        )
+        ->groupBy('assembly_runcards_id','s_lot_no','p_lot_no','mo_operator')
+        ->get();
 
         // return $assemblyMOData;
 
         $assemblyVisualData = DB::connection('mysql')
-            ->select("SELECT 
-            assembly_runcards_id,
-            a.s_zero_seven_prod_lot as s_lot_no,
-            a.p_zero_two_prod_lot as p_lot_no,
-            b.firstname as visual_operator,
-            SUM(input_quantity) as visual_sum,
-            SUM(station_yield) as visual_yield
-            FROM assembly_runcard_stations
-            INNER JOIN assembly_runcards as a ON assembly_runcard_stations.assembly_runcards_id = a.id
-            INNER JOIN users as b ON assembly_runcard_stations.operator_name = b.id
-            WHERE station = 6
-            GROUP BY assembly_runcards_id,s_lot_no,p_lot_no,visual_operator
-        ");
+        ->table('assembly_runcard_stations as a')
+        ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
+        ->join('users as c', 'a.operator_name', 'c.id')
+        ->where('station', 4)
+        ->select(
+                'a.assembly_runcards_id as assembly_runcards_id',
+                'b.s_zero_seven_prod_lot as s_lot_no',
+                'b.p_zero_two_prod_lot as p_lot_no',
+                'c.firstname as visual_operator',
+                DB::raw('SUM(a.input_quantity) as visual_sum'),
+                DB::raw('SUM(a.station_yield) as visual_yield')
+        )
+        ->groupBy('assembly_runcards_id','s_lot_no','p_lot_no','visual_operator')
+        ->get();
+
+        // return $assemblyVisualData;
+
+        // QUERY BUILDER END
+
+          // SUPER RAW QUERY 
+
+        // $secondMoldingData = DB::connection('mysql')
+        // ->select("SELECT sec_molding_runcards.*,
+        // b.firstname as r_machine_operator,
+        // sec_molding_runcards.total_machine_output as prod_qty
+        // FROM sec_molding_runcards
+        // INNER JOIN sec_molding_runcard_stations as a ON sec_molding_runcards.id = a.id
+        // INNER JOIN users as b ON sec_molding_runcards.created_by = b.id
+        // WHERE sec_molding_runcards.pmi_po_number = '$request->po_number' 
+        // AND sec_molding_runcards.device_name = '$device_name'
+        // AND sec_molding_runcards.created_at BETWEEN '$request->date_from'AND '$request->date_to'
+        // ");
+
+        // $secondMoldingInitialData = DB::connection('mysql')
+        // ->select("SELECT sec_molding_runcard_id, b.firstname as r_machine_operator,
+        //     SUM(input_quantity) as initial_sum,
+        //     SUM(station_yield)/COUNT(station_yield) as initial_yield
+        //     FROM sec_molding_runcard_stations
+        //     INNER JOIN users as b ON operator_name = b.id
+        //     WHERE station = 1
+        //     GROUP BY sec_molding_runcard_id,b.firstname
+        // ");
+
+        // return $secondMoldingInitialData;
+
+        // $secondMoldingCameraData = DB::connection('mysql')
+        // ->select("SELECT sec_molding_runcard_id, b.firstname as camera_operator,
+        //     SUM(input_quantity) as camera_sum,
+        //     SUM(station_yield)/COUNT(station_yield) as camera_yield
+        //     FROM sec_molding_runcard_stations
+        //     INNER JOIN users as b ON operator_name = b.id
+        //     WHERE station = 7
+        //     GROUP BY sec_molding_runcard_id,b.firstname
+        // ");
+
+        // return $secondMoldingCameraData;
+
+        // $secondMoldingVisualData = DB::connection('mysql')
+        // ->select("SELECT sec_molding_runcard_id, b.firstname as visual_operator,
+        //     SUM(input_quantity) as visual_sum,
+        //     SUM(station_yield)/COUNT(station_yield) as visual_yield
+        //     FROM sec_molding_runcard_stations
+        //     INNER JOIN users as b ON operator_name = b.id
+        //     WHERE station = 4
+        //     GROUP BY sec_molding_runcard_id,b.firstname
+        // ");
+
+        // return $secondMoldingVisualData;
+
+        // $assemblyMarkingData = DB::connection('mysql')
+        //     ->select("SELECT 
+        //     assembly_runcards_id,
+        //     a.s_zero_seven_prod_lot as s_lot_no,
+        //     a.p_zero_two_prod_lot as p_lot_no,
+        //     b.firstname as marking_operator,
+        //     SUM(input_quantity) as marking_sum,
+        //     SUM(station_yield) as marking_yield
+        //     FROM assembly_runcard_stations
+        //     INNER JOIN assembly_runcards as a ON assembly_runcard_stations.assembly_runcards_id = a.id
+        //     INNER JOIN users as b ON assembly_runcard_stations.operator_name = b.id
+        //     WHERE station = 5
+        //     GROUP BY assembly_runcards_id,s_lot_no,p_lot_no,marking_operator
+        // ");
+
+        // return $assemblyMarkingData;
+
+        // $assemblyMOData = DB::connection('mysql')
+        //     ->select("SELECT 
+        //     assembly_runcards_id,
+        //     a.s_zero_seven_prod_lot as s_lot_no,
+        //     a.p_zero_two_prod_lot as p_lot_no,
+        //     b.firstname as mo_operator,
+        //     SUM(input_quantity) as mo_assembly_sum,
+        //     SUM(station_yield) as mo_assembly_yield
+        //     FROM assembly_runcard_stations
+        //     INNER JOIN assembly_runcards as a ON assembly_runcard_stations.assembly_runcards_id = a.id
+        //     INNER JOIN users as b ON assembly_runcard_stations.operator_name = b.id
+        //     WHERE station = 3
+        //     GROUP BY assembly_runcards_id,s_lot_no,p_lot_no,mo_operator
+        // ");
+
+        // return $assemblyMOData;
+
+        // $assemblyVisualData = DB::connection('mysql')
+        //     ->select("SELECT 
+        //     assembly_runcards_id,
+        //     a.s_zero_seven_prod_lot as s_lot_no,
+        //     a.p_zero_two_prod_lot as p_lot_no,
+        //     b.firstname as visual_operator,
+        //     SUM(input_quantity) as visual_sum,
+        //     SUM(station_yield) as visual_yield
+        //     FROM assembly_runcard_stations
+        //     INNER JOIN assembly_runcards as a ON assembly_runcard_stations.assembly_runcards_id = a.id
+        //     INNER JOIN users as b ON assembly_runcard_stations.operator_name = b.id
+        //     WHERE station = 6
+        //     GROUP BY assembly_runcards_id,s_lot_no,p_lot_no,visual_operator
+        // ");
 
         // return $assemblyVisualData;
 

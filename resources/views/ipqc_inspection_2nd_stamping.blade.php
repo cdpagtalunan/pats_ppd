@@ -1017,7 +1017,7 @@
                                 }else{
                                     $("#btnViewUdDrawings").prop('disabled', true);
                                 }
-                                
+
                                 $('input[name="keep_sample"]').attr('disabled', false);
                                 $("#btnReuploadTriggerDiv").removeClass('d-none');
                                 $("#btnReuploadTrigger").removeClass('d-none');
@@ -1195,7 +1195,7 @@
                     let formData = new FormData($('#formIPQCInspectionData')[0]);
                     console.log('formdata', formData);
                     $.ajax({
-                        url: "add_ipqc_inspection",
+                        url: "add_stamping_ipqc_inspection",
                         method: "post",
                         data: formData,
                         processData: false,

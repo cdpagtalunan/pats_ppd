@@ -546,6 +546,7 @@
                     formModal.firstMolding.find('#pmi_po_no').val(response.pmi_po_no);
                     $('#global_po_qty').val(poQty);
                     $('#global_target_qty').val(productOfPoNumber);
+                    $('#global_series_name').val(response.item_name);
                 }else{
                     toastr.error(response.error_msg)
                     formModal.firstMolding.find('#po_no').val('');
@@ -560,8 +561,7 @@
                     formModal.firstMolding.find('#recycle_qty').val('');
                     $('#global_target_qty').val('');
                     $('#global_po_qty').val('');
-
-
+                    $('#global_series_name').val('');
                 }
             }
         });
@@ -683,18 +683,15 @@
 
         let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
         let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
-        // console.log(JSON.parse(scanFirstMoldingContactLotNo).output_qty);
+        /**
+            TODO: Validate Contact Lot Num
+        */
 
-        // if(scanFirstMoldingContactLotNo.length < 0){
-        //     Swal.fire({
-        //         position: "center",
-        //         icon: "warning",
-        //         title: `${scanFirstMoldingContactLotNo}This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
-        //         showConfirmButton: false,
-        //         timer: 3000
-        //     });
-        //     return;
-        // }
+        formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
+        formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
+        $('#txtScanQrCodeFirstMolding').val('');
+        $('#mdlScanQrCodeFirstMolding').modal('hide');
+        return;
         $.ajax({
             type: "GET",
             url: "validate_scan_first_molding_contact_lot_num", //nmodify
@@ -744,6 +741,7 @@
             success: function (response) {
                 if(response['result'] === 1){
                     $('#modalFirstMolding').modal('hide');
+                    $('#modalScanQRSave').modal('hide');
                     dt.firstMolding.draw();
                     Swal.fire({
                         position: "center",
