@@ -323,7 +323,11 @@
                     $('#modalScanQRSave').modal('hide');
                 }
             },error: function (data, xhr, status){
+                $("#btnRuncardDetailsIcon").removeClass('fa fa-spinner fa-pulse');
+                $("#btnRuncardDetails").removeAttr('disabled');
+                $("#btnRuncardDetailsIcon").addClass('fa fa-floppy-disk');
                 if(data.status === 422){
+                    // error
                     let errors = data.responseJSON.errors ;
                     toastr.error(`Saving Failed, Please fill up all required fields`);
                     errorHandler( errors.first_molding_device_id,formModal.firstMolding.find('#first_molding_device_id') );
@@ -354,8 +358,10 @@
                     $("#btnRuncardDetails").removeAttr('disabled');
                     $("#btnRuncardDetailsIcon").addClass('fa fa-floppy-disk');
                 }else{
-                    $("#btnRuncardDetailsIcon").addClass('fa fa-spinner fa-pulse');
-                    $("#btnRuncardDetails").prop('disabled', 'disabled');
+                    if(data.responseJSON.result == 0){
+                        toastr.error(`Error: ${data.responseJSON.error}`);
+                        return;
+                    }
                     toastr.error(`Error: ${data.status}`);
                 }
             }

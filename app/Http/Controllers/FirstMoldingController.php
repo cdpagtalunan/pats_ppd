@@ -143,6 +143,7 @@ class FirstMoldingController extends Controller
     public function saveFirstMolding(FirstMoldingRequest $request)
     {
         date_default_timezone_set('Asia/Manila');
+        DB::beginTransaction();
         try{
             $data = $request->all();
             $virgin_material = $request->virgin_material;
@@ -158,6 +159,7 @@ class FirstMoldingController extends Controller
             if ($validator->fails()) {
                 return response()->json(['result' => '0', 'error' => $validator->messages()]);
             }
+
             if( isset( $request->first_molding_id )){ //Edit
                 $first_molding_status = FirstMolding::where('id',$request->first_molding_id)->get(['status']);
                 if($first_molding_status[0]->status == 2){ // if status is 2 or re set up change the status into 0 - For Quali
@@ -185,6 +187,12 @@ class FirstMoldingController extends Controller
                 }
 
             }else{ //Add
+                $is_exist_first_molding = FirstMolding::where('production_lot',$request->production_lot)
+                                                    ->where('production_lot_extension',$request->production_lot_extension)
+                                                    ->whereNull('deleted_at')->exists();
+                if( $is_exist_first_molding == 1 ){
+                    return response()->json(['result' => '0', 'error' => 'Saving Failed. Production Lot already exists'],500);
+                }
                 $first_molding_id = FirstMolding::insertGetId($request->validated());
                 FirstMolding::where('id',$first_molding_id)
                 ->update([
@@ -218,9 +226,13 @@ class FirstMoldingController extends Controller
                     ]);
                 }
             }
+
+            DB::commit();
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
+            DB::rollback();
             return $th;
+
         }
     }
 
@@ -506,7 +518,7 @@ class FirstMoldingController extends Controller
     public function validateMaterialLotNo(Request $request){
         date_default_timezone_set('Asia/Manila');
         try {
-            // 3918K56 Lot_number 3707K30	
+            // 3918K56 Lot_number 3707K30
             // return $request->first_molding_material_lot_no;
             $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
             ->select('
