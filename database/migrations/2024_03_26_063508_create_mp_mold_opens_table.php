@@ -16,15 +16,15 @@ class CreateMpMoldOpensTable extends Migration
         Schema::create('mp_mold_opens', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('machine_parameter_id')->unsigned();
-            $table->string('open_end_v')->nullable()->default('N/A');
-            $table->string('hi_velocity_2_percent')->nullable()->default('N/A');
-            $table->string('hi_velocity_1_percent')->nullable()->default('N/A');
-            $table->string('open_v')->nullable()->default('N/A');
-            $table->string('mold_rotation')->nullable()->default('N/A');
-            $table->string('open_stop')->nullable()->default('N/A');
-            $table->string('low_distance')->nullable()->default('N/A');
-            $table->string('hi_velocity_1mm')->nullable()->default('N/A');
-            $table->string('hi_velocity_2mm')->nullable()->default('N/A');
+            $table->float('open_end_v')->nullable()->default(0);
+            $table->float('hi_velocity_2_percent')->nullable()->default(0);
+            $table->float('hi_velocity_1_percent')->nullable()->default(0);
+            $table->float('open_v')->nullable()->default(0);
+            $table->float('mold_rotation')->nullable()->default(0);
+            $table->float('open_stop')->nullable()->default(0);
+            $table->float('low_distance')->nullable()->default(0);
+            $table->float('hi_velocity_1mm')->nullable()->default(0);
+            $table->float('hi_velocity_2mm')->nullable()->default(0);
             // Defaults
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();

@@ -16,14 +16,14 @@ class CreateMpHeatersTable extends Migration
         Schema::create('mp_heaters', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('machine_parameter_id')->unsigned();
-            $table->string('nozzle_set')->nullable()->default('N/A');
-            $table->string('front_set')->nullable()->default('N/A');
-            $table->string('mid_set')->nullable()->default('N/A');
-            $table->string('rear_set')->nullable()->default('N/A');
-            $table->string('nozzle_actual')->nullable()->default('N/A');
-            $table->string('front_actual')->nullable()->default('N/A');
-            $table->string('mid_actual')->nullable()->default('N/A');
-            $table->string('rear_actual')->nullable()->default('N/A');
+            $table->float('nozzle_set')->nullable()->default(0);
+            $table->float('front_set')->nullable()->default(0);
+            $table->float('mid_set')->nullable()->default(0);
+            $table->float('rear_set')->nullable()->default(0);
+            $table->float('nozzle_actual')->nullable()->default(0);
+            $table->float('front_actual')->nullable()->default(0);
+            $table->float('mid_actual')->nullable()->default(0);
+            $table->float('rear_actual')->nullable()->default(0);
             // Defaults
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();

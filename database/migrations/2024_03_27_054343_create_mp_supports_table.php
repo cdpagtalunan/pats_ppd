@@ -15,7 +15,19 @@ class CreateMpSupportsTable extends Migration
     {
         Schema::create('mp_supports', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('machine_parameter_id')->unsigned();
+            $table->float('noz_bwd_tm_1')->nullable()->default(0);
+            $table->float('inj_st_tmg_1')->nullable()->default(0);
+            $table->float('noz_bwd_tmg_2')->nullable()->default(0);
+            $table->float('inj_st_tmg_2')->nullable()->default(0);
+            $table->string('support_tempo')->nullable();
+            // Defaults
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->unsignedBigInteger('last_updated_by')->nullable();
+            $table->softDeletes();
             $table->timestamps();
+            // Foreign key
+            $table->foreign('machine_parameter_id')->references('id')->on('machine_parameters'); // foreign id sa table
         });
     }
 

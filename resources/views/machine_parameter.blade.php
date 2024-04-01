@@ -276,7 +276,7 @@
 
                                     <div class="accordion" id="accordionExample">
 
-                            {{--   <div class="card" id="MoldClose">
+                                        <div class="card" id="MoldClose">
                                             <div class="card-header" id="headingOne">
                                                 <h5 class="mb-0">
                                                     <button class="btn btn-link" type="button"
@@ -1319,77 +1319,29 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div> --}}
+                                        </div>
 
                                         <div class="card" id="Support">
-                                            <div class="card-header" id="headingTwo">
+                                            <div class="card-header" id="headingInjectionVelocity">
                                                 <h5 class="mb-0">
                                                     <button class="btn btn-link collapsed" type="button"
-                                                        data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-                                                        aria-expanded="false" aria-controls="collapseTwo">
+                                                        data-bs-toggle="collapse" data-bs-target="#collapseInjectionVelocity"
+                                                        aria-expanded="false" aria-controls="collapseInjectionVelocity">
                                                         SUPPORT
                                                     </button>
                                                 </h5>
                                             </div>
-                                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
+                                            <div id="collapseInjectionVelocity" class="collapse" aria-labelledby="headingInjectionVelocity"
                                                 data-parent="#accordionExample">
                                                 <div class="card-body">
                                                     <div class="row">
                                                         <div class="col-md-6 col-lg-3">
-                                                            <label for="textPattern" class="form-label">NOZ BWD TM<span
+                                                            <label for="textNozBwdTm_1" class="form-label">NOZ BWD TM<span
                                                                 class="text-danger"
                                                                 title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
                                                                 <input min="0" type="number" class="form-control"
-                                                                name="pattern" id="text_pattern" placeholder="">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textEjPres" class="form-label">EJ PRES<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="ej_pres" id="textEjPres" placeholder="%">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">%</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textFwdEv1" class="form-label">FWD EV1<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="fwd_ev1" id="textFwdEv1" placeholder="%">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">%</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textFwdEv2" class="form-label">FWD EV2<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="fwd_ev2" id="textFwdEv2" placeholder="%">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">%</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textStopTm" class="form-label">STOP TM<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="stop_tm" id="textStopTm" placeholder="s">
+                                                                name="noz_bwd_tm_1" id="textNozBwdTm_1" placeholder="">
                                                                 <div class="input-group-prepend w-30">
                                                                     <span class="input-group-text w-100"
                                                                         id="basic-addon1">s</span>
@@ -1397,115 +1349,66 @@
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-3">
-                                                            <label for="textCount" class="form-label">COUNT<span
+                                                            <label for="textInjStTmg_1" class="form-label">INJ ST TMG<span
                                                                 class="text-danger"
                                                                 title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
                                                                 <input min="0" type="number" class="form-control"
-                                                                name="count" id="textCount" placeholder="">
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textEjtTmg" class="form-label">EJT TMG<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="ejt_tmg" id="textEjtTmg" placeholder="mm">
+                                                                name="inj_st_tmg_1" id="textInjStTmg_1" placeholder="%">
                                                                 <div class="input-group-prepend w-30">
                                                                     <span class="input-group-text w-100"
-                                                                        id="basic-addon1">mm</span>
+                                                                        id="basic-addon1">s</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-3">
-                                                            <label for="textEv2Chg" class="form-label">EV2 CHG<span
+                                                            <label for="textNozBwdTmg_2" class="form-label">NOZ BWD TMG<span
                                                                 class="text-danger"
                                                                 title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
                                                                 <input min="0" type="number" class="form-control"
-                                                                name="ev2_chg" id="textEv2Chg" placeholder="mm">
+                                                                name="noz_bwd_tmg_2" id="textNozBwdTmg_2" placeholder="%">
                                                                 <div class="input-group-prepend w-30">
                                                                     <span class="input-group-text w-100"
-                                                                        id="basic-addon1">mm</span>
+                                                                        id="basic-addon1">s</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-3">
-                                                            <label for="textFwdStop" class="form-label">FWD STOP<span
+                                                            <label for="textInjStTmg2" class="form-label">INJ. ST TMG<span
                                                                 class="text-danger"
                                                                 title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
                                                                 <input min="0" type="number" class="form-control"
-                                                                name="fwd_stop" id="textFwdStop" placeholder="">
+                                                                name="inj_st_tmg_2" id="textInjStTmg2" placeholder="%">
                                                                 <div class="input-group-prepend w-30">
                                                                     <span class="input-group-text w-100"
-                                                                        id="basic-addon1">mm</span>
+                                                                        id="basic-addon1">s</span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textBwdEv4" class="form-label">BWD EV4<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="bwd_ev4" id="textBwdEv4" placeholder="%">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">%</span>
-                                                                </div>
+                                                        <div class="row">
+                                                            <div class="col-md-5 col-md-3">
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textBwdPrs" class="form-label">BWD PRS<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="bwd_prs" id="textBwdPrs" placeholder="%">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">%</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textRepeatBwdStop" class="form-label">REPEAT BWD STOP<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="repeat_bwd_stop" id="textRepeatBwdStop" placeholder="mm">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">mm</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textRepeatEjtEv3" class="form-label">REPEAT EJT EV3<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="repeat_ejt_ev3" id="textRepeatEjtEv3" placeholder="%">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">%</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-3">
-                                                            <label for="textRepeatFwdStop" class="form-label">REPEAT FWD STOP<span
-                                                                class="text-danger"
-                                                                title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number" class="form-control"
-                                                                name="repeat_fwd_stop" id="textRepeatFwdStop" placeholder="mm">
-                                                                <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">mm</span>
+                                                            <div class="col-md-5 col-lg-3">
+                                                                <div class="card">
+                                                                    <div class="card-body">
+                                                                        <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" index="1.8" id="supportTempoSlow" name="support_tempo" value="SLOW">
+                                                                            &NonBreakingSpace;
+                                                                            <label class="form-check-label dieset_condition_data"> SLOW</label>
+                                                                        </div>
+                                                                        <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" index="1.8" id="supportTempoMedium" name="support_tempo" value="MEDIUM">
+                                                                            &NonBreakingSpace;
+                                                                            <label class="form-check-label dieset_condition_data"> MEDIUM</label>
+                                                                        </div>
+                                                                        <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                            <input class="form-check-input" type="radio" index="1.8" id="supportTempoFast" name="support_tempo" value="FAST">
+                                                                            &NonBreakingSpace;
+                                                                            <label class="form-check-label dieset_condition_data"> FAST</label>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1513,7 +1416,8 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        {{-- <div class="card" id="InjectionTab">
+
+                                        <div class="card" id="InjectionTab">
                                             <div class="card-header" id="headingOne">
                                                 <h5 class="mb-0">
                                                     <button class="btn btn-link" type="button"
@@ -1524,101 +1428,10 @@
                                                     </button>
                                                 </h5>
                                             </div>
-
                                             <div id="injectionTab" class="collapse" aria-labelledby="headingOne"
                                                 data-parent="#accordionExample">
                                                 <div class="card-body">
 
-                                                    <div class="col-md-12 col-lg-6">
-                                                        <label for="textHiV" class="form-label">VELOCITY
-                                                            SELECT</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-6 col-lg-2">
-                                                            <label for="numInjTabRv6" class="form-label">RV6<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rv6"
-                                                                id="numInjTabRv6" placeholder="%">
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-2">
-                                                            <label for="numInjTabRv5" class="form-label">RV5<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rv5"
-                                                                id="numInjTabRv5" placeholder="%">
-
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-2">
-                                                            <label for="numInjTabRv4" class="form-label">RV4<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rv4"
-                                                                id="numInjTabRv4" placeholder="%">
-
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-2">
-                                                            <label for="numInjTabRv3" class="form-label">RV3<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rv3"
-                                                                id="numInjTabRv3" placeholder="">
-                                                        </div>
-
-                                                        <div class="col-md-6 col-lg-2">
-                                                            <label for="numInjTabRv2" class="form-label">RV2<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rv2"
-                                                                id="numInjTabRv2" placeholder="mm">
-                                                        </div>
-                                                        <div class="col-md-6 col-lg-2">
-                                                            <label for="numInjTabRv1" class="form-label">RV1<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rv1"
-                                                                id="numInjTabRv1" placeholder="mm">
-
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-12 col-lg-6 mt-5">
-                                                        <label for="textHiV" class="form-label">PRESSURE
-                                                            SELECT</label>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="col-md-4 col-lg-4">
-                                                            <label for="numInjTabRp1" class="form-label">RP3<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rp3"
-                                                                id="numInjTabRp3" placeholder="mm">
-
-                                                        </div>
-                                                        <div class="col-md-4 col-lg-4">
-                                                            <label for="numInjTabRp2" class="form-label">RP2<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rp2"
-                                                                id="numInjTabRp2" placeholder="mm">
-                                                        </div>
-
-                                                        <div class="col-md-4 col-lg-4">
-                                                            <label for="numInjTabRp1" class="form-label">RP1<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <input min="0" type="number"
-                                                                class="form-control" name="inj_tab_rp1"
-                                                                id="numInjTabRp1" placeholder="%">
-                                                        </div>
-                                                    </div>
                                                     <div class="row mt-5">
                                                         <div class="col-md-6 col-lg-4">
                                                             <label for="numInjTabFillTime" class="form-label">FILL
@@ -1648,73 +1461,87 @@
                                                     </div>
 
                                                     <div class="row mt-4">
-                                                        <div class="col-md-2 col-lg-2">
+                                                        <div class="col-md-2 col-lg-4">
                                                             <label for="textHiP" class="form-label">SPRAY TYPE<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <div>
-                                                                <input type="radio" id="radioInjTabSprayTypeYP"
-                                                                    name="inj_tab_spray_type" value="YP">
-                                                                <label for="radioInjTabSprayTypeYP">YP</label>
-                                                                <div
-                                                                    style="display: inline-block; margin-left:103px;">
+                                                                class="text-danger"
+                                                                title="Required">*</span></label>
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" index="1.8" id="radioInjTabSprayTypePower" name="inj_tab_spray_type" value="POWER">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabSprayTypeYP">POWER</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" index="1.8" id="radioInjTabSprayTypeZ" name="inj_tab_spray_type" value="Z">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabSprayTypeZ">Z</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" index="1.8" id="radioInjTabSprayTypeRF" name="inj_tab_spray_type" value="RF">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabSprayTypeYP">RF</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" index="1.8" id="radioInjTabSprayTypeNO" name="inj_tab_spray_type" value="NO">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabSprayTypeZ">NO</label>
+                                                                    </div>
                                                                 </div>
-                                                                <input type="radio" id="radioInjTabSprayTypeZ"
-                                                                    name="inj_tab_spray_type" value="Z">
-                                                                <label for="radioInjTabTypeZ">Z</label>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-2 col-lg-2">
                                                             <label for="textHiP" class="form-label">SPRAY<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <div>
-                                                                <input type="radio" id="radioInjTabSprayYes"
-                                                                    name="inj_tab_spray" value="YES">
-                                                                <label for="radioInjTabYes">YES</label>
-                                                                <div
-                                                                    style="display: inline-block; margin-left:103px;">
-                                                                </div>
-                                                                <input type="radio" id="radioInjTabSprayNo"
-                                                                    name="inj_tab_spray" value="NO">
-                                                                <label for="radioInjTabNo">NO</label>
-                                                            </div>
+                                                                class="text-danger"
+                                                                title="Required">*</span></label>
+
+                                                            <input class="form-control" type="number" index="1.8" id="radioInjTabSprayYes" name="inj_tab_spray" value="YP">
                                                         </div>
-                                                        <div class="col-md-2 col-lg-3">
+                                                        <div class="col-md-2 col-lg-2">
                                                             <label for="textHiP" class="form-label">SPRAY MODE<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <div>
-                                                                <input type="radio"
-                                                                    id="radioInjTabSprayModeManual"
-                                                                    name="inj_tab_spray_mode" value="MANUAL">
-                                                                <label for="radioInjTabModeManual">MANUAL</label>
-                                                                <div
-                                                                    style="display: inline-block; margin-left:103px;">
+                                                                class="text-danger"
+                                                                title="Required">*</span></label>
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            id="radioInjTabSprayModeManual"
+                                                                            name="inj_tab_spray_mode" value="MANUAL">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabModeManual">MANUAL</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabSprayModeAuto"
+                                                                            name="inj_tab_spray_mode" value="AUTO">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabModeAuto">AUTO</label>
+                                                                    </div>
                                                                 </div>
-                                                                <input type="radio" id="radioInjTabSprayModeAuto"
-                                                                    name="inj_tab_spray_mode" value="AUTO">
-                                                                <label for="radioInjTabModeAuto">AUTO</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-2 col-lg-3">
-                                                            <label for="textHiP" class="form-label">SPRAY SIDE<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <div>
-                                                                <input type="radio" id="radioInjTabSpraySideMove"
-                                                                    name="inj_tab_spray_side" value="MOVE">
-                                                                <label for="radioInjTabSideMove">MOVE</label>
-                                                                <div
-                                                                    style="display: inline-block; margin-left:103px;">
-                                                                </div>
-                                                                <input type="radio" id="radioInjTabSpraySideFixed"
-                                                                    name="inj_tab_spray_side" value="FIXED">
-                                                                <label for="radioInjTabSideFixed">FIXED</label>
                                                             </div>
                                                         </div>
                                                         <div class="col-md-2 col-lg-2">
-                                                            <label for="textHiP" class="form-label">SPRAY TM<span
+                                                            <label for="textHiP" class="form-label">SPRAY SIDE<span
+                                                                class="text-danger"
+                                                                title="Required">*</span></label>
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabSpraySideMove"
+                                                                            name="inj_tab_spray_side" value="MOVE">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabSideMove">MOVE</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabSpraySideFixed"
+                                                                            name="inj_tab_spray_side" value="FIXED">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabSideFixed">FIXED</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 col-lg-2">
+                                                            <label for="numInjTabSprayTm" class="form-label">SPRAY TM<span
                                                                     class="text-danger"
                                                                     title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
@@ -1722,15 +1549,12 @@
                                                                     class="form-control" name="inj_tab_spray_tm"
                                                                     id="numInjTabSprayTm">
                                                                 <div class="input-group-prepend w-30">
-                                                                    <span class="input-group-text w-100"
-                                                                        id="basic-addon1">sec</span>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                     <div class="row mt-4">
-                                                        <div class="col-md-2 col-lg-2">
+                                                        <div class="col-md-2 col-lg-3">
                                                             <label for="textHiP" class="form-label">SCREW MOST
                                                                 FWD<span class="text-danger"
                                                                     title="Required">*</span></label>
@@ -1745,7 +1569,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-2 col-lg-2">
+                                                        <div class="col-md-2 col-lg-3">
                                                             <label for="textHiP" class="form-label">ENJ. END
                                                                 POS.<span class="text-danger"
                                                                     title="Required">*</span></label>
@@ -1759,82 +1583,135 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-2 col-lg-3">
-                                                            <label for="textHiP" class="form-label">AIRBLOW(START
-                                                                TIME)<span class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number"
-                                                                    class="form-control"
-                                                                    name="inj_tab_airblow_start_time"
-                                                                    id="numInjTabAirblowStartTimes">
+                                                        <div class="col-md-2 col-lg-4">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div class="row">
+                                                                        <div class="col-md-2 col-lg-6">
+                                                                            <label for="textHiP" class="form-label">AIRBLOW(START
+                                                                                TIME)<span class="text-danger"
+                                                                                    title="Required">*</span></label>
+                                                                            <div class="input-group input-group-sm mb-3">
+                                                                                <input min="0" type="number"
+                                                                                    class="form-control"
+                                                                                    name="inj_tab_airblow_start_time"
+                                                                                    id="numInjTabAirblowStartTimes">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="col-md-2 col-lg-6">
+                                                                            <label for="textHiP" class="form-label">AIRBLOW(BLOW
+                                                                                TIME)<span class="text-danger"
+                                                                                    title="Required">*</span></label>
+                                                                            <div class="input-group input-group-sm mb-3">
+                                                                                <input min="0" type="number"
+                                                                                    class="form-control"
+                                                                                    name="inj_tab_airblow_blow_time"
+                                                                                    id="numInjTabAirblowBlowTime">
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-2 col-lg-3">
-                                                            <label for="textHiP" class="form-label">AIRBLOW(BLOW
-                                                                TIME)<span class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <input min="0" type="number"
-                                                                    class="form-control"
-                                                                    name="inj_tab_airblow_blow_time"
-                                                                    id="numInjTabAirblowBlowTime">
+                                                        <div class="col-md-2 col-lg-2">
+                                                            <label for="textHiP" class="form-label">CCD<span
+                                                                class="text-danger"
+                                                                title="Required">*</span></label>
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabCcdYes"
+                                                                            name="inj_tab_ccd" value="YES">
+                                                                            &NonBreakingSpace;
+                                                                        <label for="injTabCcdYes">YES</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabCcdNo"
+                                                                            name="inj_tab_ccd" value="NO">
+                                                                            &NonBreakingSpace;
+                                                                        <label for="injTabCcdNo">NO</label>
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                     <div class="row mt-4">
-                                                        <div class="col-md-4 col-lg-4">
-                                                            <label for="textHiP" class="form-label">CCD<span
-                                                                    class="text-danger"
-                                                                    title="Required">*</span></label>
-                                                            <div>
-                                                                <input type="radio" id="radioInjTabCcdYes"
-                                                                    name="inj_tab_ccd" value="YES">
-                                                                <label for="injTabCcdYes">YES</label>
-                                                                <div
-                                                                    style="display: inline-block; margin-left:103px;">
-                                                                </div>
-                                                                <input type="radio" id="radioInjTabCcdNo"
-                                                                    name="inj_tab_ccd" value="NO">
-                                                                <label for="injTabCcdNo">NO</label>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-4 col-lg-4">
+                                                        <div class="col-md-2 col-lg-2 mr-5">
                                                             <label for="textHiP" class="form-label">EJ. SPIN
                                                                 CHECKER<span class="text-danger"
                                                                     title="Required">*</span></label>
-                                                            <div>
-                                                                <input type="radio" id="radioInjTabEscYes"
-                                                                    name="inj_tab_esc" value="YES">
-                                                                <label for="injTabEscYes">YES</label>
-                                                                <div
-                                                                    style="display: inline-block; margin-left:103px;">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabEscYes"
+                                                                            name="inj_tab_esc" value="YES">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="injTabEscYes">YES</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabEscNo"
+                                                                            name="inj_tab_esc" value="NO">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="injTabEscNo">NO</label>
+                                                                    </div>
                                                                 </div>
-                                                                <input type="radio" id="radioInjTabEscNo"
-                                                                    name="inj_tab_esc" value="NO">
-                                                                <label for="injTabEscNo">NO</label>
                                                             </div>
                                                         </div>
-                                                        <div class="col-md-4 col-lg-4">
+                                                        <div class="col-md-2 col-lg-2 mr-5">
+                                                            <label for="textHiP" class="form-label">PUNCH<span
+                                                                class="text-danger"
+                                                                title="Required">*</span></label>
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabSprayPunchHard"
+                                                                            name="inj_tab_punch" value="HARD">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabPunchHard">HARD</label>
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio" id="radioInjTabSprayPunchSoft"
+                                                                            name="inj_tab_punch" value="SOFT">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabPunchSoft">SOFT</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 col-lg-3 mr-5">
                                                             <label for="textHiP" class="form-label">SPRAY
                                                                 PORTION<span class="text-danger"
                                                                     title="Required">*</span></label>
-                                                            <div>
-                                                                <input type="radio"
-                                                                    id="radioInjTabSprayPortionCenter"
-                                                                    name="inj_tab_spray_portion"
-                                                                    value="CENTER ONLY">
-                                                                <label for="radioInjTabPortionCenter">CENTER
-                                                                    ONLY</label>
-                                                                <div
-                                                                    style="display: inline-block; margin-left:103px;">
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            id="radioInjTabSprayPortionCenter"
+                                                                            name="inj_tab_spray_portion"
+                                                                            value="CENTER ONLY">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabPortionCenter">CENTER
+                                                                    </div>
+                                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            id="radioInjTabSprayPortionWhole"
+                                                                            name="inj_tab_spray_portion" value="WHOLE AREA">
+                                                                        &NonBreakingSpace;
+                                                                        <label for="radioInjTabPortionWhole">WHOLE AREA
+                                                                    </div>
                                                                 </div>
-                                                                <input type="radio"
-                                                                    id="radioInjTabSprayPortionWhole"
-                                                                    name="inj_tab_spray_portion" value="WHOLE AREA">
-                                                                <label for="radioInjTabPortionWhole">WHOLE
-                                                                    AREA</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-2 col-lg-2 mr-5">
+                                                            <label for="numInjTabPunchApplcn" class="form-label">PUNCH APPLICATION<span
+                                                                    class="text-danger"
+                                                                    title="Required">*</span></label>
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number"
+                                                                    class="form-control" name="inj_tab_punch_applcn"
+                                                                    id="numInjTabPunchApplcn">
+                                                                <div class="input-group-prepend w-30">
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1890,7 +1767,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="card" id="InjectionTabList">
+                                    {{--     <div class="card" id="InjectionTabList">
                                             <div class="card-body">
                                                 <div style="float: right;">
                                                     <div class="text-right mt-4">

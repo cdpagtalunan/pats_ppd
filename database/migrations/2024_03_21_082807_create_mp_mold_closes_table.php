@@ -16,17 +16,17 @@ class CreateMpMoldClosesTable extends Migration
         Schema::create('mp_mold_closes', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('machine_parameter_id')->unsigned();
-            $table->string('hi_v')->nullable()->default('N/A');
-            $table->string('mid_slow')->nullable()->default('N/A');
-            $table->string('low_v')->nullable()->default('N/A');
-            $table->string('close_monitor_tm')->nullable()->default('N/A');
-            $table->string('slow_start')->nullable()->default('N/A');
-            $table->string('slow_end')->nullable()->default('N/A');
-            $table->string('lvlp')->nullable()->default('N/A');
-            $table->string('hpcl')->nullable()->default('N/A');
-            $table->string('mid_sl_p')->nullable()->default('N/A');
-            $table->string('low_p')->nullable()->default('N/A');
-            $table->string('hi_p')->nullable()->default('N/A');
+            $table->float('hi_v')->nullable()->default(0);
+            $table->float('mid_slow')->nullable()->default(0);
+            $table->float('low_v')->nullable()->default(0);
+            $table->float('close_monitor_tm')->nullable()->default(0);
+            $table->float('slow_start')->nullable()->default(0);
+            $table->float('slow_end')->nullable()->default(0);
+            $table->float('lvlp')->nullable()->default(0);
+            $table->float('hpcl')->nullable()->default(0);
+            $table->float('mid_sl_p')->nullable()->default(0);
+            $table->float('low_p')->nullable()->default(0);
+            $table->float('hi_p')->nullable()->default(0);
             // Defaults
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('last_updated_by')->nullable();
