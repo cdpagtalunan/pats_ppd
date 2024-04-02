@@ -86,11 +86,6 @@
                                             data-bs-target="#MachineParameter" type="button" role="tab">Form
                                             1</button>
                                     </li>
-                                    <li class="nav-item" role="presentation">
-                                        <button class="nav-link" data-bs-toggle="tab"
-                                            data-bs-target="#machineParameterForm2" type="button" role="tab">Form
-                                            2</button>
-                                    </li>
                                 </ul>
                                 <div class="tab-content" id="myTabContent">
                                     <div class="tab-pane fade show active" id="MachineParameter" role="tabpanel">
@@ -115,34 +110,6 @@
                                             </table>
                                         </div>
                                     </div>
-
-                                    <div class="tab-pane fade" id="machineParameterForm2" role="tabpanel"
-                                        aria-labelledby="tabmachineParameterForm2">
-                                        <div style="float: right;">
-                                            <div class="text-right mt-4">
-                                                <button type="button" class="btn btn-primary mb-3" id="btnAddMachine2"
-                                                    data-bs-toggle="modal" data-bs-target="#modalAddMachine2"><i
-                                                        class="fa fa-plus fa-md"></i> Add Machine Parameter</button>
-                                            </div>
-                                        </div> <br><br>
-                                        <div class="table-responsive">
-                                            <table id="tableMachineParameter_form2"
-                                                class="table table-sm table-bordered table-striped table-hover"
-                                                style="width: 100%;">
-                                                <thead>
-                                                    <tr style="text-align:center">
-                                                        <th>Action</th>
-                                                        <th>Status</th>
-                                                        <th>Machine Name</th>
-                                                        <th>Device Name</th>
-                                                        <th>Material Name</th>
-                                                        <th>Machine No.</th>
-                                                    </tr>
-                                                </thead>
-                                            </table>
-                                        </div>
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
@@ -181,15 +148,22 @@
                                         </div>
                                         <div class="col-md-6 col-lg-4">
                                             <label class="form-label">Accumulator<span class="text-danger"
-                                                    title="Required">*</span></label>
-                                            <div>
-                                                <input type="radio" id="with" name="is_accumulator"
-                                                    value="1">
-                                                <label for="with">With</label>
-                                                <div style="display: inline-block; margin-left:103px;"></div>
-                                                <input type="radio" id="without" name="is_accumulator"
-                                                    value="2">
-                                                <label for="without">Without</label>
+                                                title="Required">*</span></label>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" id="with" name="is_accumulator"
+                                                            value="1">
+                                                        &NonBreakingSpace;
+                                                        <label for="with">With</label>
+                                                    </div>
+                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" id="without" name="is_accumulator"
+                                                            value="2">
+                                                        &NonBreakingSpace;
+                                                        <label for="without">Without</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-4">
@@ -238,17 +212,24 @@
                                                 placeholder="Color">
 
                                         </div>
-                                        <div class="col-md-6 col-lg-4">
+                                        <div class="col-md-2 col-lg-4">
                                             <label class="form-label">Dryer Used<span class="text-danger"
-                                                    title="Required">*</span></label>
-                                            <div>
-                                                <input type="radio" id="dryerOven" name="dryer_used"
-                                                    value="1">
-                                                <label for="dryerOven">Oven</label>
-                                                <div style="display: inline-block; margin-left:103px;"></div>
-                                                <input type="radio" id="dryerDHD" name="dryer_used"
-                                                    value="2">
-                                                <label for="dryerDHD">DHD</label>
+                                                title="Required">*</span></label>
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                        <input  class="form-check-input" type="radio" id="dryerOven" name="dryer_used"
+                                                            value="1">
+                                                        &NonBreakingSpace;
+                                                        <label for="dryerOven">Oven</label>
+                                                    </div>
+                                                    <div style="margin-left: 10%" class="form-check form-check-inline">
+                                                        <input  class="form-check-input" type="radio" id="dryerDHD" name="dryer_used"
+                                                        value="2">
+                                                        &NonBreakingSpace;
+                                                        <label for="dryerDHD">DHD</label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-4">
@@ -271,9 +252,7 @@
                                                 name="unit_weight" id="textUnitWeight" placeholder="Unit Weight">
                                         </div>
                                     </div>
-
                                     <br>
-
                                     <div class="accordion" id="accordionExample">
 
                                         <div class="card" id="MoldClose">
@@ -822,24 +801,48 @@
                                                             SET
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="nozzle_set"
-                                                                id="textNozzleSet" placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="nozzle_set"
+                                                                    id="textNozzleSet" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="front_set"
-                                                                id="textFrontSet" placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="front_set"
+                                                                    id="textFrontSet" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="mid_set" id="textMidSet"
-                                                                placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="mid_set" id="textMidSet"
+                                                                    placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="rear_set" id="textRearSet"
-                                                                placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="rear_set" id="textRearSet"
+                                                                    placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <br>
@@ -849,24 +852,48 @@
                                                             ACTUAL
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="nozzle_actual"
-                                                                id="textNozzleActual" placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="nozzle_actual"
+                                                                    id="textNozzleActual" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="front_actual"
-                                                                id="textFrontActual" placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="front_actual"
+                                                                    id="textFrontActual" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="mid_actual"
-                                                                id="textMidActual" placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="mid_actual"
+                                                                    id="textMidActual" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <div class="col-md-6 col-lg-2">
-                                                            <input min="0" type="number" step="0.01"
-                                                                class="form-control" name="rear_actual"
-                                                                id="textRearActual" placeholder="">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="rear_actual"
+                                                                    id="textRearActual" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">°C</span>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <br>
@@ -1354,7 +1381,7 @@
                                                                 title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
                                                                 <input min="0" type="number" class="form-control"
-                                                                name="inj_st_tmg_1" id="textInjStTmg_1" placeholder="%">
+                                                                name="inj_st_tmg_1" id="textInjStTmg_1" placeholder="">
                                                                 <div class="input-group-prepend w-30">
                                                                     <span class="input-group-text w-100"
                                                                         id="basic-addon1">s</span>
@@ -1367,7 +1394,7 @@
                                                                 title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
                                                                 <input min="0" type="number" class="form-control"
-                                                                name="noz_bwd_tmg_2" id="textNozBwdTmg_2" placeholder="%">
+                                                                name="noz_bwd_tmg_2" id="textNozBwdTmg_2" placeholder="">
                                                                 <div class="input-group-prepend w-30">
                                                                     <span class="input-group-text w-100"
                                                                         id="basic-addon1">s</span>
@@ -1380,7 +1407,7 @@
                                                                 title="Required">*</span></label>
                                                             <div class="input-group input-group-sm mb-3">
                                                                 <input min="0" type="number" class="form-control"
-                                                                name="inj_st_tmg_2" id="textInjStTmg2" placeholder="%">
+                                                                name="inj_st_tmg_2" id="textInjStTmg2" placeholder="">
                                                                 <div class="input-group-prepend w-30">
                                                                     <span class="input-group-text w-100"
                                                                         id="basic-addon1">s</span>
@@ -1767,7 +1794,7 @@
                                             </div>
                                         </div>
 
-                                    {{--     <div class="card" id="InjectionTabList">
+                                        <div class="card" id="InjectionTabList">
                                             <div class="card-body">
                                                 <div style="float: right;">
                                                     <div class="text-right mt-4">
@@ -1804,7 +1831,7 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                        </div>     --}}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1812,232 +1839,283 @@
                     </div>
                     <div class="modal-footer justify-content-between">
                         <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="btnAddMachine1" class="btn btn-primary"><i
-                                id="ibtnAddMachine1Icon" class="fa fa-check"></i> Save</button>
+                        <button type="submit" id="btnAddMachine1" class="btn btn-primary"><i id="ibtnAddMachine1Icon" class="fa fa-check"></i> Save</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     <!-- Add User Modal End -->
+
+    <!-- Add Injection Tab -->
+    <div class="modal fade" id="modalAddInjectionTabList" data-bs-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        Injection Tab List
+                    </h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <form id="formInjectionTabList">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-12 border">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Machine
+                                                    Parameter ID</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm"
+                                                name="machine_parameter_id" id="numMachineParameterId">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">Injection Tab
+                                                    List ID</span>
+                                            </div>
+                                            <input type="number" class="form-control form-control-sm"
+                                                name="injection_tab_list_id" id="numInjectionTabListId">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">MO DAY</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm"
+                                                name="inj_tab_list_mo_day" id="txtInjTabListMoDay">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">SHOT
+                                                    COUNT</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm"
+                                                name="inj_tab_list_shot_count" id="txtInjTabListShotCount">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">OPERATOR
+                                                    NAME</span>
+                                            </div>
+                                            <select class="form-select form-control-sm"
+                                                name="inj_tab_list_operator_name" id="slctInjTabListOperatorName">
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">MATERIAL TIME
+                                                    "IN"</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm"
+                                                name="inj_tab_list_mat_time_in" id="txtInjTabListMatTimeIn">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">PRODUCTION
+                                                    TIME (START)</span>
+                                            </div>
+                                            <input type="time" class="form-control form-control-sm"
+                                                name="inj_tab_list_prond_time_start"
+                                                id="txtInjTabListProndTimeStart">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">PRODUCTION
+                                                    TIME (END)</span>
+                                            </div>
+                                            <input type="time" class="form-control form-control-sm"
+                                                name="inj_tab_list_prond_time_end" id="txtInjTabListProndTimeEnd">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">MATERIAL LOT
+                                                    NO. (VIRGIN)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm"
+                                                name="inj_tab_list_mat_lot_num_virgin"
+                                                id="txtInjTabListMatLotNumVirgin">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100" id="basic-addon1">MATERIAL LOT
+                                                    NO. (RECYCLED)</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm"
+                                                name="inj_tab_list_mat_lot_num_recycle"
+                                                id="txtInjTabListMatLotNumRecycle">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                                <span class="input-group-text w-100" id="basic-addon1">TOTAL
+                                                    MATERIAL DRING TIME</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm"
+                                                name="inj_tab_list_total_mat_dring_time"
+                                                id="txtInjTabListTotalMatDringTime">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-30">
+                                                <span class="input-group-text w-100"
+                                                    id="basic-addon1">REMARKS</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm"
+                                                name="inj_tab_list_remarks" id="txtInjTabListRemarks">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" id="btnAddInjectionTabList" class="btn btn-primary"><i
+                                id="iconAddInjectionTabList" class="fa fa-check"></i> Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="modal" id="modal-loading" data-bs-keyboard="false" data-bs-backdrop="static">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="loading-spinner mb-2"></div>
+                    <div>Loading, please wait !</div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js_content')
     <script>
-        $('[type=number]').val(7);
-        $('[type=text]').val(3);
-        const saveMachineOne = () => {
-            $.ajax({
-                type: 'POST',
-                url: 'save_machine_one',
-                data: $('#formAddMachine1').serialize(),
-                dataType: 'json',
-                beforeSend: function() {
-                    $('#modal-loading').modal('show');
-                },
-                success: function (response) {
-                    console.log(response);
-                    return;
-                    if(response['is_success'] == 'true'){
-                        $('#modal-loading').modal('hide');
-                        $('#modalAddMachine1').modal('hide');
-                        $('#formAddMachine1')[0].reset();
-                        toastr.success('Save Sucessfully');
-                        dt.MachineParameter.draw();
-                    }else{
-                        toastr.error('Saving Failed');
-                    }
-                },error: function (data, xhr, status){
-                    $('#modal-loading').modal('hide');
-                    if(data.status === 422){
-                        let errors = data.responseJSON.errors ;
-                        toastr.error(`Saving Failed, Please fill up all required fields`);
-                        //Machine Parameter
-                        errorHandler( errors.machine_id,form.formAddMachine1.find('[name="machine_id"]') );
-                        errorHandler( errors.device_name,form.formAddMachine1.find('[name="device_name"]') );
-                        errorHandler( errors.no_of_cavity,form.formAddMachine1.find('[name="no_of_cavity"]') );
-                        errorHandler( errors.material_mixing_ratio_v,form.formAddMachine1.find('[name="material_mixing_ratio_v"]') );
-                        errorHandler( errors.material_mixing_ratio_r,form.formAddMachine1.find('[name="material_mixing_ratio_r"]') );
-                        errorHandler( errors.material_name,form.formAddMachine1.find('[name="material_name"]') );
-                        errorHandler( errors.color,form.formAddMachine1.find('[name="color"]') );
-                        errorHandler( errors.machine_no,form.formAddMachine1.find('[name="machine_no"]') );
-                        errorHandler( errors.shot_weight,form.formAddMachine1.find('[name="shot_weight"]') );
-                        errorHandler( errors.unit_weight,form.formAddMachine1.find('[name="unit_weight"]') );
-                        //Mold Close
-                        errorHandler( errors.hi_v,form.formAddMachine1.find('[name="hi_v"]') );
-                        errorHandler( errors.mid_slow,form.formAddMachine1.find('[name="mid_slow"]') );
-                        errorHandler( errors.low_l,form.formAddMachine1.find('[name="low_l"]') ); //
-                        errorHandler( errors.obstacle_check_tm,form.formAddMachine1.find('[name="obstacle_check_tm"]') ); //
-                        errorHandler( errors.slow_start,form.formAddMachine1.find('[name="slow_start"]') );
-                        errorHandler( errors.slow_end,form.formAddMachine1.find('[name="slow_end"]') );
-                        errorHandler( errors.lvlp,form.formAddMachine1.find('[name="lvlp"]') );
-                        errorHandler( errors.hpcl,form.formAddMachine1.find('[name="hpcl"]') );
-                        errorHandler( errors.mid_sl_p,form.formAddMachine1.find('[name="mid_sl_p"]') );
-                        errorHandler( errors.low_p,form.formAddMachine1.find('[name="low_p"]') );
-                        errorHandler( errors.hi_p,form.formAddMachine1.find('[name="hi_p"]') );
-                        //Ejector
-                        errorHandler( errors.ej_pres,form.formAddMachine1.find('[name="ej_pres"]') );
-                        errorHandler( errors.fwd_ev1,form.formAddMachine1.find('[name="fwd_ev1"]') );
-                        errorHandler( errors.fwd_ev2,form.formAddMachine1.find('[name="fwd_ev2"]') );
-                        errorHandler( errors.fwd_stop,form.formAddMachine1.find('[name="fwd_stop"]') );
-                        errorHandler( errors.bwd_stop,form.formAddMachine1.find('[name="bwd_stop"]') );
-                        errorHandler( errors.count,form.formAddMachine1.find('[name="count"]') );
-                        errorHandler( errors.pattern,form.formAddMachine1.find('[name="pattern"]') );
-                        //Mold Open
-                        errorHandler( errors.open_end_v,form.formAddMachine1.find('[name="open_end_v"]') );
-                        errorHandler( errors.hi_velocity_2,form.formAddMachine1.find('[name="hi_velocity_2"]') );
-                        errorHandler( errors.hi_velocity_1_percent,form.formAddMachine1.find('[name="hi_velocity_1_percent"]') );
-                        errorHandler( errors.open_v,form.formAddMachine1.find('[name="open_v"]') );
-                        errorHandler( errors.tmp_stop_time,form.formAddMachine1.find('[name="tmp_stop_time"]') );
-                        errorHandler( errors.open_stop,form.formAddMachine1.find('[name="open_stop"]') );
-                        errorHandler( errors.low_distance,form.formAddMachine1.find('[name="low_distance"]') );
-                        errorHandler( errors.hi_velocity_1mm,form.formAddMachine1.find('[name="hi_velocity_1mm"]') );
-                        errorHandler( errors.tmp_stop_pos,form.formAddMachine1.find('[name="tmp_stop_pos"]') );
-                        //Heater
-                        errorHandler( errors.hot_sprue_set,form.formAddMachine1.find('[name="hot_sprue_set"]') );
-                        errorHandler( errors.nozzle_set,form.formAddMachine1.find('[name="nozzle_set"]') );
-                        errorHandler( errors.front_set,form.formAddMachine1.find('[name="front_set"]') );
-                        errorHandler( errors.mid_set,form.formAddMachine1.find('[name="mid_set"]') );
-                        errorHandler( errors.rear_set,form.formAddMachine1.find('[name="rear_set"]') );
-                        errorHandler( errors.mold_set,form.formAddMachine1.find('[name="mold_set"]') );
-                        errorHandler( errors.hot_sprue_actual,form.formAddMachine1.find('[name="hot_sprue_actual"]') );
-                        errorHandler( errors.front_actual,form.formAddMachine1.find('[name="front_actual"]') );
-                        errorHandler( errors.nozzle_actual,form.formAddMachine1.find('[name="nozzle_actual"]') );
-                        errorHandler( errors.mid_actual,form.formAddMachine1.find('[name="mid_actual"]') );
-                        errorHandler( errors.rear_actual,form.formAddMachine1.find('[name="rear_actual"]') );
-                        errorHandler( errors.mold_one_set,form.formAddMachine1.find('[name="mold_one_set"]') );
-                        errorHandler( errors.mold_two_set,form.formAddMachine1.find('[name="mold_two_set"]') );
-                        errorHandler( errors.mold_one_actual,form.formAddMachine1.find('[name="mold_one_actual"]') );
-                        errorHandler( errors.mold_two_actual,form.formAddMachine1.find('[name="mold_two_actual"]') );
-                        //Injection Velocity
-                        errorHandler( errors.cooling_time,form.formAddMachine1.find('[name="cooling_time"]') );
-                        errorHandler( errors.cycle_start,form.formAddMachine1.find('[name="cycle_start"]') );
-                        errorHandler( errors.inj_pp2,form.formAddMachine1.find('[name="inj_pp2"]') );
-                        errorHandler( errors.inj_pp3,form.formAddMachine1.find('[name="inj_pp3"]') );
-                        errorHandler( errors.inj_pp1,form.formAddMachine1.find('[name="inj_pp1"]') );
-                        errorHandler( errors.inj_v1,form.formAddMachine1.find('[name="inj_v1"]') );
-                        errorHandler( errors.inj_v2,form.formAddMachine1.find('[name="inj_v2"]') );
-                        errorHandler( errors.inj_v3,form.formAddMachine1.find('[name="inj_v3"]') );
-                        errorHandler( errors.inj_v4,form.formAddMachine1.find('[name="inj_v4"]') );
-                        errorHandler( errors.inj_v6,form.formAddMachine1.find('[name="inj_v6"]') );
-                        errorHandler( errors.inj_v5,form.formAddMachine1.find('[name="inj_v5"]') );
-                        errorHandler( errors.inj_sv1,form.formAddMachine1.find('[name="inj_sv1"]') );
-                        errorHandler( errors.inj_sv2,form.formAddMachine1.find('[name="inj_sv2"]') );
-                        errorHandler( errors.inj_sv3,form.formAddMachine1.find('[name="inj_sv3"]') );
-                        errorHandler( errors.inj_sv4,form.formAddMachine1.find('[name="inj_sv4"]') );
-                        errorHandler( errors.inj_sv5,form.formAddMachine1.find('[name="inj_sv5"]') );
-                        errorHandler( errors.inj_sm,form.formAddMachine1.find('[name="inj_sm"]') );
-                        errorHandler( errors.inj_sd,form.formAddMachine1.find('[name="inj_sd"]') );
-                        errorHandler( errors.inj_veloc_no,form.formAddMachine1.find('[name="inj_veloc_no"]') );
-                        errorHandler( errors.inj_press_no,form.formAddMachine1.find('[name="inj_press_no"]') );
-                        errorHandler( errors.inj_tp1,form.formAddMachine1.find('[name="inj_tp1"]') );
-                        errorHandler( errors.inj_tp2,form.formAddMachine1.find('[name="inj_tp2"]') ); //NOTE: For Machine 1 only
-                        errorHandler( errors.inj_pos_change_mode,form.formAddMachine1.find('[name="inj_pos_change_mode"]') );
-                        errorHandler( errors.inj_pos_vs,form.formAddMachine1.find('[name="inj_pos_vs"]') );
-                        errorHandler( errors.inj_pos_pb,form.formAddMachine1.find('[name="inj_pos_pb"]') );
-                        errorHandler( errors.inj_pv1,form.formAddMachine1.find('[name="inj_pv1"]') );
-                        errorHandler( errors.inj_pv2,form.formAddMachine1.find('[name="inj_pv2"]') );
-                        errorHandler( errors.inj_pv3,form.formAddMachine1.find('[name="inj_pv3"]') );
-                        errorHandler( errors.inj_sp1,form.formAddMachine1.find('[name="inj_sp1"]') );
-                        errorHandler( errors.inj_sp2,form.formAddMachine1.find('[name="inj_sp2"]') );
-                        //Injection Tab
-                        errorHandler( errors.inj_tab_rv6,form.formAddMachine1.find('[name="inj_tab_rv6"') );
-                        errorHandler( errors.inj_tab_rv5,form.formAddMachine1.find('[name="inj_tab_rv5"') );
-                        errorHandler( errors.inj_tab_rv4,form.formAddMachine1.find('[name="inj_tab_rv4"') );
-                        errorHandler( errors.inj_tab_rv3,form.formAddMachine1.find('[name="inj_tab_rv3"') );
-                        errorHandler( errors.inj_tab_rv2,form.formAddMachine1.find('[name="inj_tab_rv2"') );
-                        errorHandler( errors.inj_tab_rv1,form.formAddMachine1.find('[name="inj_tab_rv1"') );
-                        errorHandler( errors.inj_tab_rp3,form.formAddMachine1.find('[name="inj_tab_rp3"') );
-                        errorHandler( errors.inj_tab_rp2,form.formAddMachine1.find('[name="inj_tab_rp2"') );
-                        errorHandler( errors.inj_tab_rp1,form.formAddMachine1.find('[name="inj_tab_rp1"') );
-                        errorHandler( errors.inj_tab_fill_time,form.formAddMachine1.find('[name="inj_tab_fill_time"') );
-                        errorHandler( errors.inj_tab_plastic_time,form.formAddMachine1.find('[name="inj_tab_plastic_time"') );
-                        errorHandler( errors.inj_tab_cycle_time,form.formAddMachine1.find('[name="inj_tab_cycle_time"') );
-                        errorHandler( errors.inj_tab_spray_tm,form.formAddMachine1.find('[name="inj_tab_spray_tm"') );
-                        errorHandler( errors.inj_tab_screw_most_fwd,form.formAddMachine1.find('[name="inj_tab_screw_most_fwd"') );
-                        errorHandler( errors.inj_tab_enj_end_pos,form.formAddMachine1.find('[name="inj_tab_enj_end_pos"') );
-                        errorHandler( errors.inj_tab_airblow_start_time,form.formAddMachine1.find('[name="inj_tab_airblow_start_time"') );
-                        errorHandler( errors.inj_tab_airblow_blow_time,form.formAddMachine1.find('[name="inj_tab_airblow_blow_time"') );
-                        errorHandler( errors.inj_tab_md_temp_requirement,form.formAddMachine1.find('[name="inj_tab_md_temp_requirement"') );
-                        errorHandler( errors.inj_tab_md_time_requirement,form.formAddMachine1.find('[name="inj_tab_md_time_requirement"') );
-                        errorHandler( errors.inj_tab_md_temp_actual,form.formAddMachine1.find('[name="inj_tab_md_temp_actual"') );
-                    }else{
-                        toastr.error(`Error: ${data.status}`);
-                    }
-                }
+        $(document).ready(function() {
+            // $('[type=number]').val(8);
+            // $('[type=text]').val(4);
+            //TODO: InjectionTabList CRUD
 
+            const resetFormValues = (elementForm) => {
+                // Reset values
+                elementForm[0].reset();
+
+                // Reset hidden input fields
+                elementForm.find("select").val(0).trigger('change');
+
+                // Remove invalid & title validation
+                $('div').find('input').removeClass('is-invalid');
+                $("div").find('input').attr('title', '');
+                $('div').find('select').removeClass('is-invalid');
+                $("div").find('select').attr('title', '');
+            }
+
+            $('#modalAddMachine1').on('hidden.bs.modal', function() {
+                resetFormValues(formMachine.formAddMachine1);
             });
-        }
 
-        function getMachine1(cboElement){
-            let result = '<option value="0" disabled selected>Select One</option>';
-            $.ajax({
-                url: 'get_machine_name_form1',
-                method: 'get',
-                dataType: 'json',
-                beforeSend: function(){
-                    result = '<option value="0" disabled>Loading</option>';
-                    cboElement.html(result);
+            getMachine1($('#selectMachine1'));
+            getMachine2($('#selectMachine2'));
+
+            dataTableMachine.MachineParameter = $("#tableMachineParameter_form1").DataTable({
+                "processing": false,
+                "serverSide": true,
+                "responsive": true,
+                // "order": [[ 0, "desc" ],[ 4, "desc" ]],
+                "language": {
+                    "info": "Showing _START_ to _END_ of _TOTAL_ user records",
+                    "lengthMenu": "Show _MENU_ user records",
                 },
-                success: function(response){
-                    let disabled = '';
-                    if(response['machine_details_1'].length > 0){
-                        result = '<option value="0" disabled selected>Select One</option>';
-                        for(let index = 0; index < response['machine_details_1'].length; index++){
-                            result += '<option value="' + response['machine_details_1'][index].id + '">' + response['machine_details_1'][index].machine_name + '</option>';
-                        }
-                    }
-                    else{
-                        result = '<option value="0" disabled>No User Role found</option>';
-                    }
-                    cboElement.html(result);
+                "ajax": {
+                    url: "load_machine_parameter_one",
                 },
-                error: function(data, xhr, status){
-                    result = '<option value="0" disabled>Reload Again</option>';
-                    cboElement.html(result);
-                    console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                }
+                "columns": [{
+                        "data": "get_action",
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        "data": "get_status"
+                    },
+                    {
+                        "data": "machine_name"
+                    },
+                    {
+                        "data": "material_name"
+                    },
+                    {
+                        "data": "device_name"
+                    },
+                    {
+                        "data": "machine_no"
+                    },
+                ],
             });
-        }
 
-        function getMachine2(cboElement){
-            let result = '<option value="0" disabled selected>Select One</option>';
-            $.ajax({
-                url: 'get_machine_name_form2',
-                method: 'get',
-                dataType: 'json',
-                beforeSend: function(){
-                    result = '<option value="0" disabled>Loading</option>';
-                    cboElement.html(result);
-                },
-                success: function(response){
-                    let disabled = '';
-                    if(response['machine_details_2'].length > 0){
-                        result = '<option value="0" disabled selected>Select One</option>';
-                        for(let index = 0; index < response['machine_details_2'].length; index++){
-                            result += '<option value="' + response['machine_details_2'][index].id + '">' + response['machine_details_2'][index].machine_name + '</option>';
-                        }
-                    }
-                    else{
-                        result = '<option value="0" disabled>No User Role found</option>';
-                    }
-                    cboElement.html(result);
-                },
-                error: function(data, xhr, status){
-                    result = '<option value="0" disabled>Reload Again</option>';
-                    cboElement.html(result);
-                    console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                }
+            $(tableMachine.tableMachineParameter_form1).on('click', '#btnEditMachineParameter', function() {
+                let machineParameterId = $(this).attr('machine-parameter-id');
+                editMachineParameter(machineParameterId);
             });
-        }
-        getMachine1($('#selectMachine1'));
-        getMachine2($('#selectMachine2'));
 
-        $('#formAddMachine1').submit(function(e) {
-            e.preventDefault();
-            saveMachineOne();
+            $('#btnAddInjectionTabListOne').click(function(e) {
+                e.preventDefault();
+                let formAddMachineOneId = formMachine.formAddMachine1.find('[name="machine_parameter_id"]').val()
+                formMachine.formInjectionTabList.find('[name="machine_parameter_id"]').val(formAddMachineOneId);
+                fnGetOperatorName(formMachine.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'))
+            });
+
+            $('#formAddMachine1').submit(function(e) {
+                e.preventDefault();
+                saveMachineOne();
+            });
+
+            $('#formInjectionTabList').submit(function(e) {
+                e.preventDefault();
+                saveInjectionTabList();
+            });
+
+            // $(document).on('click', '#btnEditInjectionTabList', function() {
+            //     let injectionTabListId = $(this).attr('injection-tab-list-id');
+            //     editInjectionTabList(injectionTabListId)
+            //     fnGetOperatorName(form.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'))
+            // });
         });
-
     </script>
 @endsection
 @endauth

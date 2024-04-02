@@ -38,7 +38,6 @@ use App\Http\Controllers\SecondMoldingStationController;
 use App\Http\Controllers\StampingWorkingReportController;
 use App\Http\Controllers\MoldingIpqcInspectionController;
 use App\Http\Controllers\AssemblyOqcLotAppController;
-
 // use App\Http\Controllers\IpqcFirstMoldingController;
 // use App\Http\Controllers\IpqcSecondMoldingController;
 // use App\Http\Controllers\IpqcAssemblyController;
@@ -47,6 +46,7 @@ use App\Http\Controllers\DestinationPortDetailsController;
 use App\Http\Controllers\ExportTraceabilityReportController;
 use App\Http\Controllers\ExportOqcInspectionController;
 use App\Http\Controllers\ExportIqcInspectionController;
+use App\Http\Controllers\MachineParameterController;
 
 
 /*
@@ -120,6 +120,7 @@ Route::view('/first_molding_ipqc_inspection','first_molding_ipqc_inspection')->n
 Route::view('/ipqc_inspection_1st_molding','ipqc_inspection_1st_molding')->name('ipqc_inspection_1st_molding');
 Route::view('/ipqc_inspection_2nd_molding','ipqc_inspection_2nd_molding')->name('ipqc_inspection_2nd_molding');
 Route::view('/ipqc_inspection_assembly','ipqc_inspection_assembly')->name('ipqc_inspection_assembly');
+Route::view('/mprs','mprs')->name('mprs');
 
 /* CN ASSEMBLY */
 Route::view('/assembly','assembly')->name('assembly');
@@ -147,8 +148,10 @@ Route::view('/assy_oqc_lot_app','assembly_oqc_lot_app')->name('assy_oqc_lot_app'
 
 /* FINAL VISUAL VIEW */
 Route::view('/assy_fvi','assembly_fvi')->name('assy_fvi');
-
 Route::view('/stamping_working_report','stamping_working_report')->name('stamping_working_report');
+
+/* MACHINE PARAMETER */
+Route::view('/machine_parameter','machine_parameter')->name('machine_parameter');
 
 
 // USER CONTROLLER
@@ -278,40 +281,6 @@ Route::controller(StampingIpqcController::class)->group(function () {
     Route::get('/export/{CtrlNo}', 'excel')->name('export');
 });
 
-// // FIRST MOLDING -> IPQC CONTROLLER
-// Route::controller(IpqcFirstMoldingController::class)->group(function () {
-//     // FIRST MOLDING
-//     Route::get('/view_first_molding_ipqc_data', 'view_first_molding_ipqc_data')->name('view_first_molding_ipqc_data');
-//     Route::get('/get_device_from_first_molding', 'get_device_from_first_molding')->name('get_device_from_first_molding');
-//     Route::get('/get_first_molding_data', 'get_first_molding_data')->name('get_first_molding_data');
-//     Route::post('/add_first_molding_ipqc_inspection', 'add_first_molding_ipqc_inspection')->name('add_first_molding_ipqc_inspection');
-//     Route::post('/update_first_molding_ipqc_inspection_status', 'update_first_molding_ipqc_inspection_status')->name('update_first_molding_ipqc_inspection_status');
-//     Route::get('/first_molding_download_file/{id}', 'first_molding_download_file')->name('first_molding_download_file');
-// });
-
-// // SECOND MOLDING / ASSY -> IPQC CONTROLLER
-// Route::controller(IpqcSecondMoldingController::class)->group(function () {
-//     // SECOND MOLDING
-//     Route::get('/view_second_molding_ipqc_data', 'view_second_molding_ipqc_data')->name('view_second_molding_ipqc_data');
-//     Route::get('/get_device_from_second_molding', 'get_device_from_second_molding')->name('get_device_from_second_molding');
-//     Route::get('/get_second_molding_data', 'get_second_molding_data')->name('get_second_molding_data');
-//     Route::post('/add_second_molding_ipqc_inspection', 'add_second_molding_ipqc_inspection')->name('add_second_molding_ipqc_inspection');
-//     Route::post('/update_second_molding_ipqc_inspection_status', 'update_second_molding_ipqc_inspection_status')->name('update_second_molding_ipqc_inspection_status');
-//     Route::get('/second_molding_download_file/{id}', 'second_molding_download_file')->name('second_molding_download_file');
-// });
-
-// //ASSEMBLE -> IPQC CONTROLLER
-// Route::controller(IpqcAssemblyController::class)->group(function () {
-//     // ASSEMBLY
-//     Route::get('/view_assembly_ipqc_data', 'view_assembly_ipqc_data')->name('view_assembly_ipqc_data');
-//     Route::get('/get_devices_from_assembly', 'get_devices_from_assembly')->name('get_devices_from_assembly');
-//     Route::get('/get_assembly_data', 'get_assembly_data')->name('get_assembly_data');
-//     Route::post('/add_assembly_ipqc_inspection', 'add_assembly_ipqc_inspection')->name('add_assembly_ipqc_inspection');
-//     Route::post('/update_assembly_ipqc_inspection_status', 'update_assembly_ipqc_inspection_status')->name('update_assembly_ipqc_inspection_status');
-//     Route::get('/assembly_download_file/{id}', 'assembly_download_file')->name('assembly_download_file');
-// });
-
-//
 //FIRST MOLDING -> SECOND MOLDING -> ASSEMBLY IPQC CONTROLLER
 Route::controller(MoldingAssyIpqcController::class)->group(function () {
     Route::get('/get_devices_from_ipqc', 'get_devices_from_ipqc')->name('get_devices_from_ipqc');
@@ -513,9 +482,9 @@ Route::controller(SecondMoldingStationController::class)->group(function () {
 
 /* Stamping Working Report Controller */
 Route::controller(StampingWorkingReportController::class)->group(function () {
-    // Route::get('/view_second_molding_station', 'viewSecondMoldingStation')->name('view_second_molding_station');
-    Route::post('/save_stamping_working_report_details', 'saveStampingWorkingReportDetails')->name('save_stamping_working_report_details');
-    // Route::get('/get_second_molding_station_by_id', 'getSecondMoldingStationById')->name('get_second_molding_station_by_id');
+    Route::get('/view_stamping_working_report', 'viewStampingWorkingReport')->name('view_stamping_working_report');
+    Route::post('/save_machine_number', 'saveMachineNumber')->name('save_machine_number');
+    Route::get('/get_stamping_working_report_by_id', 'getStampingWorkingReportById')->name('get_stamping_working_report_by_id');
 });
 
 
@@ -668,6 +637,18 @@ Route::controller(ExportOqcInspectionController::class)->group(function () {
 Route::controller(ExportIqcInspectionController::class)->group(function () {
     Route::get('/search_iqc_inspection_material_name', 'searchIqcInspectionMaterialName')->name('search_iqc_inspection_material_name');
     Route::get('/export_iqc_inspection/{materialName}/{processType}/{from}/{to}', 'exportIqcInspection');
+});
+
+// EXPORT IQC Inspection DATA
+Route::controller(MachineParameterController::class)->group(function () {
+    Route::post('/save_machine_one', 'saveMachineOne')->name('save_machine_one');
+    Route::post('/save_injection_tab_list','saveInjectionTabList')->name('save_injection_tab_list');
+    Route::get('/edit_machine_parameter','editMachineParameter')->name('edit_machine_parameter');
+    Route::get('/load_machine_parameter_one','loadMachineParameterOne')->name('load_machine_parameter_one');
+    Route::get('/get_machine_name_form1','getMachineDetailsForm1')->name('get_machine_name_form1');
+    Route::get('/get_machine_name_form2','getMachineDetailsForm2')->name('get_machine_name_form2');
+
+    Route::get('/get_operator_name','getOperatorName')->name('get_operator_name');
 });
 
 

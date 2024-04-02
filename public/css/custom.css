@@ -421,3 +421,35 @@ body {
 .select2-container--bootstrap-5 .select2-search.select2-search--inline {
   width: 0 !important;
 }
+
+
+/* Loading Spinner */
+.loading-spinner{
+    width:30px;
+    height:30px;
+    border:2px solid indigo;
+    border-radius:50%;
+    border-top-color:#0001;
+    display:inline-block;
+    animation:loadingspinner .7s linear infinite;
+  }
+  @keyframes loadingspinner{
+    0%{
+      transform:rotate(0deg)
+    }
+    100%{
+      transform:rotate(360deg)
+    }
+  }
+
+/* .modal{
+    display: block !important;
+} */
+
+.modal-custom{
+    overflow-y: initial !important
+}
+.modal-body-custom{
+    height: 600px;
+    overflow-y: auto;
+}

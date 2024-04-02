@@ -8,10 +8,12 @@ use App\Models\MpEjector;
 use App\Models\MpSupport;
 use App\Models\MpMoldOpen;
 use App\Models\MpMoldClose;
+use App\Models\InjectionTabList;
 use Illuminate\Http\Request;
 use App\Models\MpInjectionTab;
 use Illuminate\Support\Carbon;
 use App\Models\MachineParameter;
+use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Models\MpInjectionVelocity;
 use App\Http\Requests\MpHeaterRequest;
@@ -24,17 +26,48 @@ use App\Http\Requests\InjectionTabRequest;
 use App\Http\Requests\MpInjectionTabRequest;
 use App\Http\Requests\MachineParameterRequest;
 use App\Http\Requests\MpInjectionVelocityRequest;
+use App\Http\Requests\InjectionTabListRequest;
+
 
 class MachineParameterController extends Controller
 {
+    public function loadMachineParameterOne(Request $request){
+        // return 'true' ;
+        date_default_timezone_set('Asia/Manila');
+        try {
+            $machine_parameter = DB::connection('mysql')
+            ->select(' SELECT  parameters.*,machines.machine_name
+                FROM machine_parameters AS parameters
+                LEFT JOIN machines ON machines.id = parameters.machine_id
+                WHERE machines.machine_category = 1 AND parameters.deleted_at IS NULL
+                ORDER BY parameters.created_at DESC
+            ');
+            return DataTables::of($machine_parameter)
+            ->addColumn('get_action', function($row){
+                $result = '';
+                $result .= '<center>';
+                //<button type="button" class="btn btn-primary mb-3" machine-parameter-id='$row->id' id="btnAddMachine1" data-bs-toggle="modal" data-bs-target="#modalAddMachine1"><i class='fa-solid fa-pen-to-square'></i></button>
+                $result .= "<button class='btn btn-info btn-sm mr-1' machine-parameter-id='$row->id' id='btnEditMachineParameter' data-bs-toggle='modal' data-bs-target='#modalAddMachine1'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('get_status', function($row){
+                $result = '';
+                $result .= "Status";
+                return $result;
+            })
+            ->rawColumns(['get_action','get_status'])
+            ->make(true);
+        } catch (\Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
 
     public function getMachineDetailsForm1(Request $request){
         $machine_details_1 = Machine::where('status',1)
         ->where('machine_category', 1)
         ->get();
-
         return response()->json(['machine_details_1' => $machine_details_1]);
-        // return $machine_details;
     }
 
     public function getMachineDetailsForm2(Request $request){
@@ -49,12 +82,9 @@ class MachineParameterController extends Controller
     }
     public function saveMachineOne(
         Request $request,MachineParameterRequest $machine_parameter_request,
-        MpMoldCloseRequest $mold_close_request,
-        MpEjectorRequest $ejector_request,
-        MpMoldOpenRequest $mold_open_request,
-        MpHeaterRequest $heater_request,
-        MpInjectionVelocityRequest $injection_velocity_request,
-        MpSupportRequest $support_request,
+        MpMoldCloseRequest $mold_close_request,MpEjectorRequest $ejector_request,
+        MpMoldOpenRequest $mold_open_request,MpHeaterRequest $heater_request,
+        MpInjectionVelocityRequest $injection_velocity_request,MpSupportRequest $support_request,
         MpInjectionTabRequest $injection_tab_request
     ){
         date_default_timezone_set('Asia/Manila');
@@ -140,4 +170,69 @@ class MachineParameterController extends Controller
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
+
+    public function editMachineParameter(Request $request){
+        // return $request->all();
+        date_default_timezone_set('Asia/Manila');
+        try {
+            $machine_parameter_id = $request->machine_parameter_id;
+
+            $machine_parameter_detail =  MachineParameter::with(
+                'mold_close','ejector_lub','mold_open',
+                'heater','injection_velocity','support','injection_tab',
+            )->where('id',$machine_parameter_id)->get();
+
+            return response()->json([
+                'is_success' => 'true',
+                'machine_parameter_detail' => $machine_parameter_detail[0],
+                'created_at' => Carbon::parse($machine_parameter_detail[0]->created_at)->format('Y-m-d H:i:s'),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
+    public function getOperatorName(Request $request){
+
+        date_default_timezone_set('Asia/Manila');
+        try {
+            $pats_ppd_user = DB::connection('mysql')
+            ->select(" SELECT * FROM users ");
+            foreach ($pats_ppd_user as $key => $value_pats_ppd_user) {
+                $arr_pats_ppd_user_id[] =$value_pats_ppd_user->id;
+                $arr_pats_ppd_user_value[] =$value_pats_ppd_user->firstname .' '. $value_pats_ppd_user->lastname;
+            }
+            return response()->json([
+                'id'    =>  $arr_pats_ppd_user_id,
+                'value' =>  $arr_pats_ppd_user_value
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
+    public function saveInjectionTabList(Request $request,InjectionTabListRequest $injection_tab_list_request){
+        date_default_timezone_set('Asia/Manila');
+        DB::beginTransaction();
+        return 'true';
+        try {
+            if( isset($request->injection_tab_list_id) || $request->injection_tab_list_id != ''){ //Edit Machine Parameter
+                InjectionTabList::where('id',$request->injection_tab_list_id)->whereNull('deleted_at')->update($injection_tab_list_request->validated());
+            }else{
+                $injection_tab_list_id = InjectionTabList::insertGetId([
+                    'machine_parameter_id' => $request->machine_parameter_id,
+                    'created_at' => Carbon::now(),
+                ]);
+                InjectionTabList::where('id',$injection_tab_list_id)->whereNull('deleted_at')->update(
+                    $injection_tab_list_request->validated()
+                );
+            }
+            DB::commit();
+            return response()->json(['is_success' => 'true']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
 }
