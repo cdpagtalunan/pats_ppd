@@ -395,7 +395,7 @@
         });
     }
 
-    const savefirstMoldingStation = function (){
+    const savefirstMoldingStation = function () {
         // let data = $.param({ 'shipment_output': input.inputTotalMachineOuput }) + "&" + formModal.firstMoldingStation.serialize();
 
         $.ajax({
@@ -404,19 +404,29 @@
             data: formModal.firstMoldingStation.serialize(),
             dataType: "json",
             success: function (response) {
-                if(response['result'] === 1){
+                if (response["result"] === 1) {
                     let total_machine_output = response.total_machine_output;
                     let shipment_output = response.shipment_output;
                     let step = response.step;
 
-                    if(step > 1){ // nmodify
-                        formModal.firstMolding.find('#shipment_output').val(shipment_output);
-                        formModal.firstMolding.find('#ng_count').val(response.ng_count);
-                        formModal.firstMolding.find('#total_machine_output').val(total_machine_output);
-                        calculateTotalMaterialYield (total_machine_output,shipment_output);
+                    if (step > 1) {
+                        // nmodify
+                        formModal.firstMolding
+                            .find("#shipment_output")
+                            .val(shipment_output);
+                        formModal.firstMolding
+                            .find("#ng_count")
+                            .val(response.ng_count);
+                        formModal.firstMolding
+                            .find("#total_machine_output")
+                            .val(total_machine_output);
+                        calculateTotalMaterialYield(
+                            total_machine_output,
+                            shipment_output
+                        );
                     }
 
-                    $('#modalFirstMoldingStation').modal('hide');
+                    $("#modalFirstMoldingStation").modal("hide");
                     formModal.firstMoldingStation[0].reset();
                     dt.firstMoldingStation.draw();
                     Swal.fire({
@@ -424,49 +434,74 @@
                         icon: "success",
                         title: "Saved Successfully !",
                         showConfirmButton: false,
-                        timer: 1500
+                        timer: 1500,
                     });
-                }else{
-                    $('#modalFirstMoldingStation').modal('hide');
+                } else {
+                    $("#modalFirstMoldingStation").modal("hide");
                     formModal.firstMoldingStation[0].reset();
                     Swal.fire({
                         position: "center",
                         icon: "error",
                         title: response.error_msg,
                         showConfirmButton: false,
-                        timer: 3000
+                        timer: 3000,
                     });
                 }
-            },error: function (data, xhr, status){
-                let errors = data.responseJSON.errors ;
-                if(data.status === 422){
-                    toastr.error(`Saving Failed, Please fill up all required fields`);
-                    errorHandler( errors.first_molding_id,formModal.firstMoldingStation.find('#first_molding_id') );
-                    errorHandler( errors.station,formModal.firstMoldingStation.find('#station') );
-                    errorHandler( errors.date,formModal.firstMoldingStation.find('#date') );
-                    errorHandler( errors.operator_name,formModal.firstMoldingStation.find('#operator_name') );
-                    errorHandler( errors.input,formModal.firstMoldingStation.find('#input') );
-                    errorHandler( errors.ng_qty,formModal.firstMoldingStation.find('#ng_qty') );
-                    errorHandler( errors.output,formModal.firstMoldingStation.find('#output') );
-                    errorHandler( errors.size_category,formModal.firstMoldingStation.find('#size_category') );
-                }else if(data.status === 409){
+            },
+            error: function (data, xhr, status) {
+                let errors = data.responseJSON.errors;
+                if (data.status === 422) {
+                    toastr.error(
+                        `Saving Failed, Please fill up all required fields`
+                    );
+                    errorHandler(
+                        errors.first_molding_id,
+                        formModal.firstMoldingStation.find("#first_molding_id")
+                    );
+                    errorHandler(
+                        errors.station,
+                        formModal.firstMoldingStation.find("#station")
+                    );
+                    errorHandler(
+                        errors.date,
+                        formModal.firstMoldingStation.find("#date")
+                    );
+                    errorHandler(
+                        errors.operator_name,
+                        formModal.firstMoldingStation.find("#operator_name")
+                    );
+                    errorHandler(
+                        errors.input,
+                        formModal.firstMoldingStation.find("#input")
+                    );
+                    errorHandler(
+                        errors.ng_qty,
+                        formModal.firstMoldingStation.find("#ng_qty")
+                    );
+                    errorHandler(
+                        errors.output,
+                        formModal.firstMoldingStation.find("#output")
+                    );
+                    errorHandler(
+                        errors.size_category,
+                        formModal.firstMoldingStation.find("#size_category")
+                    );
+                } else if (data.status === 409) {
                     // toastr.error(`Error: ${data.status}`);
                     Swal.fire({
                         position: "center",
                         icon: "error",
                         title: "Warning: The Station is already exists !",
                         showConfirmButton: false,
-                        timer: 3000
+                        timer: 3000,
                     });
-                    $('#modalFirstMoldingStation').modal('hide');
-
-                }else{
+                    $("#modalFirstMoldingStation").modal("hide");
+                } else {
                     toastr.error(`Error: ${data.status}`);
                 }
-
-            }
+            },
         });
-    }
+    };
 
     const getStation = function (elementId,device_name){
         $.ajax({

@@ -3,19 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Machine;
+use App\Models\MpSetup;
 use App\Models\MpHeater;
 use App\Models\MpEjector;
 use App\Models\MpSupport;
 use App\Models\MpMoldOpen;
 use App\Models\MpMoldClose;
-use App\Models\InjectionTabList;
 use Illuminate\Http\Request;
 use App\Models\MpInjectionTab;
 use Illuminate\Support\Carbon;
+use App\Models\InjectionTabList;
 use App\Models\MachineParameter;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Models\MpInjectionVelocity;
+use App\Http\Requests\MpSetupRequest;
 use App\Http\Requests\MpHeaterRequest;
 use App\Http\Requests\MpEjectorRequest;
 use App\Http\Requests\MpSupportRequest;
@@ -24,9 +26,9 @@ use App\Http\Requests\MpMoldCloseRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\InjectionTabRequest;
 use App\Http\Requests\MpInjectionTabRequest;
+use App\Http\Requests\InjectionTabListRequest;
 use App\Http\Requests\MachineParameterRequest;
 use App\Http\Requests\MpInjectionVelocityRequest;
-use App\Http\Requests\InjectionTabListRequest;
 
 
 class MachineParameterController extends Controller
@@ -85,22 +87,27 @@ class MachineParameterController extends Controller
         MpMoldCloseRequest $mold_close_request,MpEjectorRequest $ejector_request,
         MpMoldOpenRequest $mold_open_request,MpHeaterRequest $heater_request,
         MpInjectionVelocityRequest $injection_velocity_request,MpSupportRequest $support_request,
-        MpInjectionTabRequest $injection_tab_request
+        MpInjectionTabRequest $injection_tab_request,
+        MpSetupRequest $mp_setup_request
     ){
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try {
-            // return 'true';
             if( isset($request->machine_parameter_id) || $request->machine_parameter_id != ''){ //Edit Machine Parameter
+                // return 'true';
+
                 MachineParameter::where('id',$request->machine_parameter_id)->whereNull('deleted_at')->update($machine_parameter_request->validated());
                 MpMoldClose::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($mold_close_request->validated());
                 MpMoldOpen::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($mold_open_request->validated());
+                MpSetup::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($mp_setup_request->validated());
                 MpHeater::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($heater_request->validated());
                 MpInjectionVelocity::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($injection_velocity_request->validated());
                 MpSupport::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($support_request->validated());
                 //This InjectionTab Table is for Machine 1 Requirement Only
                 MpInjectionTab::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($injection_tab_request->validated());
             }else{ //Add Machine Parameter
+                // return 'false';
+
                 // return $mold_open_request->validated();
                 $machine_parameter_id = MachineParameter::insertGetId($machine_parameter_request->validated());
                 MachineParameter::where('id',$machine_parameter_id)->whereNull('deleted_at')->update([
@@ -158,8 +165,15 @@ class MachineParameterController extends Controller
                 MpInjectionTab::where('id',$injection_tab_id)->update(
                     $injection_tab_request->validated()
                 );
-                DB::commit();
-                return 'add';
+                $mp_setup_id = MpSetup::insertGetId([
+                    'machine_parameter_id' => $machine_parameter_id,
+                    'created_at' => Carbon::now(),
+                ]);
+                MpSetup::where('id',$mp_setup_id)->update(
+                    $mp_setup_request->validated()
+                );
+                // DB::commit();
+                // return 'add';
                 /* */
             }
             // DB::rollback();
@@ -178,7 +192,7 @@ class MachineParameterController extends Controller
             $machine_parameter_id = $request->machine_parameter_id;
 
             $machine_parameter_detail =  MachineParameter::with(
-                'mold_close','ejector_lub','mold_open',
+                'mold_close','ejector_lub','mold_open', 'setup',
                 'heater','injection_velocity','support','injection_tab',
             )->where('id',$machine_parameter_id)->get();
 

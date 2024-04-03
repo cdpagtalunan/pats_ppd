@@ -254,7 +254,6 @@
                                     </div>
                                     <br>
                                     <div class="accordion" id="accordionExample">
-
                                         <div class="card" id="MoldClose">
                                             <div class="card-header" id="headingOne">
                                                 <h5 class="mb-0">
@@ -753,6 +752,126 @@
                                                             </div>
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card" id="Setup">
+                                            <div class="card-header" id="headingSetup">
+                                                <h5 class="mb-0">
+                                                    <button class="btn btn-link collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#collapseSetup"
+                                                        aria-expanded="false" aria-controls="collapseSetup">
+                                                        SETUP
+                                                    </button>
+                                                </h5>
+                                            </div>
+                                            <div id="collapseSetup" class="collapse" aria-labelledby="headingSetup"
+                                                data-parent="#accordionExample">
+                                                <div class="card-body">
+                                                    <br>
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <label for="textCloseV" class="form-label">CLOSE V<span
+                                                                    class="text-danger"
+                                                                    title="Required">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <label for="textCloseP" class="form-label">CLOSE P<span
+                                                                    class="text-danger"
+                                                                    title="Required">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <label for="textOpenV" class="form-label">OPEN V<span
+                                                                    class="text-danger"
+                                                                    title="Required">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <label for="textRotV" class="form-label">ROT V<span
+                                                                    class="text-danger"
+                                                                    title="Required">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <label for="textEjtV" class="form-label">EJT V<span
+                                                                    class="text-danger"
+                                                                    title="Required">*</span></label>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <label for="textEjtP" class="form-label">EJT P<span
+                                                                    class="text-danger"
+                                                                    title="Required">*</span></label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="setup_close_v"
+                                                                    id="textCloseV" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="setup_close_p"
+                                                                    id="textCloseP" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="setup_open_v"
+                                                                    id="textOpenV" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="setup_rot_v"
+                                                                    id="textRotV" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="setup_ejt_v"
+                                                                    id="textEjtV" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6 col-lg-2">
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <input min="0" type="number" step="0.01"
+                                                                    class="form-control" name="setup_ejt_p"
+                                                                    id="textEjtP" placeholder="">
+                                                                <div class="input-group-prepend w-30">
+                                                                    <span class="input-group-text w-100"
+                                                                        id="basic-addon1">%</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                    <br>
                                                 </div>
                                             </div>
                                         </div>
@@ -1832,6 +1951,7 @@
                                                 </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -1999,6 +2119,46 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="table-responsive">
+                                            <div class="d-flex justify-content-end">
+                                                <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button>
+                                            </div>
+                                            <br>
+                                            <table class="table table-sm" id="tblFirstMoldingMaterial">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 40%;">Virgin Material</th>
+                                                        <th style="width: 40%;">Virgin Qty</th>
+                                                        {{-- <th style="width: 35%;">Recycled Material</th> --}}
+                                                        <th style="width: 20%;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td>
+                                                            <div class="input-group input-group-sm mb-3">
+                                                                <div class="input-group-prepend">
+                                                                    <button type="button" class="btn btn-dark"
+                                                                        id="btnScanQrFirstMoldingVirginMaterial"><i
+                                                                            class="fa fa-qrcode w-100"></i></button>
+                                                                </div>
+                                                                <input type="text" class="form-control form-control-sm"
+                                                                    id="virgin_material" name="virgin_material[]" required
+                                                                    min=1 step="0.01">
+                                                            </div>
+                                                        </td>
+
+                                                        <td>
+                                                            <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2028,8 +2188,8 @@
 @section('js_content')
     <script>
         $(document).ready(function() {
-            // $('[type=number]').val(8);
-            // $('[type=text]').val(4);
+            $('[type=number]').val(8);
+            $('[type=text]').val(4);
             //TODO: InjectionTabList CRUD
 
             const resetFormValues = (elementForm) => {
