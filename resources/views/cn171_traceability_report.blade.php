@@ -115,12 +115,12 @@
                 $('#txtViewDatePickerTo').val("");
             });
 
-            // $(document).on('click','#modalExportTraceability',function(e){
-            //     $('#searchPONumber').val("");
-            //     $('#txtViewDatePickerFrom').val("");
-            //     $('#txtViewDatePickerTo').val("");
-            //     $('#modalExportTraceabilityReport').attr('data-formid', '').modal('show');
-            // });
+            $(document).on('click','#modalExportTraceability',function(e){
+                $('#searchPONumber').val("");
+                $('#txtViewDatePickerFrom').val("");
+                $('#txtViewDatePickerTo').val("");
+                $('#modalExportTraceabilityReport').attr('data-formid', '').modal('show');
+            });
 
         });
 

@@ -21,8 +21,8 @@ class CreateAssemblyRuncardStationAddColumns extends Migration
             $table->string('doc_no_r_drawing')->nullable()->after('doc_no_wi')->comment ='for visual insp';
             $table->string('doc_no_a_drawing')->nullable()->after('doc_no_r_drawing')->comment ='for visual insp';
             $table->string('doc_no_g_drawing')->nullable()->after('doc_no_a_drawing')->comment ='for visual insp';
-            $table->string('date_code')->nullable()->after('doc_no_g_drawing')->comment ='for visual insp';
-            $table->string('bundle_qty')->nullable()->after('date_code')->comment ='for visual insp';
+            // $table->string('date_code')->nullable()->after('doc_no_g_drawing')->comment ='for visual insp';
+            // $table->string('bundle_qty')->nullable()->after('date_code')->comment ='for visual insp';
             $table->string('ml_per_shot')->nullable()->after('bundle_qty')->comment ='for lubricant coating';
             $table->string('total_lubricant_usage')->nullable()->after('ml_per_shot')->comment ='for lubricant coating';
         });

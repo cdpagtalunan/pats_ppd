@@ -109,7 +109,6 @@ class PackingDetailsController extends Controller
                     $result .= "<button class='btn btn-primary btn-sm btnViewFinalPackingDetails' data-status='$final_packing_data->stat' data-ctrl-no='$final_packing_data->packing_ctrl_no'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
                 }else{
                     $result .= "<button class='btn btn-primary btn-sm btnViewFinalPackingDetails' data-status='$final_packing_data->stat' data-ctrl-no='$final_packing_data->packing_ctrl_no'><i class='fa-solid fa-eye'></i></button>&nbsp";
-
                 }
                 // else{
                 //     $count = $final_packing_data->final_packing_info->print_count;

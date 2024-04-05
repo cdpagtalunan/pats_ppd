@@ -275,7 +275,7 @@ Route::controller(StampingIpqcController::class)->group(function () {
     Route::get('/get_po_from_fs_production', 'get_po_from_fs_production')->name('get_po_from_fs_production');
     Route::get('/get_data_from_first_stamping_by_po', 'get_data_from_first_stamping_by_po')->name('get_data_from_first_stamping_by_po');
     Route::get('/get_data_from_fs_production', 'get_data_from_fs_production')->name('get_data_from_fs_production');
-    Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
+    Route::post('/add_stamping_ipqc_inspection', 'add_stamping_ipqc_inspection')->name('add_stamping_ipqc_inspection');
     Route::post('/update_status_of_ipqc_inspection', 'update_status_of_ipqc_inspection')->name('update_status_of_ipqc_inspection');
     Route::get('/download_file/{id}', 'download_file')->name('download_file');
 
@@ -289,7 +289,7 @@ Route::controller(MoldingAssyIpqcController::class)->group(function () {
     Route::get('/verify_production_lot', 'verify_production_lot')->name('verify_production_lot');
     Route::get('/view_ipqc_data', 'view_ipqc_data')->name('view_ipqc_data');
     Route::get('/get_ipqc_data', 'get_ipqc_data')->name('get_ipqc_data');
-    Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
+    Route::post('/add_molding_assy_ipqc_inspection', 'add_molding_assy_ipqc_inspection')->name('add_molding_assy_ipqc_inspection');
     Route::post('/update_ipqc_inspection_status', 'update_ipqc_inspection_status')->name('update_ipqc_inspection_status');
     Route::get('/download_file/{id}', 'download_file')->name('download_file');
 });

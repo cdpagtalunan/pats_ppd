@@ -175,8 +175,8 @@
                     </div>
                 </div>
             </div>
-        </div><!-- /.End History Modal -->        
-                
+        </div><!-- /.End History Modal -->
+
         <!-- Start OQC Inspection Modal -->
         <div class="modal fade" id="modalOqcInspection" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-xl-custom">
@@ -190,13 +190,11 @@
 
                     <form method="post" id="formOqcInspection" autocomplete="off">
                         @csrf
-
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtOqcInspectionId" name="oqc_inspection_id" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtProdId" name="prod_id" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtStatus" name="status" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtCheckButton" name="check_button" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
-                        
+                        <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
+                        <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
+                        <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
+                        <input type="hidden" class="form-control form-control-sm" id="txtCheckButton" name="check_button">
+                        <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend w-25">
@@ -217,7 +215,7 @@
                                 <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawingNo" name="ud_drawing_no" readonly>
                                 <input type="text" class="form-control ud-drawing remove-class" id="txtUdDrawingRevision" name="ud_drawing_revision" readonly>
                             </div>
-    
+
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend w-25">
                                     <button type="button" class="btn btn-dark" id="btnViewInspStdDrawings"><i class="fa fa-file" title="View"></i></button>
@@ -245,7 +243,7 @@
                                             <span class="input-group-text w-100"><strong>Stamping Line</strong></span>
                                         </div>
                                         <select class="form-select form-control-sm stampingLineDropdown" id="slctOqcInspectionStampingLine" name="oqc_inspection_stamping_line">
-                                        </select>    
+                                        </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
@@ -396,7 +394,7 @@
                                             <span class="input-group-text w-100"><strong>AQL</strong></span>
                                         </div>
                                         <select class="form-select form-control-sm aqlDropdown" id="slctOqcInspectionAql" name="oqc_inspection_aql">
-                                        </select>    
+                                        </select>
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -479,7 +477,7 @@
                                             <option value="3">3rd</option>
                                         </select>
                                     </div>
-                                    
+
                                     <div class="input-group input-group-sm mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Coc Requirement</strong></span>
@@ -558,7 +556,7 @@
                                         </div>
                                         <div class="col-4">
                                             <select class="form-select form-control-sm selectEmpty inspectionModDropdown_0 mb-1" id="txtMod_0" name="mod_0"  placeholder="Mode of Defect">
-                                            </select>    
+                                            </select>
                                         </div>
                                         <div class="col-5 mr-1">
                                             <input type="number" class="form-control defectCounts form-control-sm" id="txtModQty_0" name="mod_qty_0"  placeholder="Mode of Defect Qty">
@@ -599,7 +597,7 @@
                     </div>
                 </div>
             </div>
-        </div><!-- /.End Scan Modal -->        
+        </div><!-- /.End Scan Modal -->
     @endsection
 
     @section('js_content')
@@ -610,7 +608,7 @@
             $(document).ready(function() {
                 $('.select2bs4').select2({
                     theme: 'bootstrap-5'
-                })          
+                })
 
                 // ======================= START DATA TABLE =======================
                 dataTableOQCInspectionFirstStamping = $("#tblOqcInspection").DataTable({
@@ -735,12 +733,12 @@
                     getMaterialName             = $(this).attr('first_Stamping_prod-material_name')
                     getProdShipOutput           = $(this).attr('first_stamping_prod-ship_output')
                     getInfoForFirstStamping     = $(this).attr('first-stamping')
-                    
+
                     $('#txtStatus').val(getInfoForFirstStamping)
                     $('#txtCheckButton').val('update')
 
                     $time_now = moment().format('HH:mm:ss');
-                    setTimeout(() => {     
+                    setTimeout(() => {
                         if($time_now >= '7:30 AM' || $time_now <= '7:29 PM'){
                             $('#slctOqcInspectionShift').val('A');
                         }
@@ -810,7 +808,7 @@
                     getProdId           = $(this).attr('first_stamping_prod-id')
                     getProdLotNo        = $(this).attr('first_stamping_prod-lot_no')
                     getMaterialName     = $(this).attr('first_Stamping_prod-material_name')
-                    getProdShipOutput   = $(this).attr('first_stamping_prod-ship_output')    
+                    getProdShipOutput   = $(this).attr('first_stamping_prod-ship_output')
 
                     getPoNo = getPo;
 
@@ -854,6 +852,7 @@
                 })
 
                 $('#btnViewRDrawings').on('click', function(){
+                    console.log('b drawing click');
                     redirect_to_drawing($('#txtBDrawingNo').val(), 0)
                     SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
                 })
@@ -975,7 +974,7 @@
                         $('#btnRemoveReelLot').addClass('d-none')
                     }
                 })
-                
+
                 // ===================== SCRIPT FOR ADD MOD ===================
                 let modCounter = 0;
                 $('#btnAddMod').on('click', function(e){
@@ -988,12 +987,12 @@
                     let html = '   <div class="col-2 mb-1 divAddMod_'+modCounter+'">'
                         html += '   </div>'
                         html += '   <div class="col-4 mb-1 divAddMod_'+modCounter+'">'
-                        html += '       <select class="form-select form-control-sm selectEmpty inspectionModDropdown_'+modCounter+' mb-1" id="txtMod_'+modCounter+'" name="mod_'+modCounter+'"  placeholder="Mode of Defect"></select>'    
+                        html += '       <select class="form-select form-control-sm selectEmpty inspectionModDropdown_'+modCounter+' mb-1" id="txtMod_'+modCounter+'" name="mod_'+modCounter+'"  placeholder="Mode of Defect"></select>'
                         html += '   </div>'
                         html += '   <div class="col-5 mb-1 mr-1 divAddMod_'+modCounter+'">'
                         html += '       <input type="number" class="form-control defectCounts form-control-sm" id="txtModQty_'+modCounter+'" name="mod_qty_'+modCounter+'" placeholder="Defect of Defect Qty">'
                         html += '   </div>'
-                        
+
                     $('#txtModCounter').val(modCounter)
                     $('#divModFields').append(html)
 
@@ -1032,7 +1031,7 @@
                     }
                 })
 
-                $('#formOqcInspection').submit(function (e) { 
+                $('#formOqcInspection').submit(function (e) {
                     e.preventDefault()
                     console.log('Save OQC Inspection')
                     ScanUserById()

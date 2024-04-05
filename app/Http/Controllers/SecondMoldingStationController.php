@@ -183,7 +183,6 @@ class SecondMoldingStationController extends Controller
                         ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
                         ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepFour)
                         ->exists();
-                    
                     switch ($request->step) {
                         case 1:
                             // Check if Step 1 is existed then return wrongStep
@@ -229,6 +228,7 @@ class SecondMoldingStationController extends Controller
                      * execute the query and return hasError for every condition
                      */
                     if($request->step == 3 || !$checkIfStationExist){
+
                         /* Validation of input quantity(current) and output quantity(last station) */
                         $getStationIdByStepOneAndTwoAsNonVisual = $this->getStationIdByStepNumber($request->second_molding_id, [1,2]);
                         $getOutputQtyOfLastStationNonVisual = DB::connection('mysql')
@@ -332,6 +332,7 @@ class SecondMoldingStationController extends Controller
                                 ->table('sec_molding_runcard_stations')
                                 ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
                                 ->where('sec_molding_runcard_stations.station', $getStationIdByStepThreeAsVisualInspection)
+
                                 ->select(
                                     DB::raw('SUM(output_quantity) AS shipmentOutput'),
                                 )
@@ -477,7 +478,8 @@ class SecondMoldingStationController extends Controller
                     /**
                      * Note: change the station(id) of Visual Inspection for live
                      */
-                    if($request->station == 6){ // 6-Visual Inspection
+
+                    if($request->station == 4){ // 4-Visual Inspection
                         $updateNGAndOutputQuantity = DB::connection('mysql')
                             ->table('sec_molding_runcards')
                             ->where('sec_molding_runcards.id', $request->second_molding_id)->update([

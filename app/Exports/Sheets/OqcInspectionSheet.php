@@ -227,7 +227,27 @@ class OqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
             $start_column = 8;
             $accept_sum = 0;
             $reject_sum = 0;
-            for ($i=0; $i < count($search_po); $i++){
+            for ($i=0; $i < count($search_material_name); $i++){
+                if($search_material_name[$i]->shift == '1'){
+                    $shift = 'A';
+                }else{
+                    $shift = 'B';
+                }
+
+                switch($search_material_name[$i]->severity_of_inspection){
+                    case '1':
+                        $severity_inspection = 'Normal';
+                        break;
+                    
+                    case '2':
+                        $severity_inspection = 'Tightened';
+                        break;
+    
+                    default:
+                        $severity_inspection = 'Label Check';
+                        break;
+                }
+    
                 $event
                     ->sheet
                     ->getDelegate()
@@ -245,36 +265,39 @@ class OqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                     ->getNumberFormat()
                     ->setFormatCode('0');
 
-                $event->sheet->setCellValue('A'.$start_column,$search_po[$i]->fy.'-'.$search_po[$i]->ww);
-                $event->sheet->setCellValue('B'.$start_column,date("m-d-Y", strtotime($search_po[$i]->date_inspected)));
-                $event->sheet->setCellValue('C'.$start_column,$search_po[$i]->shift);
-                $event->sheet->setCellValue('D'.$start_column,date("h:i a", strtotime($search_po[$i]->time_ins_from)).' - '.date("h:i a",strtotime($search_po[$i]->time_ins_to)));
-                $event->sheet->setCellValue('E'.$start_column,$search_po[$i]->submission);
-                $event->sheet->setCellValue('F'.$start_column,$search_po[$i]->po_no);
-                $event->sheet->setCellValue('G'.$start_column,$search_po[$i]->oqc_inspection_severity_inspection_info->severity_inspection);
-                $event->sheet->setCellValue('H'.$start_column,$search_po[$i]->stamping_production_info->prod_lot_no);
-                $event->sheet->setCellValue('I'.$start_column,$search_po[$i]->stamping_production_info->ship_output);
-                $event->sheet->setCellValue('J'.$start_column,$search_po[$i]->sample_size);
+                $event->sheet->setCellValue('A'.$start_column,date("m-d-Y", strtotime($search_material_name[$i]->date_inspected)));
+                $event->sheet->setCellValue('B'.$start_column,$shift);
+                $event->sheet->setCellValue('C'.$start_column,date("h:i a", strtotime($search_material_name[$i]->time_ins_from)).' - '.date("h:i a",strtotime($search_material_name[$i]->time_ins_to)));
+                $event->sheet->setCellValue('D'.$start_column,$search_material_name[$i]->submission);
+                $event->sheet->setCellValue('E'.$start_column,' '.$search_material_name[$i]->app_no.''.$search_material_name[$i]->app_no_extension.' ');
+                $event->sheet->setCellValue('F'.$start_column,$search_material_name[$i]->invoice_no);
+                $event->sheet->setCellValue('G'.$start_column,$severity_inspection);
+                $event->sheet->setCellValue('H'.$start_column,$search_material_name[$i]->lot_no);
+                $event->sheet->setCellValue('I'.$start_column,$search_material_name[$i]->total_lot_qty);
+                $event->sheet->setCellValue('J'.$start_column,$search_material_name[$i]->sampling_size);
                 
-                if($search_po[$i]->judgement == 'Reject'){
-                    $event->sheet->setCellValue('K'.$start_column,$search_po[$i]->num_of_defects);
+                if($search_material_name[$i]->judgement != 1){
+                    $result = 'Reject';
+                    $event->sheet->setCellValue('K'.$start_column,$search_material_name[$i]->no_of_defects);
 
                     $mod_array = [];
                     $mod_qty_array = [];        
-                    for($x=0; $x < count($search_po[$i]->mod_oqc_inspection_details); $x++){
-                        array_push($mod_array, $search_po[$i]->mod_oqc_inspection_details[$x]->oqc_info_mod_info->mode_of_defects);
-                        array_push($mod_qty_array, $search_po[$i]->mod_oqc_inspection_details[$x]->mod_qty);
+                    for($x=0; $x < count($search_material_name[$i]->iqc_inspection_mods_info); $x++){
+                        array_push($mod_array, $search_material_name[$i]->iqc_inspection_mods_info[$x]->mode_of_defects);
+                        array_push($mod_qty_array, $search_material_name[$i]->iqc_inspection_mods_info[$x]->quantity);
                         $event->sheet->setCellValue('L'.$start_column,"\n".implode("\n", $mod_array)."\n");
                         $event->sheet->setCellValue('M'.$start_column,"\n".implode("\n", $mod_qty_array)."\n");
                     }
+                }else{
+                    $result = 'Accept';
                 }
 
-                $event->sheet->setCellValue('N3',$accept_sum += $search_po[$i]->accept);
-                $event->sheet->setCellValue('N4',$reject_sum += $search_po[$i]->reject);
+                $event->sheet->setCellValue('N3',$accept_sum += $search_material_name[$i]->accept);
+                $event->sheet->setCellValue('N4',$reject_sum += $search_material_name[$i]->reject);
 
-                $event->sheet->setCellValue('N'.$start_column,$search_po[$i]->judgement);
-                $event->sheet->setCellValue('O'.$start_column,$search_po[$i]->inspector);
-                $event->sheet->setCellValue('P'.$start_column,$search_po[$i]->remarks);
+                $event->sheet->setCellValue('N'.$start_column,$result);
+                $event->sheet->setCellValue('O'.$start_column,$search_material_name[$i]->user_iqc->firstname.' '.$search_material_name[$i]->user_iqc->lastname);
+                $event->sheet->setCellValue('P'.$start_column,$search_material_name[$i]->remarks);
 
                 $start_column++;
             }

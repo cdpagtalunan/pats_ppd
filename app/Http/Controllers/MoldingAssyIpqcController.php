@@ -218,7 +218,7 @@ class MoldingAssyIpqcController extends Controller
     }
 
     //====================================== ADD/UPDATE IPQC DATA FOR FIRST MOLDING =========================
-    public function add_ipqc_inspection(Request $request){
+    public function add_molding_assy_ipqc_inspection(Request $request){
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();

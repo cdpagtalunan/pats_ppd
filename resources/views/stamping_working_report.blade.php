@@ -377,7 +377,6 @@
             </div>
         </div>
     @endsection
-
     @section('js_content')
         <script>
             $(document).ready(function () {
@@ -563,3 +562,4 @@
         </script>
     @endsection
 @endauth
+

@@ -32,6 +32,9 @@
             #colDevice, #colMaterialProcess{
                 transition: .5s;
             }
+
+            .checked-ok { background: #5cec4c!important; }
+
         </style>
 
 
@@ -68,23 +71,24 @@
                                 </div>
                                 <!-- Start Page Content -->
                                 <div class="card-body">
-                                    <br><br>
+                                    {{-- <br><br> --}}
                                     {{-- TABS --}}
                                     {{-- <div class="row">
                                         <div class="col-12">
                                             <button class="btn btn-lg btn-outline-info float-end"><i class="fa fa-users" aria-hidden="true"></i>  Group by</button>
                                         </div>
                                     </div> --}}
-                                    <div class="row">
+
+                                  {{-- <div class="row">
                                         <div class="col-sm-2">
                                             <label class="form-label">Lot Number</label>
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLotNum"><i class="fa-solid fa-qrcode"></i></button>
-                                                {{-- <input type="text" class="form-control" placeholder="PO Number" id="txtSearchLotNum" value="450244133600010"> --}}
                                                 <input type="search" class="form-control" placeholder="Lot Number" id="txtSearchLotNum" readonly>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
+
                                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                                         <li class="nav-item">
                                             <a class="nav-link active .menuTab" id="Pending-tab" data-bs-toggle="tab" href="#menu1" role="tab" aria-controls="menu1" aria-selected="true">On-going</a>
@@ -93,8 +97,13 @@
                                             <a class="nav-link .menuTab" id="Completed-tab" data-bs-toggle="tab" href="#menu2" role="tab" aria-controls="menu2" aria-selected="false">Inspected</a>
                                         </li>
                                     </ul>
+                                    <br>
                                     <div class="tab-content" id="myTabContent">
                                         {{-- Pending Tab --}}
+                                        <button  class="btn btn-primary" data-bs-toggle="modal"
+                                        data-bs-target="#modalVerifyData" id="btnVerifyScanLotNumber"><i
+                                            class="fa-solid fa-qrcode"></i>&nbsp; Validation of Lot #
+                                        </button><br><br>
                                         <div class="tab-pane fade show active" id="menu1" role="tabpanel" aria-labelledby="menu1-tab">
                                             <div class="table-responsive">
                                                 <!-- style="max-height: 600px; overflow-y: auto;" -->
@@ -237,6 +246,22 @@
             </div>
         </div>
 
+        <!-- MODALS -->
+        <div class="modal fade" id="modalVerifyData">
+            <div class="modal-dialog modal-dialog-center">
+                <div class="modal-content modal-sm">
+                    <div class="modal-body">
+                        <input type="text" class="scanner w-100 hidden_scanner_input" id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off">
+                        {{-- <input type="text" class="scanner w-100 " id="txtScanVerifyData" name="scan_packing_lot_number" autocomplete="off"> --}}
+                        <div class="text-center text-secondary"><span id="modalScanLotNumberIdText">Scan Lot Number</span><br><br><h1><i class="fa fa-qrcode fa-lg"></i></h1></div>
+                    </div>
+                </div>
+            <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
     @endsection
 
     @section('js_content')
@@ -247,52 +272,53 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-            /*
-                $('a[href="#menu1"]').click(function (e) {
-                    e.preventDefault();
-                    $('#txtSearchLotNum').val('');
+                /*
+                    $('a[href="#menu1"]').click(function (e) {
+                        e.preventDefault();
+                        $('#txtSearchLotNum').val('');
 
-                    dataTable.iqcInspection.draw();
-                });
-                $('a[href="#menu2"]').click(function (e) {
-                    e.preventDefault();
-                    $('#txtSearchLotNum').val('');
-                    dataTable.iqcInspected.draw();
-                });
-
-                $('#modalLotNum').on('shown.bs.modal', function () {
-                    $('#txtLotNum').focus();
-                    const mdlScanLotNum = document.querySelector("#modalLotNum");
-                    const inptScanLotNum = document.querySelector("#txtLotNum");
-                    let focus = false
-
-                    mdlScanLotNum.addEventListener("mouseover", () => {
-                        if (inptScanLotNum === document.activeElement) {
-                            focus = true
-                        } else {
-                            focus = false
-                        }
-                    });
-
-                    mdlScanLotNum.addEventListener("click", () => {
-                        if (focus) {
-                            inptScanLotNum.focus()
-                        }
-                    });
-                });
-
-                $('#txtLotNum').on('keyup', function(e){
-
-                    if(e.keyCode == 13){
-                        // getSecondStampReq($(this).val());
-                        $('#txtSearchLotNum').val($(this).val());
                         dataTable.iqcInspection.draw();
+                    });
+                    $('a[href="#menu2"]').click(function (e) {
+                        e.preventDefault();
+                        $('#txtSearchLotNum').val('');
                         dataTable.iqcInspected.draw();
-                        $('#txtLotNum').val('');
-                        $('#modalLotNum').modal('hide');
-                    }
-                });
-            */
+                    });
+
+                    $('#modalLotNum').on('shown.bs.modal', function () {
+                        $('#txtLotNum').focus();
+                        const mdlScanLotNum = document.querySelector("#modalLotNum");
+                        const inptScanLotNum = document.querySelector("#txtLotNum");
+                        let focus = false
+
+                        mdlScanLotNum.addEventListener("mouseover", () => {
+                            if (inptScanLotNum === document.activeElement) {
+                                focus = true
+                            } else {
+                                focus = false
+                            }
+                        });
+
+                        mdlScanLotNum.addEventListener("click", () => {
+                            if (focus) {
+                                inptScanLotNum.focus()
+                            }
+                        });
+                    });
+
+                    $('#txtLotNum').on('keyup', function(e){
+
+                        if(e.keyCode == 13){
+                            // getSecondStampReq($(this).val());
+                            $('#txtSearchLotNum').val($(this).val());
+                            dataTable.iqcInspection.draw();
+                            dataTable.iqcInspected.draw();
+                            $('#txtLotNum').val('');
+                            $('#modalLotNum').modal('hide');
+                        }
+                    });
+                */
+                // $('#modal-loading').modal('show');
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
@@ -406,6 +432,40 @@
                     // saveIqcInspection();
                     $('#modalScanQRSave').modal('show');
                 });
+
+                $('#modalVerifyData').on('shown.bs.modal', function () {
+                    $('#txtScanVerifyData').focus();
+                });
+
+                $('#txtScanVerifyData').on('keyup', function(e){
+                    if(e.keyCode == 13){
+                        try{
+                            // scannedItem = JSON.parse($(this).val());
+                            scannedItem = $('#txtScanVerifyData').val().toUpperCase();
+                            console.log('scannedItem', scannedItem);
+                            $('#tblIqcInspection tbody tr').each(function(index, tr){
+                                let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+
+                                let powerOff = $(this).find('td:nth-child(1)').children().children();
+
+                                console.log('tblIqcInspection', lot_no);
+                                console.log('scannedItem', scannedItem);
+                                if(scannedItem === lot_no){
+                                    $(tr).addClass('checked-ok');
+                                    powerOff.removeAttr('style');
+                                    $('#modalVerifyData').modal('hide');
+                                }
+                                // console.log(lot_no);
+                            })
+                        }
+                        catch (e){
+                            toastr.error('Invalid Sticker');
+                            console.log(e);
+                        }
+                        $(this).val('');
+                    }
+                });
+
             });
 
         </script>

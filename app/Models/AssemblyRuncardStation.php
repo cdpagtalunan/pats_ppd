@@ -8,6 +8,7 @@ use App\Models\Station;
 use App\Models\AssemblyRuncardStationsMods;
 use App\Models\MaterialProcess;
 use App\Models\MaterialProcessStation;
+use App\Models\AssemblyRuncard;
 
 class AssemblyRuncardStation extends Model
 {
@@ -24,12 +25,11 @@ class AssemblyRuncardStation extends Model
         return $this->hasOne(Station::class, 'id', 'station');
     }
 
+    public function assembly_runcard(){
+        return $this->hasOne(AssemblyRuncard::class, 'id', 'assembly_runcards_id');
+    }
+
     // public function station_details(){
     //     return $this->hasMany(Station::class,'station', 'id');
     // }
-
-    // public function material_process_station(){
-    //     return $this->hasMany(MaterialProcessStation::class, 'station', 'station_id');
-    // }
-
 }

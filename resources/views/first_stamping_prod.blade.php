@@ -52,7 +52,7 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            
+
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <div class="container-fluid">
@@ -666,9 +666,9 @@
                 $('#btnAddProdData').on('click', function(e){
 
                     if( Number($('#txtTtlShipOutput').val()) >= Number($('#txtSearchPO').val())){
-                        // console.log('txtTtlShipOutput', $('#txtTtlShipOutput').val());
-                        // console.log('txtSearchPO', $('#txtSearchPO').val());
                         toastr.error('Total Machine Output is greater than PO Quantity.');
+                        console.log('txtTtlShipOutput', $('#txtTtlShipOutput').val());
+                        console.log('txtSearchPO', $('#txtSearchPO').val());
                         return;
                     }
 

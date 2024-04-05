@@ -504,7 +504,9 @@ class FirstMoldingController extends Controller
                     WHERE pmi_po_no LIKE "%'.$request->pmi_po_no.'%"
                     LIMIT 0,20
             ');
-
+            if(count ($first_molding)  == 0 ){
+                return response()->json(['is_success' => 'false', 'exceptionError' => 'First Molding not exists']);
+            }
             foreach ($first_molding as $key => $value) {
                 $arr_first_molding[] = $value->pmi_po_no;
             }

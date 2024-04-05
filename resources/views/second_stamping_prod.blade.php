@@ -1182,12 +1182,13 @@
             });
         </script>
 
-        @if (in_array(Auth::user()->position, [0,1,9]))
+        @if (in_array(Auth::user()->position, [0,1,9]) || in_array(Auth::user()->user_level_id, [1]))
             <script>
                 $('#txtSearchPONum').prop('readonly', false);
                 $('#txtSearchPONum').on('keyup', function(e){
                     if(e.keyCode == 13){
                         getSecondStampReq($(this).val());
+                        console.log($('#txtSearchPONum').val());
                     }
                 });
             </script>

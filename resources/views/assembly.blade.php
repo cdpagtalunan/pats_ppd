@@ -194,7 +194,7 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Shipment Output</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtShipmentOutput" name="shipment_output" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtShipmentOutput" name="shipment_output" placeholder="Auto Compute" readonly>
                                             </div>
 
                                             <div id="pSeriesName" style="border:2px; border-style:dashed; padding:2px;">
@@ -472,7 +472,7 @@
                                         </select>
                                         <input type="text" class="form-control form-control-sm" id="txtRuncardStation" name="runcard_station" placeholder="Station" hidden>
                                         <input type="text" class="form-control form-control-sm" id="txtStep" name="step" placeholder="Station Step" hidden>
-                                        {{-- <input type="text" class="form-control form-control-sm" id="txtSelectRuncardStation" name="runcard_station" placeholder="Station"> --}}
+                                        {{-- <input type="text" class="form-control form-control-sm" step="" id="txtSelectRuncardStation" name="runcard_station" placeholder="Station"> --}}
                                     </div>
                                 </div>
                             </div>
@@ -1237,6 +1237,18 @@
                 //     //     $('#VisualInspDocNoDiv').addClass('d-none');
                 //     // }
                 // });
+                $('#txtSelectRuncardStation').on('change', function(e){
+                    if($(this).val() == 8){//Lubricant Coating Station
+                        $('#LubricantCoatingDiv').removeClass('d-none');
+                        $('#VisualInspDocNoDiv').addClass('d-none');
+                    }else if($(this).val() == 4){// Visual Inspection
+                        $('#LubricantCoatingDiv').addClass('d-none');
+                        $('#VisualInspDocNoDiv').removeClass('d-none');
+                    }else{
+                        $('#LubricantCoatingDiv').addClass('d-none');
+                        $('#VisualInspDocNoDiv').addClass('d-none');
+                    }
+                });
 
                 $('#txtSelectDeviceName').on('change', function(e){
                     let deviceName = $('#txtSelectDeviceName').val();
@@ -1282,12 +1294,89 @@
                                 result = '<option value="0" selected disabled> -- No record found -- </option>';
                             }
                             $('#txtSelectRuncardStation').html(result);
+                            // if(IpqcDocumentNo != null){
+                            //     cboElement.val(IpqcDocumentNo).trigger('change');
+                            // }
                             //STATIONS
-
                             dtAssemblyRuncard.draw();
                         }
                     });
                 });
+
+                // clark ongoing
+                $('#btnAddRuncardStation').on('click', function(e){
+                    $('#modalAddStation').modal('show');
+                    let runcard_id = $(this).attr('runcard_id');
+
+                    $.ajax({
+                        type: "get",
+                        url: "chck_existing_stations",
+                        data: {
+                            "runcard_id" : runcard_id,
+                        },
+                        dataType: "json",
+                        success: function (response){
+                            GetStations($('#txtSelectRuncardStation'), response['current_step']);
+                            $('#txtStep').val(response['current_step']);
+                            // $('#txtSelectRuncardStation').attr('step', 2);
+                            // .attr('data-form-id', formValue)
+                        }
+                    });
+
+                     $('#txtStationAssyRuncardId').val(runcard_id);
+                     $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
+                });
+
+                function GetStations(cboElement, step = null){
+                    let result = '<option value="" disabled selected>-- Select Station --</option>';
+                    let deviceName = $('#txtSelectDeviceName').val();
+                    $.ajax({
+                        type: "get",
+                        url: "get_data_from_matrix",
+                        data: {
+                            "device_name" : deviceName
+                        },
+                        dataType: "json",
+                        beforeSend: function(){
+                            result = '<option value="0" disabled selected>--Loading--</option>';
+                            // cboElement.html(result);
+                        },
+                        success: function (response) {
+                            let device_details = response['device_details'];
+
+                            if (device_details[0].material_process.length > 0){
+                                    result = '<option value="" disabled selected>-- Select Station --</option>';
+                                    // result += '<option step="0" value="">-- CLARK --</option>';
+                                for (let index = 0; index < device_details[0].material_process.length; index++) {
+                                    result += '<option step="'+ device_details[0].material_process[index].step +'" value="' + device_details[0].material_process[index].station_details[0].stations['id'] + '">' + device_details[0].material_process[index].station_details[0].stations['station_name'] + '</option>';
+                                }
+                            }else{
+                                result = '<option value="0" selected disabled> -- No record found -- </option>';
+                            }
+
+                            cboElement.html(result);
+                            $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
+                            $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
+                            // if(step == 1){
+                            //     $("#txtSelectRuncardStation option[step='2']").attr('disabled', true);
+                            //     $("#txtSelectRuncardStation option[step='3']").attr('disabled', true);
+                            // }else if(step == 2){
+                            //     $("#txtSelectRuncardStation option[step='1']").attr('disabled', true);
+                            //     $("#txtSelectRuncardStation option[step='3']").attr('disabled', true);
+                            // }else if(step == 3){
+                            //     $("#txtSelectRuncardStation option[step='1']").attr('disabled', true);
+                            //     $("#txtSelectRuncardStation option[step='2']").attr('disabled', true);
+                            // }else{
+                            //     $("#txtSelectRuncardStation").attr('disabled', true);
+                            // }
+                        },
+                        error: function(data, xhr, status) {
+                            result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                            cboElement.html(result);
+                            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+                    });
+                }
 
                 /* SEARCH PO COMMENTED BY CLARK */
                 // $('#formCNAssemblyRuncard').keyup('#txtPONumber', delay(function(e){
@@ -1526,6 +1615,7 @@
                     });
                 }
 
+
                 $("#modalCNAssembly").on('hidden.bs.modal', function () {
                     // Reset form values
                     $("#formCNAssemblyRuncard")[0].reset();
@@ -1722,7 +1812,6 @@
                                 }else{
                                     s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
                                 }
-                                // s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
                             verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
                             verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
 
@@ -1942,7 +2031,6 @@
                         success: function(response){
                             const assy_runcard_station_data = response['assembly_runcard_data'][0].assembly_runcard_station[0];
                             const mode_of_defect_data = response['mode_of_defect_data'];
-
                             GetRDrawingFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"), assy_runcard_station_data.doc_no_r_drawing);
                             GetADrawingFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"), assy_runcard_station_data.doc_no_a_drawing);
                             GetGDrawingFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"), assy_runcard_station_data.doc_no_g_drawing);

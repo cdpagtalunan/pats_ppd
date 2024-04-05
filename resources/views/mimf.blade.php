@@ -167,7 +167,6 @@
                         <input type="hidden" class="col-1 input_hidden" id="txtMimfStampingMatrixStatus" name="mimf_stamping_matrix_status" required>
                         <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpdMimfStampingMatrixId" name="ppd_mimf_stamping_matrix_id" placeholder="For Stamping" readonly>
                         <input type="hidden" class="col-1 mimfClass input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
-                        
                         <div class="modal-body">
                             <div class="row"><!-- Start Row MIMF Data -->
                                 <div class="col-sm-6 mt-3">

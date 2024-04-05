@@ -1186,7 +1186,7 @@
                     let formData = new FormData($('#formIPQCInspectionData')[0]);
                     console.log('formdata', formData);
                     $.ajax({
-                        url: "add_ipqc_inspection",
+                        url: "add_stamping_ipqc_inspection",
                         method: "post",
                         data: formData,
                         processData: false,

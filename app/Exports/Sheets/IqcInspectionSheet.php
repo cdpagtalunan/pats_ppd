@@ -229,7 +229,6 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
             $event->sheet->setCellValue('N7',"  Judgement");
             $event->sheet->setCellValue('O7',"  QC Inspector");
             $event->sheet->setCellValue('P7',"  Remarks");
-            
             $event->sheet->setCellValue('B3',$search_material_name[0]->partname);
             $event->sheet->setCellValue('B4',$search_material_name[0]->partcode);
             $event->sheet->setCellValue('B5',$search_material_name[0]->supplier);
@@ -293,7 +292,6 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                 if($search_material_name[$i]->judgement != 1){
                     $result = 'Reject';
                     $event->sheet->setCellValue('K'.$start_column,$search_material_name[$i]->no_of_defects);
-
                     $mod_array = [];
                     $mod_qty_array = [];        
                     for($x=0; $x < count($search_material_name[$i]->iqc_inspection_mods_info); $x++){
@@ -312,7 +310,6 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                 $event->sheet->setCellValue('N'.$start_column,$result);
                 $event->sheet->setCellValue('O'.$start_column,$search_material_name[$i]->user_iqc->firstname.' '.$search_material_name[$i]->user_iqc->lastname);
                 $event->sheet->setCellValue('P'.$start_column,$search_material_name[$i]->remarks);
-
                 $start_column++;
             }
         }];
