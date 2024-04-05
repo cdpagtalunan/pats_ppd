@@ -22,9 +22,9 @@ class SecondMoldingController extends Controller
             SELECT * FROM tbl_POReceived WHERE OrderNo = '$request->po_number'
         ");
     }
-    
+
     public function checkMaterialLotNumber(Request $request){
-        return DB::connection('mysql_rapid_pps')->select("SELECT a.Lot_number AS material_lot_number, b.MaterialType AS material_name FROM tbl_WarehouseTransaction AS a 
+        return DB::connection('mysql_rapid_pps')->select("SELECT a.Lot_number AS material_lot_number, b.MaterialType AS material_name FROM tbl_WarehouseTransaction AS a
                 INNER JOIN tbl_Warehouse AS b
                     ON b.id = a.fkid
                 WHERE Lot_number = '$request->material_lot_number'
@@ -34,12 +34,12 @@ class SecondMoldingController extends Controller
     public function checkMaterialLotNumberOfFirstMolding(Request $request){
         $isProductionLotNumberSizeExisted = isset($request->production_lot_number_size) ? true : false;
         if($isProductionLotNumberSizeExisted){
-            $result = DB::select("SELECT 
-                        CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot, 
-                        first_moldings.id AS first_molding_id, 
+            $result = DB::select("SELECT
+                        CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot,
+                        first_moldings.id AS first_molding_id,
                         first_moldings.first_molding_device_id AS first_molding_device_id,
                         first_moldings.shipment_output AS first_molding_shipment_output,
-                        first_molding_details.size_category AS first_molding_size_category, 
+                        first_molding_details.size_category AS first_molding_size_category,
                         first_molding_details.output AS first_molding_output,
                         stations.station_name AS station
                     FROM first_moldings
@@ -59,10 +59,10 @@ class SecondMoldingController extends Controller
                     -- LIMIT 1
             ");
         }else{
-            $result = DB::select("SELECT 
-                        CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot, 
-                        first_moldings.id AS first_molding_id, 
-                        first_moldings.first_molding_device_id AS first_molding_device_id 
+            $result = DB::select("SELECT
+                        CONCAT(first_moldings.production_lot, first_moldings.production_lot_extension) AS production_lot,
+                        first_moldings.id AS first_molding_id,
+                        first_moldings.first_molding_device_id AS first_molding_device_id
                     FROM first_moldings
                     INNER JOIN first_molding_devices
                         ON first_molding_devices.id = first_moldings.first_molding_device_id
@@ -88,7 +88,7 @@ class SecondMoldingController extends Controller
                 AND first_molding_details.deleted_at IS NULL
                 -- LIMIT 1
         ");
-        
+
         return response()->json(['data' => $result, 'cameraInspectionCountResult' => $cameraInspectionCountResult]);
     }
 
@@ -99,7 +99,7 @@ class SecondMoldingController extends Controller
         else if($request->doc_title == 'CN171S-02#MO-VE'){
             $query = "LIKE '%$request->doc_title%'";
         }
-        
+
         return DB::connection('mysql_rapid_acdcs')->select("SELECT * FROM tbl_active_docs
                 WHERE doc_no = '$request->doc_number'
                 AND doc_type = '$request->doc_type'
@@ -109,8 +109,8 @@ class SecondMoldingController extends Controller
 
     public function viewSecondMolding(Request $request){
         $secondMoldingResult = DB::connection('mysql')
-                    ->select("SELECT 
-                            sec_molding_runcards.* 
+                    ->select("SELECT
+                            sec_molding_runcards.*
                         FROM sec_molding_runcards
                         -- INNER JOIN first_moldings
                         --     ON first_moldings.id = sec_molding_runcards.lot_number_eight_first_molding_id
@@ -181,7 +181,7 @@ class SecondMoldingController extends Controller
                     # code...
                     break;
             }
-            
+
             return $result;
         })
         ->rawColumns(['action','status'])
@@ -402,7 +402,7 @@ class SecondMoldingController extends Controller
                         'shipment_output' => $request->shipment_output,
                         'material_yield' => $request->material_yield,
                         'status' => 1,
-                        
+
                         'last_updated_by' => Auth::user()->id,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
@@ -445,10 +445,12 @@ class SecondMoldingController extends Controller
                     INNER JOIN stations
                         ON stations.id = material_process_stations.station_id
                     WHERE devices.name = '$request->device_name'
+                    ORDER BY material_processes.step ASC
         ");
         return response()->json(['data' => $materialProcessStationResult]);
+
     }
-    
+
     public function getModeOfDefectForSecondMolding(Request $request){
         $modeOfDefectResult = DB::connection('mysql')
         ->select("SELECT defects_infos.* FROM defects_infos
@@ -458,7 +460,8 @@ class SecondMoldingController extends Controller
 
     public function getMachine(Request $request){ // Added by Chris to get machine on matrix
         $machine = DB::connection('mysql')
-        ->select("SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machines.* FROM material_processes
+        ->select("SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machi
+        dbnes.* FROM material_processes
             INNER JOIN devices
                 ON devices.id = material_processes.device_id
             INNER JOIN material_process_machines
@@ -485,7 +488,7 @@ class SecondMoldingController extends Controller
             DB::rollback();
             return response()->json(['hasError' => true, 'exceptionError' => $e->getMessage()]);
         }
-        
+
     }
 
     public function getSecondMoldingQrCode(Request $request){
@@ -509,7 +512,7 @@ class SecondMoldingController extends Controller
 
         $qr_code = "data:image/png;base64," . base64_encode($qrcode);
         // return $qr_code;
-        
+
         $data[] = array(
             'img' => $qr_code,
             'text' =>  "<strong>$secondMoldingResult->po_number</strong><br>
@@ -593,7 +596,7 @@ class SecondMoldingController extends Controller
             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
             ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepThree)
             ->exists();
-        
+
         $disabledInputQuantity = false;
         if(!$checkIfVisualInspectionIsExist){
             $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
@@ -619,6 +622,7 @@ class SecondMoldingController extends Controller
             if((int)$getShipmentOuputOfVisualInspection[0]->output_quantity == (int)$getShipmentOuputOfNonVisualInspection[0]->output_quantity){
                 $disabledInputQuantity = true;
             }
+
         }
         return response()->json(['data' => $getShipmentOuputOfNonVisualInspection, 'getShipmentOuputOfVisualInspection' => $getShipmentOuputOfVisualInspection, 'disabledInputQuantity'=>$disabledInputQuantity]);
     }

@@ -43,13 +43,13 @@ class AssemblyOqcLotAppController extends Controller
                 $submission = 0;
             }
 
-            if($fvi_inspection->oqc_lot_app == null || $fvi_inspection->oqc_lot_app->status == 2){
+            if($fvi_inspection->oqc_lot_app == null || $fvi_inspection->oqc_lot_app->status == 3){
                 $result.='<button type="button" class="btn btn-sm btn-success btn_update_lot" id="btn_update" data-toggle="modal" sub_count="'.$submission.'" value="'.$fvi_inspection->id.'" title="View/Update Details"><i class="fa fa-pencil-alt fa-sm"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-secondary" data-toggle="modal" title="No Lot App Details" disabled><i class="fa fa-print fa-sm"></i></button>';
             }
             // else if($fvi_inspection->oqc_lot_app->status > 0){
 
-            if($fvi_inspection->oqc_lot_app->status == 2 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 1){
+            if($fvi_inspection->oqc_lot_app->status == 3 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 1){
                 $result.='<button type="button" class="btn btn-sm btn-success btn_update_lot" id="btn_update" data-toggle="modal" sub_count="'.$submission.'" value="'.$fvi_inspection->id.'" title="View/Update Details"><i class="fa fa-pencil-alt fa-sm"></i></button>';
 
             }else if($fvi_inspection->oqc_lot_app->status == 1 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 2){
@@ -58,7 +58,7 @@ class AssemblyOqcLotAppController extends Controller
                 $result .=' <button type="button" class="btn btn-sm btn-success btn_submit_lotapp" id="btnSubmitLotApp" value="'.$fvi_inspection->oqc_lot_app->id.'">
                                 <i class="fa-solid fa-circle-check"></i>
                             </button>';
-            }else if($fvi_inspection->oqc_lot_app->status == 3){
+            }else if($fvi_inspection->oqc_lot_app->status == 2){
 
                 $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-primary btn_print_lotapp_inner_box" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print Lot Tray QR Sticker"><i class="fa fa-print fa-sm"></i></button>';
@@ -272,7 +272,7 @@ class AssemblyOqcLotAppController extends Controller
         if(isset($request->fvi_id)){
             $total_qty_output = 0;
             for ($i = 0; $i < count($fvi_details->fvi_runcards); $i++){
-                $total_qty_output = $total_qty_output + $fvi_details->fvi_runcards[$i]->assy_runcard_station_details->output_quantity;
+                $total_qty_output = $total_qty_output + $fvi_details->fvi_runcards[$i]->assy_runcard_station_details->output;
             }
         }else{
             $total_qty_output = '';
@@ -325,7 +325,7 @@ class AssemblyOqcLotAppController extends Controller
                                         'lot_batch_no'     => $request->lot_no,
                                         'print_lot'        => $request->print_lot_no,
                                         'lot_qty'          => $request->lot_quantity,
-                                        'output_quantity'  => $request->output_quantity,
+                                        'output_qty'       => $request->output_quantity,
                                         'app_date'         => date('Y-m-d H:i:s'),
                                         'device_cat'       => $request->device_cat,
                                         'cert_lot'         => $request->cert_lot,
@@ -431,6 +431,8 @@ class AssemblyOqcLotAppController extends Controller
                                     ->where('id', $request->fvi_id)
                                     ->whereNull('deleted_at')->first();
 
+        // return $fvi_details;
+
         $po_qrcode = "";
         $po_qrcode = QrCode::format('png')->size(200)->errorCorrection('H')->generate($fvi_details->po_no);
         $po_qrcode = "data:image/png;base64," . base64_encode($po_qrcode);
@@ -438,11 +440,11 @@ class AssemblyOqcLotAppController extends Controller
         $po_no        = $fvi_details->po_no;
         $product_name = $fvi_details->device_name;
         $lot_no       = $fvi_details->oqc_lot_app->lot_batch_no;
-        $lot_qty      = $fvi_details->oqc_lot_app->output_quantity;
-        $assy_line    = $fvi_details->fvi_runcards[0]->assy_runcard_station_details->station_name[0]->station_name;
+        $lot_qty      = $fvi_details->oqc_lot_app->output_qty;
+        $assy_line    = $fvi_details->fvi_runcards[0]->assy_runcard_station_details->station_name->station_name;
         $applied_date = $fvi_details->oqc_lot_app->app_date;
 
-        // $lbl = 'PO #: ' . $fvi_details[0]->po_no . '<br>Product Name: ' . $fvi_details[0]->device_name. '<br>Lot #: ' . $fvi_details[0]->lot_no . '<br>Lot Qty: ' . $fvi_details[0]->oqc_lot_app->output_qty . '<br> Assy Line: ' . $data[0]->assy_details->name . '<br>Date/Time Applied: ' . $data[0]->created_at . '<br>WW: ' . $data[0]->ww;
+        // $lbl = 'PO #: ' . $fvi_details[0]->po_no . '<br>Product Name: ' . $fvi_details[0]->device_name. '<br>Lot #: ' . $fvi_details[0]->lot_no . '<br>Lot Qty: ' . $fvi_details[0]->oqc_lot_app->output_quantity . '<br> Assy Line: ' . $data[0]->assy_details->name . '<br>Date/Time Applied: ' . $data[0]->created_at . '<br>WW: ' . $data[0]->ww;
         $lbl = 'PO #: '.$po_no.'<br>Product Name: '.$product_name.'<br>Lot #: '.$lot_no.'<br>Lot Qty: '.$lot_qty.'<br> Assy Line: '.$assy_line.'<br>Date/Time Applied: '.$applied_date.'';
         $lbl2 = ''.$po_no.'<br>'.$product_name.'<br>'.$lot_no.'<br>'.$lot_qty.'<br> '.$assy_line.'<br> '.$applied_date.'';
 
@@ -465,7 +467,7 @@ class AssemblyOqcLotAppController extends Controller
         $img_product_name       = $fvi_to_lotapp_details->device_name;
         $img_lot_no             = $fvi_to_lotapp_details->lot_no;
         $img_print_lot          = $fvi_to_lotapp_details->oqc_lot_app->print_lot;
-        $img_output_qty         = $fvi_to_lotapp_details->oqc_lot_app->output_quantity;
+        $img_output_qty         = $fvi_to_lotapp_details->oqc_lot_app->output_qty;
         $img_qty_inner_box      = $device->qty_per_reel;
 
         $QrCode = QrCode::format('png')->errorCorrection('H')->size(200)->generate($img_po_no.' '.$img_product_name.' '.$img_lot_no.' '.$img_print_lot.' '.$img_output_qty.' '.$img_qty_inner_box);
@@ -487,21 +489,21 @@ class AssemblyOqcLotAppController extends Controller
             $product_name       = $fvi_to_lotapp_details->device_name;
             $lot_no             = $fvi_to_lotapp_details->lot_no;
             $operator_name      = $fvi_to_lotapp_details->oqc_lot_app->user->firstname.' '.$fvi_to_lotapp_details->oqc_lot_app->user->lastname;
-            $output_qty         = $fvi_to_lotapp_details->oqc_lot_app->output_quantity;
+            $output_quantity    = $fvi_to_lotapp_details->oqc_lot_app->output_qty;
             $qty_inner_box      = $device->qty_per_reel;
             $lot_counter        = ($lot_start_counter + $i) .'/'. ($no_of_inner_box);
 
-            $InnerBox_QrCode = QrCode::format('png')->errorCorrection('H')->size(200)->generate($po_no.' '.$product_name.' '.$lot_no.' '.$operator_name.' '.$output_qty.' '.$qty_inner_box.' '.($lot_start_counter + $i) .'/'. ($no_of_inner_box));
+            $InnerBox_QrCode = QrCode::format('png')->errorCorrection('H')->size(200)->generate($po_no.' '.$product_name.' '.$lot_no.' '.$operator_name.' '.$output_quantity.' '.$qty_inner_box.' '.($lot_start_counter + $i) .'/'. ($no_of_inner_box));
             $InnerBox_QrCode = "data:image/png;base64," . base64_encode($InnerBox_QrCode);
 
             $data[] = array('img' => $InnerBox_QrCode, 'text' => '<b><br>' .$po_no. '</b><br>'.'<b>' .$product_name.'</b><br>'.
                                     $lot_no.'</b><br>'.
                                     $operator_name .'<br>'.
-                                    $output_qty.'</b><br>'.
+                                    $output_quantity.'</b><br>'.
                                     $qty_inner_box.'</b><br>'.
                                     ($lot_start_counter + $i) .'/'. ($no_of_inner_box).'</b>');
 
-            $inner_box_lbl = 'PO no.: '.$po_no.'<br>Device name: '.$product_name.'<br>Lot no.: '.$lot_no.'<br>FVI name: '.$operator_name.'<br>Actual lot quantity: '.$output_qty.'<br>Quantity per tray: '.$qty_inner_box.'<br>Count of tray/total tray per lot: '. $prd_runcards_counter[$request->fvi_id] .'/'. ($no_of_inner_box);
+            $inner_box_lbl = 'PO no.: '.$po_no.'<br>Device name: '.$product_name.'<br>Lot no.: '.$lot_no.'<br>FVI name: '.$operator_name.'<br>Actual lot quantity: '.$output_quantity.'<br>Quantity per tray: '.$qty_inner_box.'<br>Count of tray/total tray per lot: '. $prd_runcards_counter[$request->fvi_id] .'/'. ($no_of_inner_box);
         }
 
         return response()->json(['QrCode' => $QrCode, 'label' => $inner_box_lbl, 'label_hidden' => $data]);

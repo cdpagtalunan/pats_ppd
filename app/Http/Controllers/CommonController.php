@@ -48,5 +48,5 @@ class CommonController extends Controller
         return response()->json(['acdcs_data' => $acdcs_data]);
     }
 
-    
+
 }

@@ -153,6 +153,8 @@ Route::view('/stamping_working_report','stamping_working_report')->name('stampin
 /* MACHINE PARAMETER */
 Route::view('/machine_parameter','machine_parameter')->name('machine_parameter');
 
+/* CASEMARK VIEW */
+Route::view('/casemark_sticker','casemark_sticker')->name('casemark_sticker');
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
@@ -483,8 +485,11 @@ Route::controller(SecondMoldingStationController::class)->group(function () {
 /* Stamping Working Report Controller */
 Route::controller(StampingWorkingReportController::class)->group(function () {
     Route::get('/view_stamping_working_report', 'viewStampingWorkingReport')->name('view_stamping_working_report');
+    Route::get('/view_stamping_working_report_work_details', 'viewStampingWorkingReportWorkDetails')->name('view_stamping_working_report_work_details');
     Route::post('/save_machine_number', 'saveMachineNumber')->name('save_machine_number');
+    Route::post('/save_stamping_working_report_work_details', 'saveStampingWorkingReportWorkDetails')->name('save_stamping_working_report_work_details');
     Route::get('/get_stamping_working_report_by_id', 'getStampingWorkingReportById')->name('get_stamping_working_report_by_id');
+    Route::get('/get_stamping_working_report_work_details_by_id', 'getStampingWorkingReportWorkDetailsById')->name('get_stamping_working_report_work_details_by_id');
 });
 
 
@@ -643,12 +648,14 @@ Route::controller(ExportIqcInspectionController::class)->group(function () {
 Route::controller(MachineParameterController::class)->group(function () {
     Route::post('/save_machine_one', 'saveMachineOne')->name('save_machine_one');
     Route::post('/save_injection_tab_list','saveInjectionTabList')->name('save_injection_tab_list');
+
     Route::get('/edit_machine_parameter','editMachineParameter')->name('edit_machine_parameter');
     Route::get('/load_machine_parameter_one','loadMachineParameterOne')->name('load_machine_parameter_one');
     Route::get('/get_machine_name_form1','getMachineDetailsForm1')->name('get_machine_name_form1');
     Route::get('/get_machine_name_form2','getMachineDetailsForm2')->name('get_machine_name_form2');
-
     Route::get('/get_operator_name','getOperatorName')->name('get_operator_name');
+    Route::get('/load_injection_tab_list','loadInjectionTabList')->name('load_injection_tab_list');
+    Route::get('/edit_injection_tab_list', 'editInjectionTabList')->name('edit_injection_tab_list');
 });
 
 

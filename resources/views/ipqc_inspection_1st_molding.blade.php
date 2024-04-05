@@ -468,8 +468,6 @@
                                 $('#txtMaterialName').val(ScanQrCodeVal.name);
 
                                 const trimmed_mat_name = ScanQrCodeVal.name.replace(/ /g,'');
-                                console.log(trimmed_mat_name);
-
                                 GetBDrawingFromACDCS(trimmed_mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
                                 GetInspStandardFromACDCS(trimmed_mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
                                 GetUDFromACDCS(trimmed_mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
@@ -481,7 +479,7 @@
                                 $('#txtPartCode').val('');
                                 $('#txtMaterialName').val('');
                             }
-                            
+
                             $('#modalQrScanner').modal('hide');
                         }
                     });
@@ -686,7 +684,7 @@
                     }
                     $('#modalIpqcInspection').modal('show');
                 });
-                
+
                 $(document).on('click', '.btnUpdateIPQCData',function(e){
                 // $(document).on('click', '#btnUpdateIPQCData',function(e){
                     e.preventDefault();

@@ -1017,7 +1017,7 @@
                                 }else{
                                     $("#btnViewUdDrawings").prop('disabled', true);
                                 }
-                                
+
                                 $('input[name="keep_sample"]').attr('disabled', false);
                                 $("#btnReuploadTriggerDiv").removeClass('d-none');
                                 $("#btnReuploadTrigger").removeClass('d-none');

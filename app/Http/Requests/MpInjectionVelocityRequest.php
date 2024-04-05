@@ -24,6 +24,9 @@ class MpInjectionVelocityRequest extends FormRequest
     public function rules()
     {
         return [
+            'injection_time' => ['required','numeric'],
+            'cooling_time' => ['required','numeric'],
+            'cycle_start' => ['required','numeric'],
             'inj_v6' => ['required','numeric'],
             'inj_v5' => ['required','numeric'],
             'inj_v4' => ['required','numeric'],

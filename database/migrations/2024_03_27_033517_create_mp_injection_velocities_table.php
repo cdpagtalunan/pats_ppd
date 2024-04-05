@@ -16,6 +16,9 @@ class CreateMpInjectionVelocitiesTable extends Migration
         Schema::create('mp_injection_velocities', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('machine_parameter_id')->unsigned();
+            $table->float('injection_time')->nullable()->default(0);
+            $table->float('cooling_time')->nullable()->default(0);
+            $table->float('cycle_start')->nullable()->default(0);
             $table->float('inj_v6')->nullable()->default(0);
             $table->float('inj_v5')->nullable()->default(0);
             $table->float('inj_v4')->nullable()->default(0);

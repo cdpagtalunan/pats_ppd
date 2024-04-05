@@ -2120,44 +2120,47 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="table-responsive">
-                                            <div class="d-flex justify-content-end">
-                                                <button type="button" id="btnAddFirstMoldingMaterial" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button>
+                                    <div class="col-sm-6">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="table-responsive">
+                                                    <div class="d-flex justify-content-end">
+                                                        <button type="button" id="btnAddLotNumber" class="btn btn-sm btn-info" title="Add Material"><i class="fa fa-plus"></i> Add Material</button>
+                                                    </div>
+                                                    <br>
+                                                    <table class="table table-sm" id="tblLotNumber">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 40%;">Lot Number</th>
+                                                                <th style="width: 5%;">Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>
+                                                                    <div id="divInjTabLotNumber" class="input-group input-group-sm mb-3">
+                                                                        <div class="input-group-prepend">
+                                                                            <button type="button" class="btn btn-dark"
+                                                                                id="btnScanQrLotNumber" btn-value="btnInjTabLotNumber"><i
+                                                                                    class="fa fa-qrcode w-100"></i></button>
+                                                                        </div>
+                                                                        <input type="text" class="form-control form-control-sm"
+                                                                            id="textInjTabLotNumber" name="inj_tab_lot_number[]"required>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <center><button class="btn btn-danger buttonLotNumber" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
-                                            <br>
-                                            <table class="table table-sm" id="tblFirstMoldingMaterial">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 40%;">Virgin Material</th>
-                                                        <th style="width: 40%;">Virgin Qty</th>
-                                                        {{-- <th style="width: 35%;">Recycled Material</th> --}}
-                                                        <th style="width: 20%;">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>
-                                                            <div class="input-group input-group-sm mb-3">
-                                                                <div class="input-group-prepend">
-                                                                    <button type="button" class="btn btn-dark"
-                                                                        id="btnScanQrFirstMoldingVirginMaterial"><i
-                                                                            class="fa fa-qrcode w-100"></i></button>
-                                                                </div>
-                                                                <input type="text" class="form-control form-control-sm"
-                                                                    id="virgin_material" name="virgin_material[]" required
-                                                                    min=1 step="0.01">
-                                                            </div>
-                                                        </td>
-
-                                                        <td>
-                                                            <center><button class="btn btn-danger buttonRemoveMaterial" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
                                         </div>
                                     </div>
+                                    <div class="col-sm-6">
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -2183,21 +2186,40 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="modalQrScanner" data-form-id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body pt-0">
+                    <input type="text" id="textQrScanner" class="hidden_scanner_input" class="" autocomplete="off">
+                    <div class="text-center text-secondary">
+                        Please scan Material Lot #
+                        <br><br>
+                        <h1><i class="fa fa-qrcode fa-lg"></i></h1>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('js_content')
     <script>
         $(document).ready(function() {
-            $('[type=number]').val(8);
-            $('[type=text]').val(4);
+            // $('[type=number]').val(8);
+            // $('[type=text]').val(4);
             //TODO: InjectionTabList CRUD
 
-            const resetFormValues = (elementForm) => {
+            const resetFormValuesMachine = (elementForm) => {
                 // Reset values
                 elementForm[0].reset();
 
                 // Reset hidden input fields
-                elementForm.find("select").val(0).trigger('change');
+                // elementForm.find("select").val(0).trigger('change');
 
                 // Remove invalid & title validation
                 $('div').find('input').removeClass('is-invalid');
@@ -2207,7 +2229,8 @@
             }
 
             $('#modalAddMachine1').on('hidden.bs.modal', function() {
-                resetFormValues(formMachine.formAddMachine1);
+                resetFormValuesMachine(formMachine.formAddMachine1);
+                // formMachine.formAddMachine1[0].reset();
             });
 
             getMachine1($('#selectMachine1'));
@@ -2248,17 +2271,44 @@
                 ],
             });
 
+            dataTableMachine.InjectionTabListOne = $("#tableInjectionTabListOne").DataTable({
+                "processing": false,
+                "serverSide": true,
+                "responsive": true,
+                // "order": [[ 0, "desc" ],[ 4, "desc" ]],
+                "language": {"info": "Showing _START_ to _END_ of _TOTAL_ user records",
+                    "lengthMenu": "Show _MENU_ user records",
+                },
+                "ajax": {
+                    url: "load_injection_tab_list",
+                    data: function(param) {
+                        param.machine_one_parameter_id = formMachine.formAddMachine1.find('[name="machine_parameter_id"]').val();
+                    }
+                },
+                "columns": [{
+                    "data": "get_action",
+                    orderable: false,
+                    searchable: false},
+                    {"data": "inj_tab_list_mo_day"},
+                    {"data": "inj_tab_list_shot_count"},
+                    {"data": "inj_tab_list_operator_name"},
+                    {"data": "inj_tab_list_mat_time_in"},
+                    {"data": "inj_tab_list_prond_time_start"},
+                    {"data": "inj_tab_list_prond_time_end"},
+                    {"data": "get_total_time"},
+                    {"data": "inj_tab_list_total_mat_dring_time"},
+                    {"data": "inj_tab_list_mat_lot_num_virgin"},
+                    {"data": "inj_tab_list_mat_lot_num_recycle"},
+                    {"data": "inj_tab_list_remarks"}
+                ],
+            });
+
             $(tableMachine.tableMachineParameter_form1).on('click', '#btnEditMachineParameter', function() {
                 let machineParameterId = $(this).attr('machine-parameter-id');
                 editMachineParameter(machineParameterId);
             });
 
-            $('#btnAddInjectionTabListOne').click(function(e) {
-                e.preventDefault();
-                let formAddMachineOneId = formMachine.formAddMachine1.find('[name="machine_parameter_id"]').val()
-                formMachine.formInjectionTabList.find('[name="machine_parameter_id"]').val(formAddMachineOneId);
-                fnGetOperatorName(formMachine.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'))
-            });
+
 
             $('#formAddMachine1').submit(function(e) {
                 e.preventDefault();
@@ -2270,11 +2320,82 @@
                 saveInjectionTabList();
             });
 
-            // $(document).on('click', '#btnEditInjectionTabList', function() {
-            //     let injectionTabListId = $(this).attr('injection-tab-list-id');
-            //     editInjectionTabList(injectionTabListId)
-            //     fnGetOperatorName(form.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'))
-            // });
+            $('#btnAddInjectionTabListOne').click(function(e) {
+                e.preventDefault();
+                let formAddMachineOneId = formMachine.formAddMachine1.find('[name="machine_parameter_id"]').val()
+                formMachine.formInjectionTabList.find('[name="machine_parameter_id"]').val(formAddMachineOneId);
+                fnGetOperatorName(formMachine.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'))
+            });
+            
+            $('#btnAddLotNumber').click(function (e) {
+                e.preventDefault();
+                arr.Ctr ++;
+                let rowLotNumber = `
+                <tr>
+                    <td>
+                        <div id="divInjTabLotNumber" class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend">
+                                <button type="button" class="btn btn-dark"
+                                    id="btnScanQrLotNumber" name="btnInjTabLotNumber[]" btn-value="btnInjTabLotNumber"><i
+                                        class="fa fa-qrcode w-100"></i></button>
+                            </div>
+                            <input type="text" class="form-control form-control-sm"
+                                id="textInjTabLotNumber" name="inj_tab_lot_number[]" required>
+                        </div>
+                    </td>
+                    <td>
+                        <center><button class="btn btn-danger buttonLotNumber" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                    </td>
+                </tr>
+                `;
+                    $("#tblLotNumber tbody").append(rowLotNumber);
+            });
+
+            $("#tblLotNumber").on('click', '.buttonLotNumber', function(){
+                $(this).closest ('tr').remove();
+                arr.Ctr --;
+            });
+
+            let scannerRow = null;
+
+            $('#btnScanQrLotNumber').each(function(e){
+                $(document).on('click','#btnScanQrLotNumber',function (e) {
+                    let formValue = $(this).attr('btn-value');
+                    scannerRow = this;
+                    $('#modalQrScanner').attr('data-form-id', formValue).modal('show');
+                    $('#textQrScanner').val('');
+                    setTimeout(() => {
+                        $('#textQrScanner').focus();
+                    }, 500);
+                });
+            });
+
+
+            $('#textQrScanner').keyup(delay(function(e){
+                let qrScannerValue = $(this).val();
+                let formId = $('#modalQrScanner').attr('data-form-id');
+                if( e.keyCode == 13 ){
+                    $(this).val(''); // Clear after enter
+                    switch (formId) {
+                        case 'btnInjTabLotNumber':
+                            let qrScannerValueToJSON = JSON.parse(qrScannerValue);
+                            let lotNumber = qrScannerValueToJSON.lot_no;
+                            let lotNumberExtension = qrScannerValueToJSON.lot_no_ext;
+                            $(scannerRow).closest('tr').find('input[name="inj_tab_lot_number[]"').val(lotNumber+lotNumberExtension)
+                            break;
+                        default:
+                            break;
+                    }
+
+                    $('#modalQrScanner').modal('hide');
+                }
+            }, 100));
+
+            $(document).on('click', '#btnEditInjectionTabList', function() {
+                let injectionTabListId = $(this).attr('injection-tab-list-id');
+                editInjectionTabList(injectionTabListId)
+                fnGetOperatorName(formMachine.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'))
+            });
         });
     </script>
 @endsection

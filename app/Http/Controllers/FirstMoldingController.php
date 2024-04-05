@@ -66,8 +66,8 @@ class FirstMoldingController extends Controller
         ');
         return DataTables::of($first_molding)
         ->addColumn('action', function($row){
-            $result = '';
-            $result .= '<center>';
+        $result = '';
+                                                                $result .= '<center>';
             switch ($row->status) {
                 case 0:
                     $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
@@ -86,7 +86,6 @@ class FirstMoldingController extends Controller
                     break;
                 default:
                     $result .= "";
-                    break;
             }
             $result .= '</center>';
             return $result;
@@ -208,7 +207,6 @@ class FirstMoldingController extends Controller
                 FirstMoldingMaterialList::where('first_molding_id', $get_first_molding_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
                 ]);
-
                 foreach ( $virgin_material as $key => $value_virgin_material) {
                     FirstMoldingMaterialList::insert([
                         'first_molding_id'   => $get_first_molding_id,

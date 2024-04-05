@@ -483,7 +483,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Date</span>
                                         </div>
-                                            <input type="date" class="form-control form-control-sm" id="txtDate" name="date" value="<?php echo date('Y-m-d'); ?>">
+                                            <input type="date" class="form-control form-control-sm" id="txtDate" name="date" value="<?php echo date('Y-m-d'); ?>" readonly>
                                     </div>
                                 </div>
                             </div>
@@ -612,13 +612,16 @@
                                     </div>
                                 </div> --}}
 
+                                {{-- DROPDOWN --}}
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Doc No. (R Drawing)</span>
+                                                <div id="BDrawingDiv" class="input-group-prepend">
+                                                </div>
+                                                <span class="input-group-text w-100" id="basic-addon1">Doc No. (R Drawing):</span>
                                             </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtDocNoRDrawing" name="doc_no_r_drawing">
+                                            <select class="form-control form-control-sm" id="txtSelectDocNoRDrawing" name="doc_no_r_drawing"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -627,9 +630,11 @@
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Doc No. (A Drawing)</span>
+                                                <div id="InspStandardDiv" class="input-group-prepend">
+                                                </div>
+                                                <span class="input-group-text w-100" id="basic-addon1">Doc No. (A Drawing):</span>
                                             </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtDocNoADrawing" name="doc_no_a_drawing">
+                                            <select class="form-control form-control-sm" id="txtSelectDocNoADrawing" name="doc_no_a_drawing"></select>
                                         </div>
                                     </div>
                                 </div>
@@ -638,34 +643,14 @@
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Doc No. (G Drawing)</span>
+                                                <div id="UDDiv" class="input-group-prepend">
+                                                </div>
+                                                <span class="input-group-text w-100" id="basic-addon1">Doc No. (G Drawing):</span>
                                             </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtDocNoGDrawing" name="doc_no_g_drawing">
+                                            <select class="form-control form-control-sm" id="txtSelectDocNoGDrawing" name="doc_no_g_drawing"></select>
                                         </div>
                                     </div>
                                 </div>
-
-                                {{-- <div class="row">
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Date Code</span>
-                                            </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtDateCode" name="date_code">
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col">
-                                        <div class="input-group input-group-sm mb-3">
-                                            <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Bundle Qty</span>
-                                            </div>
-                                                <input type="number" class="form-control form-control-sm" id="txtBundleQuantity" name="bundle_quantity" min="0">
-                                        </div>
-                                    </div>
-                                </div> --}}
                             </div>
                             {{-- Visual Inspection Add Fields END --}}
 
@@ -790,6 +775,125 @@
                 $('.select2bs5').select2( {
                     theme: 'bootstrap-5'
                 });
+
+                $('#txtSelectDocNoRDrawing').on('change', function() {
+                    if($('#txtSelectDocNoRDrawing').val() === null || $('#txtSelectDocNoRDrawing').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewBDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewBDrawings").prop('disabled', false);
+                    }
+                });
+
+                $('#txtSelectDocNoADrawing').on('change', function() {
+                    if($('#txtSelectDocNoADrawing').val() === null || $('#txtSelectDocNoADrawing').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewInspStdDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewInspStdDrawings").prop('disabled', false);
+                    }
+                });
+
+                $('#txtSelectDocNoGDrawing').on('change', function() {
+                    if($('#txtSelectDocNoGDrawing').val() === null || $('#txtSelectDocNoGDrawing').val() === undefined){
+                        console.log('b drawing', 'disabled');
+                        $("#btnViewUdDrawings").prop('disabled', true);
+                    }else{
+                        console.log('b drawing', 'enabled');
+                        $("#btnViewUdDrawings").prop('disabled', false);
+                    }
+                });
+
+                ViewDocument($('#txtSelectDocNoRDrawing').val(), $('#BDrawingDiv'), 'btnViewBDrawings');
+                ViewDocument($('#txtSelectDocNoADrawing').val(), $('#InspStandardDiv'), 'btnViewInspStdDrawings');
+                ViewDocument($('#txtSelectDocNoGDrawing').val(), $('#UDDiv'), 'btnViewUdDrawings');
+
+                $('#btnViewBDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoRDrawing').val());
+                });
+                $('#btnViewInspStdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoADrawing').val());
+                });
+                $('#btnViewUdDrawings').on('click', function(){
+                    redirect_to_drawing($('#txtSelectDocNoGDrawing').val());
+                });
+
+                function ViewDocument(document_no, div_id, btn_id){
+                    // let doc_no ='<a href="download_file/'+document_no+'">';
+                    let doc_no ='<button type="button" id="'+btn_id+'" class="btn btn-sm btn-primary">';
+                        doc_no +=     '<i class="fa fa-file" data-bs-toggle="tooltip" data-bs-html="true" title="See Document in ACDCS"></i>';
+                        doc_no +='</button>';
+                        // doc_no +='</a>';
+                        // <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
+                    div_id.append(doc_no);
+                }
+
+                function redirect_to_drawing(drawing) {
+                    console.log('Drawing No.:',drawing)
+                    if( drawing  == 'N/A'){
+                        alert('Document No does not exist')
+                    }
+                    else{
+                        window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
+                    }
+                }
+
+                function GetRDrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
+                };
+
+                function GetADrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
+                };
+
+                function GetGDrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
+                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
+                };
+
+                function GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo = null){
+                    let result = '<option value="" disabled selected>--Select Document No.--</option>';
+
+                    $.ajax({
+                        url: 'get_data_from_acdcs',
+                        method: 'get',
+                        data: {
+                            'doc_title': doc_title,
+                            'doc_type': doc_type
+                        },
+                        dataType: 'json',
+                        beforeSend: function() {
+                                result = '<option value="0" disabled selected>--Loading--</option>';
+                                cboElement.html(result);
+                        },
+                        success: function(response) {
+                            if (response['acdcs_data'].length > 0) {
+
+                                    result = '<option value="" disabled selected>--Select Document No.--</option>';
+                                if(response['acdcs_data'][0].doc_type != 'B Drawing'){
+                                    result += '<option value="N/A"> N/A </option>';
+                                }
+
+                                // result = '<option value="" selected>-- N/A --</option>';
+                                for (let index = 0; index < response['acdcs_data'].length; index++) {
+                                    result += '<option value="' + response['acdcs_data'][index].doc_no + '">' + response['acdcs_data'][index].doc_no + '</option>';
+                                }
+                            } else {
+                                result = '<option value="0" selected disabled> -- No record found -- </option>';
+                            }
+                            cboElement.html(result);
+                            if(DocumentNo != null){
+                                cboElement.val(DocumentNo).trigger('change');
+                            }
+                        },
+                        error: function(data, xhr, status) {
+                            result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                            cboElement.html(result);
+                            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+                    });
+                }
 
                 dtAssemblyRuncard = $("#tblAssemblyRuncard").DataTable({
                     "processing" : true,
@@ -1285,6 +1389,10 @@
 
                         $('#txtRequiredOutput').val($('#txtSearchReqOutput').val());
 
+                        GetRDrawingFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"));
+                        GetADrawingFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"));
+                        GetGDrawingFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"));
+
                         // $.ajax({
                         //     type: "get",
                         //     url: "get_total_yield",
@@ -1326,21 +1434,36 @@
 
                 // clark ongoing
                 $('#btnAddRuncardStation').on('click', function(e){
-                     $('#modalAddStation').modal('show');
-                     let runcard_id = $(this).attr('runcard_id');
+                    $('#modalAddStation').modal('show');
+                    let runcard_id = $(this).attr('runcard_id');
 
-                     $.ajax({
-                        type: "get",
-                        url: "chck_existing_stations",
-                        data: {
-                            "runcard_id" : runcard_id,
-                        },
-                        dataType: "json",
-                        success: function (response){
-                            GetStations($('#txtSelectRuncardStation'), response['current_step']);
-                            $('#txtStep').val(response['current_step']);
-                        }
-                    });
+                    $('#txtInputQuantity').prop('disabled', false);
+                    $('#txtNgQuantity').prop('disabled', false);
+                    $('#txtDocNoRDrawing').prop('disabled', false);
+                    $('#txtDocNoADrawing').prop('disabled', false);
+                    $('#txtDocNoGDrawing').prop('disabled', false);
+                    $('#txtRemarks').prop('disabled', false);
+                    $('#buttonAddAssemblyModeOfDefect').prop('hidden', false);
+                    $('.buttonRemoveMOD').prop('disabled', false);
+                    $('#btnSaveNewAssemblyRuncardStation').prop('hidden', false);
+
+                    CheckExistingStations(runcard_id);
+                    // $.ajax({
+                    //     type: "get",
+                    //     url: "chck_existing_stations",
+                    //     data: {
+                    //         "runcard_id" : runcard_id,
+                    //     },
+                    //     dataType: "json",
+                    //     success: function (response){
+                    //         GetStations($('#txtSelectRuncardStation'), response['current_step']);
+                    //         $('#txtStep').val(response['current_step']);
+                    //         if(response['output_quantity'] != ''){
+                    //             $('#txtInputQuantity').val(response['output_quantity']);
+                    //             $('#txtInputQuantity').prop('readonly', true);
+                    //         }
+                    //     }
+                    // });
 
                      $('#txtStationAssyRuncardId').val(runcard_id);
                      $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
@@ -1420,23 +1543,6 @@
                     $('#LubricantCoatingDiv').addClass('d-none', true);
                     $('#VisualInspDocNoDiv').addClass('d-none', true);
 
-                    let runcard_id = $('#txtAssyRuncardId').val();
-                    $.ajax({
-                        type: "get",
-                        url: "chck_existing_stations",
-                        data: {
-                            "runcard_id" : runcard_id,
-                        },
-                        dataType: "json",
-                        success: function (response){
-                            if(response['current_step'] == 0){
-                                $('#btnAddRuncardStation').prop('disabled', true);
-                            }else{
-                                $('#btnAddRuncardStation').prop('disabled', false);
-                            }
-                        }
-                    });
-
                     // $("#labelTotalNumberOfNG").val('');
                     // Remove invalid & title validation
                     $('div').find('input').removeClass('is-invalid');
@@ -1466,6 +1572,49 @@
                     });
                 });
 
+                //clark ongoing
+                function CheckExistingStations(runcard_id){
+                    $.ajax({
+                        type: "get",
+                        url: "chck_existing_stations",
+                        data: {
+                            "runcard_id" : runcard_id,
+                        },
+                        dataType: "json",
+                        success: function (response){
+                            GetStations($('#txtSelectRuncardStation'), response['current_step']);
+                            $('#txtStep').val(response['current_step']);
+
+                            if(response['output_quantity'] != ''){
+                                $('#txtInputQuantity').val(response['output_quantity']);
+                                $('#txtInputQuantity').prop('readonly', true);
+                            }
+
+                            if(response['current_step'] == 0){
+                                $('#btnAddRuncardStation').prop('disabled', true);
+                            }else{
+                                $('#btnAddRuncardStation').prop('disabled', false);
+                            }
+                        }
+                    });
+                    // let runcard_id = $('#txtAssyRuncardId').val();
+                    // $.ajax({
+                    //     type: "get",
+                    //     url: "chck_existing_stations",
+                    //     data: {
+                    //         "runcard_id" : runcard_id,
+                    //     },
+                    //     dataType: "json",
+                    //     success: function (response){
+                    //         if(response['current_step'] == 0){
+                    //             $('#btnAddRuncardStation').prop('disabled', true);
+                    //         }else{
+                    //             $('#btnAddRuncardStation').prop('disabled', false);
+                    //         }
+                    //     }
+                    // });
+                }
+
                 $(document).on('click', '#btnSaveNewAssemblyRuncardStation',function(e){
                     e.preventDefault();
                     $.ajax({
@@ -1479,6 +1628,8 @@
                                 $('#txtShipmentOutput').val(response['shipment_output']);
                                 $("#modalAddStation").modal('hide');
                                 dtAssemblyRuncardStation.draw();
+
+                                CheckExistingStations($('#txtAssyRuncardId').val());
 
                                 // if($('#txtAssyRuncardId').val() == ''){
                                 //     $('#btnAddRuncardStation').prop('disabled', true);
@@ -1507,14 +1658,26 @@
                         },
                         success: function(response){
                             const assy_runcard_data = response['assembly_runcard_data'];
-                            if(assy_runcard_data[0].assembly_runcard_station.length > 2){
-                                // $('#btnSubmitAssemblyRuncardData').prop('disabled', false);
-                                $('#btnAddRuncardStation').prop('disabled', true);
-                            }else{
-                                //Enable Adding of Runcard Station
-                                // $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
-                                $('#btnAddRuncardStation').prop('disabled', false);
-                            }
+                            // if(assy_runcard_data[0].assembly_runcard_station.length > 2){
+                            //     // $('#btnSubmitAssemblyRuncardData').prop('disabled', false);
+                            //     $('#btnAddRuncardStation').prop('disabled', true);
+                            // }else{
+                            //     //Enable Adding of Runcard Station
+                            //     // $('#btnSubmitAssemblyRuncardData').prop('disabled', true);
+                            //     $('#btnAddRuncardStation').prop('disabled', false);
+                            // }
+                            CheckExistingStations(assembly_runcard_id);
+
+                            $('#txtSelectDocNoRDrawing').prop('disabled', false);
+                            $('#txtSelectDocNoADrawing').prop('disabled', false);
+                            $('#txtSelectDocNoGDrawing').prop('disabled', false);
+
+                            $('#btnRuncardDetails').prop('hidden', false);
+                            $('#txtPONumber').prop('disabled', false);
+                            $('#btnScanSZeroSevenProdLot').prop('disabled', false);
+                            $('#btnScanSZeroTwoProdLot').prop('disabled', false);
+                            $('#btnAddRuncardStation').prop('hidden', false);
+                            $('#btnSubmitAssemblyRuncardData').prop('hidden', false);
 
                             $('#modalCNAssembly').modal('show');
                             $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
@@ -1572,10 +1735,200 @@
                     });
                 });
 
+                $(document).on('click', '.btnViewAssemblyRuncardData',function(e){
+                    e.preventDefault();
+                    let assembly_runcard_id = $(this).attr('assembly_runcard-id');
+                    $.ajax({
+                        url: "get_assembly_runcard_data",
+                        type: "get",
+                        data: {
+                            assy_runcard_id: assembly_runcard_id
+                        },
+                        dataType: "json",
+                        success: function(response){
+                            const assy_runcard_data = response['assembly_runcard_data'];
+                            $('#btnAddRuncardStation').prop('disabled', true);
+                            $('#btnRuncardDetails').prop('hidden', true);
+                            $('#txtPONumber').prop('disabled', true);
+                            $('#btnScanSZeroSevenProdLot').prop('disabled', true);
+                            $('#btnScanSZeroTwoProdLot').prop('disabled', true);
+                            $('#btnAddRuncardStation').prop('hidden', true);
+                            $('#btnSubmitAssemblyRuncardData').prop('hidden', true);
+
+                            $('#txtSelectDocNoRDrawing').prop('disabled', true);
+                            $('#txtSelectDocNoADrawing').prop('disabled', true);
+                            $('#txtSelectDocNoGDrawing').prop('disabled', true);
+
+                            $('#modalCNAssembly').modal('show');
+                            $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
+                            $('#formCNAssemblyRuncard #txtDeviceCode').val(assy_runcard_data[0].part_code);
+                            $('#formCNAssemblyRuncard #txtDeviceName').val(assy_runcard_data[0].device_name);
+                            $('#formCNAssemblyRuncard #txtMaterialName').val(assy_runcard_data[0].material_name);
+                            $('#formCNAssemblyRuncard #txtPONumber').val(assy_runcard_data[0].po_number);
+                            // $('#formCNAssemblyRuncard #txtPartsCode').val(assy_runcard_data[0].parts_code);
+                            $('#formCNAssemblyRuncard #txtPoQuantity').val(assy_runcard_data[0].po_quantity);
+                            $('#formCNAssemblyRuncard #txtRequiredOutput').val(assy_runcard_data[0].required_output);
+                            $('#formCNAssemblyRuncard #txtRuncardNo').val(assy_runcard_data[0].runcard_no);
+                            $('#formCNAssemblyRuncard #txtShipmentOutput').val(assy_runcard_data[0].shipment_output);
+                            $('#formCNAssemblyRuncard #txtPZeroTwoProdLot').val(assy_runcard_data[0].p_zero_two_prod_lot);
+                            $('#formCNAssemblyRuncard #txtPZeroTwoDeviceId').val(assy_runcard_data[0].p_zero_two_device_id);
+                            $('#formCNAssemblyRuncard #txtSZeroSevenProdLot').val(assy_runcard_data[0].s_zero_seven_prod_lot);
+                            $('#formCNAssemblyRuncard #txtSZeroSevenDeviceId').val(assy_runcard_data[0].s_zero_seven_device_id);
+                            $('#formCNAssemblyRuncard #txtSZeroTwoProdLot').val(assy_runcard_data[0].s_zero_two_prod_lot);
+                            $('#formCNAssemblyRuncard #txtSZeroTwoDeviceId').val(assy_runcard_data[0].s_zero_two_device_id);
+                            // $('#formCNAssemblyRuncard #txtTotalAssyYield').val(assy_runcard_data[0].total_assembly_yield);
+
+                            let total_assy_yield = 0;
+                            for (let index = 0; index < assy_runcard_data[0].assembly_runcard_station.length; index++) {
+                                let output = assy_runcard_data[0].assembly_runcard_station[index].output_quantity;
+                                let input = assy_runcard_data[0].assembly_runcard_station[index].input_quantity;
+                                let station_yield = ( output / input ) * 100;
+                                total_assy_yield += station_yield;
+                            }
+                            total_assy_yield = total_assy_yield / assy_runcard_data[0].assembly_runcard_station.length;
+
+                            $('#formCNAssemblyRuncard #txtTotalAssyYield').val(`${total_assy_yield.toFixed(2)}%`);
+                            $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
+
+                            $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
+
+                            let s_zero_two_prod_lot = assy_runcard_data[0].s_zero_two_prod_lot;
+                                s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
+                                s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
+                                if(s_zero_two_prod_lot_split.length > 3){
+                                    s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
+                                }else{
+                                    s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
+                                }
+                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
+                            verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+
+                            dtAssemblyRuncardStation.draw();
+                        },
+                        error: function(data, xhr, status){
+                            toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                        }
+                    });
+                });
+
                 $(document).on('click', '.btnUpdateAssyRuncardStationData',function(e){
                     e.preventDefault();
                     let assembly_runcard_id = $('#txtAssyRuncardId').val();
                     let assy_runcard_stations_id = $(this).attr('assy_runcard_stations-id');
+
+                    GetAssemblyRuncardData(assembly_runcard_id, assy_runcard_stations_id);
+
+                    $('#txtInputQuantity').prop('disabled', false);
+                    $('#txtNgQuantity').prop('disabled', false);
+                    $('#txtDocNoRDrawing').prop('disabled', false);
+                    $('#txtDocNoADrawing').prop('disabled', false);
+                    $('#txtDocNoGDrawing').prop('disabled', false);
+                    $('#txtRemarks').prop('disabled', false);
+                    $('#buttonAddAssemblyModeOfDefect').prop('hidden', false);
+                    $('.buttonRemoveMOD').prop('disabled', false);
+                    $('#btnSaveNewAssemblyRuncardStation').prop('hidden', false);
+                    $('#modalAddStation').modal('show');
+
+                    $('#tableAssemblyStationMOD .selectMOD').prop('disabled', false);
+                    $('#tableAssemblyStationMOD .textMODQuantity').prop('disabled', false);
+                    $('#tableAssemblyStationMOD .buttonRemoveMOD').prop('disabled', false);
+
+                    // $.ajax({
+                    //     url: "get_assembly_runcard_data",
+                    //     type: "get",
+                    //     data: {
+                    //         assy_runcard_id: assembly_runcard_id,
+                    //         assy_runcard_station_id: assy_runcard_stations_id
+                    //     },
+                    //     dataType: "json",
+                    //     beforeSend: function(){
+                    //     },
+                    //     success: function(response){
+                    //         const assy_runcard_station_data = response['assembly_runcard_data'][0].assembly_runcard_station[0];
+                    //         const mode_of_defect_data = response['mode_of_defect_data'];
+
+                    //         GetRDrawingFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"), assy_runcard_station_data.doc_no_r_drawing);
+                    //         GetADrawingFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"), assy_runcard_station_data.doc_no_a_drawing);
+                    //         GetGDrawingFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"), assy_runcard_station_data.doc_no_g_drawing);
+
+                    //         //Stations Forms
+                    //         $('#formAddAssemblyRuncardStation #txtStationAssyRuncardId').val(assy_runcard_station_data.assembly_runcards_id);
+                    //         $('#formAddAssemblyRuncardStation #txtAssyRuncardStationId').val(assy_runcard_station_data.id);
+                    //         // $('#formAddAssemblyRuncardStation #txtSelectRuncardStation').val(assy_runcard_station_data.station);
+                    //         GetStations($('#txtSelectRuncardStation'), assy_runcard_station_data.station_step);
+                    //         $('#formAddAssemblyRuncardStation #txtStep').val(assy_runcard_station_data.station_step);
+
+                    //         $('#formAddAssemblyRuncardStation #txtDate').val(assy_runcard_station_data.date);
+                    //         $('#formAddAssemblyRuncardStation #txtOperatorName').val(assy_runcard_station_data.user.firstname+' '+assy_runcard_station_data.user.lastname);
+                    //         $('#formAddAssemblyRuncardStation #txtInputQuantity').val(assy_runcard_station_data.input_quantity);
+                    //         $('#formAddAssemblyRuncardStation #txtNgQuantity').val(assy_runcard_station_data.ng_quantity);
+                    //         $('#formAddAssemblyRuncardStation #txtOutputQuantity').val(assy_runcard_station_data.output_quantity);
+
+                    //         $('#formAddAssemblyRuncardStation #txtStationYield').val(assy_runcard_station_data.station_yield);
+                    //         $('#formAddAssemblyRuncardStation #txtModeOfDefect').val(assy_runcard_station_data.mode_of_defect);
+                    //         $('#formAddAssemblyRuncardStation #txtDefectQuantity').val(assy_runcard_station_data.defect_qty);
+                    //         $('#formAddAssemblyRuncardStation #txtMlPerShot').val(assy_runcard_station_data.ml_per_shot);
+                    //         $('#formAddAssemblyRuncardStation #txtTotalLubricantUsage').val(assy_runcard_station_data.total_lubricant_usage);
+                    //         $('#formAddAssemblyRuncardStation #txtDocNoWorkI').val(assy_runcard_station_data.doc_no_wi);
+                    //         // $('#formAddAssemblyRuncardStation #txtDocNoRDrawing').val(assy_runcard_station_data.doc_no_r_drawing);
+                    //         // $('#formAddAssemblyRuncardStation #txtDocNoADrawing').val(assy_runcard_station_data.doc_no_a_drawing);
+                    //         // $('#formAddAssemblyRuncardStation #txtDocNoGDrawing').val(assy_runcard_station_data.doc_no_g_drawing);
+                    //         // $('#formAddAssemblyRuncardStation #txtDateCode').val(assy_runcard_station_data.date_code);
+                    //         // $('#formAddAssemblyRuncardStation #txtBundleQuantity').val(assy_runcard_station_data.bundle_qty);
+
+                    //         $('#formAddAssemblyRuncardStation #txtRemarks').val(assy_runcard_station_data.remarks);
+
+
+                    //         // <option value="${mode_of_defect_data[index].mod_id}">${mode_of_defect_data[index].mode_of_defect[0].defects}</option>
+
+                    //         for(let index = 0; index < mode_of_defect_data.length; index++){
+                    //             let rowModeOfDefect = `
+                    //                 <tr>
+                    //                     <td>
+                    //                         <select class="form-control select2bs5 selectMOD" name="mod_id[]">
+                    //                         </select>
+                    //                     </td>
+                    //                     <td id=textMODQuantity>
+                    //                         <input type="number" class="form-control textMODQuantity" name="mod_quantity[]" value="${mode_of_defect_data[index].mod_quantity}" min="1">
+                    //                     </td>
+                    //                     <td id="buttonRemoveMOD">
+                    //                         <center><button class="btn btn-md btn-danger buttonRemoveMOD" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                    //                     </td>
+                    //                 </tr>
+                    //             `;
+                    //             $("#tableAssemblyStationMOD tbody").append(rowModeOfDefect);
+                    //             // console.log('mod_id',mode_of_defect_data[index].mod_id);
+
+                    //             getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'), mode_of_defect_data[index].mod_id);
+                    //         }
+                    //         $("#labelTotalNumberOfNG").text(parseInt(0));
+                    //     },
+                    //     error: function(data, xhr, status){
+                    //         toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                    //     }
+                    // });
+                });
+
+                $(document).on('click', '.btnViewAssyRuncardStationData',function(e){
+                    e.preventDefault();
+                    let assembly_runcard_id = $('#txtAssyRuncardId').val();
+                    let assy_runcard_stations_id = $(this).attr('assy_runcard_stations-id');
+
+                    GetAssemblyRuncardData(assembly_runcard_id, assy_runcard_stations_id);
+
+                    $('#txtInputQuantity').prop('disabled', true);
+                    $('#txtNgQuantity').prop('disabled', true);
+                    $('#txtDocNoRDrawing').prop('disabled', true);
+                    $('#txtDocNoADrawing').prop('disabled', true);
+                    $('#txtDocNoGDrawing').prop('disabled', true);
+                    $('#txtRemarks').prop('disabled', true);
+                    $('#buttonAddAssemblyModeOfDefect').prop('hidden', true);
+                    $('.buttonRemoveMOD').prop('disabled', true);
+                    $('#btnSaveNewAssemblyRuncardStation').prop('hidden', true);
+                    $('#modalAddStation').modal('show');
+                });
+
+                function GetAssemblyRuncardData(assembly_runcard_id, assy_runcard_stations_id){
                     $.ajax({
                         url: "get_assembly_runcard_data",
                         type: "get",
@@ -1589,45 +1942,15 @@
                         success: function(response){
                             const assy_runcard_station_data = response['assembly_runcard_data'][0].assembly_runcard_station[0];
                             const mode_of_defect_data = response['mode_of_defect_data'];
-                            console.log('log data', assy_runcard_station_data);
 
-                            // if(assy_runcard_station_data.station == 4){
-                            // if(assy_runcard_station_data.station_name.station_name == 'Lubricant Coating'){//Lubricant Coating Station
-                            //     $('#LubricantCoatingDiv').removeClass('d-none');
-                            //     $('#VisualInspDocNoDiv').addClass('d-none');
-                            // }else if(assy_runcard_station_data.station_name.station_name == 'Visual Inspection'){// Visual Inspection
-                            // // }else if(assy_runcard_station_data.station_step == 6){// Visual Inspection
-                            //     $('#LubricantCoatingDiv').addClass('d-none');
-                            //     $('#VisualInspDocNoDiv').removeClass('d-none');
-                            // }else{
-                            //     $('#LubricantCoatingDiv').addClass('d-none');
-                            //     $('#VisualInspDocNoDiv').addClass('d-none');
-                            // }
-
-                            // if(deviceName == 'CN171P-007-1002-VE(01)'){
-                            //     if($("#txtRuncardStation").val() == 1){//Lubricant Coating Station
-                            //         $('#LubricantCoatingDiv').removeClass('d-none');
-                            //         $('#VisualInspDocNoDiv').addClass('d-none');
-                            //     }else{
-                            //         $('#LubricantCoatingDiv').addClass('d-none');
-                            //         $('#VisualInspDocNoDiv').addClass('d-none');
-                            //     }
-                            // }else if(deviceName == 'CN171S-007-1002-VE(01)'){
-                            //     if($("#txtRuncardStation").val() == 3){// Visual Inspection
-                            //         $('#LubricantCoatingDiv').addClass('d-none');
-                            //         $('#VisualInspDocNoDiv').removeClass('d-none');
-                            //     }else{
-                            //         $('#LubricantCoatingDiv').addClass('d-none');
-                            //         $('#VisualInspDocNoDiv').addClass('d-none');
-                            //     }
-                            // }
-
-                            $('#modalAddStation').modal('show');
+                            GetRDrawingFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"), assy_runcard_station_data.doc_no_r_drawing);
+                            GetADrawingFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"), assy_runcard_station_data.doc_no_a_drawing);
+                            GetGDrawingFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"), assy_runcard_station_data.doc_no_g_drawing);
 
                             //Stations Forms
                             $('#formAddAssemblyRuncardStation #txtStationAssyRuncardId').val(assy_runcard_station_data.assembly_runcards_id);
                             $('#formAddAssemblyRuncardStation #txtAssyRuncardStationId').val(assy_runcard_station_data.id);
-                            // $('#formAddAssemblyRuncardStation #txtSelectRuncardStation').val(assy_runcard_station_data.station);
+
                             GetStations($('#txtSelectRuncardStation'), assy_runcard_station_data.station_step);
                             $('#formAddAssemblyRuncardStation #txtStep').val(assy_runcard_station_data.station_step);
 
@@ -1642,18 +1965,12 @@
                             $('#formAddAssemblyRuncardStation #txtDefectQuantity').val(assy_runcard_station_data.defect_qty);
                             $('#formAddAssemblyRuncardStation #txtMlPerShot').val(assy_runcard_station_data.ml_per_shot);
                             $('#formAddAssemblyRuncardStation #txtTotalLubricantUsage').val(assy_runcard_station_data.total_lubricant_usage);
-                            $('#formAddAssemblyRuncardStation #txtDocNoWorkI').val(assy_runcard_station_data.doc_no_wi);
-                            $('#formAddAssemblyRuncardStation #txtDocNoRDrawing').val(assy_runcard_station_data.doc_no_r_drawing);
-                            $('#formAddAssemblyRuncardStation #txtDocNoADrawing').val(assy_runcard_station_data.doc_no_a_drawing);
-                            $('#formAddAssemblyRuncardStation #txtDocNoGDrawing').val(assy_runcard_station_data.doc_no_g_drawing);
-                            // $('#formAddAssemblyRuncardStation #txtDateCode').val(assy_runcard_station_data.date_code);
-                            // $('#formAddAssemblyRuncardStation #txtBundleQuantity').val(assy_runcard_station_data.bundle_qty);
+                            // $('#formAddAssemblyRuncardStation #txtDocNoWorkI').val(assy_runcard_station_data.doc_no_wi);
+                            // $('#formAddAssemblyRuncardStation #txtDocNoRDrawing').val(assy_runcard_station_data.doc_no_r_drawing);
+                            // $('#formAddAssemblyRuncardStation #txtDocNoADrawing').val(assy_runcard_station_data.doc_no_a_drawing);
+                            // $('#formAddAssemblyRuncardStation #txtDocNoGDrawing').val(assy_runcard_station_data.doc_no_g_drawing);
 
                             $('#formAddAssemblyRuncardStation #txtRemarks').val(assy_runcard_station_data.remarks);
-
-
-                            // <option value="${mode_of_defect_data[index].mod_id}">${mode_of_defect_data[index].mode_of_defect[0].defects}</option>
-
                             for(let index = 0; index < mode_of_defect_data.length; index++){
                                 let rowModeOfDefect = `
                                     <tr>
@@ -1670,17 +1987,25 @@
                                     </tr>
                                 `;
                                 $("#tableAssemblyStationMOD tbody").append(rowModeOfDefect);
-                                // console.log('mod_id',mode_of_defect_data[index].mod_id);
-
                                 getModeOfDefect($("#tableAssemblyStationMOD tr:last").find('.selectMOD'), mode_of_defect_data[index].mod_id);
                             }
                             $("#labelTotalNumberOfNG").text(parseInt(0));
+
+                            if(assy_runcard_station_data.status == 2 || assy_runcard_station_data.status == 3){
+                                $('#tableAssemblyStationMOD .selectMOD').prop('disabled', true);
+                                $('#tableAssemblyStationMOD .textMODQuantity').prop('disabled', true);
+                                $('#tableAssemblyStationMOD .buttonRemoveMOD').prop('disabled', true);
+                            }else{
+                                $('#tableAssemblyStationMOD .selectMOD').prop('disabled', false);
+                                $('#tableAssemblyStationMOD .textMODQuantity').prop('disabled', false);
+                                $('#tableAssemblyStationMOD .buttonRemoveMOD').prop('disabled', false);
+                            }
                         },
                         error: function(data, xhr, status){
                             toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
                         }
                     });
-                });
+                }
 
                 // $('#txtInputQuantity').keyup(function(e){
                 //     // console.log('keyiup');

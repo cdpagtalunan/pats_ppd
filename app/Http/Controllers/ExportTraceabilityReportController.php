@@ -20,27 +20,27 @@ use App\Models\ReceivingDetails;
 
 class ExportTraceabilityReportController extends Controller
 {
-    public function exportCN171TraceabilityReport(Request $request){
+public function exportCN171TraceabilityReport(Request $request){
 
         // return $request->date_from; 
         // return $request->date_to;
 
         $stamping_data = FirstStampingProduction::with([
-            'receiving_info',
-            'receiving_info.iqc_info',
-            'receiving_info.iqc_info.user_iqc',
-            'stamping_ipqc', 
-            'user', 
-            'stamping_ipqc.ipqc_insp_name', 
-            'oqc_details', 
-            'oqc_details.packing_info',
-            'oqc_details.packing_info.user_validated_by_info',
-            'oqc_details.first_molding_info',
-            'oqc_details.first_molding_info.user_validated_by_info'
-            ])
-            ->where('po_num', $request->po_number)
-            ->whereBetween('prod_date', [$request->date_from,$request->date_to])
-            ->get();
+        'receiving_info',
+        'receiving_info.iqc_info',
+        'receiving_info.iqc_info.user_iqc',
+        'stamping_ipqc', 
+        'user', 
+        'stamping_ipqc.ipqc_insp_name', 
+        'oqc_details', 
+        'oqc_details.packing_info',
+        'oqc_details.packing_info.user_validated_by_info',
+        'oqc_details.first_molding_info',
+        'oqc_details.first_molding_info.user_validated_by_info'
+        ])
+        ->where('po_num', $request->po_number)
+        ->whereBetween('prod_date', [$request->date_from,$request->date_to])
+        ->get();
         
         // return $stamping_data;
 
@@ -53,20 +53,18 @@ class ExportTraceabilityReportController extends Controller
         // ->get();
 
         // return $receiving_data;
-    
+
         return Excel::download(new ExportCN171TraceabilityReport(
-            $stamping_data,
-            // $receiving_data
+        $stamping_data,
+        // $receiving_data
         ), 
         'CN171 Traceability.xlsx');
 
-    }
+}
 
-    public function exportMoldingTraceabilityReport(Request $request){
+public function exportMoldingTraceabilityReport(Request $request){
 
         $device_name = $request->device_name.'#IN-VE';
-
-        // return $request->date_to;
 
         //QUERY BUILDER
         $secondMoldingData = DB::connection('mysql')
@@ -113,8 +111,7 @@ class ExportTraceabilityReportController extends Controller
         $secondMoldingCameraData = DB::connection('mysql')
         ->table('sec_molding_runcard_stations as a')
         ->join('users as b', 'a.operator_name', 'b.id')
-        // ->where('station', 5)live
-        ->where('station', 7)
+        ->where('station', 5)
         ->select(
                 'a.sec_molding_runcard_id as sec_molding_runcard_id',
                 'b.firstname as camera_operator',
@@ -129,8 +126,7 @@ class ExportTraceabilityReportController extends Controller
         $secondMoldingVisualData = DB::connection('mysql')
         ->table('sec_molding_runcard_stations as a')
         ->join('users as b', 'a.operator_name', 'b.id')
-        // ->where('station', 4) live
-        ->where('station', 6)
+        ->where('station', 4)
         ->select(
                 'a.sec_molding_runcard_id as sec_molding_runcard_id',
                 'b.firstname as visual_operator',
@@ -164,8 +160,7 @@ class ExportTraceabilityReportController extends Controller
         ->table('assembly_runcard_stations as a')
         ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
         ->join('users as c', 'a.operator_name', 'c.id')
-        // ->where('station', 9) live
-        ->where('station', 5)
+        ->where('station', 9)
         ->select(
                 'a.assembly_runcards_id as assembly_runcards_id',
                 'b.s_zero_seven_prod_lot as s_lot_no',
@@ -183,8 +178,7 @@ class ExportTraceabilityReportController extends Controller
         ->table('assembly_runcard_stations as a')
         ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
         ->join('users as c', 'a.operator_name', 'c.id')
-        // ->where('station', 7) live
-        ->where('station', 3)
+        ->where('station', 7)
         ->select(
                 'a.assembly_runcards_id as assembly_runcards_id',
                 'b.s_zero_seven_prod_lot as s_lot_no',
@@ -202,8 +196,7 @@ class ExportTraceabilityReportController extends Controller
         ->table('assembly_runcard_stations as a')
         ->join('assembly_runcards as b', 'a.assembly_runcards_id', 'b.id')
         ->join('users as c', 'a.operator_name', 'c.id')
-        // ->where('station', 4) live
-        ->where('station', 6)
+        ->where('station', 4)
         ->select(
                 'a.assembly_runcards_id as assembly_runcards_id',
                 'b.s_zero_seven_prod_lot as s_lot_no',
@@ -214,13 +207,11 @@ class ExportTraceabilityReportController extends Controller
         )
         ->groupBy('assembly_runcards_id','s_lot_no','p_lot_no','visual_operator')
         ->get();
-        
-
         // return $assemblyVisualData;
 
         // QUERY BUILDER END
 
-          // SUPER RAW QUERY 
+        // SUPER RAW QUERY 
 
         // $secondMoldingData = DB::connection('mysql')
         // ->select("SELECT sec_molding_runcards.*,
@@ -333,5 +324,5 @@ class ExportTraceabilityReportController extends Controller
                 $assemblyVisualData
         ), 
         'Traceability Report.xlsx');
-    }
+}
 }

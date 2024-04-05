@@ -18,6 +18,18 @@
         "titleBar.inactiveBackground": "#78a4fa99",
         "titleBar.inactiveForeground": "#15202b99"
     },
-    "peacock.color": "#78a4fa99"
-
+    "peacock.color": "#78a4fa99",
+    // "editor.defaultFormatter": "esbenp.prettier-vscode",
+    // "[javascript]": {
+    //     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    //     "editor.formatOnSave": true
+    // },
+    // "[blade]": {
+    //     "editor.defaultFormatter": "shufo.vscode-blade-formatter",
+    //     "editor.formatOnSave": true
+    // },
+    // "[php]": {
+    //     "editor.defaultFormatter": "DEVSENSE.phptools-vscode",
+    //     "editor.formatOnSave": true
+    // }
 }

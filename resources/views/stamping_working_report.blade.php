@@ -43,8 +43,8 @@
                                 </div>
                                 <div class="card-body">
                                     <div style="float: right;">
-                                        <button class="btn btn-primary" id="buttonAddStampingWorkingReport" data-bs-toggle='modal' data-bs-target='#modalStampingWorkingReport'><i class="fa-solid fa-plus"></i>
-                                            New
+                                        <button class="btn btn-primary" id="buttonOpenModalMachine" data-bs-toggle="modal" data-bs-target="#modalMachineNumber"><i class="fa-solid fa-plus"></i>
+                                            Add New
                                         </button>
                                     </div> <br><br>
                                     <div class="table-responsive">
@@ -54,11 +54,8 @@
                                             <thead>
                                                 <tr>
                                                     <th>Action</th>
-                                                    <th>Status</th>
+                                                    <th>Control No.</th>
                                                     <th>Machine No.</th>
-                                                    <th>Time</th>
-                                                    <th>Work Details</th>
-                                                    <th>Sequence No.</th>
                                                 </tr>
                                             </thead>
                                         </table>
@@ -71,11 +68,55 @@
             </section>
         </div>
 
+        <div class="modal fade" id="modalMachineNumber" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content modal-lg">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fas fa-object-group text-info"></i> Add Machine Number</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="formMachineNumber">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" style="width: 50%;">Control No.</span>
+                                    <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textControlNumber" name="control_number" placeholder="Ex: PPS-E01-066">
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" style="width: 50%;">Machine No.</span>
+                                    <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textMachineNumber" name="machine_number" placeholder="Machine No.">
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" style="width: 50%;">Year</span>
+                                    <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textYear" readonly name="year" value="<?php echo date('Y'); ?>" placeholder="Year">
+                                </div>
+                                <div class="input-group input-group-sm mb-3">
+                                    <span class="input-group-text" style="width: 50%;">Month</span>
+                                    <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textMonth" readonly name="month" value="<?php echo date('m'); ?>" placeholder="Month">
+                                </div>
+                                <div class="input-group input-group-sm mb-3 mr-1">
+                                    <span class="input-group-text" style="width: 50%;">Day</span>
+                                    <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textDay" readonly name="day" value="<?php echo date('d'); ?>" placeholder="Day">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Save & Next</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
         <div class="modal fade" id="modalStampingWorkingReport" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered modal-xl-custom">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title"><i class="fa fa-info-circle"></i>&nbsp;Stamping Working Report Details</h5>
+                        <h5 class="modal-title"><i class="fa fa-info-circle"></i>&nbsp;Stamping Working Report</h5>
                         <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -83,9 +124,9 @@
                     <form id="formStampingWorkingReport" autocomplete="off">
                         @csrf
                         <div class="modal-body">
-                            <input type="text" class="d-none" id="textStampingWorkingReportId" name="stamping_working_report_id">
+                            <input type="text" class="d-none" id="textStampingWorkingReportId" name="work_details_id">
                             <div class="row">
-                                <div class="col-3 border px-4">
+                                <div class="col-lg-3 border px-4">
                                     <div class="py-3 d-flex align-items-center">
                                         <i class="fa fa-info-circle"></i>&nbsp;Work Details
                                     </div>
@@ -151,7 +192,7 @@
                                             <div>F-1 Material Change</div>
                                             <div>F-2 Mold Pullout</div>
                                             <div>F-3 Mold set-up</div>
-                                            <div>F-3 Lot Change</div>
+                                            <div>F-4 Lot Change</div>
                                         </div>
                                     </div>
                                     <div class="row mb-3 border">
@@ -189,14 +230,22 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-sm-9">
-                                    <div class="col px-4">
-                                        <div class="row py-3 border justify-content-between align-items-center">
-                                            <div class="col-6">
+                                <div class="col-lg-9">
+                                    <div class="row py-3 border">
+                                        <div class="row justify-content-end mb-5">
+                                            <div class="col-md-4">
+                                                <div class="input-group input-group-sm" style="margin-left: -7px;">
+                                                    <span class="input-group-text" style="width: 50%;">Control No.</span>
+                                                    <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textControlNumber" name="control_number" placeholder="Control No.">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-between align-items-center">
+                                            <div class="col-xxl-5">
                                                 <div class="d-flex align-items-center"><i class="fa fa-info-circle"></i>&nbsp;Stamping Working Report</div>
                                                 <div class="fw-lighter fst-italic"><span class="text-danger">*</span>Put the complete details of activity / Do not leave empty space without details</div>
                                             </div>
-                                            <div class="col-6">
+                                            <div class="col-xxl-7">
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <div class="input-group input-group-sm">
                                                         <span class="input-group-text" style="width: 50%;">Machine No.</span>
@@ -204,53 +253,42 @@
                                                     </div>
                                                     <div class="input-group input-group-sm" style="width: 50%;">
                                                         <span class="input-group-text" style="width: 50%;">Year</span>
-                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textYear" readonly name="year" value="<?php echo date('Y'); ?>" placeholder="Year">
+                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textYear" readonly name="year" placeholder="Year">
                                                     </div>
                                                     <div class="input-group input-group-sm" style="width: 50%;">
                                                         <span class="input-group-text" style="width: 50%;">Month</span>
-                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textMonth" readonly name="month" value="<?php echo date('m'); ?>" placeholder="Month">
+                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textMonth" readonly name="month" placeholder="Month">
                                                     </div>
                                                     <div class="input-group input-group-sm mr-1" style="width: 50%;">
                                                         <span class="input-group-text" style="width: 50%;">Day</span>
-                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textDay" readonly name="day" value="<?php echo date('d'); ?>" placeholder="Day">
+                                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textDay" readonly name="day" placeholder="Day">
                                                     </div>
-                                                    <button type="submit" class="btn btn-primary btn-sm d-flex justify-content-center align-items-center">
-                                                        <i class="fa fa-plus" ></i>&nbsp;Save
-                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row py-3 border">
-                                            <div class="text-end">
-                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalStampingWorkingReportDetails" style="margin-bottom: 5px;">
-                                                    <i class="fa fa-plus" ></i> Add
-                                                </button>
-                                            </div>
-                                            <div class="table-responsive">
-                                                <table class="table table-sm small table-bordered table-hover" id="tableStampingWorkingReportDetails" style="width: 100%;">
-                                                    <thead>
-                                                        <tr class="bg-light">
-                                                            <th>Action</th>
-                                                            <th>Time</th>
-                                                            <th>Work Details</th>
-                                                            <th>Sequence No.</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    </tbody>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <th style="border-top: 1px solid #dee2e6"></th>
-                                                            <th style="border-top: 1px solid #dee2e6"></th>
-                                                            <th style="border-top: 1px solid #dee2e6"></th>
-                                                            <th style="border-top: 1px solid #dee2e6"></th>
-                                                        </tr>
-                                                    </tfoot>
-                                                </table>
-                                            </div>
+                                    </div>
+                                    <div class="row py-3 border">
+                                        <div class="text-end">
+                                            <button type="button" class="btn btn-primary" id="buttonStampingWorkingReportWorkDetails" data-bs-toggle="modal" data-bs-target="#modalStampingWorkingReportWorkDetails" style="margin-bottom: 5px;">
+                                                <i class="fa fa-plus" ></i> Add New
+                                            </button>
                                         </div>
-                                        
-                                        
+                                        <div class="table-responsive">
+                                            <table class="table table-sm small table-bordered table-hover" id="tableStampingWorkingReportWorkDetails" style="width: 100%;">
+                                                <thead>
+                                                    <tr class="bg-light">
+                                                        <th>Action</th>
+                                                        <th>Time Start</th>
+                                                        <th>Time End</th>
+                                                        <th>Total Minutes</th>
+                                                        <th>Work Details</th>
+                                                        <th>Sequence No.</th> 
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -266,7 +304,7 @@
             <!-- /.modal-dialog -->
         </div>
 
-        <div class="modal fade" id="modalStampingWorkingReportDetails" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal fade" id="modalStampingWorkingReportWorkDetails" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content modal-lg">
                     <div class="modal-header">
@@ -275,11 +313,11 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form id="formStampingWorkingReportDetails">
+                    <form id="formStampingWorkingReportWorkDetails">
                         @csrf
                         <div class="modal-body">
-                            <input type="text" class="d-none" id="textStampingWorkingReportsId" name="stamping_working_report_id">
-                            <input type="text" class="d-none" id="textStampingWorkingReportDetailsId" name="stamping_working_report_details_id">
+                            <input type="text" class="d-none" id="textStampingWorkingReportId" name="stamping_working_report_id">
+                            <input type="text" class="d-none" id="textStampingWorkingReportWorkDetailsId" name="stamping_working_report_work_details_id">
 
                             <div class="row">
                                 <div class="col">
@@ -299,28 +337,28 @@
                                         <span class="input-group-text" style="width: 50%;">Work Details</span>
                                         <select type="text" class="form-control form-control-sm" style="width: 50% !important;" id="selectWorkDetails" name="work_details" placeholder="Work Details">
                                             <option value="0" selected disabled>Select One</option>
-                                            <option value="1">A</option>
-                                            <option value="2">A1</option>
-                                            <option value="3">A2</option>
-                                            <option value="4">A3</option>
-                                            <option value="5">B1</option>
-                                            <option value="6">B2</option>
-                                            <option value="7">B3</option>
-                                            <option value="8">B4</option>
-                                            <option value="9">C</option>
-                                            <option value="10">D</option>
-                                            <option value="11">E1</option>
-                                            <option value="12">E2</option>
-                                            <option value="13">F1</option>
-                                            <option value="14">F2</option>
-                                            <option value="15">F3</option>
-                                            <option value="16">F4</option>
-                                            <option value="17">H</option>
-                                            <option value="18">G1</option>
-                                            <option value="19">G2</option>
-                                            <option value="20">G3</option>
-                                            <option value="21">T</option>
-                                            <option value="22">K</option>
+                                            <option value="A">A</option>
+                                            <option value="A1">A1</option>
+                                            <option value="A2">A2</option>
+                                            <option value="A3">A3</option>
+                                            <option value="B1">B1</option>
+                                            <option value="B2">B2</option>
+                                            <option value="B3">B3</option>
+                                            <option value="B4">B4</option>
+                                            <option value="C">C</option>
+                                            <option value="D">D</option>
+                                            <option value="E1">E1</option>
+                                            <option value="E2">E2</option>
+                                            <option value="F1">F1</option>
+                                            <option value="F2">F2</option>
+                                            <option value="F3">F3</option>
+                                            <option value="F4">F4</option>
+                                            <option value="H">H</option>
+                                            <option value="G1">G1</option>
+                                            <option value="G2">G2</option>
+                                            <option value="G3">G3</option>
+                                            <option value="T">T</option>
+                                            <option value="K">K</option>
                                         </select>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
@@ -332,7 +370,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success" id="buttonAddStampingWorkingReportDetails"><i class="fa-solid fa-floppy-disk"></i> Save</button>
+                            <button type="submit" class="btn btn-success" id="buttonAddStampingWorkingReportWorkDetails"><i class="fa-solid fa-floppy-disk"></i> Save</button>
                         </div>
                     </form>
                 </div>
@@ -370,79 +408,157 @@
                     $('#textTotalMinutes').val(`${minutes} mins`);
                 });
 
-                // dataTables = $("#tableStation").DataTable({
-                //     "processing" : true,
-                //     "serverSide" : true,
-                //     "ajax" : {
-                //         url: "view_second_molding_station",
-                //         data: function (param){
-                //             param.sec_molding_runcard_id = $('#textSecondMoldingId', $('#formSecondMolding')).val();
-                //         }
-                //     },
-                //     fixedHeader: true,
-                //     "columns":[
-                //         { "data" : "action", orderable:false, searchable:false },
-                //         { "data" : "station_name" },
-                //         { "data" : "date" },
-                //         { "data" : "concatted_operator_name",},
-                //         { "data" : "input_quantity" },
-                //         { "data" : "ng_quantity" },
-                //         { "data" : "output_quantity" },
-                //         { "data" : "remarks" },
-                //     ],
-                //     footerCallback: function (row, data, start, end, display) {
-                //         let api = this.api();
+                dataTablesStampingWorkingReport = $("#tableStampingWorkingReport").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_stamping_working_report",
+                    },
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "control_number" },
+                        { "data" : "machine_number",},
+                    ],
+                });
+                
+                $('#formMachineNumber').submit(function (e) {
+                    e.preventDefault();
+                    let data = $(this).serialize();
+                    console.log(`data ${data}`);
 
-                //         let countNGQuantity = 0;
-                //         let countVisualInspectionQuantity = 0;
-                //         if(data.length > 0){
-                //             for (let index = 0; index < data.length; index++) {
-                //                 countNGQuantity += parseInt(data[index].ng_quantity);
-                //                 if(data[index].station_name == "Visual Inspection"){
-                //                     countVisualInspectionQuantity += parseInt(data[index].output_quantity);
-                //                 }
-                //             }
-                //         }
-                //         // console.log('countNGQuantity ', countNGQuantity);
-                //         $(api.column(5).footer()).html(`${countNGQuantity}`)
-                //         $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
-                //     }
-                // });
+                    $.ajax({
+                        type: "POST",
+                        url: "save_machine_number",
+                        data: data,
+                        dataType: "json",
+                        success: function (response) {
+                            console.log('response ', response);
+                            if(response.validatorHasError){
+                                toastr.error('Please input required fields');
+                                if(response['validatorMessages']['machine_number'] === undefined){
+                                    isResponseError('textMachineNumber', false);
+                                }
+                                else{
+                                    isResponseError('textMachineNumber', true);
+                                }
 
-                $('#formStampingWorkingReportDetails').submit(function (e) {
+                                if(response['validatorMessages']['control_number'] === undefined){
+                                    isResponseError('textControlNumber', false);
+                                }
+                                else{
+                                    isResponseError('textControlNumber', true);
+                                }
+                            }else{
+                                if(response.hasError){
+                                    toastr.error('Saving failed');
+                                }
+                                else{
+                                    toastr.success('Successfully saved');
+                                    dataTablesStampingWorkingReport.draw();
+                                    $('#modalMachineNumber').modal('hide');
+                                    $('#modalStampingWorkingReport').modal('show');
+                                    getStampingWorkingReport(response['id']);
+                                }
+                            }
+                        }
+                    });
+                });
+
+                $("#tableStampingWorkingReport").on('click', '.actionEditStampingWorkingReport', function(){
+                    let stampingWorkingReportId = $(this).attr('stamping-working-report-id');
+                    console.log('stampingWorkingReportId ', stampingWorkingReportId);
+                    getStampingWorkingReport(stampingWorkingReportId);
+                });
+
+                /**
+                 * Stamping Working Report Work Details
+                */
+                dataTablesStampingWorkingReportWorkDetails = $("#tableStampingWorkingReportWorkDetails").DataTable({
+                    "processing" : true,
+                    "serverSide" : true,
+                    "ajax" : {
+                        url: "view_stamping_working_report_work_details",
+                    },
+                    "columns":[
+                        { "data" : "action", orderable:false, searchable:false },
+                        { "data" : "time_start" },
+                        { "data" : "time_end" },
+                        { "data" : "total_minutes" },
+                        { "data" : "work_details"},
+                        { "data" : "sequence_number"},
+                    ],
+                });
+                
+                $('#formStampingWorkingReportWorkDetails').submit(function (e) {
                     e.preventDefault();
                     let data = $(this).serialize();
                     console.log(`data ${data}`);
                     $.ajax({
                         type: "POST",
-                        url: "save_stamping_working_report_details",
+                        url: "save_stamping_working_report_work_details",
                         data: data,
                         dataType: "json",
                         success: function (response) {
-                            if(!response.validationHasError){
+                            if(!response.validatorHasError){
                                 if(!response.hasError){
                                     toastr.success('Successfully saved');
-                                    getSecondMoldingById(response['second_molding_id'], true);
-                                    dataTablesSecondMoldingStation.draw();
-                                    $('#modalStampingWorkingReportDetails').modal('hide');
+                                    // getSecondMoldingById(response['second_molding_id'], true);
+                                    dataTablesStampingWorkingReportWorkDetails.draw();
+                                    $('#modalStampingWorkingReportWorkDetails').modal('hide');
                                 }
                                 else{
                                     toastr.error('Saving failed');
                                 }
                             }else{
                                 toastr.error('Please input required fields');
-                                if(response['error']['device_name'] === undefined){
-                                    isResponseError('textDeviceName', false);
+                                if(response['validatorMessages']['time_start'] === undefined){
+                                    isResponseError('textTimeStart', false);
                                 }
                                 else{
-                                    isResponseError('textDeviceName', true);
+                                    isResponseError('textTimeStart', true);
+                                }
+                                if(response['validatorMessages']['time_end'] === undefined){
+                                    isResponseError('textTimeEnd', false);
+                                }
+                                else{
+                                    isResponseError('textTimeEnd', true);
+                                }
+                                if(response['validatorMessages']['total_minutes'] === undefined){
+                                    isResponseError('textTotalMinutes', false);
+                                }
+                                else{
+                                    isResponseError('textTotalMinutes', true);
+                                }
+                                if(response['validatorMessages']['work_details'] === undefined){
+                                    isResponseError('selectWorkDetails', false);
+                                }
+                                else{
+                                    isResponseError('selectWorkDetails', true);
+                                }
+                                if(response['validatorMessages']['sequence_number'] === undefined){
+                                    isResponseError('textSequenceNumber', false);
+                                }
+                                else{
+                                    isResponseError('textSequenceNumber', true);
                                 }
                             }
                         }
                     });
                 });
-                resetFormValuesOnModalClose('modalSecondMoldingStation', 'formAddStation');
+                resetFormValuesStampingWorkingReportOnModalClose('modalStampingWorkingReportWorkDetails', 'formStampingWorkingReportWorkDetails');
                 
+                $('#buttonStampingWorkingReportWorkDetails').click(function (e) { 
+                    e.preventDefault();
+                    let id = $('#textStampingWorkingReportId', $('#formStampingWorkingReport')).val();
+                    console.log('id ', id);
+                    $('#textStampingWorkingReportId', $('#formStampingWorkingReportWorkDetails')).val(id);
+                });
+
+                $("#tableStampingWorkingReportWorkDetails").on('click', '.actionEditStampingWorkingReportWorkDetails', function(){
+                    let stampingWorkingReportWorkDetailsId = $(this).attr('stamping-working-report-work-details-id');
+                    console.log('stampingWorkingReportWorkDetailsId ', stampingWorkingReportWorkDetailsId);
+                    getStampingWorkingReportWorkDetails(stampingWorkingReportWorkDetailsId);
+                });
             }); // End Document Ready
         </script>
     @endsection

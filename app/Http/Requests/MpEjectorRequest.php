@@ -36,6 +36,7 @@ class MpEjectorRequest extends FormRequest
             "bwd_ev4" => ['required','numeric'],
             "bwd_prs" => ['required','numeric'],
             "repeat_bwd_stop" => ['required','numeric'],
+            "repeat_ejt_ev3" => ['required','numeric'],
             "repeat_fwd_stop" => ['required','numeric'],
         ];
     }

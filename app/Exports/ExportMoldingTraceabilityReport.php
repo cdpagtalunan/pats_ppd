@@ -399,7 +399,7 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                 $event->sheet->setCellValue('J'.$start_col, $secondMoldingFirstOqcData[$v]->first_oqc_sum);
                                 $event->sheet->setCellValue('K'.$start_col, $dppm);
                                 $event->sheet->setCellValue('L'.$start_col, $lar.'%');
-
+                                
                             }
                         }
 

@@ -478,9 +478,9 @@
                 // }
                 /* SELECT PO FROM FIRST STAMPING - CLARK COMMENT */
 
-                console.log('b drawing', $('#txtSelectDocNoBDrawing').val());
-                console.log('ins', $('#txtSelectDocNoInspStandard').val());
-                console.log('ud', $('#txtSelectDocNoUD').val());
+                // console.log('b drawing', $('#txtSelectDocNoBDrawing').val());
+                // console.log('ins', $('#txtSelectDocNoInspStandard').val());
+                // console.log('ud', $('#txtSelectDocNoUD').val());
 
                 $('#txtSelectDocNoBDrawing').on('change', function() {
                     if($('#txtSelectDocNoBDrawing').val() === null || $('#txtSelectDocNoBDrawing').val() === undefined){
@@ -746,7 +746,7 @@
                             getPoNum = ''
                             // console.log(getPoNum);
                         }
-                        
+
                         $.ajax({
                             type: "get",
                             url: "get_data_from_first_stamping_by_po",

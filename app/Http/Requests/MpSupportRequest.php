@@ -13,7 +13,7 @@ class MpSupportRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class MpSupportRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'noz_bwd_tm_1' => ['required','numeric'],
+            'inj_st_tmg_1' => ['required','numeric'],
+            'noz_bwd_tmg_2' => ['required','numeric'],
+            'inj_st_tmg_2' => ['required','numeric'],
+            'support_tempo' => ['required'],
         ];
     }
 }

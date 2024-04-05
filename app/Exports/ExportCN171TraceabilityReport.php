@@ -233,9 +233,17 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->getColumnDimension('BK')->setWidth(10);
                 // $event->sheet->getColumnDimension('BL')->setWidth(10);
 
-                $event->sheet->setCellValue('A1', $stamping_data[0]->material_name .' Parts Lot Management Record');
-                $event->sheet->getDelegate()->mergeCells('A1:BL1');
-                $event->sheet->getDelegate()->getStyle('A1:BL1')->applyFromArray($arial_font20);
+                if(isset($stamping_data[0]->material_name)){
+                    $event->sheet->setCellValue('A1', $stamping_data[0]->material_name .' Parts Lot Management Record');
+                    $event->sheet->getDelegate()->mergeCells('A1:BK1');
+                    $event->sheet->getDelegate()->getStyle('A1:BK1')->applyFromArray($arial_font20);
+                }else{
+                    // $event->sheet->setCellValue('A1', $stamping_data[0]->material_name .' Parts Lot Management Record');
+                    $event->sheet->getDelegate()->mergeCells('A1:BK1');
+                    $event->sheet->getDelegate()->getStyle('A1:BK1')->applyFromArray($arial_font20);
+                }
+
+                
 
                 $event->sheet->getDelegate()->mergeCells('A2:AE2');
                 $event->sheet->setCellValue('A2',"1ST STAMPING");
@@ -247,10 +255,10 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->getDelegate()->getStyle('AF2:AM2')->applyFromArray($hv_center);
                 $event->sheet->getDelegate()->getStyle('AF2:AM2')->applyFromArray($arial_font12_bold);
 
-                $event->sheet->getDelegate()->mergeCells('AN2:BL2');
+                $event->sheet->getDelegate()->mergeCells('AN2:BK2');
                 $event->sheet->setCellValue('AN2',"2ND STAMPING");
-                $event->sheet->getDelegate()->getStyle('AN2:BL2')->applyFromArray($hv_center);
-                $event->sheet->getDelegate()->getStyle('AN2:BL2')->applyFromArray($arial_font12_bold);
+                $event->sheet->getDelegate()->getStyle('AN2:BK2')->applyFromArray($hv_center);
+                $event->sheet->getDelegate()->getStyle('AN2:BK2')->applyFromArray($arial_font12_bold);
 
 
 
@@ -372,19 +380,13 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
 
 
                 
-                $event->sheet->getDelegate()->getStyle('A4:BL4')->applyFromArray($hv_center);
-                $event->sheet->getDelegate()->getStyle('A4:BL4')->getAlignment()->setWrapText(true);
-                $event->sheet->getDelegate()->getStyle('A4:BL4')->applyFromArray($arial_font8_bold);
-                $event->sheet->getDelegate()->getStyle('A2:BL4')->applyFromArray($styleBorderAll);
+                $event->sheet->getDelegate()->getStyle('A4:BK4')->applyFromArray($hv_center);
+                $event->sheet->getDelegate()->getStyle('A4:BK4')->getAlignment()->setWrapText(true);
+                $event->sheet->getDelegate()->getStyle('A4:BK4')->applyFromArray($arial_font8_bold);
+                $event->sheet->getDelegate()->getStyle('A2:BK4')->applyFromArray($styleBorderAll);
 
                 $start_col = 5;
                 for ($i=0; $i < count($stamping_data); $i++) { 
-                    // if(isset($stamping_data[$i]->ship_output) && isset($stamping_data[$i]->total_mach_output)){
-                    //     $mat_yield_1st_stamping = number_format(($stamping_data[$i]->ship_output / $stamping_data[$i]->total_mach_output) * 100, 2);
-                    //     $event->sheet->setCellValue('U'.$start_col, $mat_yield_1st_stamping.'%');
-                    // }else{
-                    //     $event->sheet->setCellValue('U'.$start_col, '');
-                    // }
                     
                     $event->sheet->setCellValue('A'.$start_col, $stamping_data[$i]->user->firstname);
                     $event->sheet->setCellValue('B'.$start_col, $stamping_data[$i]->shift);
@@ -398,8 +400,6 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                     $event->sheet->setCellValue('J'.$start_col, $stamping_data[$i]->prod_date);
                     $event->sheet->setCellValue('K'.$start_col, $stamping_data[$i]->prod_lot_no);
                     $event->sheet->setCellValue('L'.$start_col, $stamping_data[$i]->input_coil_weight);
-                    // $event->sheet->setCellValue('M'.$start_col, $stamping_data[$i]->ppc_target_output);
-                    // $event->sheet->setCellValue('N'.$start_col, $stamping_data[$i]->planned_loss);
                     $event->sheet->setCellValue('M'.$start_col, "=L".$start_col."/0.005");
                     $event->sheet->setCellValue('N'.$start_col, "=M".$start_col."*0.1");
                     $event->sheet->setCellValue('O'.$start_col, $stamping_data[$i]->set_up_pins);
@@ -407,7 +407,6 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                     $event->sheet->setCellValue('Q'.$start_col, $stamping_data[$i]->qc_samp);
                     $event->sheet->setCellValue('R'.$start_col, $stamping_data[$i]->prod_samp);
                     $event->sheet->setCellValue('S'.$start_col, $stamping_data[$i]->total_mach_output);
-                    // $event->sheet->setCellValue('T'.$start_col, $stamping_data[$i]->ship_output);
                     $event->sheet->setCellValue('T'.$start_col,"=S".$start_col."-(SUM(O".$start_col.":R".$start_col."))");
                     $event->sheet->setCellValue('U'.$start_col, ("=T".$start_col."/S".$start_col));
 
@@ -420,7 +419,6 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                         $event->sheet->setCellValue('X'.$start_col, $stamping_data[$i]->oqc_details->inspector);
                         $event->sheet->setCellValue('Y'.$start_col, $stamping_data[$i]->oqc_details->date_inspected);
                         $event->sheet->setCellValue('Z'.$start_col, $stamping_data[$i]->oqc_details->num_of_defects);
-                        // $event->sheet->setCellValue('AA'.$start_col, $stamping_data[$i]->oqc_details->yield);
                         $event->sheet->setCellValue('AA'.$start_col, ("=(T".$start_col."-Z".$start_col.")/T".$start_col.""));
                     }
 
@@ -428,12 +426,9 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                         $packing_date = substr($stamping_data[$i]->oqc_details->packing_info->validated_date_packer,0,10);
                         $event->sheet->setCellValue('AB'.$start_col, $stamping_data[$i]->oqc_details->packing_info->user_validated_by_info->firstname);
                         $event->sheet->setCellValue('AC'.$start_col, $packing_date);
-                        // $event->sheet->setCellValue('AD'.$start_col, $stamping_data[$i]->oqc_details->packing_info->lot_qty);
                         $event->sheet->setCellValue('AD'.$start_col, ("=T".$start_col."-Z".$start_col));
-                        // $event->sheet->setCellValue('AF'.$start_col, 'receive date');
-                    
                     }
-                    // dd($stamping_data[$i]->receiving_info[0]->updated_at);
+
                     for ($u=0; $u <count($stamping_data[$i]->receiving_info) ; $u++) { 
                         $receiving_date = substr($stamping_data[$i]->receiving_info[$u]->updated_at,0,10);
                         $event->sheet->setCellValue('AF'.$start_col, $receiving_date);
@@ -459,9 +454,6 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                         $event->sheet->setCellValue('AO'.$start_col, $stamping_data[$i]->shift);
                         $event->sheet->setCellValue('AP'.$start_col, $stamping_data[$i]->prod_date);
                         $event->sheet->setCellValue('AQ'.$start_col, $stamping_data[$i]->prod_lot_no);
-                        // $event->sheet->setCellValue('AR'.$start_col, $stamping_data[$i]->input_pins);
-                        // $event->sheet->setCellValue('AS'.$start_col, $stamping_data[$i]->target_output);
-                        // $event->sheet->setCellValue('AT'.$start_col, $stamping_data[$i]->planned_loss);
                         $event->sheet->setCellValue('AR'.$start_col, ("=AM".$start_col));
                         $event->sheet->setCellValue('AS'.$start_col, ("=AR".$start_col."-AT".$start_col));
                         $event->sheet->setCellValue('AT'.$start_col, "=AR".$start_col."*0.1");
@@ -478,27 +470,32 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                         }
 
                         if (isset($stamping_data[$i]->oqc_details)) {
-                            
                             $event->sheet->setCellValue('BD'.$start_col, $stamping_data[$i]->oqc_details->inspector);
                             $event->sheet->setCellValue('BE'.$start_col, $stamping_data[$i]->oqc_details->date_inspected);
                             $event->sheet->setCellValue('BF'.$start_col, $stamping_data[$i]->oqc_details->num_of_defects);
                             $event->sheet->setCellValue('BG'.$start_col, ("=(AZ".$start_col."-BF".$start_col.")/AZ".$start_col.""));
-                        }
 
+                            if (isset($stamping_data[$i]->oqc_details->first_molding_info)){
+                                $second_molding_packing_date = substr($stamping_data[$i]->oqc_details->first_molding_info->date_counted,0,10);
+
+                                $event->sheet->setCellValue('BH'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->user_validated_by_info->firstname);
+                                $event->sheet->setCellValue('BI'.$start_col, $second_molding_packing_date);
+                                $event->sheet->setCellValue('BJ'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->shipment_output);
+                            }
+                        }
                     }
+                    $event->sheet->getDelegate()->getStyle('A'.$start_col.':'.'BK'.$start_col)->applyFromArray($styleBorderAll);
                     $start_col++;
                 }
-
                 $event->sheet->getDelegate()->getStyle('U5'.':'.'U'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
                 $event->sheet->getDelegate()->getStyle('AA5'.':'.'AA'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
                 $event->sheet->getDelegate()->getStyle('AI5'.':'.'AI'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
                 $event->sheet->getDelegate()->getStyle('BA5'.':'.'BA'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
                 $event->sheet->getDelegate()->getStyle('BG5'.':'.'BG'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
-                $event->sheet->getDelegate()->getStyle('A5'.':'.'BL'.$start_col)->getAlignment()->setWrapText(true);
-                $event->sheet->getDelegate()->getStyle('A5'.':'.'BL'.$start_col)->applyFromArray($hv_center);
+                $event->sheet->getDelegate()->getStyle('A5'.':'.'BK'.$start_col)->getAlignment()->setWrapText(true);
+                $event->sheet->getDelegate()->getStyle('A5'.':'.'BK'.$start_col)->applyFromArray($hv_center);
                 $event->sheet->getDelegate()->getStyle('C5'.':'.'C'.$start_col)->getNumberFormat()->setFormatCode('000000000000000');
                 
-
             },
         ];
     }

@@ -12,6 +12,7 @@ function resetFormValues() {
     $("div").find('select').attr('title', '');
 }
 
+
 $("#modalAddUser").on('hidden.bs.modal', function () {
     console.log('hidden.bs.modal');
     resetFormValues();

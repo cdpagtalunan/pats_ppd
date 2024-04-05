@@ -28,6 +28,7 @@ class CreateMpEjectorsTable extends Migration
             $table->float("bwd_ev4")->nullable()->default(0);
             $table->float("bwd_prs")->nullable()->default(0);
             $table->float("repeat_bwd_stop")->nullable()->default(0);
+            $table->float("repeat_ejt_ev3")->nullable()->default(0);
             $table->float("repeat_fwd_stop")->nullable()->default(0);
             // Defaults
             $table->unsignedBigInteger('created_by')->nullable();

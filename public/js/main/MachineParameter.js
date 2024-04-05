@@ -1,7 +1,8 @@
 // $(document).ready(function() {
 
     const dataTableMachine = {
-        'MachineParameter': ''
+        'MachineParameter': '',
+        'InjectionTabListOne' :'',
     }
 
     const tableMachine = {
@@ -90,6 +91,13 @@
                     errorHandler( errors.hi_velocity_2_percent,formMachine.formAddMachine1.find('[name="hi_velocity_2_percent"]') );
                     errorHandler( errors.mold_rotation,formMachine.formAddMachine1.find('[name="mold_rotation"]') );
                     errorHandler( errors.hi_velocity_2mm,formMachine.formAddMachine1.find('[name="hi_velocity_2mm"]') );
+                    //SETUP
+                    errorHandler( errors.setup_close_v,formMachine.formAddMachine1.find('[name="setup_close_v"') );
+                    errorHandler( errors.setup_close_p,formMachine.formAddMachine1.find('[name="setup_close_p"') );
+                    errorHandler( errors.setup_open_v,formMachine.formAddMachine1.find('[name="setup_open_v"') );
+                    errorHandler( errors.setup_rot_v,formMachine.formAddMachine1.find('[name="setup_rot_v"') );
+                    errorHandler( errors.setup_ejt_v,formMachine.formAddMachine1.find('[name="setup_ejt_v"') );
+                    errorHandler( errors.setup_ejt_p,formMachine.formAddMachine1.find('[name="setup_ejt_p"') );
                     //Heater
                     errorHandler( errors.nozzle_set,formMachine.formAddMachine1.find('[name="nozzle_set"]') );
                     errorHandler( errors.front_set,formMachine.formAddMachine1.find('[name="front_set"]') );
@@ -229,18 +237,17 @@
             dataType: 'json',
             beforeSend: function(){
                 $('#modal-loading').modal('show');
-            },
-            success: function (response) {
-
+            },success: function (response) {
+                $('#modal-loading').modal('hide');
                 let machineParameter = response.machine_parameter_detail;
                 let moldClose = machineParameter.mold_close;
                 let ejectorLub = machineParameter.ejector_lub;
                 let moldOpen = machineParameter.mold_open;
+                let setup = machineParameter.setup;
                 let heater = machineParameter.heater;
                 let injectionVelocity = machineParameter.injection_velocity;
                 let support = machineParameter.support;
                 let injectionTab = machineParameter.injection_tab;
-                $('#modal-loading').modal('hide');
                 //Machine Parameter //date_created
                 formMachine.formAddMachine1.find('[name="machine_parameter_id"]').val(machineParameter.id);
                 formMachine.formAddMachine1.find('[name="machine_id"]').val(machineParameter.machine_id);
@@ -313,6 +320,13 @@
                 formMachine.formAddMachine1.find('[name="low_distance"]').val(moldOpen.low_distance);
                 formMachine.formAddMachine1.find('[name="hi_velocity_1mm"]').val(moldOpen.hi_velocity_1mm);
                 formMachine.formAddMachine1.find('[name="hi_velocity_2mm"]').val(moldOpen.hi_velocity_2mm);
+                //Setup
+                formMachine.formAddMachine1.find('[name="setup_close_v"').val(setup.setup_close_v);
+                formMachine.formAddMachine1.find('[name="setup_close_p"').val(setup.setup_close_p);
+                formMachine.formAddMachine1.find('[name="setup_open_v"').val(setup.setup_open_v);
+                formMachine.formAddMachine1.find('[name="setup_rot_v"').val(setup.setup_rot_v);
+                formMachine.formAddMachine1.find('[name="setup_ejt_v"').val(setup.setup_ejt_v);
+                formMachine.formAddMachine1.find('[name="setup_ejt_p"').val(setup.setup_ejt_p);
                 //Heater
                 formMachine.formAddMachine1.find('[name="nozzle_set"]').val(heater.nozzle_set);
                 formMachine.formAddMachine1.find('[name="front_set"]').val(heater.front_set);
@@ -445,22 +459,21 @@
                     formMachine.formAddMachine1.find('#radioInjTabEscNo').prop('checked',true);
                 }
 
-                if(injectionTab.inj_tab_punch === "CENTER ONLY"){
+                if(injectionTab.inj_tab_spray_portion === "CENTER ONLY"){
                     formMachine.formAddMachine1.find('#radioInjTabSprayPortionCenter').prop('checked',true);
                     formMachine.formAddMachine1.find('#radioInjTabSprayPortionWhole').prop('checked',false);
                 }else{
                     formMachine.formAddMachine1.find('#radioInjTabSprayPortionCenter').prop('checked',false);
                     formMachine.formAddMachine1.find('#radioInjTabSprayPortionWhole').prop('checked',true);
                 }
-                if(injectionTab.inj_tab_spray_portion === "HARD"){
+                if(injectionTab.inj_tab_punch === "HARD"){
                     formMachine.formAddMachine1.find('#radioInjTabSprayPunchHard').prop('checked',true);
                     formMachine.formAddMachine1.find('#radioInjTabSprayPunchSoft').prop('checked',false);
                 }else{
                     formMachine.formAddMachine1.find('#radioInjTabSprayPunchSoft').prop('checked',true);
                     formMachine.formAddMachine1.find('#radioInjTabSprayPunchHard').prop('checked',false);
                 }
-                // dataTableMachine.InjectionTabListOne.draw();
-                // dataTableMachine.InjectionTabListTwo.draw();
+                dataTableMachine.InjectionTabListOne.draw();
                 $('#modal-loading').modal('hide');
 
             },error: function (data, xhr, status){
@@ -496,7 +509,6 @@
                 elementId.html(result);
                 if(dataId != null){
                     setTimeout(() => {
-                        console.log('dataId',dataId)
                         elementId.val(dataId).trigger('change');
                     }, 100);
                 }
@@ -518,18 +530,16 @@
                 $('#modal-loading').modal('show');
             },
             success: function(response) {
-                console.log(response);
-                return;
                 if(response['is_success'] === 'true'){
-                    $('#modal-loading').modal('hide');
                     $('#modalAddInjectionTabList').modal('hide');
                     $('#formInjectionTabList')[0].reset();
                     dataTableMachine.InjectionTabListOne.draw();
-                    dataTableMachine.InjectionTabListTwo.draw();
                     toastr.success('Save Sucessfully');
                 }else{
                     toastr.error('Saving Failed');
                 }
+                $('#modal-loading').modal('hide');
+
             },
             error: function(data, xhr, status) {
                 $('#modal-loading').modal('hide');
@@ -554,6 +564,7 @@
     }
 
     const editInjectionTabList = function (injectionTabListId){
+        $("#tblLotNumber tbody").empty();
         $.ajax({
             type: 'GET',
             url: 'edit_injection_tab_list',
@@ -561,22 +572,44 @@
             dataType: 'json',
             success: function (response) {
                 if(response.is_success === 'true'){
-                    console.log(response);
-                    return;
                     let injectionTabDetails = response.injection_tab_details[0];
+                    let injTabListLotNumberDetails = response.inj_tab_list_lot_number_details;
+                    for (let index = 0; index < injTabListLotNumberDetails.length; index++) {
+                        // const element = array[index];
+                        console.log(injTabListLotNumberDetails[index]);
+                        let rowLotNumber = `
+                            <tr>
+                                <td>
+                                    <div id="divInjTabLotNumber" class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend">
+                                            <button type="button" class="btn btn-dark"
+                                                id="btnScanQrLotNumber" name="btnInjTabLotNumber[]" btn-value="btnInjTabLotNumber"><i
+                                                    class="fa fa-qrcode w-100"></i></button>
+                                        </div>
+                                        <input value = "${injTabListLotNumberDetails[index].lot_number}" type="text" class="form-control form-control-sm"
+                                            id="textInjTabLotNumber" name="inj_tab_lot_number[]" required>
+                                    </div>
+                                </td>
+                                <td>
+                                    <center><button class="btn btn-danger buttonLotNumber" title="Remove" type="button"><i class="fa fa-times"></i></button></center>
+                                </td>
+                            </tr>
+                            `;
+                        $("#tblLotNumber tbody").append(rowLotNumber);
+                    }
+                    formMachine.formInjectionTabList.find('[name="machine_parameter_id"]').val(injectionTabDetails.machine_parameter_id);
+                    formMachine.formInjectionTabList.find('[name="injection_tab_list_id"]').val(injectionTabDetails.id);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_mo_day"]').val(injectionTabDetails.inj_tab_list_mo_day);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_shot_count"]').val(injectionTabDetails.inj_tab_list_shot_count);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_mat_time_in"]').val(injectionTabDetails.inj_tab_list_mat_time_in);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_prond_time_start"]').val(injectionTabDetails.inj_tab_list_prond_time_start);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_prond_time_end"]').val(injectionTabDetails.inj_tab_list_prond_time_end);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_total_mat_dring_time"]').val(injectionTabDetails.inj_tab_list_total_mat_dring_time);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_mat_lot_num_virgin"]').val(injectionTabDetails.inj_tab_list_mat_lot_num_virgin);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_mat_lot_num_recycle"]').val(injectionTabDetails.inj_tab_list_mat_lot_num_recycle);
+                    formMachine.formInjectionTabList.find('[name="inj_tab_list_remarks"]').val(injectionTabDetails.inj_tab_list_remarks);
+                    fnGetOperatorName(formMachine.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'),injectionTabDetails.inj_tab_list_operator_name);
 
-                    form.formInjectionTabList.find('[name="machine_parameter_id"]').val(injectionTabDetails.machine_parameter_id);
-                    form.formInjectionTabList.find('[name="injection_tab_list_id"]').val(injectionTabDetails.id);
-                    form.formInjectionTabList.find('[name="inj_tab_list_mo_day"]').val(injectionTabDetails.inj_tab_list_mo_day);
-                    form.formInjectionTabList.find('[name="inj_tab_list_shot_count"]').val(injectionTabDetails.inj_tab_list_shot_count);
-                    form.formInjectionTabList.find('[name="inj_tab_list_mat_time_in"]').val(injectionTabDetails.inj_tab_list_mat_time_in);
-                    form.formInjectionTabList.find('[name="inj_tab_list_prond_time_start"]').val(injectionTabDetails.inj_tab_list_prond_time_start);
-                    form.formInjectionTabList.find('[name="inj_tab_list_prond_time_end"]').val(injectionTabDetails.inj_tab_list_prond_time_end);
-                    form.formInjectionTabList.find('[name="inj_tab_list_total_mat_dring_time"]').val(injectionTabDetails.inj_tab_list_total_mat_dring_time);
-                    form.formInjectionTabList.find('[name="inj_tab_list_mat_lot_num_virgin"]').val(injectionTabDetails.inj_tab_list_mat_lot_num_virgin);
-                    form.formInjectionTabList.find('[name="inj_tab_list_mat_lot_num_recycle"]').val(injectionTabDetails.inj_tab_list_mat_lot_num_recycle);
-                    form.formInjectionTabList.find('[name="inj_tab_list_remarks"]').val(injectionTabDetails.inj_tab_list_remarks);
-                    fnGetOperatorName(form.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'),injectionTabDetails.inj_tab_list_operator_name)
                 }
             },error: function (data, xhr, status){
 

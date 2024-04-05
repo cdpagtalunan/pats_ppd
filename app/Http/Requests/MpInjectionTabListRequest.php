@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class InjectionTabListRequest extends FormRequest
+class MpInjectionTabListRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class InjectionTabListRequest extends FormRequest
     {
         return [
             'inj_tab_list_mo_day'    => ['required'],
-            'inj_tab_list_operator_name'  => ['required'],
+            // 'inj_tab_list_operator_name'  => ['required'],
             'inj_tab_list_shot_count'    => ['required'],
             'inj_tab_list_mat_time_in'   => ['required'],
             'inj_tab_list_prond_time_start'  => ['required'],

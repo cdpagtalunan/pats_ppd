@@ -15,9 +15,11 @@ use Illuminate\Support\Carbon;
 use App\Models\InjectionTabList;
 use App\Models\MachineParameter;
 use Yajra\DataTables\DataTables;
+use App\Models\MpInjectionTabList;
 use Illuminate\Support\Facades\DB;
 use App\Models\MpInjectionVelocity;
 use App\Http\Requests\MpSetupRequest;
+use App\Models\MpInjTabListLotNumber;
 use App\Http\Requests\MpHeaterRequest;
 use App\Http\Requests\MpEjectorRequest;
 use App\Http\Requests\MpSupportRequest;
@@ -26,7 +28,7 @@ use App\Http\Requests\MpMoldCloseRequest;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\InjectionTabRequest;
 use App\Http\Requests\MpInjectionTabRequest;
-use App\Http\Requests\InjectionTabListRequest;
+use App\Http\Requests\MpInjectionTabListRequest;
 use App\Http\Requests\MachineParameterRequest;
 use App\Http\Requests\MpInjectionVelocityRequest;
 
@@ -65,6 +67,50 @@ class MachineParameterController extends Controller
         }
     }
 
+    public function loadInjectionTabList(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        try {
+            //machine_parameter_id
+            // $machine_parameter_id= isset($request->machine_parameter_id) ? $request->machine_parameter_id : 0;
+            if( isset( $request->machine_one_parameter_id )  ){
+                $machine_parameter_id = $request->machine_one_parameter_id;
+            }else if(    isset( $request->machine_two_parameter_id ) ){
+                $machine_parameter_id = $request->machine_two_parameter_id;
+            }else{
+                $machine_parameter_id = 0;
+            }
+
+            $injection_tab_list = DB::connection('mysql')
+            ->select('SELECT list.*,list.id as "injection_tab_list_id",parameter.id
+                FROM mp_injection_tab_lists AS list
+                LEFT JOIN machine_parameters parameter ON parameter.id = list.machine_parameter_id
+                WHERE parameter.id ='.$machine_parameter_id.' AND  list.deleted_at IS NULL AND parameter.deleted_at IS NULL
+                ORDER BY list.created_at DESC
+            ');
+            return DataTables::of($injection_tab_list)
+            ->addColumn('get_action', function($row){
+                $result = '';
+                $result .= '<center>';
+                //<button type="button" class="btn btn-primary mb-3" machine-parameter-id='$row->id' id="btnAddMachine1" data-bs-toggle="modal" data-bs-target="#modalAddMachine1"><i class='fa-solid fa-pen-to-square'></i></button>
+                $result .= "<button type='button' class='btn btn-info btn-sm mr-1' injection-tab-list-id='$row->injection_tab_list_id' id='btnEditInjectionTabList' data-bs-toggle='modal' data-bs-target='#modalAddInjectionTabList'><i class='fa-solid fa-pen-to-square'></i></button>";
+                $result .= '</center>';
+                return $result;
+            })
+            ->addColumn('get_total_time', function($row){
+                $result = '';
+                $result .= '<center>';
+                //<button type="button" class="btn btn-primary mb-3" machine-parameter-id='$row->id' id="btnAddMachine1" data-bs-toggle="modal" data-bs-target="#modalAddMachine1"><i class='fa-solid fa-pen-to-square'></i></button>
+                $result .= "dsad";
+                $result .= '</center>';
+                return $result;
+            })
+            ->rawColumns(['get_action','get_total_time'])
+            ->make(true);
+        } catch (Exception $e) {
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
     public function getMachineDetailsForm1(Request $request){
         $machine_details_1 = Machine::where('status',1)
         ->where('machine_category', 1)
@@ -94,8 +140,6 @@ class MachineParameterController extends Controller
         DB::beginTransaction();
         try {
             if( isset($request->machine_parameter_id) || $request->machine_parameter_id != ''){ //Edit Machine Parameter
-                // return 'true';
-
                 MachineParameter::where('id',$request->machine_parameter_id)->whereNull('deleted_at')->update($machine_parameter_request->validated());
                 MpMoldClose::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($mold_close_request->validated());
                 MpMoldOpen::where('machine_parameter_id',$request->machine_parameter_id)->whereNull('deleted_at')->update($mold_open_request->validated());
@@ -225,26 +269,77 @@ class MachineParameterController extends Controller
         }
     }
 
-    public function saveInjectionTabList(Request $request,InjectionTabListRequest $injection_tab_list_request){
+    public function saveInjectionTabList(Request $request,MpInjectionTabListRequest $injection_tab_list_request){
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
-        return 'true';
+
         try {
+            $validation = array(
+                'inj_tab_list_operator_name' => ['required'],
+            );
+            $validator = Validator::make($request->all(), $validation);
+            if ($validator->fails()) {
+                return response()->json(['is_success' => 'false', 'errors' => $validator->messages()],422);
+            }
+
             if( isset($request->injection_tab_list_id) || $request->injection_tab_list_id != ''){ //Edit Machine Parameter
-                InjectionTabList::where('id',$request->injection_tab_list_id)->whereNull('deleted_at')->update($injection_tab_list_request->validated());
-            }else{
-                $injection_tab_list_id = InjectionTabList::insertGetId([
+                // MpInjectionTabList::where('id',$request->injection_tab_list_id)->whereNull('deleted_at')->update($injection_tab_list_request->validated());
+                $injection_tab_list_id = MpInjectionTabList::where('id',$request->injection_tab_list_id)->whereNull('deleted_at')
+                ->update([
                     'machine_parameter_id' => $request->machine_parameter_id,
+                    'inj_tab_list_operator_name' => $request->inj_tab_list_operator_name,
+                ]);
+                $mp_injection_tab_list_id = $request->injection_tab_list_id;
+            }else{
+                $injection_tab_list_id = MpInjectionTabList::insertGetId([
+                    'machine_parameter_id' => $request->machine_parameter_id,
+                    'inj_tab_list_operator_name' => $request->inj_tab_list_operator_name,
                     'created_at' => Carbon::now(),
                 ]);
-                InjectionTabList::where('id',$injection_tab_list_id)->whereNull('deleted_at')->update(
+                MpInjectionTabList::where('id',$injection_tab_list_id)->whereNull('deleted_at')->update(
                     $injection_tab_list_request->validated()
                 );
+                $mp_injection_tab_list_id = $injection_tab_list_id;
+            }
+            /* Get the lot number, delete the existing then insert new*/
+            // $mp_injection_tab_list_id = 3;
+            $inj_tab_lot_number = $request->inj_tab_lot_number;
+            if(isset($inj_tab_lot_number)){
+                MpInjTabListLotNumber::where('mp_injection_tab_list_id', $mp_injection_tab_list_id)->update([
+                    'deleted_at' => date('Y-m-d H:i:s')
+                ]);
+                foreach ( $inj_tab_lot_number as $key => $value) {
+                    MpInjTabListLotNumber::insert([
+                        'mp_injection_tab_list_id'    => $mp_injection_tab_list_id,
+                        'lot_number'              => $inj_tab_lot_number[$key],
+                        'created_at'            => date('Y-m-d H:i:s')
+                    ]);
+                }
+
+            }else{
+                if(MpInjTabListLotNumber::where('mp_injection_tab_list_id', $mp_injection_tab_list_id)->exists()){
+                    MpInjTabListLotNumber::where('mp_injection_tab_list_id', $mp_injection_tab_list_id)->update([
+                        'deleted_at' => date('Y-m-d H:i:s')
+                    ]);
+                }
             }
             DB::commit();
             return response()->json(['is_success' => 'true']);
         } catch (\Exception $e) {
             DB::rollback();
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
+    }
+
+    public function editInjectionTabList(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        try {
+            $injection_tab_details = MpInjectionTabList::where('id',$request->injection_tab_list_id)->whereNull('deleted_at')->get();
+            $inj_tab_list_lot_number = MpInjTabListLotNumber::where('mp_injection_tab_list_id',$request->injection_tab_list_id)->whereNull('deleted_at')->get();
+            return response()->json(['is_success' => 'true',
+            'injection_tab_details'=>$injection_tab_details,
+            'inj_tab_list_lot_number_details' => $inj_tab_list_lot_number]);
+        } catch (\Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
