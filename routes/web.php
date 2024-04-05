@@ -318,7 +318,7 @@ Route::controller(MoldingAssyIpqcController::class)->group(function () {
     Route::get('/verify_production_lot', 'verify_production_lot')->name('verify_production_lot');
     Route::get('/view_ipqc_data', 'view_ipqc_data')->name('view_ipqc_data');
     Route::get('/get_ipqc_data', 'get_ipqc_data')->name('get_ipqc_data');
-    Route::post('/add_ipqc_inspection', 'add_ipqc_inspection')->name('add_ipqc_inspection');
+    Route::post('/add_molding_assy_ipqc_inspection', 'add_molding_assy_ipqc_inspection')->name('add_molding_assy_ipqc_inspection');
     Route::post('/update_ipqc_inspection_status', 'update_ipqc_inspection_status')->name('update_ipqc_inspection_status');
     Route::get('/download_file/{id}', 'download_file')->name('download_file');
 });

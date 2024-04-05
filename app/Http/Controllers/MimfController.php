@@ -47,20 +47,24 @@ class MimfController extends Controller
                 $whse = '  whse-id="'. $get_mimf->pps_po_received_info->pps_dieset_info->pps_warehouse_info->id .'"  ';
             }
 
-            $result .= '
-            <button class="btn btn-dark btn-sm text-center 
-                actionEditMimf" 
-                mimf-id="'. $get_mimf->id .'" 
-                mimf-status="'. $get_mimf->status .'" 
-                po_received-id="'. $get_mimf->pps_po_received_info->id .'" 
-                '.$matrix.'
-                '.$dieset.'
-                '.$whse.'
-                data-bs-toggle="modal" 
-                data-bs-target="#modalMimf"
-                data-bs-keyboard="false" title="Edit">
-                <i class="nav-icon fa fa-edit"></i>
-            </button>';
+            if($get_mimf->pps_po_received_info->POBalance != 0){
+                $result .= '
+                <button class="btn btn-dark btn-sm text-center 
+                    actionEditMimf" 
+                    mimf-id="'. $get_mimf->id .'" 
+                    mimf-status="'. $get_mimf->status .'" 
+                    po_received-id="'. $get_mimf->pps_po_received_info->id .'" 
+                    '.$matrix.'
+                    '.$dieset.'
+                    '.$whse.'
+                    data-bs-toggle="modal" 
+                    data-bs-target="#modalMimf"
+                    data-bs-keyboard="false" title="Edit">
+                    <i class="nav-icon fa fa-edit"></i>
+                </button>';
+            }else{
+                $result .= '<span class="badge badge-pill badge-success"> Done! </span>';
+            }
             $result .= '</center>';
             return $result;
         })

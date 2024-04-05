@@ -20,27 +20,27 @@ use App\Models\ReceivingDetails;
 
 class ExportTraceabilityReportController extends Controller
 {
-    public function exportCN171TraceabilityReport(Request $request){
+public function exportCN171TraceabilityReport(Request $request){
 
         // return $request->date_from; 
         // return $request->date_to;
 
         $stamping_data = FirstStampingProduction::with([
-            'receiving_info',
-            'receiving_info.iqc_info',
-            'receiving_info.iqc_info.user_iqc',
-            'stamping_ipqc', 
-            'user', 
-            'stamping_ipqc.ipqc_insp_name', 
-            'oqc_details', 
-            'oqc_details.packing_info',
-            'oqc_details.packing_info.user_validated_by_info',
-            'oqc_details.first_molding_info',
-            'oqc_details.first_molding_info.user_validated_by_info'
-            ])
-            ->where('po_num', $request->po_number)
-            ->whereBetween('prod_date', [$request->date_from,$request->date_to])
-            ->get();
+        'receiving_info',
+        'receiving_info.iqc_info',
+        'receiving_info.iqc_info.user_iqc',
+        'stamping_ipqc', 
+        'user', 
+        'stamping_ipqc.ipqc_insp_name', 
+        'oqc_details', 
+        'oqc_details.packing_info',
+        'oqc_details.packing_info.user_validated_by_info',
+        'oqc_details.first_molding_info',
+        'oqc_details.first_molding_info.user_validated_by_info'
+        ])
+        ->where('po_num', $request->po_number)
+        ->whereBetween('prod_date', [$request->date_from,$request->date_to])
+        ->get();
         
         // return $stamping_data;
 
@@ -53,16 +53,16 @@ class ExportTraceabilityReportController extends Controller
         // ->get();
 
         // return $receiving_data;
-    
+
         return Excel::download(new ExportCN171TraceabilityReport(
-            $stamping_data,
-            // $receiving_data
+        $stamping_data,
+        // $receiving_data
         ), 
         'CN171 Traceability.xlsx');
 
-    }
+}
 
-    public function exportMoldingTraceabilityReport(Request $request){
+public function exportMoldingTraceabilityReport(Request $request){
 
         $device_name = $request->device_name.'#IN-VE';
 
@@ -211,7 +211,7 @@ class ExportTraceabilityReportController extends Controller
 
         // QUERY BUILDER END
 
-          // SUPER RAW QUERY 
+        // SUPER RAW QUERY 
 
         // $secondMoldingData = DB::connection('mysql')
         // ->select("SELECT sec_molding_runcards.*,
@@ -324,5 +324,5 @@ class ExportTraceabilityReportController extends Controller
                 $assemblyVisualData
         ), 
         'Traceability Report.xlsx');
-    }
+}
 }

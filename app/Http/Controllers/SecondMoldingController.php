@@ -445,6 +445,7 @@ class SecondMoldingController extends Controller
                     INNER JOIN stations
                         ON stations.id = material_process_stations.station_id
                     WHERE devices.name = '$request->device_name'
+                    ORDER BY material_processes.step ASC
         ");
         return response()->json(['data' => $materialProcessStationResult]);
     }

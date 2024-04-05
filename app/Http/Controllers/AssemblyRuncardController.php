@@ -186,25 +186,23 @@ class AssemblyRuncardController extends Controller
                 $result = '';
                 $result .= "<center>";
 
-                if($row->status == 1 || $row->status == 3){
-                    $result .= "<button class='btn btn-primary btn-sm mr-1 btnUpdateAssemblyRuncardData' assembly_runcard-id='$row->id'>
-                                    <i class='fa-solid fa-pen-to-square'></i>
-                                </button>";
+                if($row->status == 0 || $row->status == 1){
+                $result .= "<button class='btn btn-primary btn-sm mr-1 btnUpdateAssemblyRuncardData' assembly_runcard-id='$row->id'>
+                                <i class='fa-solid fa-pen-to-square'></i>
+                            </button>";
+                }
 
+                if($row->status == 1 || $row->status == 3){
                     $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' id='btnPrintAssemblyRuncard'>
                                     <i class='fa-solid fa-print' disabled></i>
                                 </button>";
-                                
+
                     if($row->status == 1){
                         $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' assembly_runcard-status='".$row->status."' id='btnSubmitIPQCData'>
                                         <i class='fa-solid fa-circle-check'></i>
                                     </button>";
                     }
                 }
-                if($row->status == 2){
-
-                }
-
                 $result .= "</center>";
 
                 return $result;

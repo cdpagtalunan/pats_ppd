@@ -481,7 +481,7 @@
                                 $('#txtPartCode').val('');
                                 $('#txtMaterialName').val('');
                             }
-                            
+
                             $('#modalQrScanner').modal('hide');
                         }
                     });
@@ -686,7 +686,7 @@
                     }
                     $('#modalIpqcInspection').modal('show');
                 });
-                
+
                 $(document).on('click', '.btnUpdateIPQCData',function(e){
                 // $(document).on('click', '#btnUpdateIPQCData',function(e){
                     e.preventDefault();
@@ -972,7 +972,7 @@
                     let formData = new FormData($('#formIPQCInspectionData')[0]);
                     console.log('formdata', formData);
                     $.ajax({
-                        url: "add_ipqc_inspection",
+                        url: "add_molding_assy_ipqc_inspection",
                         method: "post",
                         data: formData,
                         processData: false,

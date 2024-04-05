@@ -223,7 +223,7 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
             $event->sheet->setCellValue('G7',"  Severity of \n Inspection");
             $event->sheet->setCellValue('H7',"  Lot \n Number");
             $event->sheet->setCellValue('I7',"  Quantity");
-            $event->sheet->setCellValue('J7',"  Lot \n Quantity");
+            $event->sheet->setCellValue('J7',"  Lot \n Size");
             $event->sheet->setCellValue('K7',"  Sample \n Size");
             $event->sheet->setCellValue('L7',"  No. of \n Defective");
             $event->sheet->setCellValue('M7',"  Mode of \n Defect");
@@ -294,6 +294,7 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                 $event->sheet->setCellValue('K'.$start_column,$search_material_name[$i]->sampling_size);
                 
                 if($search_material_name[$i]->judgement != 1){
+                    $result = 'Reject';
                     $event->sheet->setCellValue('L'.$start_column,$search_material_name[$i]->no_of_defects);
 
                     $mod_array = [];
@@ -304,12 +305,14 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                         $event->sheet->setCellValue('M'.$start_column,"\n".implode("\n", $mod_array)."\n");
                         $event->sheet->setCellValue('N'.$start_column,"\n".implode("\n", $mod_qty_array)."\n");
                     }
+                }else{
+                    $result = 'Accept';
                 }
 
                 $event->sheet->setCellValue('N3',$accept_sum += $search_material_name[$i]->accept);
                 $event->sheet->setCellValue('N4',$reject_sum += $search_material_name[$i]->reject);
 
-                $event->sheet->setCellValue('O'.$start_column,$search_material_name[$i]->judgement);
+                $event->sheet->setCellValue('O'.$start_column,$result);
                 $event->sheet->setCellValue('P'.$start_column,$search_material_name[$i]->user_iqc->firstname.' '.$search_material_name[$i]->user_iqc->lastname);
                 $event->sheet->setCellValue('Q'.$start_column,$search_material_name[$i]->remarks);
 

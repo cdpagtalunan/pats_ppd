@@ -103,7 +103,7 @@
                                                             <th>Device Name</th>
                                                             <th>Material Code</th>
                                                             <th>Material Type</th>
-                                                            <th>Qnty from Inventory</th>
+                                                            <th>Qty. from Inventory</th>
                                                             <th>Needed KGS</th>
                                                             <th>Virgin Material</th>
                                                             <th>Recycled</th>
@@ -500,24 +500,24 @@
                     },
 
                     "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "control_no" },
-                        { "data" : "date_issuance" },
-                        { "data" : "yec_po_no" },
-                        { "data" : "pmi_po_no" },
-                        { "data" : "prodn_qty" },
-                        { "data" : "device_code" },
-                        { "data" : "device_name" },
-                        { "data" : "material_code" },
-                        { "data" : "material_type" },
-                        { "data" : "qty_invt" },
-                        { "data" : "needed_kgs" },
-                        { "data" : "virgin_material"},
-                        { "data" : "recycled" },
-                        { "data" : "prodn" },
-                        { "data" : "delivery" },
-                        { "data" : "po_balance" },
-                        { "data" : "remarks" }
+                        /*0*/{ "data" : "action", orderable:false, searchable:false }, 
+                        /*1*/{ "data" : "control_no" },
+                        /*2*/{ "data" : "date_issuance" },
+                        /*3*/{ "data" : "yec_po_no" },
+                        /*4*/{ "data" : "pmi_po_no" },
+                        /*5*/{ "data" : "prodn_qty" },
+                        /*6*/{ "data" : "device_code" },
+                        /*7*/{ "data" : "device_name" },
+                        /*8*/{ "data" : "material_code" },
+                        /*9*/{ "data" : "material_type" },
+                        /*10*/{ "data" : "qty_invt" },
+                        /*11*/{ "data" : "needed_kgs" },
+                        /*12*/{ "data" : "virgin_material"},
+                        /*13*/{ "data" : "recycled" },
+                        /*14*/{ "data" : "prodn" },
+                        /*15*/{ "data" : "delivery" },
+                        /*16*/{ "data" : "po_balance" },
+                        /*17*/{ "data" : "remarks" }
                     ],
                     "columnDefs": [
                         // "targets": 'invis',
@@ -525,9 +525,9 @@
                     drawCallback: function (data) {
                         const apiDataTable= this.api()
                         if(data.oAjaxData.mimfCategory == 1){
-                            apiDataTable.columns([11,12]).visible(false)
+                            apiDataTable.columns([12,13]).visible(false)
                         }else{
-                            apiDataTable.columns([11,12]).visible(true)
+                            apiDataTable.columns([12,13]).visible(true)
                         }
                     }
                 })

@@ -280,7 +280,7 @@
                         <li class="nav-item">
                             <a href="{{ route('Material_Issuance_Monitoring_Form') }}" class="nav-link">
                                 <i class="fa-solid fa-person-chalkboard"></i>                                
-                                <p>Material Issuance</p>
+                                <p>Material Issuance</p><br>
                                 <p class="ml-4">Monitoring Form</p>
                             </a>
                         </li>
