@@ -33,7 +33,7 @@
   @include('shared.css_links.css_links')
 
 </head>
-<body class="hold-transition sidebar-mini ">
+<body class="hold-transition sidebar-mini">
 <div class="wrapper">
   @include('shared.pages.header')
 

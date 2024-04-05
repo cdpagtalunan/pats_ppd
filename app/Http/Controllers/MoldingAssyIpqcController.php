@@ -19,6 +19,7 @@ use App\Models\MoldingAssyIpqcInspection;
 use App\Models\FirstMolding;
 use App\Models\SecMoldingRuncard;
 use App\Models\AssemblyRuncard;
+use App\Models\AssemblyRuncardStation;
 
 class MoldingAssyIpqcController extends Controller
 {
@@ -326,8 +327,13 @@ class MoldingAssyIpqcController extends Controller
                         SecMoldingRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
                             ->update(['status' => $request->cnfrm_ipqc_status]);
                     }else if($request->cnfrm_ipqc_process_category == 3){ //UPDATE ASSEMBLY STATUS
+                        $assy_runcard_id = AssemblyRuncard::select('id')->where('production_lot', $request->cnfrm_ipqc_production_lot)->first();
+
                         AssemblyRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
-                            ->update(['status' => $request->cnfrm_ipqc_status]);
+                                            ->update(['status' => $request->cnfrm_ipqc_status]);
+
+                        AssemblyRuncardStation::where('assembly_runcards_id', $assy_runcard_id)
+                                            ->update(['status' => $request->cnfrm_ipqc_status]);
                     }
                 }
             }

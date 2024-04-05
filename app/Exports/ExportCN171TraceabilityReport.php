@@ -485,7 +485,6 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                         }
                     }
 
-                    
                     $event->sheet->getDelegate()->getStyle('A'.$start_col.':'.'BK'.$start_col)->applyFromArray($styleBorderAll);
                     $start_col++;
                 }

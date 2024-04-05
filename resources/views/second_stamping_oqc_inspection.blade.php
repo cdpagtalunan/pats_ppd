@@ -186,11 +186,11 @@
                     <form method="post" id="formOqcInspection" autocomplete="off">
                         @csrf
 
-                        <input type="hidden" class="form-control form-control-sm" id="txtOqcInspectionId" name="oqc_inspection_id">
-                        <input type="hidden" class="form-control form-control-sm" id="txtProdId" name="prod_id">
-                        <input type="hidden" class="form-control form-control-sm" id="txtStatus" name="status">
-                        <input type="hidden" class="form-control form-control-sm" id="txtCheckButton" name="check_button">
-                        <input type="hidden" class="form-control form-control-sm" id="txtEmployeeNo" name="employee_no">
+                        <input type="text" class="form-control form-control-sm input_hidden" id="txtOqcInspectionId" name="oqc_inspection_id" readonly>
+                        <input type="text" class="form-control form-control-sm input_hidden" id="txtProdId" name="prod_id" readonly>
+                        <input type="text" class="form-control form-control-sm input_hidden" id="txtStatus" name="status" readonly>
+                        <input type="text" class="form-control form-control-sm input_hidden" id="txtCheckButton" name="check_button" readonly>
+                        <input type="text" class="form-control form-control-sm input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
 
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">
@@ -272,7 +272,7 @@
                                     </div>
                                     <div class="mb-2">
                                         <div class="card">
-                                            <input type="hidden" id="txtPrintLotCounter" name="print_lot_counter" value="0">
+                                            <input type="text" class="input_hidden" id="txtPrintLotCounter" name="print_lot_counter" value="0" readonly>
                                             <span class="input-group-text w-100"><strong>Print Lot No.</strong></span>
                                             <div class="row mb-1 mt-1" id="divPrintLotFields">
                                                 <div class="col-3">
@@ -325,7 +325,7 @@
                                     </div>
                                     <div class="mb-2">
                                         <div class="card">
-                                            <input type="hidden" id="txtReelLotCounter" name="reel_lot_counter" value="0">
+                                            <input type="text" class="input_hidden" id="txtReelLotCounter" name="reel_lot_counter" value="0" readonly>
                                             <span class="input-group-text w-100"><strong>Reel Lot No.</strong></span>
                                             <div class="row mb-1 mt-1" id="divReelLotFields">
                                                 <div class="col-3">
@@ -544,7 +544,7 @@
 
                             <div class="mb-2 d-none mod-class">
                                 <div class="card">
-                                    <input type="hidden" id="txtModCounter" name="mod_counter" value="0">
+                                    <input type="text" class="input_hidden" id="txtModCounter" name="mod_counter" value="0" readonly>
                                     <span class="input-group-text w-100"><strong>Mode of Defects</strong></span>
                                     <div class="row mb-1 mt-1" id="divModFields">
                                         <div class="col-2">

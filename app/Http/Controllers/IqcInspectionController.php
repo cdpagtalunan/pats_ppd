@@ -359,12 +359,12 @@ class IqcInspectionController extends Controller
                 /* All required fields is the $request validated, check the column is IqcInspectionRequest
                     NOTE: the name of fields must be match in column name
                 */
-                $create_iqc_inspection = IqcInspection::create($request->validated());
+                $create_iqc_inspection_id = IqcInspection::insertGetId($request->validated());
                 /*  All not required fields should to be inside the update method below
                     NOTE: the name of fields must be match in column name
                 */
                 // return 'true';
-                IqcInspection::where('id', $create_iqc_inspection->id)
+                IqcInspection::where('id', $create_iqc_inspection_id)
                 ->update([
                     'no_of_defects' => $arr_sum_mod_lot_qty,
                     'remarks' => $request->remarks,
@@ -385,7 +385,7 @@ class IqcInspectionController extends Controller
                         'status' => 2,
                     ]);
                 }
-                $iqc_inspections_id = $create_iqc_inspection->id;
+                $iqc_inspections_id = $create_iqc_inspection_id;
             }
             /* Uploading of file if checked & iqc_coc_file is exist*/
             if(isset($request->iqc_coc_file) ){

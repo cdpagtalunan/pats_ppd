@@ -20,12 +20,9 @@ class CreateStampingWorkingReportsTable extends Migration
             $table->string('year')->nullable();
             $table->string('month')->nullable();
             $table->string('day')->nullable();
-            $table->string('time')->nullable();
-            $table->string('work_details')->nullable();
-            $table->string('sequence_number')->nullable();
             $table->foreignId('created_by')->references('id')->on('users')->comment ='Id from users(table)';
-            $table->foreignId('last_updated_by')->references('id')->on('users')->comment ='Id from users(table)';
-            $table->softDeletes()->comment ='0-Active, 1-Deleted';
+            $table->foreignId('last_updated_by')->nullable()->references('id')->on('users')->comment ='Id from users(table)';
+            $table->softDeletes()->comment ='If NOT NULL means deleted';
             $table->timestamps();
         });
     }

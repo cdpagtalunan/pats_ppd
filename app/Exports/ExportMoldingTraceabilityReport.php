@@ -383,6 +383,18 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                     $event->sheet->setCellValue('AF'.$start_col, $secondMoldingVisualData[$o]->visual_operator);
                             }
                         }
+                        for ($v=0; $v <count($secondMoldingFirstOqcData); $v++) { 
+                            if ($secondMoldingData[$i]->id == $secondMoldingFirstOqcData[$v]->sec_molding_runcard_id){
+
+                                $dppm = ($secondMoldingFirstOqcData[$v]->no_of_defects / $secondMoldingFirstOqcData[$v]->sample_size) * 1000000;
+                                $lar = ($secondMoldingFirstOqcData[$v]->lot_accepted / $secondMoldingFirstOqcData[$v]->lot_inspected) * 100;
+                                
+                                $event->sheet->setCellValue('J'.$start_col, $secondMoldingFirstOqcData[$v]->first_oqc_sum);
+                                $event->sheet->setCellValue('K'.$start_col, $dppm);
+                                $event->sheet->setCellValue('L'.$start_col, $lar.'%');
+                                
+                            }
+                        }
                         if(isset($assemblyMarkingData)){
                             for ($z=0; $z <count($assemblyMarkingData); $z++) {
                                 if($assemblyMarkingData[$z]->s_lot_no != null && $assemblyMarkingData[$z]->s_lot_no == $secondMoldingData[$i]->production_lot){

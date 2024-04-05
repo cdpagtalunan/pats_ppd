@@ -159,15 +159,14 @@
 
                     <form method="post" id="formMimf" autocomplete="off">
                         @csrf
-                        <input type="hidden" class="col-1" id="txtMimfStampingMatrixStatus" name="mimf_stamping_matrix_status" required>
-                        <input type="hidden" class="col-1 mimfClass" id="txtMimfId" name="mimf_id">
-                        <input type="hidden" class="col-1 mimfClass" id="MimfStampingMatrix" name="pps_whse_id">
-                        <input type="hidden" class="col-1 mimfClass" id="txtPpsPoReceivedId" name="pps_po_rcvd_id">
-                        <input type="hidden" class="col-1 mimfClass" id="txtPpsDiesetId" name="pps_dieset_id" placeholder="For Molding">
-                        <input type="hidden" class="col-1 mimfClass" id="txtPpdMatrixId" name="ppd_matrix_id" placeholder="For Molding">
-                        <input type="hidden" class="col-1 mimfClass" id="txtPpdMimfStampingMatrixId" name="ppd_mimf_stamping_matrix_id" placeholder="For Stamping">
-                        <input type="hidden" class="col-1 mimfClass" id="txtEmployeeNo" name="employee_no">
-                        
+                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtMimfId" name="mimf_id" readonly>
+                        <input type="hidden" class="col-1 mimfClass input_hidden" id="MimfStampingMatrix" name="pps_whse_id" readonly>
+                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpsPoReceivedId" name="pps_po_rcvd_id" readonly>
+                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpsDiesetId" name="pps_dieset_id" placeholder="For Molding" readonly>
+                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpdMatrixId" name="ppd_matrix_id" placeholder="For Molding" readonly>
+                        <input type="hidden" class="col-1 input_hidden" id="txtMimfStampingMatrixStatus" name="mimf_stamping_matrix_status" required>
+                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpdMimfStampingMatrixId" name="ppd_mimf_stamping_matrix_id" placeholder="For Stamping" readonly>
+                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
                         <div class="modal-body">
                             <div class="row"><!-- Start Row MIMF Data -->
                                 <div class="col-sm-6 mt-3">
@@ -384,7 +383,7 @@
 
                     <form method="post" id="formMimfStampingMatrix" autocomplete="off">
                         @csrf
-                        <input type="hidden" class="col-2" id="txtMimfStampingMatrixId" name="mimf_stamping_matrix_id">                        
+                        <input type="text" class="col-2 input_hidden" id="txtMimfStampingMatrixId" name="mimf_stamping_matrix_id" readonly>                        
                         <div class="modal-body">
                             <div class="row"><!-- Start Row MIMF STAMPING MATRIX Data -->
                                 <div class="col-6 mt-3">

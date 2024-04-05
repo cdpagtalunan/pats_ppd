@@ -13,8 +13,10 @@ use DataTables;
 
 use App\Models\Mimf;
 use App\Models\User;
-use App\Models\TblPoReceived;
+use App\Models\PPSRequest;
+use App\Models\PPSItemList;
 use App\Models\TblWarehouse;
+use App\Models\TblPoReceived;
 use App\Models\MimfStampingMatrix;
 
 class MimfController extends Controller
@@ -24,7 +26,7 @@ class MimfController extends Controller
         
         $get_mimfs = Mimf::with([
             'pps_po_received_info',
-            'pps_po_received_info.matrix_info',
+            // 'pps_po_received_info.matrix_info',
             'pps_po_received_info.mimf_stamping_matrix_info.pps_whse_info',
             'pps_po_received_info.pps_dieset_info.pps_warehouse_info',
         ])
@@ -32,6 +34,8 @@ class MimfController extends Controller
         ->where('status', $request->mimfCategory)
         ->orderBy('control_no', 'DESC')
         ->get();
+
+        // return PPSRequest::orderBy('control_number', 'DESC')->get();
 
         return DataTables::of($get_mimfs)
         ->addColumn('action', function($get_mimf) use($request){
@@ -199,6 +203,36 @@ class MimfController extends Controller
                         Mimf::insert(
                             $mimf
                         );
+
+                        $get_control_no = PPSRequest::orderBy('pkid', 'DESC')->where('deleted', 0)->first();
+                        $get_itemlist_id = PPSItemList::where('partcode', $request->mimf_material_code)->first();
+                        $explode_pps_request_control_no = explode("-",  $get_control_no->control_number);
+                        $control_no_format = "PPS-".NOW()->format('ym')."-";
+        
+                        if(explode('-',$get_control_no->control_number)[1] != NOW()->format('ym')){
+                            $pps_request_new_control_no = $control_no_format.'001';
+                        }else{
+                            $string_pad = str_pad($explode_pps_request_control_no[2]+1,3,"0",STR_PAD_LEFT);
+                            $pps_request_new_control_no = $control_no_format.$string_pad;
+                        }
+
+                        PPSRequest::insert([
+                            'created_on'        => date('Y-m-d H:i:s'),
+                            'created_by'        => Auth::user()->username,
+                            'updated_by'        => '',
+                            'deleted'           => '0',
+                            'control_number'    => $pps_request_new_control_no,
+                            'fk_itemlist'       => $get_itemlist_id->pkid_itemlist,
+                            'qty'               => $request->mimf_needed_kgs,
+                            'destination'       => 'PPD-CN',
+                            'fk_issuance'       => '0',
+                            'r_remarks'         => '',
+                            'i_remarks'         => '',
+                            'cancelled'         => '0',
+                            'acknowledgedby'    => '',
+                            'acknowledged'      => '0',
+                            'receive_date'      => ''
+                        ]);
                     }else{
                         if($request->mimf_id != ''){
                             $mimf['updated_by']  = $request->created_by;

@@ -158,7 +158,7 @@
                         </li>
                     @endif
 
-                    
+
                     {{-- <li class="nav-item">
                         <a href="{{ route("press_stamping_kyori_machine_checksheet") }}" class="nav-link">
                             <i class="fa-solid fa-list-check"></i>
@@ -279,7 +279,7 @@
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('Material_Issuance_Monitoring_Form') }}" class="nav-link">
-                                <i class="fa-solid fa-person-chalkboard"></i>                                
+                                <i class="fa-solid fa-person-chalkboard"></i>
                                 <p>Material Issuance</p><br>
                                 <p class="ml-4">Monitoring Form</p>
                             </a>
@@ -424,53 +424,71 @@
                         {{-- </li> --}}
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0]))
-                    <li class="nav-header mt-3 font-weight-bold">MOLDING PACKING</li>
-                    <li class="nav-item has-treeview">
-                        <a href="#" class="nav-link">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p><i class="fa-solid fa-boxes-packing"></i> PPTS </p>
-                                <i class="fas fa-angle-down"> </i>
-                            </div>
-                        </a>
-                        <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route("ppts_oqc_inspection") }}" class="nav-link">
-                                    <i class="far fa-circle nav-icon ml-2"> </i>
-                                    <p>OQC Inspection</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route("ppts_packing_and_shipping") }}" class="nav-link">
-                                    <i class="far fa-circle nav-icon ml-2"> </i>
-                                    <p>Packing and Shipping</p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route("ppts_export_packing_and_shipping") }}" class="nav-link">
-                                    <i class="far fa-circle nav-icon ml-2"> </i>
-                                    <p>Export Packing and Shipping Report</p>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
+                    {{-- @if (in_array(Auth::user()->position, [0])) --}}
+                        <li class="nav-header mt-3 font-weight-bold">MOLDING PACKING</li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <p><i class="fa-solid fa-boxes-packing"></i> PPTS </p>
+                                    <i class="fas fa-angle-down"> </i>
+                                </div>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route("ppts_oqc_inspection") }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>OQC Inspection</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route("ppts_packing_and_shipping") }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Packing and Shipping</p>
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                    {{-- @endif --}}
 
-                @if (in_array(Auth::user()->position, [0,8,9,10]))
-                    <li class="nav-header mt-3"><strong>TRACEABILITY REPORT</strong></li>
+                    @if (in_array(Auth::user()->position, [0,8,9,10]))
+                        <li class="nav-header mt-3"><strong>TRACEABILITY REPORT</strong></li>
+                        <li class="nav-item">
+                            <a href="{{ route('cn171_traceability_report') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon ml-2">  </i>
+                                <p> Export CN171 Traceability Report</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('molding_traceability_report') }}" class="nav-link">
+                                <i class="far fa-circle nav-icon ml-2">  </i>
+                                <p>Molding Traceability Report</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route("ppts_export_packing_and_shipping") }}" class="nav-link">
+                                <i class="far fa-circle nav-icon ml-2"> </i>
+                                <p>Export Packing and Shipping Report</p>
+                            </a>
+                        </li>
+                    @endif
+
+                    <li class="nav-header mt-3"><strong>MACHINE PARAMETER</strong></li>
                     <li class="nav-item">
-                        <a href="{{ route('cn171_traceability_report') }}" class="nav-link">
+                        <a href="{{ route('machine_parameter') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2">  </i>
-                            <p> Export CN171 Traceability Report</p>
-                        </a> 
-                    </li>
-                    <li class="nav-item">
-                        <a href="{{ route('molding_traceability_report') }}" class="nav-link">
-                            <i class="far fa-circle nav-icon ml-2">  </i>
-                            <p>Molding Traceability Report</p>
+                            <p> MRPS</p>
                         </a>
                     </li>
-                @endif
+
+                    <li class="nav-header mt-3"><strong>STICKER PRINTING</strong></li>
+                    <li class="nav-item">
+                        <a href="{{ route('casemark_sticker') }}" class="nav-link">
+                            <i class="far fa-circle nav-icon ml-2">  </i>
+                            <p> Casemark</p>
+                        </a>
+                    </li>
+                {{-- nmodify OQC Inspection --}}
                 @endauth
 
             </ul>

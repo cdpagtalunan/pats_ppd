@@ -313,9 +313,7 @@ class MaterialProcessController extends Controller
 
                 }
 
-                if(isset($request->station)){
-
-
+        if(isset($request->station)){
                     if(is_array($request->station)){
                         for ($j=0; $j < count($request->station); $j++) {
                             MaterialProcessStation::insert([

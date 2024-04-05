@@ -66,8 +66,8 @@ class FirstMoldingController extends Controller
         ');
         return DataTables::of($first_molding)
         ->addColumn('action', function($row){
-            $result = '';
-            $result .= '<center>';
+        $result = '';
+                                                                $result .= '<center>';
             switch ($row->status) {
                 case 0:
                     $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
@@ -86,7 +86,6 @@ class FirstMoldingController extends Controller
                     break;
                 default:
                     $result .= "";
-                    break;
             }
             $result .= '</center>';
             return $result;
@@ -143,6 +142,7 @@ class FirstMoldingController extends Controller
     public function saveFirstMolding(FirstMoldingRequest $request)
     {
         date_default_timezone_set('Asia/Manila');
+        DB::beginTransaction();
         try{
             $data = $request->all();
             $virgin_material = $request->virgin_material;
@@ -158,6 +158,7 @@ class FirstMoldingController extends Controller
             if ($validator->fails()) {
                 return response()->json(['result' => '0', 'error' => $validator->messages()]);
             }
+
             if( isset( $request->first_molding_id )){ //Edit
                 $first_molding_status = FirstMolding::where('id',$request->first_molding_id)->get(['status']);
                 if($first_molding_status[0]->status == 2){ // if status is 2 or re set up change the status into 0 - For Quali
@@ -185,6 +186,12 @@ class FirstMoldingController extends Controller
                 }
 
             }else{ //Add
+                $is_exist_first_molding = FirstMolding::where('production_lot',$request->production_lot)
+                                                    ->where('production_lot_extension',$request->production_lot_extension)
+                                                    ->whereNull('deleted_at')->exists();
+                if( $is_exist_first_molding == 1 ){
+                    return response()->json(['result' => '0', 'error' => 'Saving Failed. Production Lot already exists'],500);
+                }
                 $first_molding_id = FirstMolding::insertGetId($request->validated());
                 FirstMolding::where('id',$first_molding_id)
                 ->update([
@@ -200,7 +207,6 @@ class FirstMoldingController extends Controller
                 FirstMoldingMaterialList::where('first_molding_id', $get_first_molding_id)->update([
                     'deleted_at' => date('Y-m-d H:i:s')
                 ]);
-
                 foreach ( $virgin_material as $key => $value_virgin_material) {
                     FirstMoldingMaterialList::insert([
                         'first_molding_id'   => $get_first_molding_id,
@@ -218,9 +224,13 @@ class FirstMoldingController extends Controller
                     ]);
                 }
             }
+
+            DB::commit();
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
+            DB::rollback();
             return $th;
+
         }
     }
 

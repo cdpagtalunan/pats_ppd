@@ -156,7 +156,7 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                     break;
             }
             
-            $event->sheet->getDelegate()->getStyle('A7:Q7')->applyFromArray($border);
+            $event->sheet->getDelegate()->getStyle('A7:P7')->applyFromArray($border);
 
             $event->sheet->getColumnDimension('A')->setWidth(18);
             $event->sheet->getColumnDimension('B')->setWidth(18);
@@ -174,9 +174,8 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
             $event->sheet->getColumnDimension('N')->setWidth(15);
             $event->sheet->getColumnDimension('O')->setWidth(18);
             $event->sheet->getColumnDimension('P')->setWidth(18);
-            $event->sheet->getColumnDimension('Q')->setWidth(18);
 
-            $event->sheet->getDelegate()->mergeCells('A1:Q2');
+            $event->sheet->getDelegate()->mergeCells('A1:P2');
 
             $event->sheet->getDelegate()->mergeCells('B3:F3');
             $event->sheet->getDelegate()->mergeCells('B4:F4');
@@ -186,12 +185,12 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
             $event->sheet->getDelegate()->mergeCells('H4:L4');
             $event->sheet->getDelegate()->mergeCells('H5:L5');
 
-            $event->sheet->getDelegate()->mergeCells('N3:Q3');
-            $event->sheet->getDelegate()->mergeCells('N4:Q4');
-            $event->sheet->getDelegate()->mergeCells('N5:Q5');
+            $event->sheet->getDelegate()->mergeCells('N3:P3');
+            $event->sheet->getDelegate()->mergeCells('N4:P4');
+            $event->sheet->getDelegate()->mergeCells('N5:P5');
 
             $event->sheet->getDelegate()->getStyle('A1')->applyFromArray($text_center)->applyFromArray($font_13_arial_bold)->getAlignment()->setWrapText(true);
-            $event->sheet->getDelegate()->getStyle('A7:Q7')->applyFromArray($text_center)->applyFromArray($font_9_arial_bold)->getAlignment()->setWrapText(true);
+            $event->sheet->getDelegate()->getStyle('A7:P7')->applyFromArray($text_center)->applyFromArray($font_9_arial_bold)->getAlignment()->setWrapText(true);
             
             $event->sheet->getDelegate()->getStyle('A3:A5')->applyFromArray($font_9_arial_bold)->getAlignment()->setWrapText(true);
             $event->sheet->getDelegate()->getStyle('G3:G5')->applyFromArray($font_9_arial_bold)->getAlignment();
@@ -222,16 +221,14 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
             $event->sheet->setCellValue('F7',"  Invoice No.");
             $event->sheet->setCellValue('G7',"  Severity of \n Inspection");
             $event->sheet->setCellValue('H7',"  Lot \n Number");
-            $event->sheet->setCellValue('I7',"  Quantity");
-            $event->sheet->setCellValue('J7',"  Lot \n Size");
-            $event->sheet->setCellValue('K7',"  Sample \n Size");
-            $event->sheet->setCellValue('L7',"  No. of \n Defective");
-            $event->sheet->setCellValue('M7',"  Mode of \n Defect");
-            $event->sheet->setCellValue('N7',"  Defect \n Quantity");
-            $event->sheet->setCellValue('O7',"  Judgement");
-            $event->sheet->setCellValue('P7',"  QC Inspector");
-            $event->sheet->setCellValue('Q7',"  Remarks");
-            
+            $event->sheet->setCellValue('I7',"  Lot Quantity");
+            $event->sheet->setCellValue('J7',"  Sample \n Size");
+            $event->sheet->setCellValue('K7',"  No. of \n Defective");
+            $event->sheet->setCellValue('L7',"  Mode of \n Defect");
+            $event->sheet->setCellValue('M7',"  Defect \n Quantity");
+            $event->sheet->setCellValue('N7',"  Judgement");
+            $event->sheet->setCellValue('O7',"  QC Inspector");
+            $event->sheet->setCellValue('P7',"  Remarks");
             $event->sheet->setCellValue('B3',$search_material_name[0]->partname);
             $event->sheet->setCellValue('B4',$search_material_name[0]->partcode);
             $event->sheet->setCellValue('B5',$search_material_name[0]->supplier);
@@ -267,7 +264,7 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                 $event
                     ->sheet
                     ->getDelegate()
-                    ->getStyle('A'.$start_column.':Q'.$start_column)
+                    ->getStyle('A'.$start_column.':P'.$start_column)
                     ->applyFromArray($border)
                     ->applyFromArray($text_center)
                     ->applyFromArray($font_9_arial)
@@ -289,21 +286,19 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                 $event->sheet->setCellValue('F'.$start_column,$search_material_name[$i]->invoice_no);
                 $event->sheet->setCellValue('G'.$start_column,$severity_inspection);
                 $event->sheet->setCellValue('H'.$start_column,$search_material_name[$i]->lot_no);
-                // $event->sheet->setCellValue('I'.$start_column,$search_material_name[$i]);
-                $event->sheet->setCellValue('J'.$start_column,$search_material_name[$i]->total_lot_qty);
-                $event->sheet->setCellValue('K'.$start_column,$search_material_name[$i]->sampling_size);
+                $event->sheet->setCellValue('I'.$start_column,$search_material_name[$i]->total_lot_qty);
+                $event->sheet->setCellValue('J'.$start_column,$search_material_name[$i]->sampling_size);
                 
                 if($search_material_name[$i]->judgement != 1){
                     $result = 'Reject';
-                    $event->sheet->setCellValue('L'.$start_column,$search_material_name[$i]->no_of_defects);
-
+                    $event->sheet->setCellValue('K'.$start_column,$search_material_name[$i]->no_of_defects);
                     $mod_array = [];
                     $mod_qty_array = [];        
                     for($x=0; $x < count($search_material_name[$i]->iqc_inspection_mods_info); $x++){
                         array_push($mod_array, $search_material_name[$i]->iqc_inspection_mods_info[$x]->mode_of_defects);
                         array_push($mod_qty_array, $search_material_name[$i]->iqc_inspection_mods_info[$x]->quantity);
-                        $event->sheet->setCellValue('M'.$start_column,"\n".implode("\n", $mod_array)."\n");
-                        $event->sheet->setCellValue('N'.$start_column,"\n".implode("\n", $mod_qty_array)."\n");
+                        $event->sheet->setCellValue('L'.$start_column,"\n".implode("\n", $mod_array)."\n");
+                        $event->sheet->setCellValue('M'.$start_column,"\n".implode("\n", $mod_qty_array)."\n");
                     }
                 }else{
                     $result = 'Accept';
@@ -312,10 +307,9 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                 $event->sheet->setCellValue('N3',$accept_sum += $search_material_name[$i]->accept);
                 $event->sheet->setCellValue('N4',$reject_sum += $search_material_name[$i]->reject);
 
-                $event->sheet->setCellValue('O'.$start_column,$result);
-                $event->sheet->setCellValue('P'.$start_column,$search_material_name[$i]->user_iqc->firstname.' '.$search_material_name[$i]->user_iqc->lastname);
-                $event->sheet->setCellValue('Q'.$start_column,$search_material_name[$i]->remarks);
-
+                $event->sheet->setCellValue('N'.$start_column,$result);
+                $event->sheet->setCellValue('O'.$start_column,$search_material_name[$i]->user_iqc->firstname.' '.$search_material_name[$i]->user_iqc->lastname);
+                $event->sheet->setCellValue('P'.$start_column,$search_material_name[$i]->remarks);
                 $start_column++;
             }
         }];
