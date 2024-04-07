@@ -51,7 +51,7 @@ class AssemblyFviController extends Controller
             $result .= "<center>";
             if($fvi_data->status == 0){
                 
-                $result .='<span class="badge badge-pill badge-info">For Lot Application</span>';
+                $result .='<span class="badge badge-pill badge-info">For Visual Inspection</span>';
             }
             else if($fvi_data->status == 1){
                 $result .='<span class="badge badge-pill badge-success">Done</span>';

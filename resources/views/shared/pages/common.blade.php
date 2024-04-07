@@ -115,5 +115,11 @@
       });
     });
 
+    $('#modalScanQRSave').on('hidden.bs.modal', function () {
+      console.log('#modalScanQRSave hidden');
+      $('#modalScanQRSaveText').html('Please scan employee ID.')
+    });
+
+
 });
 </script>

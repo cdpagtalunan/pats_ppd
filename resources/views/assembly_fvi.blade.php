@@ -587,6 +587,7 @@
     var checked_draw_count = [];
     let outputQty = 0;
     var token = "{{ csrf_token() }}";
+    var scanningFunction = "";
 
     $(document).ready(function(){
 
@@ -845,6 +846,7 @@
     //   $('#txtScannedItem').on('keyup', function (e) {
     $(document).on('keyup', '#txtScannedItem', function (e) {
         if (e.keyCode == 13) {
+            $('#txtScannedItem').prop('disabled', true);
             let modalVal = $('#modalScanning').attr('data-form-function');
             console.log(modalVal);
             if (modalVal == "searchPO") {
@@ -871,23 +873,43 @@
                     toastr.error('Invalid Sticker');
                 }
             }
+            $('#txtScannedItem').prop('disabled', false);
             $('#txtScannedItem').val('');
         }
     });
 
     $(document).on('keyup', '#txtScanUserId', function(e){
         if(e.keyCode == 13){
-            validateUser($('#txtScanUserId').val().toUpperCase(), [0,2,5], function(result){
-                if(result == true){
-                    $('#modalScanQRSave').modal('hide');
-                    SubmitToLotApp($('#txtScanUserId').val().toUpperCase());
-                }
-                else{ // Error Handler
-                    toastr.error('User not authorize!');
-                }
 
-            });
+            if(scanningFunction == "partialSupervisor"){
+                validateUser($('#txtScanUserId').val().toUpperCase(), [0,2], function(result){
+                    if(result == true){
+                        $('#modalScanQRSave').modal('hide');
+                        SubmitToLotApp($('#txtScanUserId').val().toUpperCase());
+                        scanningFunction = "";
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                        console.log('scanning please use QC Supervisor Only');
+                    }
 
+                });
+
+            }
+            else{
+                validateUser($('#txtScanUserId').val().toUpperCase(), [0,2,5], function(result){
+                    if(result == true){
+                        $('#modalScanQRSave').modal('hide');
+                        SubmitToLotApp($('#txtScanUserId').val().toUpperCase());
+                    }
+                    else{ // Error Handler
+                        toastr.error('User not authorize!');
+                    }
+
+                });
+
+            }
+           
             setTimeout(() => {
                 $('#txtScanUserId').val('');
             }, 500);

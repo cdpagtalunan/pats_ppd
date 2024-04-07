@@ -279,19 +279,43 @@ const validateRuncardOutput = (devName, devCode, fn) => {
                 }
             }
             else if(fn == "btnSubmitToLotApp"){
-                if(outputQty < response['device']['qty_per_box']){
+                if(outputQty == 0){
                     Swal.fire({
                         title: "Invalid",
-                        text: "Output is not equal to matrix quantity.",
+                        text: "Output quantity is 0",
                         icon: "error",
                         confirmButtonColor: "#3085d6"
                     });
+                }
+                else if(outputQty < response['device']['qty_per_box']){
+                    Swal.fire({
+                        title: "Warning",
+                        html: "Output is not equal to matrix quantity. <br> Is this partial?",
+                        icon: "warning",
+                        confirmButtonColor: "#3085d6"
+                    });
+                    Swal.fire({
+                        title: "Warning",
+                        html: "Output is not equal to matrix quantity. <br> Is this partial?",
+                        showDenyButton: true,
+                        confirmButtonText: "Yes",
+                        confirmButtonColor: "#2aa332",
+                        denyButtonText: `No`,
+                        icon: "warning",
+
+                      }).then((result) => {
+                        if (result.isConfirmed) {
+                            scanningFunction = "partialSupervisor";
+                            $('#modalScanQRSaveText').html('Please Scan Supervisor ID.')
+                            $('#modalScanQRSave').modal('show');
+
+                        }
+                      });
                     
                 }
                 else{
                     $('#modalScanQRSave').modal('show');
 
-                    // SubmitToLotApp();
                 }
             }
 
