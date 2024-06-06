@@ -169,6 +169,7 @@ function GetUserByIdToEdit(userId){
                 $("#txtEditUserEmpId").val(user[0].employee_id);
                 $("#selEditUserLevel").val(user[0].user_level_id).trigger('change');
                 $("#selEditUserPosition").val(user[0].position).trigger('change');
+                $("#selEditUserSection").val(user[0].section).trigger('change');
                 // $("#selEditUserLevel").select2('val', user[0].user_level_id);
 
                 if(user[0].email == null || user[0].email == ''){

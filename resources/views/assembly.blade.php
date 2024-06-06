@@ -340,12 +340,12 @@
                                                 <input type="text" class="form-control form-control-sm" id="txtTotalAssyYield" name="total_assy_yield" placeholder="Auto generated" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-3">
+                                            {{-- <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Average Overall Yield</span>
                                                 </div>
                                                 <input type="text" class="form-control form-control-sm" id="txtAveOveallYield" name="ave_overall_yield" placeholder="Auto generated" readonly>
-                                            </div>
+                                            </div> --}}
                                             <div class="input-group input-group-sm mb-3 justify-content-end align-items-center">
                                                 <button class="btn btn-sm btn-success" type="button" id="btnRuncardDetails">
                                                     <i class="fa-solid fa-floppy-disk"></i> Save
@@ -448,14 +448,14 @@
                     <div class="modal-body">
                         <form id="formAddAssemblyRuncardStation">
                             @csrf
-                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group input-group-sm mb-3" hidden>
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Assembly Runcard ID</span>
                                 </div>
                                     <input type="text" class="form-control form-control-sm" id="txtStationAssyRuncardId" name="station_assy_runcard_id" readonly>
                             </div>
 
-                            <div class="input-group input-group-sm mb-3">
+                            <div class="input-group input-group-sm mb-3" hidden>
                                 <div class="input-group-prepend w-50">
                                     <span class="input-group-text w-100" id="basic-addon1">Assembly Runcard Station ID</span>
                                 </div>
@@ -840,17 +840,17 @@
                     }
                 }
 
-                function GetRDrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
-                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
-                };
+                // function GetRDrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
+                //     GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
+                // };
 
-                function GetADrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
-                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
-                };
+                // function GetADrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
+                //     GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
+                // };
 
-                function GetGDrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
-                    GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
-                };
+                // function GetGDrawingFromACDCS(doc_title, doc_type, cboElement, DocumentNo){
+                //     GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo);
+                // };
 
                 function GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, DocumentNo = null){
                     let result = '<option value="" disabled selected>--Select Document No.--</option>';
@@ -869,12 +869,8 @@
                         },
                         success: function(response) {
                             if (response['acdcs_data'].length > 0) {
-
                                     result = '<option value="" disabled selected>--Select Document No.--</option>';
-                                if(response['acdcs_data'][0].doc_type != 'B Drawing'){
                                     result += '<option value="N/A"> N/A </option>';
-                                }
-
                                 // result = '<option value="" selected>-- N/A --</option>';
                                 for (let index = 0; index < response['acdcs_data'].length; index++) {
                                     result += '<option value="' + response['acdcs_data'][index].doc_no + '">' + response['acdcs_data'][index].doc_no + '</option>';
@@ -1237,18 +1233,19 @@
                 //     //     $('#VisualInspDocNoDiv').addClass('d-none');
                 //     // }
                 // });
-                $('#txtSelectRuncardStation').on('change', function(e){
-                    if($(this).val() == 8){//Lubricant Coating Station
-                        $('#LubricantCoatingDiv').removeClass('d-none');
-                        $('#VisualInspDocNoDiv').addClass('d-none');
-                    }else if($(this).val() == 4){// Visual Inspection
-                        $('#LubricantCoatingDiv').addClass('d-none');
-                        $('#VisualInspDocNoDiv').removeClass('d-none');
-                    }else{
-                        $('#LubricantCoatingDiv').addClass('d-none');
-                        $('#VisualInspDocNoDiv').addClass('d-none');
-                    }
-                });
+                // $('#txtSelectRuncardStation').on('change', function(e){
+                //     if($(this).val() == 8){//Lubricant Coating Station
+                //         // $('#LubricantCoatingDiv').removeClass('d-none');
+                //         $('#LubricantCoatingDiv').addClass('d-none');
+                //         $('#VisualInspDocNoDiv').addClass('d-none');
+                //     }else if($(this).val() == 4){// Visual Inspection
+                //         $('#LubricantCoatingDiv').addClass('d-none');
+                //         $('#VisualInspDocNoDiv').removeClass('d-none');
+                //     }else{
+                //         $('#LubricantCoatingDiv').addClass('d-none');
+                //         $('#VisualInspDocNoDiv').addClass('d-none');
+                //     }
+                // });
 
                 $('#txtSelectDeviceName').on('change', function(e){
                     let deviceName = $('#txtSelectDeviceName').val();
@@ -1323,6 +1320,10 @@
                         }
                     });
 
+                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"));
+                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"));
+                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"));
+
                      $('#txtStationAssyRuncardId').val(runcard_id);
                      $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
                 });
@@ -1344,31 +1345,41 @@
                         success: function (response) {
                             let device_details = response['device_details'];
 
-                            if (device_details[0].material_process.length > 0){
+                            if (device_details[0].material_process.length > 0) {
                                     result = '<option value="" disabled selected>-- Select Station --</option>';
                                     // result += '<option step="0" value="">-- CLARK --</option>';
                                 for (let index = 0; index < device_details[0].material_process.length; index++) {
                                     result += '<option step="'+ device_details[0].material_process[index].step +'" value="' + device_details[0].material_process[index].station_details[0].stations['id'] + '">' + device_details[0].material_process[index].station_details[0].stations['station_name'] + '</option>';
                                 }
-                            }else{
+                            } else {
                                 result = '<option value="0" selected disabled> -- No record found -- </option>';
                             }
-
                             cboElement.html(result);
+
                             $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
                             $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
-                            // if(step == 1){
-                            //     $("#txtSelectRuncardStation option[step='2']").attr('disabled', true);
-                            //     $("#txtSelectRuncardStation option[step='3']").attr('disabled', true);
-                            // }else if(step == 2){
-                            //     $("#txtSelectRuncardStation option[step='1']").attr('disabled', true);
-                            //     $("#txtSelectRuncardStation option[step='3']").attr('disabled', true);
-                            // }else if(step == 3){
-                            //     $("#txtSelectRuncardStation option[step='1']").attr('disabled', true);
-                            //     $("#txtSelectRuncardStation option[step='2']").attr('disabled', true);
-                            // }else{
-                            //     $("#txtSelectRuncardStation").attr('disabled', true);
-                            // }
+
+                            if(deviceName == 'CN171P-007-1002-VE(01)'){
+                                if(step == 1){//Lubricant Coating Station
+                                    // $('#LubricantCoatingDiv').removeClass('d-none'); //disable this btn clark 04152024
+                                    $('#LubricantCoatingDiv').addClass('d-none');
+                                    $('#VisualInspDocNoDiv').addClass('d-none');
+                                }else if(step == 2){
+                                    $('#LubricantCoatingDiv').addClass('d-none');
+                                    $('#VisualInspDocNoDiv').removeClass('d-none');
+                                }else{
+                                    $('#LubricantCoatingDiv').addClass('d-none');
+                                    $('#VisualInspDocNoDiv').addClass('d-none');
+                                }
+                            }else if(deviceName == 'CN171S-007-1002-VE(01)'){
+                                if(step == 3){// Visual Inspection
+                                    $('#LubricantCoatingDiv').addClass('d-none');
+                                    $('#VisualInspDocNoDiv').removeClass('d-none');
+                                }else{
+                                    $('#LubricantCoatingDiv').addClass('d-none');
+                                    $('#VisualInspDocNoDiv').addClass('d-none');
+                                }
+                            }
                         },
                         error: function(data, xhr, status) {
                             result = '<option value="0" selected disabled> -- Reload Again -- </option>';
@@ -1377,6 +1388,57 @@
                         }
                     });
                 }
+
+                // function GetStations(cboElement, step = null){
+                //     let result = '<option value="" disabled selected>-- Select Station --</option>';
+                //     let deviceName = $('#txtSelectDeviceName').val();
+                //     $.ajax({
+                //         type: "get",
+                //         url: "get_data_from_matrix",
+                //         data: {
+                //             "device_name" : deviceName
+                //         },
+                //         dataType: "json",
+                //         beforeSend: function(){
+                //             result = '<option value="0" disabled selected>--Loading--</option>';
+                //             // cboElement.html(result);
+                //         },
+                //         success: function (response) {
+                //             let device_details = response['device_details'];
+
+                //             if (device_details[0].material_process.length > 0){
+                //                     result = '<option value="" disabled selected>-- Select Station --</option>';
+                //                     // result += '<option step="0" value="">-- CLARK --</option>';
+                //                 for (let index = 0; index < device_details[0].material_process.length; index++) {
+                //                     result += '<option step="'+ device_details[0].material_process[index].step +'" value="' + device_details[0].material_process[index].station_details[0].stations['id'] + '">' + device_details[0].material_process[index].station_details[0].stations['station_name'] + '</option>';
+                //                 }
+                //             }else{
+                //                 result = '<option value="0" selected disabled> -- No record found -- </option>';
+                //             }
+
+                //             cboElement.html(result);
+                //             $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
+                //             $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
+                //             // if(step == 1){
+                //             //     $("#txtSelectRuncardStation option[step='2']").attr('disabled', true);
+                //             //     $("#txtSelectRuncardStation option[step='3']").attr('disabled', true);
+                //             // }else if(step == 2){
+                //             //     $("#txtSelectRuncardStation option[step='1']").attr('disabled', true);
+                //             //     $("#txtSelectRuncardStation option[step='3']").attr('disabled', true);
+                //             // }else if(step == 3){
+                //             //     $("#txtSelectRuncardStation option[step='1']").attr('disabled', true);
+                //             //     $("#txtSelectRuncardStation option[step='2']").attr('disabled', true);
+                //             // }else{
+                //             //     $("#txtSelectRuncardStation").attr('disabled', true);
+                //             // }
+                //         },
+                //         error: function(data, xhr, status) {
+                //             result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                //             cboElement.html(result);
+                //             console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                //         }
+                //     });
+                // }
 
                 /* SEARCH PO COMMENTED BY CLARK */
                 // $('#formCNAssemblyRuncard').keyup('#txtPONumber', delay(function(e){
@@ -1465,7 +1527,7 @@
 
                 $('#btnAddAssemblyRuncard').on('click', function(e){
                     if($('#txtSelectDeviceName').val() != "" && $('#txtSearchMaterialName').val() != ""){
-
+                        // $("#formCNAssemblyRuncard")[0].reset();
                         $('#modalCNAssembly').modal('show');
                         $('#txtDeviceName').val($('#txtSelectDeviceName').val());
                         $('#txtDeviceCode').val($('#txtSearchDeviceCode').val());
@@ -1476,11 +1538,23 @@
                             $('#btnAddRuncardStation').prop('disabled', false);
                         }
 
+                        // $('#btnAddRuncardStation').prop('hidden', false);
+                        // $('#txtPONumber').prop('disabled', false);
+                        // $('#btnSubmitAssemblyRuncardData').prop('hidden', true);
+                        // $('#btnRuncardDetails').prop('hidden', false);
+
+                        $('#btnRuncardDetails').prop('hidden', false);
+                        $('#txtPONumber').prop('disabled', false);
+                        $('#btnScanSZeroSevenProdLot').prop('disabled', false);
+                        $('#btnScanSZeroTwoProdLot').prop('disabled', false);
+                        $('#btnAddRuncardStation').prop('hidden', false);
+                        $('#btnSubmitAssemblyRuncardData').prop('hidden', true);
+
                         $('#txtRequiredOutput').val($('#txtSearchReqOutput').val());
 
-                        GetRDrawingFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"));
-                        GetADrawingFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"));
-                        GetGDrawingFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"));
+                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"));
+                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"));
+                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"));
 
                         // $.ajax({
                         //     type: "get",
@@ -1501,24 +1575,30 @@
                 $(document).on('click', '#btnSubmitAssemblyRuncardData',function(e){
                     let _token = '{{ csrf_token() }}';
                     let runcard_id = $('#txtAssyRuncardId').val();
-                    $.ajax({
-                        type: "post",
-                        url: "update_assy_runcard_status",
-                        data: {
-                            '_token': _token,
-                            'runcard_id': runcard_id
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            if (response['result'] == 1 ) {
-                                toastr.success('Successful!');
-                                $("#modalCNAssembly").modal('hide');
-                                dtAssemblyRuncard.draw();
-                            }else{
-                                toastr.error('Error!, Please Contanct ISS Local 208');
+                    CheckExistingStations(runcard_id);
+                    // if(runcard_id != undefined ){
+                        $.ajax({
+                            type: "post",
+                            url: "update_assy_runcard_status",
+                            data: {
+                                '_token': _token,
+                                'runcard_id': runcard_id
+                            },
+                            dataType: "json",
+                            success: function (response) {
+                                if (response['result'] == 1 ) {
+                                    toastr.success('Successful!');
+                                    $("#modalCNAssembly").modal('hide');
+                                    dtAssemblyRuncard.draw();
+                                }else{
+                                    toastr.error('Error!, Please Contanct ISS Local 208');
+                                }
                             }
-                        }
-                    });
+                        });
+                    // }else{
+                    //     toastr.error('Error!, Please Contanct ISS Local 208');
+                    // }
+
                 });
 
                 // clark ongoing
@@ -1528,9 +1608,9 @@
 
                     $('#txtInputQuantity').prop('disabled', false);
                     $('#txtNgQuantity').prop('disabled', false);
-                    $('#txtDocNoRDrawing').prop('disabled', false);
-                    $('#txtDocNoADrawing').prop('disabled', false);
-                    $('#txtDocNoGDrawing').prop('disabled', false);
+                    $('#txtSelectDocNoRDrawing').prop('disabled', false);
+                    $('#txtSelectDocNoADrawing').prop('disabled', false);
+                    $('#txtSelectDocNoGDrawing').prop('disabled', false);
                     $('#txtRemarks').prop('disabled', false);
                     $('#buttonAddAssemblyModeOfDefect').prop('hidden', false);
                     $('.buttonRemoveMOD').prop('disabled', false);
@@ -1558,68 +1638,73 @@
                      $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
                 });
 
-                function GetStations(cboElement, step = null){
-                    let result = '<option value="" disabled selected>-- Select Station --</option>';
-                    let deviceName = $('#txtSelectDeviceName').val();
-                    $.ajax({
-                        type: "get",
-                        url: "get_data_from_matrix",
-                        data: {
-                            "device_name" : deviceName
-                        },
-                        dataType: "json",
-                        beforeSend: function(){
-                            result = '<option value="0" disabled selected>--Loading--</option>';
-                            // cboElement.html(result);
-                        },
-                        success: function (response) {
-                            let device_details = response['device_details'];
+                // function GetStations(cboElement, step = null){
+                //     let result = '<option value="" disabled selected>-- Select Station --</option>';
+                //     let deviceName = $('#txtSelectDeviceName').val();
+                //     $.ajax({
+                //         type: "get",
+                //         url: "get_data_from_matrix",
+                //         data: {
+                //             "device_name" : deviceName
+                //         },
+                //         dataType: "json",
+                //         beforeSend: function(){
+                //             result = '<option value="0" disabled selected>--Loading--</option>';
+                //             // cboElement.html(result);
+                //         },
+                //         success: function (response) {
+                //             let device_details = response['device_details'];
 
-                            if (device_details[0].material_process.length > 0) {
-                                    result = '<option value="" disabled selected>-- Select Station --</option>';
-                                    // result += '<option step="0" value="">-- CLARK --</option>';
-                                for (let index = 0; index < device_details[0].material_process.length; index++) {
-                                    result += '<option step="'+ device_details[0].material_process[index].step +'" value="' + device_details[0].material_process[index].station_details[0].stations['id'] + '">' + device_details[0].material_process[index].station_details[0].stations['station_name'] + '</option>';
-                                }
-                            } else {
-                                result = '<option value="0" selected disabled> -- No record found -- </option>';
-                            }
-                            cboElement.html(result);
+                //             if (device_details[0].material_process.length > 0) {
+                //                     result = '<option value="" disabled selected>-- Select Station --</option>';
+                //                     // result += '<option step="0" value="">-- CLARK --</option>';
+                //                 for (let index = 0; index < device_details[0].material_process.length; index++) {
+                //                     result += '<option step="'+ device_details[0].material_process[index].step +'" value="' + device_details[0].material_process[index].station_details[0].stations['id'] + '">' + device_details[0].material_process[index].station_details[0].stations['station_name'] + '</option>';
+                //                 }
+                //             } else {
+                //                 result = '<option value="0" selected disabled> -- No record found -- </option>';
+                //             }
+                //             cboElement.html(result);
 
-                            $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
-                            $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
+                //             $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
+                //             $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
 
-                            if(deviceName == 'CN171P-007-1002-VE(01)'){
-                                if(step == 1){//Lubricant Coating Station
-                                    $('#LubricantCoatingDiv').removeClass('d-none');
-                                    $('#VisualInspDocNoDiv').addClass('d-none');
-                                }else{
-                                    $('#LubricantCoatingDiv').addClass('d-none');
-                                    $('#VisualInspDocNoDiv').addClass('d-none');
-                                }
-                            }else if(deviceName == 'CN171S-007-1002-VE(01)'){
-                                if(step == 3){// Visual Inspection
-                                    $('#LubricantCoatingDiv').addClass('d-none');
-                                    $('#VisualInspDocNoDiv').removeClass('d-none');
-                                }else{
-                                    $('#LubricantCoatingDiv').addClass('d-none');
-                                    $('#VisualInspDocNoDiv').addClass('d-none');
-                                }
-                            }
-                        },
-                        error: function(data, xhr, status) {
-                            result = '<option value="0" selected disabled> -- Reload Again -- </option>';
-                            cboElement.html(result);
-                            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                        }
-                    });
-                }
+                //             if(deviceName == 'CN171P-007-1002-VE(01)'){
+                //                 if(step == 1){//Lubricant Coating Station
+                //                     // $('#LubricantCoatingDiv').removeClass('d-none'); //disable this btn clark 04152024
+                //                     $('#LubricantCoatingDiv').addClass('d-none');
+                //                     $('#VisualInspDocNoDiv').addClass('d-none');
+                //                 }else if(step == 3){
+                //                     $('#LubricantCoatingDiv').addClass('d-none');
+                //                     $('#VisualInspDocNoDiv').removeClass('d-none');
+                //                 }else{
+                //                     $('#LubricantCoatingDiv').addClass('d-none');
+                //                     $('#VisualInspDocNoDiv').addClass('d-none');
+                //                 }
+                //             }else if(deviceName == 'CN171S-007-1002-VE(01)'){
+                //                 if(step == 3){// Visual Inspection
+                //                     $('#LubricantCoatingDiv').addClass('d-none');
+                //                     $('#VisualInspDocNoDiv').removeClass('d-none');
+                //                 }else{
+                //                     $('#LubricantCoatingDiv').addClass('d-none');
+                //                     $('#VisualInspDocNoDiv').addClass('d-none');
+                //                 }
+                //             }
 
+                //         },
+                //         error: function(data, xhr, status) {
+                //             result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                //             cboElement.html(result);
+                //             console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                //         }
+                //     });
+                // }
 
                 $("#modalCNAssembly").on('hidden.bs.modal', function () {
                     // Reset form values
                     $("#formCNAssemblyRuncard")[0].reset();
                     dtAssemblyRuncardStation.draw();
+                    $('#txtAssyRuncardId').val('');
                     // Remove invalid & title validation
                     $('div').find('input').removeClass('is-invalid');
                     $("div").find('input').attr('title', '');
@@ -1682,6 +1767,7 @@
 
                             if(response['current_step'] == 0){
                                 $('#btnAddRuncardStation').prop('disabled', true);
+                                $('#btnSubmitAssemblyRuncardData').prop('hidden', false);
                             }else{
                                 $('#btnAddRuncardStation').prop('disabled', false);
                             }
@@ -1767,7 +1853,13 @@
                             $('#btnScanSZeroSevenProdLot').prop('disabled', false);
                             $('#btnScanSZeroTwoProdLot').prop('disabled', false);
                             $('#btnAddRuncardStation').prop('hidden', false);
-                            $('#btnSubmitAssemblyRuncardData').prop('hidden', false);
+                            $('#btnAddRuncardStation').prop('disabled', false);
+                            $('#btnSubmitAssemblyRuncardData').prop('hidden', true);
+                            // if(){
+                            // $('#btnSubmitAssemblyRuncardData').prop('hidden', false);
+                            // }else{
+                            //     $('#btnSubmitAssemblyRuncardData').prop('hidden', true);
+                            // }
 
                             $('#modalCNAssembly').modal('show');
                             $('#formCNAssemblyRuncard #txtAssyRuncardId').val(assy_runcard_data[0].id);
@@ -1795,26 +1887,34 @@
                                 let station_yield = ( output / input ) * 100;
                                 total_assy_yield += station_yield;
                             }
+                            total_assy_yield = (total_assy_yield / assy_runcard_data[0].assembly_runcard_station.length);
 
                             $('#formCNAssemblyRuncard #txtTotalAssyYield').val(`${total_assy_yield.toFixed(2)}%`);
                             // `${station_yield.toFixed(2)}%`
-                            $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
+                            // $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            let s_zero_two_prod_lot = assy_runcard_data[0].s_zero_two_prod_lot;
-                                s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
-                                s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)'){
 
-                                // s_zero_two_prod_lot_ext = s_zero_two_prod_lot.split('-');
-                                if(s_zero_two_prod_lot_split.length > 3){
-                                    s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
-                                }else{
-                                    s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
-                                }
-                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
-                            verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+                                verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
 
+                            }else if(assy_runcard_data[0].device_name == 'CN171S-007-1002-VE(01)'){
+
+                                let s_zero_two_prod_lot = assy_runcard_data[0].s_zero_two_prod_lot;
+                                    s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
+                                    s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
+
+                                    // s_zero_two_prod_lot_ext = s_zero_two_prod_lot.split('-');
+                                    if(s_zero_two_prod_lot_split.length > 3){
+                                        s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
+                                    }else{
+                                        s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
+                                    }
+
+                                verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
+                                verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+                            }
                             dtAssemblyRuncardStation.draw();
                         },
                         error: function(data, xhr, status){
@@ -1877,20 +1977,41 @@
                             total_assy_yield = total_assy_yield / assy_runcard_data[0].assembly_runcard_station.length;
 
                             $('#formCNAssemblyRuncard #txtTotalAssyYield').val(`${total_assy_yield.toFixed(2)}%`);
-                            $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
+                            // $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
+
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)'){
+
+                                verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
+
+                            }else if(assy_runcard_data[0].device_name == 'CN171S-007-1002-VE(01)'){
 
                             let s_zero_two_prod_lot = assy_runcard_data[0].s_zero_two_prod_lot;
                                 s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
                                 s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
+
+                                // s_zero_two_prod_lot_ext = s_zero_two_prod_lot.split('-');
                                 if(s_zero_two_prod_lot_split.length > 3){
                                     s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
                                 }else{
                                     s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
                                 }
-                            verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
-                            verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+
+                                verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
+                                verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+                            }
+
+                            // let s_zero_two_prod_lot = assy_runcard_data[0].s_zero_two_prod_lot;
+                            //     s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
+                            //     s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
+                            //     if(s_zero_two_prod_lot_split.length > 3){
+                            //         s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
+                            //     }else{
+                            //         s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
+                            //     }
+                            // verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
+                            // verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
 
                             dtAssemblyRuncardStation.draw();
                         },
@@ -1909,9 +2030,9 @@
 
                     $('#txtInputQuantity').prop('disabled', false);
                     $('#txtNgQuantity').prop('disabled', false);
-                    $('#txtDocNoRDrawing').prop('disabled', false);
-                    $('#txtDocNoADrawing').prop('disabled', false);
-                    $('#txtDocNoGDrawing').prop('disabled', false);
+                    $('#txtSelectDocNoRDrawing').prop('disabled', false);
+                    $('#txtSelectDocNoADrawing').prop('disabled', false);
+                    $('#txtSelectDocNoGDrawing').prop('disabled', false);
                     $('#txtRemarks').prop('disabled', false);
                     $('#buttonAddAssemblyModeOfDefect').prop('hidden', false);
                     $('.buttonRemoveMOD').prop('disabled', false);
@@ -2007,12 +2128,14 @@
 
                     $('#txtInputQuantity').prop('disabled', true);
                     $('#txtNgQuantity').prop('disabled', true);
-                    $('#txtDocNoRDrawing').prop('disabled', true);
-                    $('#txtDocNoADrawing').prop('disabled', true);
-                    $('#txtDocNoGDrawing').prop('disabled', true);
+                    $('#txtSelectDocNoRDrawing').prop('disabled', true);
+                    $('#txtSelectDocNoADrawing').prop('disabled', true);
+                    $('#txtSelectDocNoGDrawing').prop('disabled', true);
                     $('#txtRemarks').prop('disabled', true);
                     $('#buttonAddAssemblyModeOfDefect').prop('hidden', true);
-                    $('.buttonRemoveMOD').prop('disabled', true);
+                    // $('#tableAssemblyStationMOD').prop('disabled', true);
+                    // $("#tableAssemblyStationMOD").find("input,button,textarea,select").attr("disabled", "disabled");
+                    // $('.buttonRemoveMOD').attr('disabled', true);
                     $('#btnSaveNewAssemblyRuncardStation').prop('hidden', true);
                     $('#modalAddStation').modal('show');
                 });
@@ -2031,9 +2154,9 @@
                         success: function(response){
                             const assy_runcard_station_data = response['assembly_runcard_data'][0].assembly_runcard_station[0];
                             const mode_of_defect_data = response['mode_of_defect_data'];
-                            GetRDrawingFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"), assy_runcard_station_data.doc_no_r_drawing);
-                            GetADrawingFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"), assy_runcard_station_data.doc_no_a_drawing);
-                            GetGDrawingFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"), assy_runcard_station_data.doc_no_g_drawing);
+                            GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"), assy_runcard_station_data.doc_no_r_drawing);
+                            GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"), assy_runcard_station_data.doc_no_a_drawing);
+                            GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"), assy_runcard_station_data.doc_no_g_drawing);
 
                             //Stations Forms
                             $('#formAddAssemblyRuncardStation #txtStationAssyRuncardId').val(assy_runcard_station_data.assembly_runcards_id);
@@ -2230,7 +2353,7 @@
                         content += '<table style="margin-left: -5px; margin-top: 18px;">';
                             content += '<tr style="width: 290px;">';
                                 content += '<td style="vertical-align: bottom;">';
-                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 90px; max-width: 90px;">';
                                 content += '</td>';
                                 content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
                             content += '</tr>';

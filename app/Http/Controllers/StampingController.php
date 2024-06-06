@@ -375,14 +375,14 @@ class StampingController extends Controller
     public function get_data_req_for_prod_by_po(Request $request){
 
         $get_drawing = DB::connection('mysql_rapid_stamping_dmcms')
-        ->select("SELECT * FROM tbl_device WHERE `device_code` = '".$request->item_code."'");
+        ->select("SELECT * FROM tbl_device WHERE `device_code` = '".$request->item_code."' AND logdel = 0");
 
         if(count($get_drawing) > 0){
             return $get_drawing[0];
         }
         else{
             // return "No Data on Stamping DMCMS";
-            return response()->json(['msg' => 'No Data on Stamping DMCMS'], 400);
+            return response()->json(['msg' => 'Item code on this PO not found in Stamping DMCMS'], 400);
         }
     }
 
@@ -597,18 +597,14 @@ class StampingController extends Controller
 
     public function get_2_stamp_reqs(Request $request){
 
-        // return $po;
-
         $data = json_decode($request->params);
         $po;
         if(isset($data->po_no)){
             $po = $data->po_no;
         }
         else{
-            $po = $data;
+            $po = $request->params;
         }
-
-        // return $po;
 
         // $po_details = DB::connection('mysql')
         // ->select("

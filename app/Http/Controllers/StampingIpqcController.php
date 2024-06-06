@@ -200,32 +200,38 @@ class StampingIpqcController extends Controller
     }
 
     public function get_data_from_fs_production(Request $request){
-        $data = FirstStampingProduction::select('id','stamping_cat','po_num','part_code','material_name','material_lot_no','prod_lot_no','qc_samp','status')
-                                        ->whereNull('deleted_at')
-                                        ->when($request->fs_prod_id, function ($query) use ($request){
-                                                return $query ->where('id', $request->fs_prod_id);
-                                        })
-                                        ->when($request->stamping_ipqc_id, function ($query) use ($request){
-                                            return $query ->with(['stamping_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); }]);
-                                        })
-                                        ->when($request->stamping_cat, function ($query) use ($request){ //parameter for PO selection
-                                            return $query ->where('stamping_cat', $request->stamping_cat)->distinct();
-                                        })
-                                        ->get();
+        date_default_timezone_set('Asia/Manila');
+        // session_start();
+        if(isset(Auth::user()->id)){
+            $data = FirstStampingProduction::select('id','stamping_cat','po_num','part_code','material_name','material_lot_no','prod_lot_no','qc_samp','status')
+                                            ->whereNull('deleted_at')
+                                            ->when($request->fs_prod_id, function ($query) use ($request){
+                                                    return $query ->where('id', $request->fs_prod_id);
+                                            })
+                                            ->when($request->stamping_ipqc_id, function ($query) use ($request){
+                                                return $query ->with(['stamping_ipqc.ipqc_insp_name' => function($query) { $query->select('id', 'firstname', 'lastname', 'username'); }]);
+                                            })
+                                            ->when($request->stamping_cat, function ($query) use ($request){ //parameter for PO selection
+                                                return $query ->where('stamping_cat', $request->stamping_cat)->distinct();
+                                            })
+                                            ->get();
 
-        // mapping
-        if($request->stamping_ipqc_id == 0){
-            $data_mapped = $data->map(function ($item){
-                $item->stamping_ipqc_data = 0;
-                $item->ipqc_inspector_id = Auth::user()->id;
-                $item->ipqc_inspector_name = Auth::user()->firstname.' '.Auth::user()->lastname;
-                return $item;
-            });
+            // mapping
+            if($request->stamping_ipqc_id == 0){
+                $data_mapped = $data->map(function ($item){
+                    $item->stamping_ipqc_data = 0;
+                    $item->ipqc_inspector_id = Auth::user()->id;
+                    $item->ipqc_inspector_name = Auth::user()->firstname.' '.Auth::user()->lastname;
+                    return $item;
+                });
+            }else{
+                $data_mapped = $data;
+            }
+
+            return response()->json(['fs_production_data' => $data_mapped]);
         }else{
-            $data_mapped = $data;
+            return response()->json(['session' => 0]);
         }
-
-        return response()->json(['fs_production_data' => $data_mapped]);
     }
 
     public function add_stamping_ipqc_inspection(Request $request){
@@ -235,116 +241,122 @@ class StampingIpqcController extends Controller
         $data = $request->all();
         // $password = "pmi12345";
         // return $data;
+        if(isset(Auth::user()->id)){
+            if($request->stamping_ipqc_id == 0){
+                $validator = Validator::make($data, [
+                    'doc_no_b_drawing' => 'required',
+                    'doc_no_inspection_standard' => 'required',
+                    'doc_no_ud' => 'required',
+                    'uploaded_file' => 'required',
+                ]);
 
-                if($request->stamping_ipqc_id == 0){
-                    $validator = Validator::make($data, [
-                        'doc_no_b_drawing' => 'required',
-                        'doc_no_inspection_standard' => 'required',
-                        'doc_no_ud' => 'required',
-                        'uploaded_file' => 'required',
-                    ]);
-
-                    if ($validator->fails()) {
-                        return response()->json(['validation' => 'hasError', 'error' => $validator->messages()]);
-                    }else {
-                        $original_filename = $request->file('uploaded_file')->getClientOriginalName();
-                            if($request->judgement == "Accepted"){
-                                $status = 1;
-                            }else if($request->judgement == "Rejected"){
-                                $status = 2;
-                            }
-                            Storage::putFileAs('public/stamping_ipqc_inspection_attachments', $request->uploaded_file,  $original_filename);
-                            StampingIpqc::insert(['fs_productions_id'         => $request->first_stamping_prod_id,
-                                                    'stamping_cat'            => $request->stamping_category,
-                                                    'po_number'               => $request->po_number,
-                                                    'part_code'               => $request->part_code,
-                                                    'material_name'           => $request->material_name,
-                                                    'prod_lot_no'             => $request->production_lot,
-                                                    'judgement'               => $request->judgement,
-                                                    'input'                   => $request->input,
-                                                    'output'                  => $request->output,
-                                                    'ipqc_inspector_name'     => $request->inspector_id,
-                                                    'keep_sample'             => $request->keep_sample,
-                                                    'doc_no_b_drawing'        => $request->doc_no_b_drawing,
-                                                    'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
-                                                    'doc_no_urgent_direction' => $request->doc_no_ud,
-                                                    'measdata_attachment'     => $original_filename,
-                                                    'remarks'                 => $request->remarks,
-                                                    'status'                  => $status,
-                                                    'created_by'              => Auth::user()->id,
-                                                    'last_updated_by'         => Auth::user()->id,
-                                                    'created_at'              => date('Y-m-d H:i:s'),
-                                                    'updated_at'              => date('Y-m-d H:i:s'),
-                            ]);
-
-                            DB::commit();
-                            return response()->json(['result' => 'Insert Successful']);
-                    }
-                }else{
-                    if(isset($request->uploaded_file)){
-                        $original_filename = $request->file('uploaded_file')->getClientOriginalName();
-                            Storage::putFileAs('public/stamping_ipqc_inspection_attachments', $request->uploaded_file,  $original_filename);
-                    }else{
-                        $original_filename = $request->re_uploaded_file;
-                    }
-
-                    if($request->judgement == "Accepted"){
-                        $status = 1;
-                    }else if($request->judgement == "Rejected"){
-                        $status = 2;
-                    }
-
-                    StampingIpqc::where('id', $request->stamping_ipqc_id)
-                            ->update([
-                                'judgement'               => $request->judgement,
-                                'input'                   => $request->input,
-                                'output'                  => $request->output,
-                                'ipqc_inspector_name'     => $request->inspector_id,
-                                'keep_sample'             => $request->keep_sample,
-                                'doc_no_b_drawing'        => $request->doc_no_b_drawing,
-                                'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
-                                'doc_no_urgent_direction' => $request->doc_no_ud,
-                                'measdata_attachment'     => $original_filename,
-                                'remarks'                 => $request->remarks,
-                                'status'                  => $status,
-                                'last_updated_by'         => Auth::user()->id,
-                                'updated_at'              => date('Y-m-d H:i:s'),
-                            ]);
+                if ($validator->fails()) {
+                    return response()->json(['validation' => 'hasError', 'error' => $validator->messages()]);
+                }else {
+                    $original_filename = $request->file('uploaded_file')->getClientOriginalName();
+                        if($request->judgement == "Accepted"){
+                            $status = 1;
+                        }else if($request->judgement == "Rejected"){
+                            $status = 2;
+                        }
+                        Storage::putFileAs('public/stamping_ipqc_inspection_attachments', $request->uploaded_file,  $original_filename);
+                        StampingIpqc::insert(['fs_productions_id'         => $request->first_stamping_prod_id,
+                                                'stamping_cat'            => $request->stamping_category,
+                                                'po_number'               => $request->po_number,
+                                                'part_code'               => $request->part_code,
+                                                'material_name'           => $request->material_name,
+                                                'prod_lot_no'             => $request->production_lot,
+                                                'judgement'               => $request->judgement,
+                                                'input'                   => $request->input,
+                                                'output'                  => $request->output,
+                                                'ipqc_inspector_name'     => $request->inspector_id,
+                                                'keep_sample'             => $request->keep_sample,
+                                                'doc_no_b_drawing'        => $request->doc_no_b_drawing,
+                                                'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
+                                                'doc_no_urgent_direction' => $request->doc_no_ud,
+                                                'measdata_attachment'     => $original_filename,
+                                                'remarks'                 => $request->remarks,
+                                                'status'                  => $status,
+                                                'created_by'              => Auth::user()->id,
+                                                'last_updated_by'         => Auth::user()->id,
+                                                'created_at'              => date('Y-m-d H:i:s'),
+                                                'updated_at'              => date('Y-m-d H:i:s'),
+                        ]);
 
                         DB::commit();
-                        return response()->json(['result' => 'Update Successful']);
-                        // }
+                        return response()->json(['result' => 'Insert Successful']);
+                }
+            }else{
+                if(isset($request->uploaded_file)){
+                    $original_filename = $request->file('uploaded_file')->getClientOriginalName();
+                        Storage::putFileAs('public/stamping_ipqc_inspection_attachments', $request->uploaded_file,  $original_filename);
+                }else{
+                    $original_filename = $request->re_uploaded_file;
                 }
 
+                if($request->judgement == "Accepted"){
+                    $status = 1;
+                }else if($request->judgement == "Rejected"){
+                    $status = 2;
+                }
+
+                StampingIpqc::where('id', $request->stamping_ipqc_id)
+                        ->update([
+                            'judgement'               => $request->judgement,
+                            'input'                   => $request->input,
+                            'output'                  => $request->output,
+                            'ipqc_inspector_name'     => $request->inspector_id,
+                            'keep_sample'             => $request->keep_sample,
+                            'doc_no_b_drawing'        => $request->doc_no_b_drawing,
+                            'doc_no_insp_standard'    => $request->doc_no_inspection_standard,
+                            'doc_no_urgent_direction' => $request->doc_no_ud,
+                            'measdata_attachment'     => $original_filename,
+                            'remarks'                 => $request->remarks,
+                            'status'                  => $status,
+                            'last_updated_by'         => Auth::user()->id,
+                            'updated_at'              => date('Y-m-d H:i:s'),
+                        ]);
+
+                    DB::commit();
+                    return response()->json(['result' => 'Update Successful']);
+                    // }
+            }
+        }else{
+            return response()->json(['session' => 0]);
+        }
     }
 
     public function update_status_of_ipqc_inspection(Request $request){
         date_default_timezone_set('Asia/Manila');
-        // session_start();
-            if($request->stamping_ipqc_status == 1){
-                //For Mass Production
-                $fs_prod_status = 1;
-                $ipqc_status = 3;
+        if(isset(Auth::user()->id)){
+            // session_start();
+                if($request->stamping_ipqc_status == 1){
+                    //For Mass Production
+                    $fs_prod_status = 1;
+                    $ipqc_status = 3;
 
-            }else if($request->stamping_ipqc_status == 2){
-                //For Re-Setup
-                $fs_prod_status = 3;
-                $ipqc_status = 4;
-            }
-            StampingIpqc::where('id', $request->stamping_ipqc_id)
-                    ->update([
-                        'status'              => $ipqc_status,
-                        'last_updated_by'     => Auth::user()->id,
-                        'updated_at'          => date('Y-m-d H:i:s'),
-                    ]);
+                }else if($request->stamping_ipqc_status == 2){
+                    //For Re-Setup
+                    $fs_prod_status = 3;
+                    $ipqc_status = 4;
+                }
+                StampingIpqc::where('id', $request->stamping_ipqc_id)
+                        ->update([
+                            'status'              => $ipqc_status,
+                            'last_updated_by'     => Auth::user()->id,
+                            'updated_at'          => date('Y-m-d H:i:s'),
+                        ]);
 
-            // if($request->status == 1){
-                FirstStampingProduction::where('id', $request->fs_productions_id)
-                ->update(['status' => $fs_prod_status]);
-            // }
+                // if($request->status == 1){
+                    FirstStampingProduction::where('id', $request->fs_productions_id)
+                    ->update(['status' => $fs_prod_status]);
+                // }
 
-                    DB::commit();
-        return response()->json(['result' => 'Successful']);
+                        DB::commit();
+            return response()->json(['result' => 'Successful']);
+        }else{
+            return response()->json(['session' => 0]);
+        }
     }
 
     //====================================== DOWNLOAD FILE ======================================

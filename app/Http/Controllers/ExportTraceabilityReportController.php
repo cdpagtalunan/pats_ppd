@@ -25,12 +25,15 @@ public function exportCN171TraceabilityReport(Request $request){
         // return $request->date_from; 
         // return $request->date_to;
 
-        $stamping_data = FirstStampingProduction::with([
+        $material_name = strtoupper($request->material_name);
+
+        $stamping_data_1 = FirstStampingProduction::with([
         'receiving_info',
         'receiving_info.iqc_info',
         'receiving_info.iqc_info.user_iqc',
         'stamping_ipqc', 
         'user', 
+        'packing_list_details',
         'stamping_ipqc.ipqc_insp_name', 
         'oqc_details', 
         'oqc_details.packing_info',
@@ -38,11 +41,34 @@ public function exportCN171TraceabilityReport(Request $request){
         'oqc_details.first_molding_info',
         'oqc_details.first_molding_info.user_validated_by_info'
         ])
-        ->where('po_num', $request->po_number)
+        // ->where('po_num', $po_number)
+        ->where('material_name', $material_name)
+        ->where('stamping_cat', 1)
         ->whereBetween('prod_date', [$request->date_from,$request->date_to])
         ->get();
+
+        // return $stamping_data_1;
+
+        $stamping_data_2 = FirstStampingProduction::with([
+                'receiving_info',
+                'receiving_info.iqc_info',
+                'receiving_info.iqc_info.user_iqc',
+                'stamping_ipqc', 
+                'user', 
+                'stamping_ipqc.ipqc_insp_name', 
+                'oqc_details', 
+                'oqc_details.packing_info',
+                'oqc_details.packing_info.user_validated_by_info',
+                'oqc_details.first_molding_info',
+                'oqc_details.first_molding_info.user_validated_by_info'
+                ])
+                // ->where('po_num', $po_number)
+                ->where('material_name', $material_name)
+                ->where('stamping_cat', 2)
+                ->whereBetween('prod_date', [$request->date_from,$request->date_to])
+                ->get();
         
-        // return $stamping_data;
+        // return $stamping_data_1;
 
         // $receiving_data = ReceivingDetails::with([
         //     'iqc_info',
@@ -55,7 +81,8 @@ public function exportCN171TraceabilityReport(Request $request){
         // return $receiving_data;
 
         return Excel::download(new ExportCN171TraceabilityReport(
-        $stamping_data,
+        $stamping_data_1,
+        $stamping_data_2
         // $receiving_data
         ), 
         'CN171 Traceability.xlsx');

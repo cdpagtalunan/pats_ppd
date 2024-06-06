@@ -1,6 +1,6 @@
 @extends('layouts.admin_layout')
 
-@section('title', 'Dashboard')
+@section('title', 'Export Stamping Report')
 @section('content_page')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -8,11 +8,11 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Traceability Report</h1>
+                        <h1>Stamping Traceability Report</h1>
                     </div>
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item active">Traceability Report</li>
+                            <li class="breadcrumb-item active">Stamping Traceability Report</li>
                         </ol>
                     </div>
                 </div>
@@ -33,10 +33,16 @@
                             <!-- Start Page Content -->
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="form-group col-sm-6 flex-column">
+                                    {{-- <div class="form-group col-sm-6 flex-column">
                                         <label for="search_po">PO # to be Extracted</label>
                                         <input class="form-control" type="text" name="search_po" id="searchPONumber" autocomplete="off" aria-describedby="inputGroup-sizing-default">
+                                    </div> --}}
+
+                                    <div class="form-group col-sm-6 flex-column">
+                                        <label for="search_po">Material Name</label>
+                                        <input class="form-control" type="text" name="material_name" id="materialName" autocomplete="off" aria-describedby="inputGroup-sizing-default">
                                     </div>
+                                    
 
                                     <div class="row">
                                         <div class="form-group col-sm-6 flex-column">
@@ -107,12 +113,14 @@
                 let po_number = $('#searchPONumber').val();
                 let date_from = $('#txtViewDatePickerFrom').val();
                 let date_to = $('#txtViewDatePickerTo').val();
+                let material_name = $('#materialName').val();
 
-                window.location.href = `export_cn171_traceability_report/${po_number}/${date_from}/${date_to}`;
+                window.location.href = `export_cn171_traceability_report/${date_from}/${date_to}/${material_name}`;
                 // $('#modalExportTraceabilityReport').modal('hide');
                 $('#searchPONumber').val("");
                 $('#txtViewDatePickerFrom').val("");
                 $('#txtViewDatePickerTo').val("");
+                $('#materialName').val("");
             });
 
             $(document).on('click','#modalExportTraceability',function(e){

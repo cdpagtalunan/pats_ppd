@@ -15,7 +15,7 @@ class TblDieset extends Model
     protected $table = 'tbl_dieset';
 
     public function pps_warehouse_info(){
-        return $this->hasOne(TblWarehouse::class, 'MaterialType','Material');
+        return $this->hasOne(TblWarehouse::class, 'MaterialType','Material')->where('Factory', 3);
     }
 
 }

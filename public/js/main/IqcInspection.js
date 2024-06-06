@@ -476,17 +476,6 @@
             form.iqcInspection.find('#judgement').val(1);
         }
     }
-    // const errorHandler = function (errors,formInput){
-    //     if(errors === undefined){
-    //         formInput.removeClass('is-invalid')
-    //         formInput.addClass('is-valid')
-    //         formInput.attr('title', '')
-    //     }else {
-    //         formInput.removeClass('is-valid')
-    //         formInput.addClass('is-invalid');
-    //         formInput.attr('title', errors[0])
-    //     }
-    // }
     const saveIqcInspection = function (){
         let serialized_data = new FormData(form.iqcInspection[0]);
             serialized_data.append('lotNo',arrTableMod.lotNo);

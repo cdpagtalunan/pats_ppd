@@ -24,6 +24,10 @@
                 position: absolute;
                 opacity: 0;
             }
+            .input_hidden{
+                position: absolute;
+                opacity: 0;
+            }
 
             .slct{
                 pointer-events: none;
@@ -84,7 +88,15 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-7 d-flex justify-content-end mt-4">
-                                                    <button button type="button" class="btn btn-dark mb-3 d-none" id="buttonAddMimf" data-bs-toggle="modal" data-bs-target="#modalMimf" data-bs-keyboard="false"><i class="fa fa-plus fa-md"></i> New Request</button>
+                                                    <button button 
+                                                        type="button" class="btn btn-dark mb-3 d-none" 
+                                                        id="buttonAddMimf" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#modalMimf" 
+                                                        data-bs-keyboard="false">
+                                                        <i class="fa fa-plus fa-md"></i>
+                                                        New Request
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="table-responsive"><!-- Table responsive -->
@@ -95,6 +107,7 @@
                                                             <!-- &emsp; -->
                                                             <th>Action</th>
                                                             <th>CTRL No.</th>
+                                                            <th>Status</th>
                                                             <th>Date Issuance</th>
                                                             <th>YEC P.O No</th>
                                                             <th>PMI P.O No</th>
@@ -159,17 +172,26 @@
 
                     <form method="post" id="formMimf" autocomplete="off">
                         @csrf
-                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtMimfId" name="mimf_id" readonly>
-                        <input type="hidden" class="col-1 mimfClass input_hidden" id="MimfStampingMatrix" name="pps_whse_id" readonly>
-                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpsPoReceivedId" name="pps_po_rcvd_id" readonly>
-                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpsDiesetId" name="pps_dieset_id" placeholder="For Molding" readonly>
-                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpdMatrixId" name="ppd_matrix_id" placeholder="For Molding" readonly>
-                        <input type="hidden" class="col-1 input_hidden" id="txtMimfStampingMatrixStatus" name="mimf_stamping_matrix_status" required>
-                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtPpdMimfStampingMatrixId" name="ppd_mimf_stamping_matrix_id" placeholder="For Stamping" readonly>
-                        <input type="hidden" class="col-1 mimfClass input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
+                        <input type="text" class="col-1 mimfClass input_hidden" id="txtMimfId" name="mimf_id" placeholder="For MIMF ID" readonly>
+                        <input type="text" class="col-1 mimfClass input_hidden" id="MimfStampingMatrix" name="pps_whse_id" placeholder="For PPS Warehouse ID" readonly>
+                        <input type="text" class="col-1 mimfClass input_hidden" id="txtPpsPoReceivedId" name="pps_po_rcvd_id" placeholder="For PO Received ID" readonly>
+                        <input type="text" class="col-1 mimfClass input_hidden" id="txtPpsDiesetId" name="pps_dieset_id" placeholder="For Molding" readonly>
+                        <input type="text" class="col-1 mimfClass input_hidden" id="txtPpdMatrixId" name="ppd_matrix_id" placeholder="For Molding" readonly>
+                        <input type="text" class="col-1 input_hidden" id="txtMimfStatus" name="mimf_status" placeholder="Status"required>
+                        <input type="text" class="col-1 mimfClass input_hidden" id="txtPpdMimfStampingMatrixId" name="ppd_mimf_stamping_matrix_id" placeholder="For Stamping" readonly>
+                        <input type="text" class="col-1 mimfClass input_hidden" id="txtEmployeeNo" name="employee_no" placeholder="Employee ID to save" readonly>
                         <div class="modal-body">
                             <div class="row"><!-- Start Row MIMF Data -->
-                                <div class="col-sm-6 mt-3">
+                                <div class="col-6 mt-3">
+                                    <div class="form-check form-check-inline mb-3">
+                                        <input class="form-check-input first uncheck" type="radio" name="category" id="radioBtnFirstCategory" value="1" required>
+                                        <label class="form-check-label" for="inlineRadio1">First</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-3">
+                                        <input class="form-check-input second uncheck" type="radio" name="category" id="radioBtnSecondCategory" value="2" required>
+                                        <label class="form-check-label" for="inlineRadio2">Second</label>
+                                    </div>
+                                    
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong class="ml-4">Date of Issuance</strong></span>
@@ -262,7 +284,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-sm-6 mt-3">
+                                <div class="col-6 mt-3">
+                                    <div class="form-check form-check-inline mb-3">
+                                        <input class="form-check-input for-edit update-mimf-pps_request" type="radio" name="update_mimf_and_pps_request" id="radioBtnUpdateMimf" value="1" required disabled>
+                                        <label class="form-check-label" for="inlineRadio1">Update MIMF</label>
+                                    </div>
+                                    <div class="form-check form-check-inline mb-3">
+                                        <input class="form-check-input for-edit update-mimf-pps_request" type="radio" name="update_mimf_and_pps_request" id="radioBtnPpsRequest" value="2" required readonly>
+                                        <label class="form-check-label" for="inlineRadio2">New PPS Request</label>
+                                    </div>
                                     <div class="input-group mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100">
@@ -275,7 +305,7 @@
                                         <input type="text" class="form-control mimfClass clearPPSMIS" id="txtMimfQuantityFromInventory" name="mimf_quantity_from_inventory" readonly>
                                     </div>
 
-                                    <div class="input-group mb-3">
+                                    <div class="input-group first-stamping-needed-kgs mb-3">
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100">
                                                 <strong>
@@ -286,6 +316,18 @@
                                             </span>
                                         </div>
                                         <input type="text" class="form-control mimfClass clearDieSet" id="txtMimfNeededKgs" name="mimf_needed_kgs" readonly>
+                                    </div>
+
+                                    <div class="input-group second-stamping-pins-pcs mb-3 d-none">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">
+                                                <strong>
+                                                    <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip" data-bs-html="true" title="Manually encode.">&nbsp;</i>
+                                                    Request PINS/PCS
+                                                </strong>
+                                            </span>
+                                        </div>
+                                        <input type="text" class="form-control mimfClass" id="txtMimfRequestPinsPcs" name="mimf_request_pins_pcs">
                                     </div>
 
                                     <div class="input-group mb-3 moldingOnly">
@@ -467,16 +509,15 @@
 
                 $('#selectCategory').change(function (e) { 
                     e.preventDefault();
-
                     mimfCategory = $('#selectCategory').val()
                     if($('#selectCategory').val() == 1){
-                        $('#txtMimfStampingMatrixStatus').val('1')
+                        $('#txtMimfStatus').val('1')
                         $('.moldingOnly').addClass('d-none')
                         $('.stampingOnly').removeClass('d-none')
                         $('.clearMatrix').attr('required', false)
                         $('.navMimfStampingMatrix').removeClass('d-none')
                     }else{
-                        $('#txtMimfStampingMatrixStatus').val('2')
+                        $('#txtMimfStatus').val('2')
                         $('.moldingOnly').removeClass('d-none')
                         $('.stampingOnly').addClass('d-none')
                         $('.clearMatrix').attr('required', true)
@@ -501,22 +542,23 @@
                     "columns":[
                         /*0*/{ "data" : "action", orderable:false, searchable:false }, 
                         /*1*/{ "data" : "control_no" },
-                        /*2*/{ "data" : "date_issuance" },
-                        /*3*/{ "data" : "yec_po_no" },
-                        /*4*/{ "data" : "pmi_po_no" },
-                        /*5*/{ "data" : "prodn_qty" },
-                        /*6*/{ "data" : "device_code" },
-                        /*7*/{ "data" : "device_name" },
-                        /*8*/{ "data" : "material_code" },
-                        /*9*/{ "data" : "material_type" },
-                        /*10*/{ "data" : "qty_invt" },
-                        /*11*/{ "data" : "needed_kgs" },
-                        /*12*/{ "data" : "virgin_material"},
-                        /*13*/{ "data" : "recycled" },
-                        /*14*/{ "data" : "prodn" },
-                        /*15*/{ "data" : "delivery" },
-                        /*16*/{ "data" : "po_balance" },
-                        /*17*/{ "data" : "remarks" }
+                        /*2*/{ "data" : "category" },
+                        /*3*/{ "data" : "date_issuance" },
+                        /*4*/{ "data" : "yec_po_no" },
+                        /*5*/{ "data" : "pmi_po_no" },
+                        /*6*/{ "data" : "prodn_qty" },
+                        /*7*/{ "data" : "device_code" },
+                        /*8*/{ "data" : "device_name" },
+                        /*9*/{ "data" : "material_code" },
+                        /*10*/{ "data" : "material_type" },
+                        /*11*/{ "data" : "qty_invt" },
+                        /*12*/{ "data" : "needed_kgs" },
+                        /*13*/{ "data" : "virgin_material"},
+                        /*14*/{ "data" : "recycled" },
+                        /*15*/{ "data" : "prodn" },
+                        /*16*/{ "data" : "delivery" },
+                        /*17*/{ "data" : "po_balance" },
+                        /*18*/{ "data" : "remarks" }
                     ],
                     "columnDefs": [
                         // "targets": 'invis',
@@ -524,28 +566,33 @@
                     drawCallback: function (data) {
                         const apiDataTable= this.api()
                         if(data.oAjaxData.mimfCategory == 1){
-                            apiDataTable.columns([12,13]).visible(false)
+                            apiDataTable.columns([13,14]).visible(false)
                         }else{
-                            apiDataTable.columns([12,13]).visible(true)
+                            apiDataTable.columns([13,14]).visible(true)
                         }
                     }
                 })
 
                 $('#buttonAddMimf').click(function(event){
                     event.preventDefault()
+                    $('#txtMimfStatus').val($('#selectCategory').val())
+                    $('#radioBtnUpdateMimf').prop({required:false, disabled:true})
+                    $('#radioBtnPpsRequest').prop('checked', true)
+                    
+
                     $.ajax({
                         url: 'get_control_no',
                         method: 'get',
                         data: {
-                            'category': $('#txtMimfStampingMatrixStatus').val()
+                            'category': $('#txtMimfStatus').val()
                         },
 
                         beforeSend: function(){
                         
                         },
                         success: function (response) {
-                            let getNewControlNo = response['newControlNo'];
-                            $('#txtMimfControlNo').val(getNewControlNo);
+                            let getNewControlNo = response['newControlNo']
+                            $('#txtMimfControlNo').val(getNewControlNo)
 
                         }
                     })
@@ -562,15 +609,15 @@
                         method: 'get',
                         data: {
                             'getValue'      : getValue,
-                            'mimfCategory'  : $('#txtMimfStampingMatrixStatus').val()
+                            'mimfCategory'  : $('#txtMimfStatus').val()
                         },
                         beforeSend: function(){
                         },
                         success: function(response){
-                            if($('#txtMimfStampingMatrixStatus').val() != 1){
+                            if($('#txtMimfStatus').val() == 2){
                                 let getPoReceivedPmiPoForMolding = response['getPoReceivedPmiPoForMolding']
                                 let totalBalanceForMolding = response['totalBalanceForMolding']
-                                let kgs = 0
+                                let kgsMolding = 0
                                 if(getPoReceivedPmiPoForMolding.length > 0){
                                     $('#txtPpsPoReceivedId').val(getPoReceivedPmiPoForMolding[0].id)
                                     $('#txtMimfProdnQuantity').val(getPoReceivedPmiPoForMolding[0].OrderQty)
@@ -578,10 +625,16 @@
                                     $('#txtMimfDeviceName').val(getPoReceivedPmiPoForMolding[0].ItemName)
                                     
                                     if(getPoReceivedPmiPoForMolding[0].pps_dieset_info != null){
-                                        // kgs = (getPoReceivedPmiPoForMolding[0].OrderQty*getPoReceivedPmiPoForMolding[0].pps_dieset_info.ShotWgt*getPoReceivedPmiPoForMolding[0].pps_dieset_info.NoOfCav/1000).toFixed(2)
-                                        kgs = (getPoReceivedPmiPoForMolding[0].OrderQty*getPoReceivedPmiPoForMolding[0].pps_dieset_info.ShotWgt/1000/getPoReceivedPmiPoForMolding[0].pps_dieset_info.NoOfCav).toFixed(2)
                                         $('#txtPpsDiesetId').val(getPoReceivedPmiPoForMolding[0].pps_dieset_info.id)
-                                        $('#txtMimfNeededKgs').val(kgs)
+
+                                        let poQuantity = getPoReceivedPmiPoForMolding[0].OrderQty
+                                        let diesetShotWeight = getPoReceivedPmiPoForMolding[0].pps_dieset_info.ShotWgt
+                                        let diesetNoOfCavity = getPoReceivedPmiPoForMolding[0].pps_dieset_info.NoOfCav
+
+                                        kgsMolding = (poQuantity*diesetShotWeight/diesetNoOfCavity/1000).toFixed(2)
+                                        if(kgsMolding != 'NaN'){
+                                            $('#txtMimfNeededKgs').val(kgsMolding)
+                                        }
 
                                         if(getPoReceivedPmiPoForMolding[0].pps_dieset_info.pps_warehouse_info != null){
                                             $('#MimfStampingMatrix').val(getPoReceivedPmiPoForMolding[0].pps_dieset_info.pps_warehouse_info.id)
@@ -601,8 +654,8 @@
                                     }
 
                                     if(getPoReceivedPmiPoForMolding[0].matrix_info != null){
-                                        let virgin_computation = (kgs*getPoReceivedPmiPoForMolding[0].matrix_info.virgin_percent)/100
-                                        let recyled_computation = (kgs*getPoReceivedPmiPoForMolding[0].matrix_info.recycle_percent)/100
+                                        let virgin_computation = (kgsMolding*getPoReceivedPmiPoForMolding[0].matrix_info.virgin_percent)/100
+                                        let recyled_computation = (kgsMolding*getPoReceivedPmiPoForMolding[0].matrix_info.recycle_percent)/100
 
                                         $('#txtPpdMatrixId').val(getPoReceivedPmiPoForMolding[0].matrix_info.id)
                                         $('#txtMimfVirginMaterial').val(virgin_computation.toFixed(2))
@@ -621,7 +674,7 @@
                             }else{
                                 let getPoReceivedPmiPoForStamping = response['getPoReceivedPmiPoForStamping']
                                 let totalBalanceForStamping = response['totalBalanceForStamping']
-                                let kgs = 0
+                                let kgsStamping = 0
 
                                 if(getPoReceivedPmiPoForStamping.length > 0){
                                     $('#txtPpsPoReceivedId').val(getPoReceivedPmiPoForStamping[0].id)
@@ -630,9 +683,9 @@
                                     $('#txtMimfDeviceName').val(getPoReceivedPmiPoForStamping[0].ItemName)
                                     
                                     if(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info != null){
-                                        kgs = (getPoReceivedPmiPoForStamping[0].OrderQty/getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pin_kg+.10).toFixed(2)
+                                        kgsStamping = (getPoReceivedPmiPoForStamping[0].OrderQty/getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pin_kg+.10).toFixed(2)
                                         $('#txtPpdMimfStampingMatrixId').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.id)
-                                        $('#txtMimfNeededKgs').val(kgs)
+                                        $('#txtMimfNeededKgs').val(kgsStamping)
 
                                         if(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pps_whse_info != null){
                                             $('#MimfStampingMatrix').val(getPoReceivedPmiPoForStamping[0].mimf_stamping_matrix_info.pps_whse_info.id)
@@ -663,7 +716,23 @@
 
                 $('#modalMimf').on('hidden.bs.modal', function() {
                     $('.mimfClass').val('')
+                    $('.mimfClass').removeClass('is-invalid')
+                    $('.update-mimf-pps_request').prop({checked:false,disabled:false})
+                    $('.uncheck').prop({disabled:false, checked:false })
+                    $('.second-stamping-pins-pcs').addClass('d-none')
+                    $('.first-stamping-needed-kgs').removeClass('d-none')
                 })
+
+                $('.uncheck').change(function (e) { 
+                    e.preventDefault();
+                    if( $('#radioBtnSecondCategory').is(':checked') && $('#txtMimfStatus').val() == 1){
+                        $('.second-stamping-pins-pcs').removeClass('d-none')
+                        $('.first-stamping-needed-kgs').addClass('d-none')
+                    }else{
+                        $('.second-stamping-pins-pcs').addClass('d-none')
+                        $('.first-stamping-needed-kgs').removeClass('d-none')
+                    }
+                });
 
                 $(document).on('click', '.actionEditMimf', function(e){
                     e.preventDefault()
@@ -681,15 +750,48 @@
                     $('#txtPpdMatrixId').val(matrixID)
                     $('#txtPpsDiesetId').val(dieSetID)
                     $('#txtPpsPoReceivedId').val(poReceivedID)
-                    $('#txtMimfStampingMatrixStatus').val(mimfStatus)
+                    $('#txtMimfStatus').val(mimfStatus)
                     $('#txtPpdMimfStampingMatrixId').val(ppdMimfStampingMatrixID)
+                    
+                    $('.mimfClass').removeClass('is-invalid')
+                    $('.update-mimf-pps_request').prop({checked:false,disabled:false})
+                    $('.uncheck').prop({disabled:false, checked:false })
 
                     GetMimfById(mimfID,whseID,matrixID,dieSetID,poReceivedID,ppdMimfStampingMatrixID)
                 })
 
+                // $('.for-edit').on('change', function (e) { 
+                //     e.preventDefault();
+                //     if( $('.for-edit').is(':checked')){
+                //         $('#txtMimfProdnQuantity').attr('readonly', false)
+                //     }else{
+                //         $('#txtMimfProdnQuantity').attr('readonly', true)
+                //     }
+                // });
+
+                // $('#txtMimfProdnQuantity').keypress(function (e) { 
+                //     switch ($('#mimf_status').val()) {
+                //         case '1':
+                //             if($('#radioBtnSecondCategory').is(':checked') && $('#txtMimfStatus').val() == 1){
+
+                //             }else{
+
+                //             }
+                //             break;
+
+                //         case '2':
+                        
+                //         break;
+                    
+                //         default:
+                //             break;
+                //     }
+                // });
+
                 $('#formMimf').submit(function (e) { 
                     e.preventDefault()
                     UpdateMimf()
+                    // For scanning of employee number
                     // $('#mdlScanEmployeeID').modal('show')
                     // $('#mdlScanEmployeeID').on('shown.bs.modal', function () {
                     //     $('#txtScanEmployeeID').focus()
@@ -713,6 +815,7 @@
                     // })
                 })
 
+                // For scanning of employee number
                 // $('#txtScanEmployeeID').on('keypress',function(e){
                 //     if( e.keyCode == 13 ){
                 //         $.ajax({

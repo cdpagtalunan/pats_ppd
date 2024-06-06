@@ -118,12 +118,14 @@ class StampingWorkingReportController extends Controller
             // 'stamping_working_report_work_details.*'
         )
         ->get();
-        return response()->json(['data' => $getStampingWorkingReportByIdResult]);
+        $value = $request->cookie('laravel_session');
+        return response()->json(['data' => $getStampingWorkingReportByIdResult, 'cookie' => $value]);
     }
 
     public function viewStampingWorkingReportWorkDetails(Request $request){
         $stampingWorkingReportWorkDetailsResult = DB::connection('mysql')
             ->table('stamping_working_report_work_details')
+            ->where('stamping_working_report_id', $request->stamping_working_report_id)
             ->whereNull('stamping_working_report_work_details.deleted_at')
             ->select(
                 'stamping_working_report_work_details.*',

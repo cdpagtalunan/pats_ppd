@@ -397,7 +397,7 @@
     </div>
     <!-- /.modal -->
 
-    
+
     <!-- MODALS -->
     <div class="modal fade" id="modalValidateFinalPackingDetails">
         <div class="modal-dialog modal-dialog-center">
@@ -462,7 +462,7 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div>
-    
+
         <!-- MODALS -->
         <div class="modal fade" id="modalScanQRtoReprint">
             <div class="modal-dialog center">
@@ -643,7 +643,7 @@
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
-                            } 
+                            }
                         });
                         $(this).val('');
                     }
@@ -651,7 +651,7 @@
                 // FINAL PACKING VIEW PER PACKING LIST
                 let rowCount;
                 let dataStatus;
-                let finalPackingDetailsCtrlNo; 
+                let finalPackingDetailsCtrlNo;
                 $(document).on('click', '.btnViewFinalPackingDetails', function(e){
                     e.preventDefault();
                     finalPackingDetailsCtrlNo =  $(this).attr('data-ctrl-no');
@@ -660,9 +660,9 @@
                     if(dataStatus == 0 || dataStatus == 1 || dataStatus == 2){
                         $('#btnScanLotNumber').removeAttr('disabled');
                     }
-                    
+
                     // console.log(finalPackingDetailsCtrlNo);
-                      
+
                     $('#txtFinalPackingCtrlId').val(finalPackingDetailsCtrlNo);
                     $('#modalViewFinalPackingDetails').modal('show');
 
@@ -672,7 +672,7 @@
                         // rowCount = rowCount - 1;
                         // console.log('rowCount', rowCount);
                     }, 500);
-                    
+
                 });
 
                 let dtViewFinalPackingDetailsForValidation = $("#tblViewFinalPackingDetails").DataTable({
@@ -727,11 +727,11 @@
                             // alert('haha');
                             scannedItem = JSON.parse($(this).val());
                             $('#tblViewFinalPackingDetails tbody tr').each(function(index, tr){
-                                
+
                                 let lot_no = $(tr).find('td:eq(3)').text().trim().toUpperCase();
                                 // let removeClassDNoneButton = $(this).find('td:nth-child(1)').children().children();
                                 console.log('scannedItem', scannedItem);
-                                
+
                                 if(scannedItem['production_lot_no'] === lot_no){
                                     $(tr).addClass('checked-ok');
                                     let id = $(this).attr('id');
@@ -741,6 +741,8 @@
                                     // console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
                                     // removeClassDNoneButton.removeAttr('style')
                                     $('#modalValidateFinalPackingDetails').modal('hide');
+                                }else{
+                                    toastr.error('Error: Lot Number not found, invalid sticker !');
                                 }
 
                                 let scannedRow = dtViewFinalPackingDetailsForValidation.$('tr.checked-ok');
@@ -751,6 +753,8 @@
                                         $('#btnValidatePackingDetails').removeAttr('disabled');
                                     }
                                 // Otherwise, if no rows are selected
+                                }else{
+                                    toastr.error('Error: Lot Number not found, invalid sticker !');
                                 }
                             })
                         }
@@ -773,7 +777,7 @@
                     e.preventDefault();
                     console.log(`idsOfFinalPackingDetails ${idsOfFinalPackingDetails}`);
                 });
-                
+
                 let validatedUser = [];
                 $(document).on('keypress', '#txtPackerId', function(e){
                     let toScanId =  $('#txtPackerId').val();
@@ -816,10 +820,10 @@
                             }
                             else{ // Error Handler
                                 toastr.error('User not authorize!');
-                            } 
+                            }
                         });
                         $(this).val('');
-                    }    
+                    }
                 });
 
                 //printing of sticker
@@ -942,9 +946,9 @@
                         try{
                             scannedItem = JSON.parse($(this).val());
                             console.log('scannedItem', scannedItem);
+
                             $('#tblPreliminaryPackingDetails tbody tr').each(function(index, tr){
                                 let lot_no = $(tr).find('td:eq(5)').text().trim().toUpperCase();
-
                                 let powerOff = $(this).find('td:nth-child(1)').children().children();
 
                                 // console.log('tblPreliminaryPackingDetails', lot_no);
@@ -954,7 +958,7 @@
                                     powerOff.removeAttr('style');
                                     $('#modalPackingScanLotNumber').modal('hide');
                                 }
-                                // console.log(lot_no);
+                                console.log(tr);
                             })
                         }
                         catch (e){
@@ -988,7 +992,7 @@
                     'scan_id' : toScanQcId
                     }
                         if(e.keyCode == 13){
-                            validateUser($(this).val().toUpperCase(), [2,5], function(result){    
+                            validateUser($(this).val().toUpperCase(), [2,5], function(result){
                                 if(result == true){
                                     // alert('true');
                                     e.preventDefault();
@@ -1012,13 +1016,16 @@
                                 }
                                 else{ // Error Handler
                                     toastr.error('User not authorize!');
-                                } 
+                                }
 
                             });
                         }
                         // $(this).val('');
                 });
 
+                $('#modalPackingScanLotNumber').on('shown.bs.modal', function () {
+                    $('#txtScanPackingLotNumber').focus();
+                });
 
             });
 

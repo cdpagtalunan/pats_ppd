@@ -28,6 +28,9 @@ const resetFormValuesStampingWorkingReportOnModalClose = (modalId, formId) => {
         // Remove invalid & title validation
         $('div').find('input').removeClass('is-invalid');
         $('div').find('input').attr('title', '');
+
+        $('div').find('select').removeClass('is-invalid');
+        $('div').find('select').attr('title', '');
         
         // Reset form values
         $(`#${formId}`)[0].reset();
@@ -54,6 +57,7 @@ const getStampingWorkingReport = (idParam) => {
                 $('#textYear', $('#formStampingWorkingReport')).val(responseData[0]['year']);
                 $('#textMonth', $('#formStampingWorkingReport')).val(responseData[0]['month']);
                 $('#textDay', $('#formStampingWorkingReport')).val(responseData[0]['day']);
+                dataTablesStampingWorkingReportWorkDetails.draw();
             }
         },
         error: function(data, xhr, status){

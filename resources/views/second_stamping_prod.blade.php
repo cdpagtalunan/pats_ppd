@@ -1,3 +1,4 @@
+
 @php $layout = 'layouts.admin_layout'; @endphp
 {{-- @auth
   @php
@@ -75,6 +76,12 @@
                                             <label class="form-label">Material Name</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="Material Name" id="txtSearchMatName" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label">Material Code</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Material Code" id="txtSearchMatCode" readonly>
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -831,7 +838,7 @@
                         content += '<table style="margin-left: -5px; margin-top: 10px;">';
                             content += '<tr style="width: 290px;">';
                                 content += '<td>';
-                                    content += '<img src="' + img_barcode_PO_text_hidden[i]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[i]['img'] + '" style="min-width: 100px; max-width: 100px;">';
                                 content += '</td>';
                                 content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[i]['text'] + '</td>';
                             content += '</tr>';
@@ -1031,19 +1038,6 @@
                     if(newCount > 1){
                         $('#btnRemoveSublot').removeClass('d-none');
                     }
-                    // <div class="col-sm-6">
-                    //             <div>
-                    //                 <label class="form-label">Sub-lot #</label>
-                    //                 <input type="number" class="form-control form-control-sm" value="1" readonly>
-                    //             </div>
-                    //         </div>
-
-                    //         <div class="col-sm-6">
-                    //             <div>
-                    //                 <label class="form-label">Quantity</label>
-                    //                 <input type="number" class="form-control form-control-sm" name="sublot_qty[]" id="txtSublotQty_1">
-                    //             </div>
-                    //         </div>
                     $('#txtSublotMultipleCounter').val(newCount);
                     let inputGroup = `
                         <div class="row mt-1 subLotMultiple" id="divMultiple_${newCount}">

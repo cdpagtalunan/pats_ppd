@@ -19,7 +19,7 @@ class CreateFirstMoldingsTable extends Migration
             $table->string('contact_lot_number')->nullable();
             $table->float('contact_lot_qty')->nullable()->default(0);
             $table->string('production_lot')->nullable();
-            $table->tinyInteger('status')->nullable()->default(0)->comment ='';
+            $table->tinyInteger('status')->nullable()->default(0)->comment ='	1-Mass Production,2-Re-setup,3-Done';
             $table->string('remarks')->nullable();
             $table->softDeletes()->nullable();
             $table->timestamps();

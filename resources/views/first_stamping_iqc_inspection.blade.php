@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'IQC Inspection')
 
     @section('content_page')
 

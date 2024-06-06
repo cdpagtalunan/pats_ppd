@@ -304,9 +304,29 @@
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">PO Qty</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmPoQty" name="po_qty" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Device Name</span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm" id="FrmDeviceName" name="device_name" readonly>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Device Code</span>
+                                            </div>
+                                            <input type="text" class="form-control form-control-sm" id="FrmDeviceCode" name="device_code" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -514,7 +534,7 @@
 <script>
     $(document).ready(function(){
 
-                 GetPOFromFVI($("#txtSelectFVIPoNumber"));
+        GetPOFromFVI($("#txtSelectFVIPoNumber"));
 
         function GetPOFromFVI(cboElement){
             let result = '<option value="" disabled selected>--Select PO Number--</option>';
@@ -637,13 +657,13 @@
         // btn_view_app_lot
         $(document).on('click', '.btn_view_app_lot', function(){
             let id = $(this).val();
-            // let sub_count = $(this).attr('sub_count');
+            let sub_count = $(this).attr('sub_count');
             $.ajax({
                 type: "get",
                 url: "get_data_from_assy_fvi",
                 data: {
                     "fvi_id" : id,
-                    // "sub_count" : sub_count,
+                    "sub_count" : sub_count,
                     "po_number" : $('#txtSelectFVIPoNumber').val()
                 },
                 dataType: "json",
@@ -680,7 +700,9 @@
 
                     $('#AssyFviId').val(assy_fvi_details.id); //from fvi
                     $('#FrmCurrentPo').val(assy_fvi_details.po_no); //from fvi
+                    $('#FrmPoQty').val(assy_fvi_details.po_qty); //from fvi
                     $('#FrmDeviceName').val(assy_fvi_details.device_name); //from fvi
+                    $('#FrmDeviceCode').val(assy_fvi_details.device_code); //from fvi
                     $('#FrmLotNo').val(assy_fvi_details.lot_no); //from fvi
                     $('#FrmLotQuantity').val(devices.qty_per_box); //from matrix
                     $('#FrmOutputQuantity').val(total_qty_output); //from matrix
@@ -722,8 +744,11 @@
 
                     $('#AssyFviId').val(assy_fvi_details.id); //from fvi
                     $('#FrmCurrentPo').val(assy_fvi_details.po_no); //from fvi
+                    $('#FrmPoQty').val(assy_fvi_details.po_qty); //from fvi
                     $('#FrmDeviceName').val(assy_fvi_details.device_name); //from fvi
+                    $('#FrmDeviceCode').val(assy_fvi_details.device_code); //from fvi
                     $('#FrmLotNo').val(assy_fvi_details.lot_no); //from fvi
+                    // $('#FrmPrintLotNo').val(assy_fvi_details.bundle_no); //from fvi
                     $('#FrmLotQuantity').val(devices.qty_per_box); //from matrix
                     $('#FrmOutputQuantity').val(total_qty_output); //from matrix
                     $('#FrmADrawing').val(assy_fvi_details.a_drawing_no +'-'+ assy_fvi_details.a_drawing_rev); //from fvi
@@ -921,7 +946,7 @@
 
         $(document).on('keyup','#txtScanUserId', function(e){
             if(e.keyCode == 13){
-                validateUser($(this).val(), [0, 2, 5], function(result){
+                validateUser($(this).val(), [0, 1, 4], function(result){
                     if(result == 1){
                         GetUserName($('#txtScanUserId').val());
                     }else{ // Error Handler
@@ -963,11 +988,13 @@
                 success: function (response) {
                     if (response['result'] == 1 ) {
                         toastr.success('Successful!');
+                        $('#modalOQCLotApp').modal('hide');
                     }else if(response['result'] == 2){
                         toastr.error('Lot Application Rejected!');
+                        $('#modalOQCLotApp').modal('hide');
+                    }else if(response['validation'] == 'hasError'){
+                        toastr.error('Applied By is Required!');
                     }
-
-                    $('#modalOQCLotApp').modal('hide');
                     dtOQCLotApp.draw();
                 }
             });

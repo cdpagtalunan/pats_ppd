@@ -1913,7 +1913,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="card" id="InjectionTabList">
+                                        {{-- <div class="card" id="InjectionTabList">
                                             <div class="card-body">
                                                 <div style="float: right;">
                                                     <div class="text-right mt-4">
@@ -1950,7 +1950,7 @@
                                                     </table>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> --}}
 
                                     </div>
                                 </div>
@@ -2326,7 +2326,7 @@
                 formMachine.formInjectionTabList.find('[name="machine_parameter_id"]').val(formAddMachineOneId);
                 fnGetOperatorName(formMachine.formInjectionTabList.find('[name="inj_tab_list_operator_name"]'))
             });
-            
+
             $('#btnAddLotNumber').click(function (e) {
                 e.preventDefault();
                 arr.Ctr ++;

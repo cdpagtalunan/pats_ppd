@@ -31,7 +31,7 @@
             method: 'get',
             dataType: 'json',
             beforeSend: function(){
-                result = `<option value="0" selected disabled> - Loading - </option>`;
+                result = `<option value="0" selected disabled> - Select - </option>`;
                 elementId.html(result);
             },
             success: function(response){
@@ -176,7 +176,7 @@
             method: 'get',
             dataType: 'json',
             beforeSend: function(){
-                result = `<option value="0" selected disabled> - Loading - </option>`;
+                result = `<option value="0" selected disabled> - Select - </option>`;
                 elementId.html(result);
             },
             success: function(response){
@@ -280,7 +280,7 @@
                 setTimeout(() => {
                     formModal.firstMoldingStation.find('#station').val(station);
                 }, 300);
-                // getStation();
+                // getStation(formModal.firstMoldingStation.find('#station'));
 
                 if(view_data != undefined){
                     $('#buttonFirstMoldingStation').prop('disabled',true);
@@ -292,6 +292,7 @@
                 $('#modalFirstMoldingStation').modal('show');
                 getFirstMoldingOperationNames(formModal.firstMoldingStation.find('#operator_name'),first_molding_station_detail.operator_name);
                 fnIsSelectCameraInspection(station);
+                // getStation(formModal.firstMoldingStation.find('#station'),"",station)
             },error: function (data, xhr, status){
                 toastr.error(`Error: ${data.status}`);
             }
@@ -332,6 +333,7 @@
                     toastr.error(`Saving Failed, Please fill up all required fields`);
                     errorHandler( errors.first_molding_device_id,formModal.firstMolding.find('#first_molding_device_id') );
                     errorHandler( errors.contact_lot_number,formModal.firstMolding.find('#contact_lot_number') );
+                    errorHandler( errors.contact_lot_qty,formModal.firstMolding.find('#contact_lot_qty') );
                     errorHandler( errors.production_lot,formModal.firstMolding.find('#production_lot') );
                     errorHandler( errors.production_lot_extension,formModal.firstMolding.find('#production_lot_extension') );
                     errorHandler( errors.machine_no,formModal.firstMolding.find('#machine_no') );
@@ -470,6 +472,10 @@
                         errors.operator_name,
                         formModal.firstMoldingStation.find("#operator_name")
                     );
+                    // errorHandler(
+                    //     errors.size_category,
+                    //     formModal.firstMoldingStation.find("#size_category")
+                    // );
                     errorHandler(
                         errors.input,
                         formModal.firstMoldingStation.find("#input")
@@ -503,7 +509,8 @@
         });
     };
 
-    const getStation = function (elementId,device_name){
+    const getStation = function (elementId,device_name =null,valueId=null){ //nmodify
+        let result = `<option value="0" selected> N/A </option>`;
         $.ajax({
             type: "GET",
             url: "get_stations",
@@ -513,7 +520,6 @@
                 // return response;
                 let id = response['id'];
                 let value = response['value'];
-                let result = '';
                 console.log(response)
                 if(response['id'].length > 0){
                     result = '<option selected disabled> --- Select --- </option>';
@@ -524,7 +530,12 @@
                 else{
                     result = '<option value="0" selected disabled> No record found </option>';
                 }
-                elementId.html(result);
+                elementId.append(result);
+
+                if(valueId != null){
+                    console.log('dasd',valueId)
+                    elementId.val(valueId).trigger('change');
+                }
             }
         });
     }
@@ -647,7 +658,7 @@
             data: {"material_name":material_name},
             dataType: "json",
             beforeSend: function(){
-                result = `<option value="0" selected disabled> - Loading - </option>`;
+                result = `<option value="0" selected disabled> - Select - </option>`;
                 cboElement.html(result);
             },
             success: function (response) {
@@ -721,15 +732,13 @@
     }
 
     const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){
-        /**
-            TODO: Validate Contact Lot Num
-        */
+
+        // TODO: Validate Contact Lot Num
+
         let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
         let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
 
-        /**
-            TODO: Validate Contact Lot Num
-        */
+        // TODO: Validate Contact Lot Num
 
         formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
         formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
@@ -803,9 +812,11 @@
 
     const fnIsSelectCameraInspection = function (stationId) {
         // TODO: 5 = LIVE 7-TEST
-        console.log('stationId',stationId);
+        // TODO: firstMoldingDeviceId === 1
+        console.log('first_molding_device_id',formModal.firstMolding.find("#first_molding_device_id").val());
+        let firstMoldingDeviceId = formModal.firstMolding.find("#first_molding_device_id").val()
         // if(stationId == "5"){ //nmodify Camera Inspection
-        if(stationId === "7"){ //nmodify Camera Inspection pats_ppd rev
+        if(firstMoldingDeviceId === "1" && stationId === "5"){ //nmodify Camera Inspection pats_ppd rev
             formModal.firstMoldingStation.find('#isSelectCameraInspection').removeClass('d-none',true);
         }else{
             formModal.firstMoldingStation.find('#isSelectCameraInspection').addClass('d-none',true);

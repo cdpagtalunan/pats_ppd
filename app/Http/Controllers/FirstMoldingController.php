@@ -35,14 +35,6 @@ class FirstMoldingController extends Controller
             'id'    =>  $arr_first_molding_device_id,
             'value' =>  $arr_first_molding_device_value
         ]);
-        // return $first_molding = DB::connection('mysql')
-        // ->select('
-        //         SELECT  material_processes.*,devices.name,processes.process_name
-        //         FROM material_processes
-        //         RIGHT JOIN devices ON devices.id = material_processes.process
-        //         WHERE material_processes.status = 0
-        //         ORDER BY material_processes.id DESC
-        // ');
     }
 
     public function getFirstMoldingDevicesById(Request $request)
@@ -66,14 +58,15 @@ class FirstMoldingController extends Controller
         ');
         return DataTables::of($first_molding)
         ->addColumn('action', function($row){
-        $result = '';
-                                                                $result .= '<center>';
+            $result = '';
+            $result .= '<center>';
             switch ($row->status) {
                 case 0:
                     $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
                     break;
                 case 1:
                     $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
+                    $result .= "<button class='btn btn-warning btn-sm mr-1' first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
                     break;
                 case 2:
                     $result .= "<button class='btn btn-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnEditFirstMolding'><i class='fa-solid fa-pen-to-square'></i></button>";
@@ -81,7 +74,7 @@ class FirstMoldingController extends Controller
                 case 3:
                     $result .= "<button class='btn btn-outline-info btn-sm mr-1'first-molding-id='".$row->first_molding_id."' view-data='true' id='btnViewFirstMolding'><i class='fa-solid fa-eye'></i></button>";
                     if($row->first_molding_device_id > 1){
-                        $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' test='".$row->first_molding_device_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
+                        $result .= "<button class='btn btn-success btn-sm mr-1'first-molding-id='".$row->first_molding_id."' id='btnPrintFirstMolding'><i class='fa-solid fa-print' disabled></i></button>";
                     }
                     break;
                 default:
@@ -156,42 +149,71 @@ class FirstMoldingController extends Controller
             $validator = Validator::make($data, $validation);
 
             if ($validator->fails()) {
+
                 return response()->json(['result' => '0', 'error' => $validator->messages()]);
             }
 
             if( isset( $request->first_molding_id )){ //Edit
-                $first_molding_status = FirstMolding::where('id',$request->first_molding_id)->get(['status']);
-                if($first_molding_status[0]->status == 2){ // if status is 2 or re set up change the status into 0 - For Quali
-                    FirstMolding::where('id',$request->first_molding_id)
-                    ->update([
-                        'deleted_at' => date('Y-m-d H:i:s'),
-                    ]);
-                    $first_molding_id = FirstMolding::insertGetId($request->validated());
-                    FirstMolding::where('id',$first_molding_id)
+                FirstMolding::where('id',$request->first_molding_id)->update($request->validated());
+                FirstMolding::where('id',$request->first_molding_id)
+                ->update([
+                    'first_molding_device_id' => $request->first_molding_device_id,
+                    'status' => 1,
+                    'remarks' => $request->remarks,
+                    'updated_at' => date('Y-m-d H:i:s'),
+                ]);
+                $get_first_molding_id = $request->first_molding_id;
+
+                /*
+                    TODO:if status is 2 or re set up change the status into 0 - For Quali
+                    $first_molding_status = FirstMolding::where('id',$request->first_molding_id)->get(['status']);
+
+                    if($first_molding_status[0]->status == 2){
+                        FirstMolding::where('id',$request->first_molding_id)
+                        ->update([
+                            'deleted_at' => date('Y-m-d H:i:s'),
+                        ]);
+                        $first_molding_id = FirstMolding::insertGetId($request->validated());
+                        FirstMolding::where('id',$first_molding_id)
+                            ->update([
+                                'first_molding_device_id' => $request->first_molding_device_id,
+                                'remarks' => $request->remarks,
+                                'created_at' => date('Y-m-d H:i:s'),
+                        ]);
+                        $get_first_molding_id = $first_molding_id;
+                    }else{
+                        FirstMolding::where('id',$request->first_molding_id)->update($request->validated());
+                        FirstMolding::where('id',$request->first_molding_id)
                         ->update([
                             'first_molding_device_id' => $request->first_molding_device_id,
                             'remarks' => $request->remarks,
-                            'created_at' => date('Y-m-d H:i:s'),
-                    ]);
-                    $get_first_molding_id = $first_molding_id;
-                }else{
-                    FirstMolding::where('id',$request->first_molding_id)->update($request->validated());
-                    FirstMolding::where('id',$request->first_molding_id)
-                    ->update([
-                        'first_molding_device_id' => $request->first_molding_device_id,
-                        'remarks' => $request->remarks,
-                        'updated_at' => date('Y-m-d H:i:s'),
-                    ]);
-                    $get_first_molding_id = $request->first_molding_id;
-                }
-
+                            'updated_at' => date('Y-m-d H:i:s'),
+                        ]);
+                        $get_first_molding_id = $request->first_molding_id;
+                    }
+                */
             }else{ //Add
+                /*
+                    //TODO: Check if Production Lot is exist
+                        $first_molding = DB::connection('mysql')
+                        ->select('SELECT * FROM `first_moldings`
+                        WHERE `production_lot` = "'.$request->production_lot.'"
+                        AND `production_lot_extension` = "'.$request->production_lot_extension.'"
+                        AND `deleted_at` IS NULL
+                    ');
+                    if( count($first_molding) > 1 ){
+                        DB::rollback();
+                        return response()->json(['result' => '0', 'error' => 'Saving Failed. Production Lot already exists'],500);
+                    }
+                */
                 $is_exist_first_molding = FirstMolding::where('production_lot',$request->production_lot)
                                                     ->where('production_lot_extension',$request->production_lot_extension)
                                                     ->whereNull('deleted_at')->exists();
                 if( $is_exist_first_molding == 1 ){
+                    DB::rollback();
                     return response()->json(['result' => '0', 'error' => 'Saving Failed. Production Lot already exists'],500);
                 }
+
                 $first_molding_id = FirstMolding::insertGetId($request->validated());
                 FirstMolding::where('id',$first_molding_id)
                 ->update([
@@ -224,7 +246,7 @@ class FirstMoldingController extends Controller
                     ]);
                 }
             }
-
+            // DB::rollback();
             DB::commit();
             return response()->json( [ 'result' => 1 ] );
         } catch (\Throwable $th) {
@@ -321,6 +343,67 @@ class FirstMoldingController extends Controller
 
     }
 
+    // public function getFirstMoldingQrCode (Request $request)
+    // {
+
+    //     $first_molding = FirstMolding::leftJoin('first_molding_devices', function($join) {
+    //         $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
+    //     })
+    //     ->where('first_moldings.id',$request->first_molding_id)
+    //     ->whereNull('first_moldings.deleted_at')
+    //     ->first([
+    //     'pmi_po_no AS pmi_po','po_no AS po','item_code AS code','item_name AS name',
+    //     'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
+    //     'po_qty AS qty','shipment_output AS output_qty','first_molding_devices.device_name AS device_name'
+    //     ]);
+
+    //     $qrcode = QrCode::format('png')
+    //     ->size(250)->errorCorrection('H')
+    //     ->generate( $first_molding );
+
+    //     $qr_code = "data:image/png;base64," . base64_encode($qrcode);
+
+    //     $data[] = array(
+    //         'img' => $qr_code,
+    //         'text' =>  "<strong>$first_molding->po</strong><br>
+    //         <strong>$first_molding->code</strong><br>
+    //         <strong>$first_molding->device_name</strong><br>
+    //         <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
+    //         <strong>$first_molding->qty</strong><br>
+    //         <strong>$first_molding->output_qty</strong><br>
+    //         "
+    //     );
+    //     $label = "
+    //         <table class='table table-sm table-borderless' style='width: 100%;'>
+    //             <tr>
+    //                 <td>PO No.:</td>
+    //                 <td>$first_molding->po</td>
+    //             </tr>
+    //             <tr>
+    //                 <td>Material Code:</td>
+    //                 <td>$first_molding->code</td>
+    //             </tr>
+    //             <tr>
+    //                 <td>Material Name:</td>
+    //                 <td>$first_molding->device_name</td>
+    //             </tr>
+    //             <tr>
+    //                 <td>Production Lot #:</td>
+    //                 <td>".$first_molding->lot_no."".$first_molding->lot_no_ext."</td>
+    //             </tr>
+    //             <tr>
+    //                 <td>Shipment Output:</td>
+    //                 <td>$first_molding->output_qty</td>
+    //             </tr>
+    //             <tr>
+    //                 <td>PO Quantity:</td>
+    //                 <td>$first_molding->qty</td>
+    //             </tr>
+    //         </table>
+    //     ";
+
+    //     return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'first_molding_data' => $first_molding]);
+    // }
     public function getFirstMoldingQrCode (Request $request)
     {
 
@@ -329,38 +412,55 @@ class FirstMoldingController extends Controller
         })
         ->where('first_moldings.id',$request->first_molding_id)
         ->whereNull('first_moldings.deleted_at')
+        // ->get();
         ->first([
         'po_no AS po','item_code AS code','item_name AS name',
         'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
         'po_qty AS qty','shipment_output AS output_qty','first_molding_devices.device_name AS device_name'
         ]);
 
+        $first_molding_label = FirstMolding::leftJoin('first_molding_devices', function($join) {
+            $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
+        })
+        ->where('first_moldings.id',$request->first_molding_id)
+        ->whereNull('first_moldings.deleted_at')
+        ->first(['pmi_po_no AS pmi_po']);
+
         $qrcode = QrCode::format('png')
         ->size(250)->errorCorrection('H')
         ->generate($first_molding);
 
         $qr_code = "data:image/png;base64," . base64_encode($qrcode);
+            //<strong>$first_molding->code</strong><br>
+            // <tr>
+            //     <td>Material Code:</td>
+            //     <td>$first_molding->code</td>
+            // </tr>
 
         $data[] = array(
             'img' => $qr_code,
-            'text' =>  "<strong>$first_molding->po</strong><br>
-            <strong>$first_molding->code</strong><br>
+            'text' =>  "
+            <strong>1st Molding</strong><br>
+            <strong>$first_molding_label->pmi_po</strong><br>
+            <strong>$first_molding->po</strong><br>
             <strong>$first_molding->device_name</strong><br>
             <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
             <strong>$first_molding->qty</strong><br>
             <strong>$first_molding->output_qty</strong><br>
-            "
-        );
+        ");
 
         $label = "
             <table class='table table-sm table-borderless' style='width: 100%;'>
                 <tr>
-                    <td>PO No.:</td>
-                    <td>$first_molding->po</td>
+                    <td>1st Molding</td>
                 </tr>
                 <tr>
-                    <td>Material Code:</td>
-                    <td>$first_molding->code</td>
+                    <td>PMI PO No.:</td>
+                    <td>$first_molding_label->pmi_po</td>
+                </tr>
+                <tr>
+                    <td>PO No.:</td>
+                    <td>$first_molding->po</td>
                 </tr>
                 <tr>
                     <td>Material Name:</td>
@@ -383,7 +483,6 @@ class FirstMoldingController extends Controller
 
         return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'first_molding_data' => $first_molding]);
     }
-
     public function updateFirstMoldingShipmentMachineOuput (Request $request)
     {
         $arr_ng_qty = [];

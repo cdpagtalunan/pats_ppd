@@ -221,6 +221,8 @@
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" id="txtReceivingDetailsId" name="receiving_details_id">
+                        <input type="hidden" id="txtReceivingPrintingStatus" name="receiving_printing_status">
+                        <input type="hidden" id="txtReceivingStatus" name="receiving_status">
 
                         <div class="row">
 
@@ -255,7 +257,7 @@
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="form-label">Supplier Name</label>
-                                    <input type="text" class="form-control form-control-sm" name="supplier_name" id="txtSupplierName" readonly value="SMPC">
+                                    <input type="text" class="form-control form-control-sm" name="supplier_name" id="txtSupplierName" readonly value="SPMC">
                                 </div>
                             </div>
 
@@ -425,8 +427,17 @@
             $(document).on('click', '.btnEditReceivingDetails', function(e){
                 // $('#modalEditReceivingDetails').modal('show');
                 let receivingDetailsId = $(this).attr('data-id');
+                let receivingPrintingStatus = $(this).attr('data-printcount');
+                let receivingStatus = $(this).attr('data-status');
+                
                 $('#txtReceivingDetailsId').val(receivingDetailsId);
-                console.log(receivingDetailsId);
+                $('#txtReceivingPrintingStatus').val(receivingPrintingStatus);
+                $('#txtReceivingStatus').val(receivingStatus);
+
+                console.log('receivingPrintingStatus', receivingStatus);
+                console.log('receivingDetailsId', receivingDetailsId);
+                console.log('receivingStatus', receivingStatus);
+
                 $('#modalEditReceivingDetails').modal('show');
 
                 getReceivingDetailsId(receivingDetailsId);
@@ -531,7 +542,7 @@
                         }
                         else{ // Error Handler
                             toastr.error('User not authorize!');
-                        } 
+                        }
                     });
                     $(this).val('');
                 }
@@ -624,7 +635,8 @@
             $(document).on('keyup','#txtScanUserIdtoReprint', function(e){
                 if(e.keyCode == 13){
                     if(scanningFunction === "reprintStamping"){
-                        validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
+                        // validateUser($(this).val().toUpperCase(), [0,1,9], function(result){
+                        validateUser($(this).val().toUpperCase(), [0,7,8], function(result){ // updated by Nessa 05102024
                             console.log(result);
                             if(result == true){
                                 $('#modalScanQRtoReprint').modal('hide');

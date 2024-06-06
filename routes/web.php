@@ -277,7 +277,7 @@ Route::controller(StampingIpqcController::class)->group(function () {
     Route::get('/get_data_from_fs_production', 'get_data_from_fs_production')->name('get_data_from_fs_production');
     Route::post('/add_stamping_ipqc_inspection', 'add_stamping_ipqc_inspection')->name('add_stamping_ipqc_inspection');
     Route::post('/update_status_of_ipqc_inspection', 'update_status_of_ipqc_inspection')->name('update_status_of_ipqc_inspection');
-    Route::get('/download_file/{id}', 'download_file')->name('download_file');
+    Route::get('/download_file_stamping/{id}', 'download_file')->name('download_file');
 
     //REPORT FOR PACKING LIST
     Route::get('/export/{CtrlNo}', 'excel')->name('export');
@@ -291,7 +291,7 @@ Route::controller(MoldingAssyIpqcController::class)->group(function () {
     Route::get('/get_ipqc_data', 'get_ipqc_data')->name('get_ipqc_data');
     Route::post('/add_molding_assy_ipqc_inspection', 'add_molding_assy_ipqc_inspection')->name('add_molding_assy_ipqc_inspection');
     Route::post('/update_ipqc_inspection_status', 'update_ipqc_inspection_status')->name('update_ipqc_inspection_status');
-    Route::get('/download_file/{id}', 'download_file')->name('download_file');
+    Route::get('/download_file_molding/{id}', 'download_file')->name('download_file');
 });
 
 Route::controller(PdfController::class)->group(function () {
@@ -374,6 +374,7 @@ Route::controller(PackingListDetailsController::class)->group(function () {
     Route::get('/get_carrier_data', 'getCarrierDetails')->name('get_carrier_data');
     Route::get('/get_loading_port_data', 'getLoadingPortDetails')->name('get_loading_port_data');
     Route::get('/get_destination_port_data', 'getDestinationPortDetails')->name('get_destination_port_data');
+    Route::get('/get_po_from_production', 'getPoFromProduction')->name('get_po_from_production'); //Clark Modified
     Route::get('/get_data_from_production', 'getDataFromProduction')->name('get_data_from_production');
     Route::post('/add_packing_list_details', 'addPackingListData')->name('add_packing_list_details');
     Route::get('/get_ppc_clerk_details', 'getPpcClerk')->name('get_ppc_clerk_details');
@@ -412,6 +413,7 @@ Route::controller(PackingDetailsMoldingController::class)->group(function () {
     Route::post('/updated_counted_by', 'updatePackingDetailsMolding')->name('updated_counted_by');
     Route::post('/update_checked_by', 'updateCheckByDetailsMolding')->name('update_checked_by');
     Route::get('/view_sublot_details', 'viewSublotDetails')->name('view_sublot_details');
+    Route::get('/get_sublot_qty', 'getSublotQty')->name('get_sublot_qty');
 });
 
 
@@ -424,7 +426,7 @@ Route::controller(FirstMoldingController::class)->group(function () {
     Route::get('/load_first_molding_details', 'loadFirstMoldingDetails')->name('load_first_molding_details');
     Route::get('/get_molding_details', 'getMoldingDetails')->name('get_molding_details');
     Route::get('/first_molding_update_status', 'firstMoldingUpdateStatus')->name('first_molding_update_status');
-    Route::get('/get_pmi_po_received_details', 'getPmiPoReceivedDetails')->name('get_pmi_po_received_details');
+Route::get('/get_pmi_po_received_details', 'getPmiPoReceivedDetails')->name('get_pmi_po_received_details');
     Route::get('/get_dieset_details_by_device_name', 'getDiesetDetailsByDeviceName')->name('get_dieset_details_by_device_name');
     Route::get('/get_first_molding_qr_code', 'getFirstMoldingQrCode')->name('get_first_molding_qr_code');
     Route::get('/get_machine_from_material_process', 'getMachineFromMaterialProcess')->name('get_machine_from_material_process');
@@ -474,6 +476,7 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::get('/get_machine', 'getMachine')->name('get_machine');
     Route::get('/get_dieset_details_by_device_name_second_molding', 'getDiesetDetailsByDeviceNameSecondMolding')->name('get_dieset_details_by_device_name_second_molding');
     Route::get('/get_count_of_station', 'getCountOfStation')->name('get_count_of_station');
+    Route::get('/check_if_last_step_by_material_name', 'checkIfLastStepByMaterialName')->name('check_if_last_step_by_material_name');
 });
 /* Second Molding Station Controller */
 Route::controller(SecondMoldingStationController::class)->group(function () {
@@ -545,7 +548,7 @@ Route::view('/production_history','production_history')->name('production_histor
 
 //EXPORT CN171 REPORT
 Route::controller(ExportTraceabilityReportController::class)->group(function () {
-    Route::get('/export_cn171_traceability_report/{po_number}/{date_from}/{date_to}', 'exportCN171TraceabilityReport')->name('export_cn171_traceability_report');
+    Route::get('/export_cn171_traceability_report/{date_from}/{date_to}/{material_name}', 'exportCN171TraceabilityReport')->name('export_cn171_traceability_report');
     Route::get('/export_molding_traceability_report/{po_number}/{date_from}/{date_to}/{device_name}', 'exportMoldingTraceabilityReport')->name('export_molding_traceability_report');
 });
 // Route::get('/export_cn171_traceability_report/{po_number}', 'ExportTraceabilityReportController@export_cn171_traceability_report');3

@@ -317,10 +317,10 @@ class OQCInspectionController extends Controller
         })
 
         ->addColumn('family', function($prod_info){
-            $get_oqc_inspection_per_row = OQCInspection::where('fs_productions_id', $prod_info->id)->where('logdel', 0)->orderBy('id', 'DESC')->get();
+            $get_oqc_inspection_per_row = OQCInspection::with(['oqc_inspection_family_info'])->where('fs_productions_id', $prod_info->id)->where('logdel', 0)->orderBy('id', 'DESC')->get();
             $result = '<center>';
             if(count($get_oqc_inspection_per_row) > 0){
-                $result .= $get_oqc_inspection_per_row[0]->family;
+                $result .= $get_oqc_inspection_per_row[0]->oqc_inspection_family_info->family;
             }
             $result .= '</center>';
             return $result;

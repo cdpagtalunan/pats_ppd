@@ -120,6 +120,9 @@ class SecondMoldingController extends Controller
         ");
         // return $secondMoldingResult;
 
+        
+        # create a snake game using javascript
+
         return DataTables::of($secondMoldingResult)
         ->addColumn('action', function($row){
             $result = '';
@@ -436,19 +439,37 @@ class SecondMoldingController extends Controller
     }
 
     public function getMaterialProcessStation(Request $request){
-        $materialProcessStationResult = DB::connection('mysql')
-        ->select("SELECT material_processes.*, devices.*, material_process_stations.*, stations.id AS station_id, stations.station_name AS station_name FROM material_processes
-                    INNER JOIN devices
-                        ON devices.id = material_processes.device_id
-                    INNER JOIN material_process_stations
-                        ON material_process_stations.mat_proc_id = material_processes.id
-                    INNER JOIN stations
-                        ON stations.id = material_process_stations.station_id
-                    WHERE devices.name = '$request->device_name'
-                    ORDER BY material_processes.step ASC
-        ");
-        return response()->json(['data' => $materialProcessStationResult]);
-
+        if($request->device_name == 'CN171S-07#IN-VE'){
+            $materialProcessStationResult = DB::connection('mysql')
+            ->select("SELECT material_processes.*, devices.*, material_process_stations.*, stations.id AS station_id, stations.station_name AS station_name FROM material_processes
+                        INNER JOIN devices
+                            ON devices.id = material_processes.device_id
+                        INNER JOIN material_process_stations
+                            ON material_process_stations.mat_proc_id = material_processes.id
+                        INNER JOIN stations
+                            ON stations.id = material_process_stations.station_id
+                        WHERE material_processes.step IN (1,2,3)
+                        AND material_processes.status = 0
+                        AND devices.name = '$request->device_name'
+                        ORDER BY material_processes.step ASC
+            ");
+            return response()->json(['data' => $materialProcessStationResult]);
+        }else if($request->device_name == 'CN171P-02#IN-VE'){
+            $materialProcessStationResult = DB::connection('mysql')
+            ->select("SELECT material_processes.*, devices.*, material_process_stations.*, stations.id AS station_id, stations.station_name AS station_name FROM material_processes
+                        INNER JOIN devices
+                            ON devices.id = material_processes.device_id
+                        INNER JOIN material_process_stations
+                            ON material_process_stations.mat_proc_id = material_processes.id
+                        INNER JOIN stations
+                            ON stations.id = material_process_stations.station_id
+                        WHERE material_processes.step IN (1,2)
+                        AND material_processes.status = 0
+                        AND devices.name = '$request->device_name'
+                        ORDER BY material_processes.step ASC
+            ");
+            return response()->json(['data' => $materialProcessStationResult]);
+        }
     }
 
     public function getModeOfDefectForSecondMolding(Request $request){
@@ -460,13 +481,12 @@ class SecondMoldingController extends Controller
 
     public function getMachine(Request $request){ // Added by Chris to get machine on matrix
         $machine = DB::connection('mysql')
-        ->select("SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machi
-        dbnes.* FROM material_processes
+        ->select("SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machines.* FROM material_processes
             INNER JOIN devices
                 ON devices.id = material_processes.device_id
             INNER JOIN material_process_machines
                 ON material_process_machines.mat_proc_id = material_processes.id
-            WHERE devices.name = '$request->material_name'
+            WHERE devices.name = '".$request->material_name."'
         ");
 
         return response()->json(['machine' => $machine]);
@@ -549,18 +569,96 @@ class SecondMoldingController extends Controller
         ";
         return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'second_molding_data' => $secondMoldingResult]);
     }
+    
+    /**
+     * Old code
+     * commented on 04-09-2024
+     */
+    // public function getLastShipmentOuput(Request $request){
+    //     date_default_timezone_set('Asia/Manila');
+    //     $data = $request->all();
+    //     // $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
 
-    public function getLastShipmentOuput(Request $request){
-        date_default_timezone_set('Asia/Manila');
-        $data = $request->all();
-        // $getShipmentOuput = SecMoldingRuncard::where('id', $request->second_molding_id)->get();
+    //     $getDeviceName = DB::table('sec_molding_runcards')
+    //         ->where('sec_molding_runcards.id', $request->second_molding_id)
+    //         ->select(
+    //             'sec_molding_runcards.device_name',
+    //         )
+    //         ->first();
 
+    //     $getDeviceIdByDeviceName = DB::table('devices')
+    //         ->where('devices.name', $getDeviceName->device_name)
+    //         ->select(
+    //             'devices.id',
+    //         )
+    //         ->first();
+    //     /**
+    //      * Step 1 - Machine Final Overmold
+    //      * Step 2 - Camera Inspection
+    //      * Step 3 - Visual Inspection
+    //      * Step 4 - 1st OQC Inspection
+    //      */
+    //     $getStationIdByStepThree = DB::table('material_processes')
+    //             ->where('material_processes.device_id', $getDeviceIdByDeviceName->id)
+    //             ->where('material_processes.step', 3)
+    //             ->join('material_process_stations', 'material_processes.id', '=', 'material_process_stations.mat_proc_id')
+    //             ->pluck('station_id');
+    //     // return response()->json(['getStationIdByStepThree' => $getStationIdByStepThree]);
+
+    //     $getShipmentOuputOfNonVisualInspection = DB::connection('mysql')
+    //         ->table('sec_molding_runcard_stations')
+    //         ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+    //         ->whereNotIn('station', $getStationIdByStepThree)
+    //         ->orderBy('id', 'desc') // get last station
+    //         ->select(
+    //             'sec_molding_runcard_stations.output_quantity',
+    //             'sec_molding_runcard_stations.station'
+    //             )
+    //         ->get();
+
+    //     $checkIfVisualInspectionIsExist = DB::table('sec_molding_runcard_stations')
+    //         ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+    //         ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepThree)
+    //         ->exists();
+
+    //     $disabledInputQuantity = false;
+    //     if(!$checkIfVisualInspectionIsExist){
+    //         $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+    //             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+    //             ->whereIn('station', $getStationIdByStepThree)
+    //             ->orderBy('id', 'desc') // get last station
+    //             ->select(
+    //                 'sec_molding_runcard_stations.output_quantity',
+    //                 'sec_molding_runcard_stations.station'
+    //                 )
+    //             ->get();
+    //     }else{
+    //         $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+    //             ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+    //             ->whereIn('station', $getStationIdByStepThree)
+    //             ->orderBy('id', 'desc') // get last station
+    //             // ->groupBy('sec_molding_runcard_stations.id')
+    //             ->select(
+    //                 DB::raw('SUM(sec_molding_runcard_stations.output_quantity) AS output_quantity'),
+    //                 'sec_molding_runcard_stations.station'
+    //                 )
+    //             ->get();
+    //         if((int)$getShipmentOuputOfVisualInspection[0]->output_quantity == (int)$getShipmentOuputOfNonVisualInspection[0]->output_quantity){
+    //             $disabledInputQuantity = true;
+    //         }
+
+    //     }
+    //     return response()->json(['data' => $getShipmentOuputOfNonVisualInspection, 'getShipmentOuputOfVisualInspection' => $getShipmentOuputOfVisualInspection, 'disabledInputQuantity'=>$disabledInputQuantity]);
+    // }
+
+    public function getStationIdByStepNumber($second_molding_id = '', $step = []){
         $getDeviceName = DB::table('sec_molding_runcards')
-            ->where('sec_molding_runcards.id', $request->second_molding_id)
+            ->where('sec_molding_runcards.id', $second_molding_id)
             ->select(
                 'sec_molding_runcards.device_name',
             )
             ->first();
+        // return response()->json(['getDeviceName'=>$getDeviceName]);
 
         $getDeviceIdByDeviceName = DB::table('devices')
             ->where('devices.name', $getDeviceName->device_name)
@@ -568,63 +666,166 @@ class SecondMoldingController extends Controller
                 'devices.id',
             )
             ->first();
+        // return response()->json(['getDeviceIdByDeviceName'=>$getDeviceIdByDeviceName]);
+
         /**
          * Step 1 - Machine Final Overmold
          * Step 2 - Camera Inspection
-         * Step 3 - Visual Inspection
-         * Step 4 - 1st OQC Inspection
+         * 
+         * This will check if step number is in correct order
          */
-        $getStationIdByStepThree = DB::table('material_processes')
-                ->where('material_processes.device_id', $getDeviceIdByDeviceName->id)
-                ->where('material_processes.step', 3)
-                ->join('material_process_stations', 'material_processes.id', '=', 'material_process_stations.mat_proc_id')
-                ->pluck('station_id');
-        // return response()->json(['getStationIdByStepThree' => $getStationIdByStepThree]);
+        $getStationIdFromMaterialProcessStations = DB::table('material_processes')
+            ->where('material_processes.device_id', $getDeviceIdByDeviceName->id)
+            ->whereIn('material_processes.step', $step)
+            ->where('material_processes.status', '!=', 1)
+            ->join('material_process_stations', 'material_processes.id', '=', 'material_process_stations.mat_proc_id')
+            ->pluck('station_id');
+        // return response()->json(['getStationIdFromMaterialProcessStations'=>$getStationIdFromMaterialProcessStations]);
+        return $getStationIdFromMaterialProcessStations;
+    }
+    
+    public function getLastShipmentOuput(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        $data = $request->all();
+        if($request->material_name == 'CN171S-07#IN-VE'){
+            /**
+             * Step 1 - Machine Final Overmold
+             * Step 2 - Camera Inspection
+             * Step 3 - Visual Inspection
+             * Step 4 - 1st OQC Inspection
+             */
+            $getStationIdByStepThree = $this->getStationIdByStepNumber($request->second_molding_id, [3]);
+            // return $getStationIdByStepThree;
 
-        $getShipmentOuputOfNonVisualInspection = DB::connection('mysql')
-            ->table('sec_molding_runcard_stations')
-            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-            ->whereNotIn('station', $getStationIdByStepThree)
-            ->orderBy('id', 'desc') // get last station
-            ->select(
-                'sec_molding_runcard_stations.output_quantity',
-                'sec_molding_runcard_stations.station'
-                )
-            ->get();
-
-        $checkIfVisualInspectionIsExist = DB::table('sec_molding_runcard_stations')
-            ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-            ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepThree)
-            ->exists();
-
-        $disabledInputQuantity = false;
-        if(!$checkIfVisualInspectionIsExist){
-            $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+            $getShipmentOuputOfNonVisualInspection = DB::connection('mysql')
+                ->table('sec_molding_runcard_stations')
                 ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                ->whereIn('station', $getStationIdByStepThree)
+                ->whereNotIn('station', $getStationIdByStepThree)
                 ->orderBy('id', 'desc') // get last station
                 ->select(
                     'sec_molding_runcard_stations.output_quantity',
                     'sec_molding_runcard_stations.station'
                     )
                 ->get();
-        }else{
-            $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+
+            $checkIfVisualInspectionIsExist = DB::table('sec_molding_runcard_stations')
                 ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                ->whereIn('station', $getStationIdByStepThree)
-                ->orderBy('id', 'desc') // get last station
-                // ->groupBy('sec_molding_runcard_stations.id')
-                ->select(
-                    DB::raw('SUM(sec_molding_runcard_stations.output_quantity) AS output_quantity'),
-                    'sec_molding_runcard_stations.station'
-                    )
-                ->get();
-            if((int)$getShipmentOuputOfVisualInspection[0]->output_quantity == (int)$getShipmentOuputOfNonVisualInspection[0]->output_quantity){
+                ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepThree)
+                ->exists();
+
+            $disabledInputQuantity = false;
+            if(!$checkIfVisualInspectionIsExist){
+                $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+                    ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                    ->whereIn('station', $getStationIdByStepThree)
+                    ->orderBy('id', 'desc') // get last station
+                    ->select(
+                        'sec_molding_runcard_stations.output_quantity',
+                        'sec_molding_runcard_stations.station'
+                        )
+                    ->get();
+            }else{
+                $getShipmentOuputOfVisualInspection = DB::table('sec_molding_runcard_stations')
+                    ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                    ->whereIn('station', $getStationIdByStepThree)
+                    ->orderBy('id', 'desc') // get last station
+                    // ->groupBy('sec_molding_runcard_stations.id')
+                    ->select(
+                        DB::raw('SUM(sec_molding_runcard_stations.output_quantity) AS output_quantity'),
+                        'sec_molding_runcard_stations.station'
+                        )
+                    ->get();
+
+                if((int)$getShipmentOuputOfVisualInspection[0]->output_quantity == (int)$getShipmentOuputOfNonVisualInspection[0]->output_quantity){
+                    $disabledInputQuantity = true;
+                }
+
+            }
+            return response()->json(['data' => $getShipmentOuputOfNonVisualInspection, 'getShipmentOuputOfVisualInspection' => $getShipmentOuputOfVisualInspection, 'disabledInputQuantity'=>$disabledInputQuantity]);
+        }else if($request->material_name == 'CN171P-02#IN-VE'){
+            /**
+             * Step 1 - Machine Final Overmold
+             * Step 2 - Camera Inspection
+             */
+            $getStationIdByStepOne = $this->getStationIdByStepNumber($request->second_molding_id, [1]);
+            // return $getStationIdByStepOne;
+
+
+            $checkIfStepOneIsExist = DB::table('sec_molding_runcard_stations')
+                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepOne)
+                ->exists();
+            // return response()->json(['checkIfStepOneIsExist' => $checkIfStepOneIsExist]);
+
+            $disabledInputQuantity = false;
+            if($checkIfStepOneIsExist){
                 $disabledInputQuantity = true;
             }
 
+            $getLastOutputQuantity = DB::connection('mysql')
+                ->table('sec_molding_runcard_stations')
+                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                // ->whereNotIn('station', $getStationIdByStepOne)
+                ->join('stations', 'sec_molding_runcard_stations.station', '=', 'stations.id')
+                ->orderBy('id', 'desc') // get last station
+                ->select(
+                    'sec_molding_runcard_stations.output_quantity',
+                    'sec_molding_runcard_stations.station',
+                    'stations.*',
+                    )
+                ->get();
+            // return response()->json(['getLastOutputQuantity' => $getLastOutputQuantity]);
+            return response()->json(['data' => $getLastOutputQuantity, 'disabledInputQuantity'=>$disabledInputQuantity]);
         }
-        return response()->json(['data' => $getShipmentOuputOfNonVisualInspection, 'getShipmentOuputOfVisualInspection' => $getShipmentOuputOfVisualInspection, 'disabledInputQuantity'=>$disabledInputQuantity]);
+    }
+
+    public function checkIfLastStepByMaterialName(Request $request){
+        if($request->material_name == 'CN171S-07#IN-VE'){
+            $getStationIdByStepOneAndTwo = $this->getStationIdByStepNumber($request->second_molding_id, [2]);
+            $getLastOutputQuantityOfStepTwo = DB::table('sec_molding_runcard_stations')
+                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepOneAndTwo)
+                ->join('stations', 'sec_molding_runcard_stations.station', '=', 'stations.id')
+                ->orderBy('id', 'desc') // get last station
+                ->select(
+                    'sec_molding_runcard_stations.output_quantity',
+                    'sec_molding_runcard_stations.station',
+                    'stations.*',
+                    )
+                ->get();
+            // return response()->json(['getLastOutputQuantityOfStepTwo' => $getLastOutputQuantityOfStepTwo[0]->output_quantity]);
+            
+
+            $getStationIdByStepThreeAsVisualInspection = $this->getStationIdByStepNumber($request->second_molding_id, [3]);
+            $getComputedInputQuantityOfVisualInspection = DB::connection('mysql')
+                ->table('sec_molding_runcard_stations')
+                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                ->where('sec_molding_runcard_stations.station', $getStationIdByStepThreeAsVisualInspection)
+                ->select(
+                    DB::raw('SUM(input_quantity) AS computed_input_quantity'),
+                )
+                ->get();
+
+            if($getComputedInputQuantityOfVisualInspection[0]->computed_input_quantity != null){
+                if((int)$getComputedInputQuantityOfVisualInspection[0]->computed_input_quantity >= (int)$getLastOutputQuantityOfStepTwo[0]->output_quantity){
+                    return response()->json(['checkIfLastStepByMaterialName' => true]);
+                }
+            }
+            return response()->json(['checkIfLastStepByMaterialName' => false]);
+            
+        }else if($request->material_name == 'CN171P-02#IN-VE'){
+            $getStationIdByStepTwo = $this->getStationIdByStepNumber($request->second_molding_id, [2]);
+            $checkIfLastStepByMaterialName = DB::table('sec_molding_runcard_stations')
+                ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
+                ->whereIn('sec_molding_runcard_stations.station', $getStationIdByStepTwo)
+                ->exists();
+            return response()->json(['checkIfLastStepByMaterialName' => $checkIfLastStepByMaterialName]);
+        }
+        
+
+        
+            
+        
     }
 
     public function getUser(){

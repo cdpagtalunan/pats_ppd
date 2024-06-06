@@ -44,8 +44,7 @@ class PackingDetailsMoldingController extends Controller
                     $status = $packing_details->first_molding_info->status;
                     $id = $packing_details->first_molding_info->id;
                     if($packing_details->first_molding_info->status == 0){
-                        // $result .= "<button class='btn btn-warning btn-sm btnQCScanMoldingID' style='display: none;' data-id='".$packing_details->first_molding_info->id."'><i class='fa-solid fa-qrcode'></i></button>&nbsp";
-                        $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' style='display: none;' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
+                        // $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' style='display: none;' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
                     }else if($packing_details->first_molding_info->status == 1){
                         $result .= "<button class='btn btn-warning btn-sm btnViewSublotForScanning' molding-id='$id' data-status='$status' oqc-id='$packing_details->id' po-no='$packing_details->po_no' data-id='".$packing_details->stamping_production_info->id."'><i class='fa-solid fa-eye'></i></button>&nbsp";
                     }
@@ -105,6 +104,17 @@ class PackingDetailsMoldingController extends Controller
         // return $sublot_details;
 
         return DataTables::of($sublot_details)
+        ->addColumn('action', function ($sublot_details){
+            $result = "";
+            $result .= "<center>";
+            
+            $result .= "<button class='btn btn-primary btn-sm btnEditMoldingID' style='display: none;' data-id='".$sublot_details->id."'><i class='fa-solid fa-edit'></i></button>&nbsp";
+            
+            $result .= "</center>";
+            
+            return $result;
+        })
+        ->rawColumns(['action'])
         ->make(true);
 
     }
@@ -195,6 +205,14 @@ class PackingDetailsMoldingController extends Controller
 
 
         return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
+    }
+
+    public function getSublotQty(Request $request){
+        $sublot_details = StampingProductionSublot::
+        where('id', $request->sublot_id)
+        ->get();
+
+        return response()->json(['sublotDetails' => $sublot_details]);
     }
 
 }

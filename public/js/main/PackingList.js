@@ -198,6 +198,7 @@ function getCarbonCopyUser(cboElement){
 			let disabled = '';
 			if(response['userDetails'].length > 0){
 				// result = '<option value="0" disabled selected></option>';
+                result = '';
 				for(let index = 0; index < response['userDetails'].length; index++){
                     result += '<option value="' + response['userDetails'][index].firstname + ' ' + response['userDetails'][index].lastname + '">' + response['userDetails'][index].firstname + ' ' + response['userDetails'][index].lastname + '</option>';
 				}
@@ -213,6 +214,77 @@ function getCarbonCopyUser(cboElement){
             console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
         }
 	});
+}
+
+function GetPOFromProductionData(SelectPOElement){
+    // let result = '<option value="0" disabled selected>Select PO/s</option>';
+    $.ajax({
+        url: 'get_po_from_production',
+        method: 'get',
+        dataType: 'json',
+        beforeSend: function(){
+			result = '<option value="0" disabled>Loading</option>';
+			SelectPOElement.html(result);
+		},
+        success: function(response) {
+            if (response['productionData'].length > 0){
+                result = "";
+                    // result = '<option value="0" disabled selected>Select PO/s</option>';
+                for (let index = 0; index < response['productionData'].length; index++) {
+                    result += '<option value="' + response['productionData'][index].po_no + '">' + response['productionData'][index].po_no + '</option>';
+                }
+            } else {
+                result = '<option value="0" selected disabled> -- No record found -- </option>';
+            }
+            SelectPOElement.html(result);
+        },
+        error: function(data, xhr, status) {
+            result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+            SelectPOElement.html(result);
+            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
+}
+
+function GetPackingListControlNo(SelectControlNoElement){
+    let result = '<option value="" disabled selected>-- Select Control No. --</option>';
+    $.ajax({
+        url: 'get_packing_list_data',
+        method: 'get',
+        dataType: 'json',
+        beforeSend: function() {
+                result = '<option value="0" disabled selected>--Loading--</option>';
+                SelectControlNoElement.html(result);
+        },
+        success: function(response) {
+            console.log(response['packing_list_data']);
+            // function unique(array) {
+            let control_no = $.grep(response['packing_list_data'], function(el, index){
+                                return index === $.inArray(el, response['packing_list_data']);
+                            });
+            // }
+            // console.log(response['packing_list_data']);
+            console.log(control_no);
+
+            if (control_no.length > 0) {
+                    result = '<option value="" disabled selected>--Select Control No.--</option>';
+                for (let index = 0; index < control_no.length; index++) {
+                        // let control_no = control_no[index].control_no;
+                        // let sub_control_no = control_no.substring(0, 12);
+                    result += '<option value="' + control_no[index] + '">' + control_no[index] + '</option>';
+                }
+            } else {
+                result = '<option value="0" selected disabled> -- No record found -- </option>';
+            }
+            SelectControlNoElement.html(result);
+            SelectControlNoElement.select2();
+        },
+        error: function(data, xhr, status) {
+            result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+            SelectControlNoElement.html(result);
+            console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+        }
+    });
 }
 
 

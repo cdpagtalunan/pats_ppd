@@ -48,7 +48,6 @@
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
@@ -229,7 +228,7 @@
                                                     Lot</span>
                                             </div>
                                             <input value="2E240130-" type="text" class="form-control form-control-sm"
-                                                id="production_lot" name="production_lot">
+                                                id="production_lot" name="production_lot" readonly>
                                             <input value="M-7:30-11:30" type="text"
                                                 class="form-control form-control-sm" id="production_lot_extension"
                                                 name="production_lot_extension" placeholder="7:30-11:30">
@@ -253,7 +252,7 @@
                                                 <span class="input-group-text w-100" id="basic-addon1">Drawing No</span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm" id="drawing_no"
-                                                name="drawing_no">
+                                                name="drawing_no" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -299,7 +298,7 @@
                                                 <span class="input-group-text w-100" id="basic-addon1">Revision No.</span>
                                             </div>
                                             <input type="text" class="form-control form-control-sm" id="revision_no"
-                                                name="revision_no">
+                                                name="revision_no" readonly>
                                         </div>
                                     </div>
                                 </div>
@@ -328,11 +327,15 @@
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">25 Shots </span>
+                                                <span class="input-group-text w-100" id="basic-addon1">25 Shots
+                                                    &nbsp; <i class="fa-solid fa-circle-question" data-bs-toggle="tooltip"
+                                                        data-bs-html="true"
+                                                        title="Auto Compute &#013;(25 * Usage)"></i>
+                                                </span>
                                             </div>
                                             <input type="text"
                                                 class="form-control form-control-sm sumTotalMachineOutput"
-                                                id="target_shots" name="target_shots" value="25" readonly>
+                                                id="target_shots" name="target_shots" readonly>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -352,9 +355,9 @@
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
+                                                <span class="input-group-text w-100" id="basic-addon1">QC Samples (pcs.)</span>
                                             </div>
-                                            <input type="number"
+                                            <input value="2" type="number"
                                                 class="form-control form-control-sm sumTotalMachineOutput" id="qc_samples"
                                                 name="qc_samples" min="0" step="0.01">
                                         </div>
@@ -362,9 +365,9 @@
                                     <div class="col-sm-6">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
-                                                <span class="input-group-text w-100" id="basic-addon1">Prod Samples</span>
+                                                <span class="input-group-text w-100" id="basic-addon1">Prod Samples (pcs.)</span>
                                             </div>
-                                            <input type="number"
+                                            <input value="8" type="number"
                                                 class="form-control form-control-sm sumTotalMachineOutput"
                                                 id="prod_samples" name="prod_samples" min="0" step="0.01">
                                         </div>
@@ -499,7 +502,7 @@
                                                 name="po_target" min="0" step="0.01" readonly>
                                         </div>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-6  d-none">
                                         <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-50">
                                                 <span class="input-group-text w-100" id="basic-addon1">Variance</span>
@@ -556,15 +559,15 @@
                                                                 </div>
                                                                 <input type="text" class="form-control form-control-sm"
                                                                     id="virgin_material" name="virgin_material[]" required
-                                                                    min=1 step="0.01">
+                                                                    readonly>
                                                             </div>
                                                         </td>
                                                         <td>
                                                             <div class="input-group input-group-sm mb-3">
-                                                                <input min=1 step="0.01" type="number"
+                                                                <input min="0" step="0.01" type="number"
                                                                     class="form-control form-control-sm inputVirginQty"
-                                                                    id="virgin_qty" name="virgin_qty[]" required min=1
-                                                                    step="0.01">
+                                                                    id="virgin_qty" name="virgin_qty[]" required
+                                                                    step="0.01" readonly>
                                                             </div>
                                                         </td>
                                                         <td class="d-none">
@@ -580,9 +583,9 @@
                                                         </td>
                                                         <td>
                                                             <div class="input-group input-group-sm mb-3">
-                                                                <input min=1 step="0.01" type="number"
+                                                                <input min="0" step="0.01" type="number"
                                                                     class="form-control form-control-sm" id="recycle_qty"
-                                                                    name="recycle_qty[]" required>
+                                                                    name="recycle_qty[]" required readonly>
                                                             </div>
                                                         </td>
                                                         {{-- <td>
@@ -668,18 +671,18 @@
                 <div class="modal-body">
                     <form id="formFirstMoldingStation">
                         @csrf
-                        <div class="row d">
+                        <div class="row d-none">
                             <div class="col">
                                 <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">First Molding Id</span>
                                     </div>
                                     <input type="text" class="form-control form-control-sm" id="first_molding_id"
-                                        name="first_molding_id">
+                                        name="first_molding_id" readonly>
                                 </div>
                             </div>
                         </div>
-                        <div class="row d">
+                        <div class="row d-none">
                             <div class="col">
                                 <div class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend w-50">
@@ -687,7 +690,7 @@
                                             Id</span>
                                     </div>
                                     <input type="text" class="form-control form-control-sm"
-                                        id="first_molding_detail_id" name="first_molding_detail_id">
+                                        id="first_molding_detail_id" name="first_molding_detail_id" readonly>
                                 </div>
                             </div>
                         </div>
@@ -731,7 +734,7 @@
                                     <div class="input-group-prepend w-50">
                                         <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
                                     </div>
-                                    <select type="text" class="form-control form-control-sm" id="operator_name"
+                                    <select type="text" class="form-control form-control-sm select2bs4" id="operator_name"
                                         name="operator_name" placeholder="Station">
                                         {{-- <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option> --}}
                                     </select>
@@ -964,13 +967,18 @@
 @section('js_content')
     <script>
         $(document).ready(function() {
-
             getFirstModlingDevices();
             // $('#production_lot_extension').mask('00:00-00:00', {reverse: false});
+
+            $('#modalScanQRSave').on('hidden.bs.modal', function() {
+                $(this).attr('data-form-id','');
+            })
+
             $('#modalFirstMolding').on('hidden.bs.modal', function() {
                 formModal.firstMolding.find('#first_molding_id').val('');
                 formModal.firstMoldingStation.find('#first_molding_id').val('');
                 formModal.firstMolding.find('#contact_lot_number').val('');
+                formModal.firstMolding.find('#contact_lot_qty').val('');
                 // formModal.firstMolding.find('#production_lot').val('');
                 formModal.firstMolding.find('#shift').val('');
                 formModal.firstMolding.find('#remarks').val('');
@@ -1036,6 +1044,7 @@
                     }
                 });
             });
+
             $('#modalMaterialLotNum').on('shown.bs.modal', function() {
                 $('#txtLotNum').focus();
                 const mdlScanQrCode = document.querySelector("#modalMaterialLotNum");
@@ -1057,7 +1066,6 @@
                 });
             });
 
-            //txtLotNum mdlScanQrCodeFirstMoldingMaterial
             dt.firstMolding = table.FirstMoldingDetails.DataTable({
                 "processing": true,
                 "serverSide": true,
@@ -1133,6 +1141,9 @@
                         "data": "operator_names"
                     },
                     {
+                        "data": "size_category"
+                    },
+                    {
                         "data": "input"
                     },
                     {
@@ -1177,7 +1188,6 @@
                 let first_molding_detail_id = $(this).attr('first-molding-station-id');
 
                 Swal.fire({
-                    // title: "Are you sure?",
                     text: "Are you sure you want to delete this process?",
                     icon: "warning",
                     showCancelButton: true,
@@ -1196,8 +1206,8 @@
                             success: function(response) {
                                 console.log(response);
                                 if (response['result'] === 1) {
-                                    $('#modalFirstMoldingStation').modal('hide');
                                     dt.firstMoldingStation.draw();
+                                    $('#modalFirstMoldingStation').modal('hide');
                                     Swal.fire({
                                         position: "center",
                                         icon: "success",
@@ -1295,7 +1305,7 @@
                 content += '<tr style="width: 290px;">';
                 content += '<td style="vertical-align: bottom;">';
                 content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] +
-                    '" style="min-width: 75px; max-width: 75px;">';
+                    '" style="min-width: 100px; max-width: 100px;">';
                 content += '</td>';
                 content += '<td style="font-size: 10px; font-family: Calibri;">' +
                     img_barcode_PO_text_hidden[0]['text'] + '</td>';
@@ -1329,7 +1339,8 @@
                 let device_name = $('#global_input_device_name').val();
                 let global_po_no = $('#global_po_no').val();
                 let global_po_qty = $('#global_po_qty').val();
-                let global_target_qty = $('#global_target_qty').val();;
+                let global_target_qty = $('#global_target_qty').val();
+
 
                 if (global_target_qty == '' || global_po_no == '' || global_target_qty == '') {
                     toastr.error('PO not Found. Please check this PO Number to MIMF Module !');
@@ -1399,7 +1410,9 @@
                         /*
                         TODO : Scan Emp ID
                         */
-                        firstMoldingUpdateStatus();
+                        let btnValue = 'btnSubmitFirstMoldingStation';
+                        $('#modalScanQRSave').attr('data-form-id', btnValue).modal('show');
+                        // alert('btnSubmitFirstMoldingStation')
                     }
                 });
             });
@@ -1428,12 +1441,21 @@
 
             $('#global_po_no').on('keydown', function(e) {
                 let globalPoNo = $(this).val();
+                let targetShots = 0;
+                let deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
+
                 fnGetDatalistMimfPoNum(globalPoNo);
                 if (e.keyCode == 13) {
                     e.preventDefault();
-                    let deviceId = formModal.firstMolding.find('#first_molding_device_id').val();
                     getPmiPoReceivedDetails(globalPoNo, deviceId);
                     dt.firstMolding.draw();
+                    if(deviceId === "1"){
+                        targetShots = 25 * 4;
+                    }else{
+                        targetShots = 25 * 2;
+                    }
+
+                    formModal.firstMolding.find('#target_shots').val(targetShots);
                 }
             });
 
@@ -1442,9 +1464,9 @@
                 $('#mdlScanQrCodeFirstMolding').on('shown.bs.modal');
             });
 
-            /**
-             * Add Mode Of Defect
-             */
+            /*
+                Add Mode Of Defect
+            */
 
             $("#buttonAddFirstMoldingModeOfDefect").click(function() {
                 let totalNumberOfMOD = 0;
@@ -1527,14 +1549,14 @@
                         );
                         formModal.firstMolding.find('#contact_name').val(contact_name);
 
+
                         $('#global_po_no').val('');
                         $('#global_target_qty').val('');
                         $('#global_po_no').val('');
                         dt.firstMolding.draw();
 
                         // getDiesetDetailsByDeviceName(device_name);
-                        getMachineFromMaterialProcess(formModal.firstMolding.find(
-                            '#machine_no'), device_name);
+                        getMachineFromMaterialProcess(formModal.firstMolding.find('#machine_no'), device_name);
                         getStation(formModal.firstMoldingStation.find('#station'), device_name)
                     }
                 });
@@ -1557,7 +1579,8 @@
                     $('#mdlScanQrCodeFirstMolding').modal('hide');
                 }
             });
-            const validateMaterialLotNo = function(firstMoldingMaterialLotNo) { //nmodify
+
+            const validateMaterialLotNo = function(firstMoldingMaterialLotNo) {
                 $.ajax({
                     type: "GET",
                     url: "validate_material_lot_no",
@@ -1656,22 +1679,51 @@
 
             $('#txtScanUserId').on('keyup', function(e) {
                 if (e.keyCode == 13) {
-                    // console.log($(this).val());
-                    validateUser($(this).val(), [0], function(result) {
-                        if (result == true) {
-                            saveFirstMolding();
-                        } else { // Error Handler
-                            toastr.error('User not authorize!');
-                        }
-                    });
+                    let btnIsValue = $('#modalScanQRSave').attr('data-form-id');
+                    switch (btnIsValue) {
+                        case 'btnRuncardDetails':
+                            // alert('btnRuncardDetails')
+                            validateUser($(this).val(), [0,4,9], function(result) {
+                                if (result == true) {
+                                    saveFirstMolding();
+                                } else { // Error Handler
+                                    toastr.error('User not authorize!');
+                                }
+                            });
+                            break;
+                        case 'btnSubmitFirstMoldingStation':
+                            // alert('btnSubmitFirstMoldingStation')
+                            validateUser($(this).val(), [0,9], function(result) {
+                                if (result == true) {
+                                   firstMoldingUpdateStatus();
+                                } else { // Error Handler
+                                    toastr.error('User not authorize!');
+                                }
+                            });
+                            break;
+                        case 'btnDeleteFirstMoldingStation':
+                            alert('btnSubmitFirstMoldingStation')
+                            validateUser($(this).val(), [0,9], function(result) {
+                                if (result == true) {
+                                    softDeleteStation();
+                                } else { // Error Handler
+                                    toastr.error('User not authorize!');
+                                }
+                            });
+                            break;
+                        default:
+                            toastr.error('Error: Please call the ISS ! ');
+                            $('#modalScanQRSave').attr('data-form-id');
+                            break;
+                    }
                     $(this).val('');
                 }
             });
 
             formModal.firstMolding.submit(function(e) {
                 e.preventDefault();
-                $('#modalScanQRSave').modal('show');
-
+                let btnValue = 'btnRuncardDetails';
+                $('#modalScanQRSave').attr('data-form-id', btnValue).modal('show');
             });
 
             formModal.firstMoldingStation.submit(function(e) {
@@ -1696,11 +1748,6 @@
                 let stationId = $(this).val();
                 fnIsSelectCameraInspection(stationId);
             });
-
-            // $('#global_po_no').val();
-            // $(selector).keyup(function (e) {
-
-            // });
 
         });
     </script>

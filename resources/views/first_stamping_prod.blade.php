@@ -94,6 +94,12 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
+                                            <label class="form-label">Material Code</label>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control" placeholder="Material Code" id="txtSearchMatCode" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-2">
                                             <label class="form-label">PO Quantity</label>
                                             <div class="input-group mb-3">
                                                 <input type="text" class="form-control" placeholder="PO Quantity" id="txtSearchPO" readonly>
@@ -502,6 +508,60 @@
             var btnFunction;
             var historyId = 0;
             $(document).ready(function(){
+
+                $(document).on('keypress', '#txtSearchPONum', function(e){
+                    if(e.keyCode == 13){
+                        $.ajax({
+                            type: "get",
+                            url: "get_search_po",
+                            data: {
+                                "po" : $(this).val()
+                            },
+                            dataType: "json",
+                            beforeSend: function(){
+                                prodData = {};
+                            },
+                            success: function (response) {
+                                console.log(response);
+                                if(response.length > 0){
+                                    prodData['poReceiveData'] = response[0];
+                                    console.log(response);
+                                    $.ajax({
+                                        type: "get",
+                                        url: "get_data_req_for_prod_by_po",
+                                        data: {
+                                            "item_code" : response[0]['ItemCode']
+                                        },
+                                        dataType: "json",
+                                        success: function (result) {
+                                            $('#txtSearchMatName').val(response[0]['ItemName']);
+                                            $('#txtSearchMatCode').val(response[0]['ItemCode']);
+                                            $('#txtSearchPO').val(response[0]['OrderQty']);
+                                            prodData['drawings'] = result
+                                            console.log(prodData);
+                                            dtDatatableProd.draw();
+                                        },
+                                        error: function(data, xhr, status){
+                                            console.log(data.responseJSON.msg);
+                                            toastr.error(data.responseJSON.msg)
+                                            // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+
+                                        }
+                                    });
+                                }
+                                else{
+                                    $('#txtSearchMatName').val('');
+                                    $('#txtSearchPO').val('');
+                                    toastr.error('No PO Found on Rapid PO Receive.')
+                                }
+                            },
+                            error: function(data, xhr, status){
+                                toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+
+                            }
+                        });
+                    }
+                });
                 // getOperatorList($('.selOpName'));
 
                 dtDatatableProd = $("#tblProd").DataTable({
@@ -547,6 +607,10 @@
                             }
 
                             $('#txtTtlShipOutput').val(totalShipOutput);
+                        }
+                        else{
+                            $('#txtTtlShipOutput').val(totalShipOutput);
+
                         }
 
                     }
@@ -610,67 +674,14 @@
                     }
                 });
 
-                $(document).on('keypress', '#txtSearchPONum', function(e){
-                    if(e.keyCode == 13){
-                        $.ajax({
-                            type: "get",
-                            url: "get_search_po",
-                            data: {
-                                "po" : $(this).val()
-                            },
-                            dataType: "json",
-                            beforeSend: function(){
-                                prodData = {};
-                            },
-                            success: function (response) {
-                                console.log(response);
-                                if(response.length > 0){
-                                    prodData['poReceiveData'] = response[0];
-                                    console.log(response);
-                                    $.ajax({
-                                        type: "get",
-                                        url: "get_data_req_for_prod_by_po",
-                                        data: {
-                                            "item_code" : response[0]['ItemCode']
-                                        },
-                                        dataType: "json",
-                                        success: function (result) {
-                                            $('#txtSearchMatName').val(response[0]['ItemName']);
-                                            $('#txtSearchPO').val(response[0]['OrderQty']);
-                                            prodData['drawings'] = result
-                                            console.log(prodData);
-                                            dtDatatableProd.draw();
-                                        },
-                                        error: function(data, xhr, status){
-                                            // console.log(data.responseJSON.msg);
-                                            toastr.error(data.responseJSON.msg)
-                                            // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-
-                                        }
-                                    });
-                                }
-                                else{
-                                    $('#txtSearchMatName').val('');
-                                    $('#txtSearchPO').val('');
-                                    toastr.error('No PO Found on Rapid PO Receive.')
-                                }
-                            },
-                            error: function(data, xhr, status){
-                                toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-
-                            }
-                        });
-                    }
-                });
-
                 $('#btnAddProdData').on('click', function(e){
 
-                    if( Number($('#txtTtlShipOutput').val()) >= Number($('#txtSearchPO').val())){
-                        toastr.error('Total Machine Output is greater than PO Quantity.');
-                        console.log('txtTtlShipOutput', $('#txtTtlShipOutput').val());
-                        console.log('txtSearchPO', $('#txtSearchPO').val());
-                        return;
-                    }
+                    // if( Number($('#txtTtlShipOutput').val()) >= Number($('#txtSearchPO').val())){
+                    //     toastr.error('Total Machine Output is greater than PO Quantity.');
+                    //     console.log('txtTtlShipOutput', $('#txtTtlShipOutput').val());
+                    //     console.log('txtSearchPO', $('#txtSearchPO').val());
+                    //     return;
+                    // }
 
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
                         checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'], '1st Stamping')
@@ -761,7 +772,7 @@
                         content += '<table style="margin-left: -5px; margin-top: 18px;">';
                             content += '<tr style="width: 290px;">';
                                 content += '<td style="vertical-align: bottom;">';
-                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
+                                    content += '<img src="' + img_barcode_PO_text_hidden[0]['img'] + '" style="min-width: 90px; max-width: 90px;">';
                                 content += '</td>';
                                 content += '<td style="font-size: 10px; font-family: Calibri;">' + img_barcode_PO_text_hidden[0]['text'] + '</td>';
                             content += '</tr>';

@@ -24,6 +24,10 @@
                 position: absolute;
                 opacity: 0;
             }
+            .input_hidden{
+                position: absolute;
+                opacity: 0;
+            }
 
             .slct{
                 pointer-events: none;
@@ -186,16 +190,16 @@
                     <form method="post" id="formOqcInspection" autocomplete="off">
                         @csrf
 
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtOqcInspectionId" name="oqc_inspection_id" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtProdId" name="prod_id" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtStatus" name="status" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtCheckButton" name="check_button" readonly>
-                        <input type="text" class="form-control form-control-sm input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
+                        <input type="text" class="form-control-sm input_hidden" id="txtOqcInspectionId" name="oqc_inspection_id" readonly>
+                        <input type="text" class="form-control-sm input_hidden" id="txtProdId" name="prod_id" readonly>
+                        <input type="text" class="form-control-sm input_hidden" id="txtStatus" name="status" readonly>
+                        <input type="text" class="form-control-sm input_hidden" id="txtCheckButton" name="check_button" readonly>
+                        <input type="text" class="form-control-sm input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
 
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend w-25">
-                                    <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <button type="button" class="btn btn-dark" id="btnViewBDrawings"><i class="fa fa-file" title="View"></i></button>
                                     <span class="input-group-text w-100 b-drawing remove-class"><strong>B Drawing</strong></span>
                                 </div>
                                 <input type="text" class="form-control b-drawing remove-class" id="txtBDrawing" name="b_drawing" readonly>
@@ -600,7 +604,7 @@
     @section('js_content')
         <script type="text/javascript">
             let getPoNo
-            let checkedDrawCount
+            let checkedDrawCountSecondStamping
             let dataTableOQCInspectionSecondStamping
             $(document).ready(function() {
                 $('.select2bs4').select2({
@@ -835,17 +839,36 @@
                     })
                 })
 
-                $('#btnViewRDrawings').on('click', function(){
-                    redirect_to_drawing($('#txtBDrawingNo').val(), 0)
-                    SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
+                checkedDrawCountSecondStamping = [0,0,0]
+                function RedirectToDrawingForSecondStamping(drawing, index) {
+                    console.log('Drawing No.:',drawing)
+                    if( drawing  == 'N/A'){
+                        alert('No Document Required')
+                    }
+                    else{
+                        window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
+                            checkedDrawCountSecondStamping[index] = 1
+                    }
+                    console.log('Check View Document:', checkedDrawCountSecondStamping)
+                }
+
+                $('#btnViewBDrawings').on('click', function(){
+                    setTimeout(() => {     
+                        RedirectToDrawingForSecondStamping($('#txtBDrawingNo').val(), 0)
+                        SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
+                    }, 200);
                 })
                 $('#btnViewUdDrawings').on('click', function(){
-                    redirect_to_drawing($('#txtUdDrawingNo').val(), 1)
-                    SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white')
+                    setTimeout(() => {     
+                        RedirectToDrawingForSecondStamping($('#txtUdDrawingNo').val(), 1)
+                        SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white')
+                    }, 200);
                 })
                 $('#btnViewInspStdDrawings').on('click', function(){
-                    redirect_to_drawing($('#txtInspStdDrawingNo').val(), 2)
-                    SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white')
+                    setTimeout(() => {     
+                        RedirectToDrawingForSecondStamping($('#txtInspStdDrawingNo').val(), 2)
+                        SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white')
+                    }, 200);
                 })
 
                 $('#oqcInspectionNextButton').on('click', function(){
@@ -855,7 +878,7 @@
                     for (var i = 0; i < drawingId.length; i++) {
                         let drawings = $('#' + drawingId[i]).val()
                         if ( drawings != 'N/A' && drawings != ''){
-                            if( checkedDrawCount[i] == 0 ){
+                            if( checkedDrawCountSecondStamping[i] == 0 ){
                                 checkDrawings = true
                             }
                         }
@@ -878,7 +901,7 @@
                     $('.drawing').removeClass('d-none')
                     $('.acceCheckBox').css({display:false, required:true})
 
-                    checkedDrawCount = [0,0,0]
+                    checkedDrawCountSecondStamping = [0,0,0]
                     $(`.remove-class`).removeClass('bg-success-custom font-weight-bold text-white')
                     $("#formOqcInspection")[0].reset()
                     dataTableOQCInspectionSecondStamping.draw()

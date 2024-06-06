@@ -15,7 +15,7 @@ class CreateMoldingAssyIpqcInspectionsTable extends Migration
     {
         Schema::create('molding_assy_ipqc_inspections', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('fk_molding_assy_id')->comment = 'foreign id from first_moldings (process_category = 1), sec_molding_runcards (process_category = 2), assembly_runcards(process_category = 3)';
+            $table->unsignedBigInteger('fk_molding_assy_id')->nullable()->comment = 'foreign id from first_moldings (process_category = 1), sec_molding_runcards (process_category = 2), assembly_runcards(process_category = 3)';
             $table->tinyInteger('process_category')->comment = '1 - 1st Molding, 2 - 2nd Molding, 3 - Assembly';
             $table->string('po_number')->nullable();
             $table->string('part_code')->nullable();

@@ -132,15 +132,15 @@ const loadRuncardInfo = (scannedData) => {
             }
             $('#txtRuncardNg').val(runcardNg);
             $('#pRCStatTotNoOfNG').html(runcardNg);
-            
+
 
             dtRuncardStationMod.rows.add(
                 runcardModList
             ).draw();
-            
+
             $('#txtRuncardId').val(`${response['runcard']['id']}`)
             $('#txtRuncardStationId').val(`${response['runcard']['fk_station_id']}`)
-           
+
             $('#modalScanning').modal('hide');
         }
     });
@@ -208,10 +208,10 @@ const getFviDetailsById = (id, status) => {
             $('#btnAddFVIRuncard').prop('disabled', false);
             // setTimeout(() => {
             //     $('#selFVIAssLine', $('#formEditFVIDetails')).prop('disabled', true);
-                
+
             // }, 500);
 
-            
+
             if(status == 1){
                 $('#btnAddFVIRuncard').prop('disabled', true);
                 $('#btnSubmitToLotApp').prop('disabled', true);
@@ -226,7 +226,7 @@ const redirect_to_req_drawing = (inputId, selVal ) => {
     else{
         window.open("http://rapid/ACDCS/prdn_home_cnppts?doc_no="+selVal)
         checked_draw_count[inputId] = true
-        
+
     }
 
     console.log(checked_draw_count);
@@ -242,7 +242,7 @@ const validateRuncardOutput = (devName, devCode, fn) => {
         },
         dataType: "json",
         success: function (response) {
-
+            console.log(response['device']);
             if(fn == "btnAdd"){
                 if(outputQty == response['device']['qty_per_box']){
                     console.log('equal na');
@@ -271,7 +271,7 @@ const validateRuncardOutput = (devName, devCode, fn) => {
                         icon: "error",
                         confirmButtonColor: "#3085d6"
                     });
-                    
+
                 }
                 else{
                     // $('#modalFVIRuncard').modal('show');
@@ -311,7 +311,7 @@ const validateRuncardOutput = (devName, devCode, fn) => {
 
                         }
                       });
-                    
+
                 }
                 else{
                     $('#modalScanQRSave').modal('show');
@@ -321,7 +321,7 @@ const validateRuncardOutput = (devName, devCode, fn) => {
 
         }
     });
-    
+
 }
 
 const SubmitToLotApp = (idNum) => {
@@ -366,7 +366,7 @@ const loadSearchPo = (poNumber) => {
             else{
                 toastr.error('PO Not Found!');
             }
-            
+
 
         }
     });

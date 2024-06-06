@@ -323,9 +323,9 @@
                                 <div class="col">
                                     <div class="input-group input-group-sm mb-3">
                                         <span class="input-group-text" style="width: 50%;">Time</span>
-                                        <div id="divTime" class="d-flex" style="width: 50% !important;">
-                                            <input type="text" class="time start ui-timepicker-input" id="textTimeStart" style="border: 1px solid #ced4da;" name="time_start" placeholder="Start" autocomplete="off">
-                                            <input type="text" class="time end ui-timepicker-input" id="textTimeEnd" style="border: 1px solid #ced4da;" name="time_end" placeholder="End" autocomplete="off">
+                                        <div id="divTime" class="d-flex input-group" style="width: 50% !important;">
+                                            <input type="text" class="form-control form-control-sm time start ui-timepicker-input" id="textTimeStart" name="time_start" placeholder="Start" autocomplete="off">
+                                            <input type="text" class="form-control form-control-sm time end ui-timepicker-input" id="textTimeEnd" name="time_end" placeholder="End" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="input-group input-group-sm mb-3">
@@ -361,9 +361,34 @@
                                             <option value="K">K</option>
                                         </select>
                                     </div>
-                                    <div class="input-group input-group-sm mb-3">
+
+                                    {{-- <div class="input-group input-group-sm mb-3">
                                         <span class="input-group-text" style="width: 50%;">Sequence No.</span>
                                         <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textSequenceNumber" name="sequence_number" placeholder="Sequence No.">
+                                    </div> --}}
+
+                                    <div class="row">
+                                        <div class="col">
+                                            <div class="table-responsive">
+                                                <div class="d-flex justify-content-end">
+                                                    <button type="button" class="btn btn-sm btn-info mb-2 mt-3"  data-bs-toggle="modal" data-bs-target="#modalAddSequenceNumber" title="Add Sequence No."><i class="fa fa-plus"></i> Add Sequence #</button>
+                                                </div>
+                                                <table class="table table-striped table-bordered table-condensed table-hover" id="tableSequenceNumber" style="min-width: 100%">
+                                                    <thead>
+                                                        <th style="width: 4%;">Action</th>
+                                                        <th style="width: 16%;">C/T Name</th>
+                                                        <th style="width: 16%;">Code No.</th>
+                                                        <th style="width: 14%;">SPM</th>
+                                                        <th style="width: 16%;">P.O. No.</th>
+                                                        <th style="width: 18%;">Shipment Output</th>
+                                                        <th style="width: 18%;">Machine Output</th>
+                                                        <th style="width: 16%;">In-charge</th>
+                                                    </thead>
+                                                    <tbody>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -376,6 +401,62 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="modalAddSequenceNumber" role="dialog" data-bs-backdrop="static">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><i class="fa fa-plus text-info"></i> Add Sequence #</h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="formSequenceNumber">
+                        @csrf
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text" style="width: 50%;">C/T Name</span>
+                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textCTName" name="ct_name" placeholder="C/T Name">
+                                    </div>
+    
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text" style="width: 50%;">Code No.</span>
+                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textCodeNumber" name="code_number" placeholder="Code No.">
+                                    </div>
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text" style="width: 50%;">SPM</span>
+                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textSPM" name="spm" placeholder="SPM">
+                                    </div>
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text" style="width: 50%;">PO Number</span>
+                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textPONumber" name="po_number" placeholder="PO Number">
+                                    </div>
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text" style="width: 50%;">Produced Quantity</span>
+                                        <input type="text" class="form-control form-control-sm" style="width: 25%;" id="textShipmentOutput" name="shipment_output" placeholder="Shipment Output">
+                                        <input type="text" class="form-control form-control-sm" style="width: 25%;" id="textMachineOutput" name="machine_output" placeholder="Machine Output">
+                                    </div>
+
+                                    <div class="input-group input-group-sm mb-3">
+                                        <span class="input-group-text" style="width: 50%;">In-charge</span>
+                                        <input type="text" class="form-control form-control-sm" style="width: 50%;" id="textProducedQuantity" name="in_charge" placeholder="In-charge">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-info" id="buttonAddSequenceNumber"><i class="fa fa-plus"></i> Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     @endsection
     @section('js_content')
         <script>
@@ -383,24 +464,24 @@
                 let divTimeEl = document.getElementById('divTime');
                 let divTime = new Datepair(divTimeEl);
                 $('#divTime #textTimeStart').timepicker({
-                    'showDuration': true,
-                    'minTime': '7:30am',
-                    'maxTime': '12:00am',
-                    'timeFormat': 'g:ia',
+                    'showDuration'  : true,
+                    'minTime'       : '7:30am',
+                    'maxTime'       : '12:00am',
+                    'timeFormat'    : 'g:ia',
                     'forceRoundTime': true,
-                    'step': 5,
+                    'step'          : 5,
                 }).on('changeTime', function() {
                     let milliseconds = divTime.getTimeDiff();
                     let minutes = (milliseconds/1000)/60;
                 });
 
                 $('#divTime #textTimeEnd').timepicker({
-                    'showDuration': true,
-                    'minTime': '7:30am',
-                    'maxTime': '12:00am',
-                    'timeFormat': 'g:ia',
+                    'showDuration'  : true,
+                    'minTime'       : '7:30am',
+                    'maxTime'       : '12:00am',
+                    'timeFormat'    : 'g:ia',
                     'forceRoundTime': true,
-                    'step': 5,
+                    'step'          : 5,
                 }).on('blur', function() {
                     let milliseconds = divTime.getTimeDiff();
                     let minutes = (milliseconds/1000)/60;
@@ -422,13 +503,13 @@
                 
                 $('#formMachineNumber').submit(function (e) {
                     e.preventDefault();
-                    let data = $(this).serialize();
+                        
                     console.log(`data ${data}`);
 
                     $.ajax({
-                        type: "POST",
-                        url: "save_machine_number",
-                        data: data,
+                        type    : "POST",
+                        url     : "save_machine_number",
+                        data    : data,
                         dataType: "json",
                         success: function (response) {
                             console.log('response ', response);
@@ -462,7 +543,8 @@
                         }
                     });
                 });
-
+                resetFormValuesStampingWorkingReportOnModalClose('modalMachineNumber', 'formMachineNumber');
+                
                 $("#tableStampingWorkingReport").on('click', '.actionEditStampingWorkingReport', function(){
                     let stampingWorkingReportId = $(this).attr('stamping-working-report-id');
                     console.log('stampingWorkingReportId ', stampingWorkingReportId);
@@ -473,10 +555,13 @@
                  * Stamping Working Report Work Details
                 */
                 dataTablesStampingWorkingReportWorkDetails = $("#tableStampingWorkingReportWorkDetails").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "ajax" : {
-                        url: "view_stamping_working_report_work_details",
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax"      : {
+                        url : "view_stamping_working_report_work_details",
+                        data: function (param){
+                            param.stamping_working_report_id = $("#textStampingWorkingReportId").val();
+                        }
                     },
                     "columns":[
                         { "data" : "action", orderable:false, searchable:false },
@@ -558,6 +643,65 @@
                     console.log('stampingWorkingReportWorkDetailsId ', stampingWorkingReportWorkDetailsId);
                     getStampingWorkingReportWorkDetails(stampingWorkingReportWorkDetailsId);
                 });
+
+                /**
+                 * DataTables for Sequence Number
+                */
+                let sequenceNumberArray = [];
+                let dataTablesSequenceNumber = $('#tableSequenceNumber').DataTable({
+                    rowId: 'id',
+                    "ordering": false,
+                    "columns": [
+                        { "data": "action" },
+                        { "data": "ct_name" },
+                        { "data": "code_number" },
+                        { "data": "spm" },
+                        { "data": "po_number" },
+                        { "data" : "shipment_output" },
+                        { "data" : "machine_output" },
+                        { "data" : "in_charge" }
+                    ],
+                });
+
+                /**
+                 * Add/Remove Sequence Number
+                 * Start
+                */
+                $("#buttonAddSequenceNumber").click(function(){
+                    sequenceNumberArray = [];
+                    let buttonAction = `
+                        <center>
+                            <button type='button' class='btn btn-primary btn-sm mr-1 actionEditSequenceNumber' data-bs-toggle='modal' data-bs-target='#modalAddSequenceNumber'><i class='fa-solid fa-pen-to-square'></i></button>
+                        </center>
+                    `;
+                    sequenceNumberArray.push({
+                        "action":               buttonAction,
+                        "ct_name":              "0.00",
+                        "code_number":	        "0.00",
+                        "spm":			        "0.00",
+                        "po_number":			"0.00",
+                        "shipment_output":		"0.00",
+                        "machine_output":	    "0.00",
+                        "in_charge":	        "0.00",
+                    });
+
+                    dataTablesSequenceNumber.rows.add(
+                        sequenceNumberArray
+                    ).draw();
+                });
+
+                $(document).on('click', ".actionEditSequenceNumber", function(){
+                    console.log(`${JSON.stringify(sequenceNumberArray)}`);
+                });
+                
+
+                $("#tableSequenceNumber").on('click', '.buttonRemoveSequenceNumber', function(){
+                    $(this).closest ('tr').remove();
+                });
+                /**
+                 * Add/Remove Sequence Number
+                 * End
+                */
             }); // End Document Ready
         </script>
     @endsection

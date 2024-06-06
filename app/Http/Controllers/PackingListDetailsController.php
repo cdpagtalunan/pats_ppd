@@ -79,7 +79,7 @@ class PackingListDetailsController extends Controller
     public function carbonCopyUser(Request $request){
         $user_details = User::
         where('status',1)
-        ->where('position', 4)
+        ->whereIn('position', [4, 11])
         ->get();
 
         // return $user_details;
@@ -95,7 +95,8 @@ class PackingListDetailsController extends Controller
         // ->get();
 
         $packing_list_data = DB::connection('mysql')
-        ->select("SELECT `control_no`, any_value(`po_no`) AS po FROM `packing_list_details` WHERE `shipment_status` = 1 GROUP BY `control_no`");
+        // ->select("SELECT `control_no`, any_value(`po_no`) AS po FROM `packing_list_details` WHERE `shipment_status` = 1 GROUP BY `control_no`");
+        ->select("SELECT `control_no`, any_value(`po_no`) AS po FROM `packing_list_details` GROUP BY `control_no`");
 
         // return $packing_list_data;
 
@@ -134,8 +135,16 @@ class PackingListDetailsController extends Controller
         // ->where('lot_accepted', 1)
         // ->get();
 
+        // $prelim_packing_data = PreliminaryPacking::with(['oqc_info.stamping_production_info']) //CLARK MODIFIED
+        // ->where('po_no', $request->search_data) //CLARK MODIFIED
+
         $prelim_packing_data = PreliminaryPacking::with(['oqc_info.stamping_production_info'])
-        ->where('po_no', $request->search_data)
+        ->when($request->search_data, function ($query) use ($request){
+            return $query ->whereIn('po_no', $request->search_data); //CLARK MODIFIED
+        },function ($query) {
+            return $query ->where('id', -1);
+        })
+        // ->whereIn('po_no', $request->search_data) //CLARK MODIFIED
         ->where('status', 1)
         ->get();
 
@@ -164,10 +173,30 @@ class PackingListDetailsController extends Controller
             ->make(true);
     }
 
-    public function getDataFromProduction(Request $request){
+    public function getPoFromProduction(Request $request){
         $get_production_data = OQCInspection::with(['stamping_production_info'])
-        ->where('po_no', 'like', '%' . $request->search_data . '%')
+        // ->where('po_no', 'like', '%' . $request->search_data . '%') //CLARK MODIFIED
+        ->select('po_no')
+        ->distinct()
         ->where('lot_accepted', 1)
+        ->where('logdel', 0)
+        ->get();
+
+        // return $request->search_data;
+
+        return response()->json(['productionData' => $get_production_data]);
+    }
+
+    public function getDataFromProduction(Request $request){
+        // $get_production_data = OQCInspection::with(['stamping_production_info']) //CLARK MODIFIED
+        // ->where('po_no', 'like', '%' . $request->search_data . '%') //CLARK MODIFIED
+        // ->where('lot_accepted', 1) //CLARK MODIFIED
+        // ->get(); //CLARK MODIFIED
+
+        $get_production_data = OQCInspection::with(['stamping_production_info'])
+        ->whereIn('po_no', $request->search_data)
+        ->where('lot_accepted', 1)
+        ->where('logdel', 0)
         ->get();
 
         // return $request->search_data;
@@ -230,11 +259,14 @@ class PackingListDetailsController extends Controller
                     $no_of_cuts = $prod_data[$i]->stamping_production_info->no_of_cuts;
                     $qty = $prod_data[$i]->stamping_production_info->ship_output;
                     $po_qty = $prod_data[$i]->stamping_production_info->po_qty;
+                    // $control_no = $request->ctrl_num.''.$request->ctrl_num_extension;
+                    // return $control_no;
 
                         $array = [
-                            'control_no'            => $request->ctrl_num,
+                            'control_no'            => $request->ctrl_num.''.$request->ctrl_num_extension,
                             'prod_id'               => $prod_id,
-                            'po_no'                 => $request->search_packing_list_details,
+                            // 'po_no'                 => $request->search_packing_list_details,
+                            'po_no'                 => $prod_data[$i]->po_no, //CLARK MODIFIED
                             'box_no'                => $request->box_no[$i],
                             'mat_name'              => $material_name,
                             'lot_no'                => $prod_lot_no,
@@ -255,7 +287,7 @@ class PackingListDetailsController extends Controller
 
                         $array_for_final_packing = [
                             'oqc_id'                => $oqc_id,
-                            'packing_ctrl_no'       => $request->ctrl_num,
+                            'packing_ctrl_no'       => $request->ctrl_num.''.$request->ctrl_num_extension,
                             'po_no'                 => $po_no,
                             'lot_qty'               => $qty,
                             'shipment_qty'          => $po_qty,
@@ -295,6 +327,8 @@ class PackingListDetailsController extends Controller
         $packing_list_data_by_ctrl = PackingListDetails::
         where('control_no', $request->packing_list_ctrl_no)
         ->get();
+
+        // return $packing_list_data_by_ctrl;
 
         return DataTables::of($packing_list_data_by_ctrl)
             ->addColumn('action', function($packing_list_data_by_ctrl){

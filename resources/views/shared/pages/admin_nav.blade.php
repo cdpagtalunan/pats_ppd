@@ -25,43 +25,54 @@
                     </a>
                 </li> --}}
                 @auth
-                    @if (in_array(Auth::user()->user_level_id, [1,2]))
+                    @if ( in_array( Auth::user()->user_level_id, [1,2]) || (in_array(Auth::user()->position, [1,2,9]) ) )
                         <li class="nav-header"><strong>ADMINISTRATOR</strong></li>
-                        <li class="nav-item">
-                            <a href="{{ route('user') }}" class="nav-link">
-                                <i class="fas fa-users"> </i>
-                                <p>
-                                    User
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('defectsinfo') }}" class="nav-link">
-                                <i class="fas fa-bolt"> </i>
-                                <p>
-                                    Defects
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('process') }}" class="nav-link">
-                                <i class="fas fa-list-ol"> </i>
-                                <p>
-                                    Process / Station
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('materialprocess') }}" class="nav-link">
-                                <i class="fas fa-list-ol"> </i>
-                                <p>
-                                    Matrix
-                                </p>
-                            </a>
-                        </li>
+                        @if (in_array(Auth::user()->user_level_id, [1,2]) || (in_array(Auth::user()->position, [1,2,9]) ))
+                            <li class="nav-item">
+                                <a href="{{ route('user') }}" class="nav-link">
+                                    <i class="fas fa-users"> </i>
+                                    <p>
+                                        User
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('defectsinfo') }}" class="nav-link">
+                                    <i class="fas fa-bolt"> </i>
+                                    <p>
+                                        Defects
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('process') }}" class="nav-link">
+                                    <i class="fas fa-list-ol"> </i>
+                                    <p>
+                                        Process / Station
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('materialprocess') }}" class="nav-link">
+                                    <i class="fas fa-list-ol"> </i>
+                                    <p>
+                                        Matrix
+                                    </p>
+                                </a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a href="{{ route('materialprocess') }}" class="nav-link">
+                                    <i class="fas fa-list-ol"> </i>
+                                    <p>
+                                        Matrix
+                                    </p>
+                                </a>
+                            </li>
+                        @endif
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,2,5]))
+                    @if ( in_array(Auth::user()->position, [0,2,5]))
                         <li class="nav-header mt-3"><strong>QUALITY CONTROL</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -166,7 +177,7 @@
                         </a>
                     </li> --}}
 
-                    @if (in_array(Auth::user()->position, [0,1,4,11]))
+                    @if (in_array(Auth::user()->position, [0,1,4,11]) && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>STAMPING</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -219,7 +230,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,4,6,7,9,11,13,2,5]))
+                    @if (in_array(Auth::user()->position, [0,4,6,7,9,11,13,2,5]) && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>PACKING</strong></li>
 
                         <li class="nav-item has-treeview">
@@ -248,7 +259,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,7,8,9,10]))
+                    @if (in_array(Auth::user()->position, [0,7,8,9,10])  && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>PPC</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -292,7 +303,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,6]))
+                    @if (in_array(Auth::user()->position, [0,6])  && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>WAREHOUSE</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -336,8 +347,10 @@
 
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0]))
-                        <li class="nav-header mt-3 font-weight-bold">MOLDING</li>
+                    @if (in_array(Auth::user()->position, [0,1,4,11])  || in_array(Auth::user()->section, [0,2]))
+                        <li class="nav-header mt-3 font-weight-bold">MOLDING
+                             {{-- {{ Auth::user()->section }} --}}
+                        </li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
                                 <div class="d-flex justify-content-between align-items-center">
@@ -398,7 +411,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0]))
+                    @if (in_array(Auth::user()->position, [0,4,6,7,9,11,13,2,5]) || in_array(Auth::user()->section, [0,2]))
                         {{-- <li class="nav-header mt-3 font-weight-bold">ASSEMBLY</li>
                         <li class="nav-item has-treeview"> --}}
                             {{-- <a href="#" class="nav-link">
@@ -446,17 +459,17 @@
                                         <p>Packing and Shipping</p>
                                     </a>
                                 </li>
-                                
+
                             </ul>
                         </li>
                     {{-- @endif --}}
 
-                    @if (in_array(Auth::user()->position, [0,8,9,10]))
+                    @if (in_array(Auth::user()->position, [0,2,8,9,10]))
                         <li class="nav-header mt-3"><strong>TRACEABILITY REPORT</strong></li>
                         <li class="nav-item">
                             <a href="{{ route('cn171_traceability_report') }}" class="nav-link">
                                 <i class="far fa-circle nav-icon ml-2">  </i>
-                                <p> Export CN171 Traceability Report</p>
+                                <p> Export Stamping Traceability Report</p>
                             </a>
                         </li>
                         <li class="nav-item">
@@ -473,8 +486,8 @@
                         </li>
                     @endif
 
-                    <li class="nav-header mt-3"><strong>MACHINE PARAMETER</strong></li>
-                    <li class="nav-item">
+                    <li class="nav-header mt-3  d-none"><strong>MACHINE PARAMETER</strong></li>
+                    <li class="nav-item  d-none">
                         <a href="{{ route('machine_parameter') }}" class="nav-link">
                             <i class="far fa-circle nav-icon ml-2">  </i>
                             <p> MRPS</p>

@@ -282,6 +282,15 @@
                 </div>
 
                 <div class="form-group">
+                  <label>Section</label>
+                    <select class="form-control select2bs4" name="section" style="width: 100%;" id="selEditUserSection" required>
+                      <option selected value="0">N/A</option>
+                      <option value="1">Stamping</option>
+                      <option value="2">Molding</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <input type="checkbox" name="with_oqc_stamp" id="chkEditUserWithOQCStamp">
                         <label>OQC Stamp</label>
                     <input type="text" class="form-control" name="oqc_stamp" id="txtEditUserOQCStamp" disabled="disabled">
@@ -532,10 +541,10 @@
 
                 <div class="form-group">
                   <label>Section</label>
-                    <select class="form-control select2bs4" name="section" style="width: 100%;" id="selAddUserSection">
-                      <option selected value="" disabled>N/A</option>
-                      <option value="0">Stamping</option>
-                      <option value="1">Molding</option>
+                    <select class="form-control select2bs4" name="section" style="width: 100%;" id="selAddUserSection" required>
+                      <option selected value="0">N/A</option>
+                      <option value="1">Stamping</option>
+                      <option value="2">Molding</option>
                     </select>
                 </div>
                 
@@ -692,9 +701,12 @@
                 render: {
                   display: function (data, type, row) {
                     if (row.section == 0) {
-                      return "Stamping";
+                      return "N/A";
                     }
                     else if (row.section == 1) {
+                      return "Stamping";
+                    }
+                    else if (row.section == 2) {
                       return "Molding";
                     }
 

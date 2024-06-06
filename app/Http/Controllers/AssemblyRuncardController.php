@@ -192,16 +192,22 @@ class AssemblyRuncardController extends Controller
                                 </button>";
                 }
 
-                if($row->status == 0 || $row->status == 1){
+                if($row->status == 0 ){
                     $result .= "<button class='btn btn-primary btn-sm mr-1 btnUpdateAssemblyRuncardData' assembly_runcard-id='$row->id'>
-                                    <i class='fa-solid fa-pen-to-square'></i>
-                                </button>";
+                                <i class='fa-solid fa-pen-to-square'></i>
+                            </button>";
+                }
 
-                    if($row->status == 1){
-                        $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' assembly_runcard-status='".$row->status."' id='btnSubmitIPQCData'>
-                                        <i class='fa-solid fa-circle-check'></i>
-                                    </button>";
-                    }
+                if($row->status == 1 || $row->status == 2 || $row->status == 3){
+                    $result .= "<button class='btn btn-info btn-sm mr-1 btnViewAssemblyRuncardData' assembly_runcard-id='$row->id'>
+                                    <i class='fa-solid fa-eye' title='View IPQC Inspection'></i>
+                                </button>";
+                }
+
+                if($row->status == 1){
+                    $result .= "<button class='btn btn-success btn-sm mr-1' assembly_runcard-id='".$row->id."' assembly_runcard-status='".$row->status."' id='btnSubmitIPQCData'>
+                                    <i class='fa-solid fa-circle-check'></i>
+                                </button>";
                 }
 
                 // if($row->status == 2){
@@ -214,11 +220,7 @@ class AssemblyRuncardController extends Controller
                 //                 </button>";
                 // }
 
-                if($row->status == 2 || $row->status == 3){
-                    $result .= "<button class='btn btn-info btn-sm mr-1 btnViewAssemblyRuncardData' assembly_runcard-id='$row->id'>
-                                    <i class='fa-solid fa-eye' title='View IPQC Inspection'></i>
-                                </button>";
-                }
+
                 $result .= "</center>";
 
                 return $result;
@@ -263,17 +265,20 @@ class AssemblyRuncardController extends Controller
             return DataTables::of($AssemblyRuncardStationData)
             ->addColumn('action', function($station){
                 $result = '';
-                if($station->status == 0 || $station->status == 1){
-                    $result .= "<center>
-                                    <button class='btn btn-primary btn-sm mr-1 btnUpdateAssyRuncardStationData' assy_runcard_stations-id='$station->id'><i class='fa-solid fa-pen-to-square'></i></button>
-                                </center>";
-                }
 
-                if($station->status == 2 || $station->status == 3){
+                //CLARK COMMENT TO DISABLE EDITING PER STATION
+                // if($station->status == 0 || $station->status == 1){
+                //     $result .= "<center>
+                //                     <button class='btn btn-primary btn-sm mr-1 btnUpdateAssyRuncardStationData' assy_runcard_stations-id='$station->id'><i class='fa-solid fa-pen-to-square'></i></button>
+                //                 </center>";
+                // }
+
+                //CLARK COMMENT TO DISABLE EDITING PER STATION
+                // if($station->status == 2 || $station->status == 3){
                     $result .= "<center>
                                     <button class='btn btn-primary btn-sm mr-1 btnViewAssyRuncardStationData' assy_runcard_stations-id='$station->id'><i class='fa-solid fa-eye'></i></button>
                                 </center>";
-                }
+                // }
 
                 return $result;
             })
@@ -315,7 +320,7 @@ class AssemblyRuncardController extends Controller
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
 
-        if($request->series_name == 'CN171P-007-1002-VE(01)'){
+        if($request->device_name == 'CN171P-007-1002-VE(01)'){
             $validate_array = ['po_number' => 'required', 'p_zero_two_prod_lot' => 'required'];
         }else{
             $validate_array = ['po_number' => 'required', 's_zero_seven_prod_lot' => 'required', 's_zero_two_prod_lot' => 'required'];
@@ -330,7 +335,7 @@ class AssemblyRuncardController extends Controller
                 if(!isset($request->assy_runcard_id)){
                     AssemblyRuncard::insert([
                                     'device_name'            => $request->device_name,
-                                    'parts_code'              => $request->device_code,
+                                    'part_code'              => $request->device_code,
                                     'po_number'              => $request->po_number,
                                     'po_quantity'            => $request->po_quantity,
                                     'required_output'        => $request->required_output,
@@ -386,7 +391,6 @@ class AssemblyRuncardController extends Controller
         $data = $request->all();
 
         // return $data;
-
         $validator = Validator::make($data, [
             'runcard_station' => 'required'
         ]);
@@ -512,7 +516,6 @@ class AssemblyRuncardController extends Controller
             $mat_process_steps[] = $processes->step;
         }
 
-        // return $assy_runcard_details;
         // $assy_runcard_details = $assy_runcard_details->
         $existing_station = AssemblyRuncardStation::whereNull('deleted_at')->where('assembly_runcards_id', $request->runcard_id)->get();
         $steps = [];
@@ -522,19 +525,25 @@ class AssemblyRuncardController extends Controller
         $mat_process_steps[] = $steps;
 
         // return $mat_process_steps;
+        // return $steps;
         // situation #1 CN171P UPTO STEP 2 ONLY
         // situation #2 CN171S UPTO STEP 3
         // $current_step = 0;
         if(in_array($steps, $mat_process_steps)){
+            // return 'dito';
             if(count($steps) < count($mat_process_steps) - 1){
                 $current_step = count($steps)+1;
-                $output_qty = AssemblyRuncardStation::select('output_quantity')->whereNull('deleted_at')
+                $output_qty = AssemblyRuncardStation::whereNull('deleted_at')
                                                         ->where('assembly_runcards_id', $request->runcard_id)
                                                         ->where('station_step', count($steps))
                                                         ->first();
 
-                $output_quantity = $output_qty->output_quantity;
-
+                if(isset($output_qty->output_quantity)){
+                    $output_quantity = $output_qty->output_quantity;
+                }else{
+                    $output_quantity = '';
+                }
+                // return $output_qty;
             }else{
                 $current_step = 0; //END STATION STEP
                 $output_quantity = '';

@@ -20,7 +20,7 @@ function GetPpsWarehouse(cboElement){
                 result = '<option selected disabled> --- Select --- </option>';
                 for(let index = 0; index < response['getPartNumber'].length; index++){
                     // result += '<option value="' + response['getPartNumber'][index].PartNumber +'">'+ response['getPartNumber'][index].PartNumber +'</option>'
-                    result += '<option value="' + response['getPartNumber'][index].id +'">'+ response['getPartNumber'][index].PartNumber +'</option>'
+                    result += '<option value="' + response['getPartNumber'][index].id +'">'+ response['getPartNumber'][index].PartNumber +' / '+ response['getPartNumber'][index].MaterialType +'</option>'
                 }
             }
             else{
@@ -226,6 +226,7 @@ function UpdateMimf(){
             }else if(response['result'] == 2){
                 alert('PMI Po No. "'+$("#txtMimfPmiPoNo").val()+'" is already exist!')
             }else{
+                $('.mimfClass').removeClass('is-invalid')
                 $("#formMimf")[0].reset()
                 $('#modalMimf').modal('hide')
                 dataTableMimf.draw()
@@ -256,13 +257,37 @@ function GetMimfById(mimfID,whseID,matrixID,poReceivedID,ppdMimfStampingMatrixID
         },
         dataType: "json",
         beforeSend: function(){
-            
+            $('.mimfClass').removeClass('is-invalid')
         },
 
         success: function(response){
             let getMimfToEdit   = response['getMimfToEdit']
             console.log(getMimfToEdit)
             if(getMimfToEdit.length > 0){
+                if(getMimfToEdit[0].category == 1){
+                    $('.first').prop('checked', true)
+                    $('.second').prop('disabled', true)
+                }else{
+                    $('.first').prop('disabled', true)
+                    $('.second').prop('checked', true)
+                }         
+
+                if( $('#radioBtnSecondCategory').is(':checked') && $('#txtMimfStatus').val() == 1){
+                    $('.second-stamping-pins-pcs').removeClass('d-none')
+                    $('.first-stamping-needed-kgs').addClass('d-none')
+                }else{
+                    $('.second-stamping-pins-pcs').addClass('d-none')
+                    $('.first-stamping-needed-kgs').removeClass('d-none')
+                }
+
+                if($('.update-mimf-pps_request').is(':checked')){
+                    $('.update-mimf-pps_request').attr('required',false);
+                    $('.second-stamping-pins-pcs').removeClass('d-none')
+                    $('.first-stamping-needed-kgs').addClass('d-none')
+                }else{
+                    $('.update-mimf-pps_request').attr('required',true);
+                }
+
                 $('#txtMimfControlNo').val(getMimfToEdit[0].control_no)
                 $('#txtMimfPmiPoNo').val(getMimfToEdit[0].pmi_po_no)
                 $('#dateMimfDateOfInssuance').val(getMimfToEdit[0].date_issuance)
@@ -272,6 +297,7 @@ function GetMimfById(mimfID,whseID,matrixID,poReceivedID,ppdMimfStampingMatrixID
                 $('#txtMimfMaterialCode').val(getMimfToEdit[0].material_code)
                 $('#txtMimfMaterialType').val(getMimfToEdit[0].material_type)
                 $('#txtMimfQuantityFromInventory').val(getMimfToEdit[0].qty_invt)
+                $('#txtMimfRequestPinsPcs').val(getMimfToEdit[0].request_pins_pcs)
                 $('#txtMimfNeededKgs').val(getMimfToEdit[0].needed_kgs)
                 $('#txtMimfVirginMaterial').val(getMimfToEdit[0].virgin_material)
                 $('#txtMimfRecycled').val(getMimfToEdit[0].recycled)
@@ -290,6 +316,7 @@ function UpdateMimfStampignMatrix(){
         data: $('#formMimfStampingMatrix').serialize(),
         dataType: "json",
         beforeSend: function(){
+            $('.mimfClass').removeClass('is-invalid')
             $("#iBtnMimfStampingMatrixIcon").addClass('spinner-border spinner-border-sm')
             $("#btnMimfStampingMatrix").addClass('disabled')
             $("#iBtnMimfStampingMatrixIcon").removeClass('fa fa-check')

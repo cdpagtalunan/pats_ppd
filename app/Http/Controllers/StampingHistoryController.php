@@ -47,6 +47,7 @@ class StampingHistoryController extends Controller
         date_default_timezone_set('Asia/Manila');
 
         $get_stamping_history = StampingHistory::where('part_name', $request->materialName)->where('logdel', 0)->orderBy('id', 'DESC')->get();
+        // return $get_stamping_history[0]->operator;
         return DataTables::of($get_stamping_history)
         ->addColumn('action', function($get_stamping_info){
             $result = '<center>';
@@ -87,7 +88,11 @@ class StampingHistoryController extends Controller
             $result = '<center>';
             for($x=0; $x < count($explode_operator); $x++){
                 $get_operator = user::where('employee_id', $explode_operator[$x])->get();
-                $result .= $get_operator[0]->firstname.' '.$get_operator[0]->lastname."\n\n";
+                if(count($get_operator) > 0){
+                    $result .= $get_operator[0]->firstname.' '.$get_operator[0]->lastname."\n\n\n";
+                }else{
+                    $result .= 'The operator employee no. in the user list does not match';
+                }
             }
             $result .= '</center>';
             return $result;

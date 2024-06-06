@@ -16,7 +16,7 @@
 @auth
 @extends($layout)
 
-@section('title', 'Dashboard')
+@section('title', 'Checksheet')
 
 @section('content_page')
 {{-- <meta name="csrf-token" content="{{ csrf_token() }}" />  --}}

@@ -93,9 +93,6 @@ const getPOReceivedByPONumber = (poNumber) => {
                 // let poQuantityPercentage = parseFloat(poQuantity * 5 * 0.05);
                 // let requiredOutput = (poQuantity * 5) + poQuantityPercentage;
                 // $('#textRequiredOutput', $('#formSecondMolding')).val(requiredOutput.toFixed(2));
-
-
-                
             }
             else{
                 toastr.error('No PO Found')
@@ -107,26 +104,46 @@ const getPOReceivedByPONumber = (poNumber) => {
     });
 }
 
+/**
+ * 
+ * Original Code
+ * Commented as of 04-11-2024
+ */
+// const checkMaterialLotNumber = (qrScannerValue) => {
+//     $.ajax({
+//         type: "get",
+//         url: "check_material_lot_number",
+//         data: {
+//             material_lot_number: qrScannerValue,
+//         },
+//         dataType: "json",
+//         success: function (response) {
+//             $('#textMaterialLotNumber').val('');
+//             $('#textMaterialName').val('');
+//             if(response[0] != undefined){
+//                 $('#textMaterialLotNumber').val(response[0].material_lot_number);
+//                 $('#textMaterialName').val(response[0].material_name);
+//                 $('#modalQrScanner').modal('hide');
+//             }else{
+//                 toastr.error('Incorrect material lot number.')
+//             }
+//         }
+//     });
+// }
+
 const checkMaterialLotNumber = (qrScannerValue) => {
-    $.ajax({
-        type: "get",
-        url: "check_material_lot_number",
-        data: {
-            material_lot_number: qrScannerValue,
-        },
-        dataType: "json",
-        success: function (response) {
-            $('#textMaterialLotNumber').val('');
-            $('#textMaterialName').val('');
-            if(response[0] != undefined){
-                $('#textMaterialLotNumber').val(response[0].material_lot_number);
-                $('#textMaterialName').val(response[0].material_name);
-                $('#modalQrScanner').modal('hide');
-            }else{
-                toastr.error('Incorrect material lot number.')
-            }
-        }
-    });
+    let splittedQrScannerValue = qrScannerValue.split(" | ");
+    console.log('splittedQrScannerValue ', splittedQrScannerValue);
+    console.log('splittedQrScannerValue ', splittedQrScannerValue[0]);
+    console.log('splittedQrScannerValue ', splittedQrScannerValue[3]);
+    
+    
+    $('#textMaterialLotNumber').val('');
+    $('#textMaterialName').val('');
+    $('#textMaterialLotNumber').val(splittedQrScannerValue[0]);
+    $('#textMaterialName').val(splittedQrScannerValue[3]);
+    $('#modalQrScanner').modal('hide');
+            
 }
 
 const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue, scannerRow = null) => {
@@ -362,6 +379,26 @@ const getDiesetDetailsByDeviceNameSecondMolding = (deviceName) => {
 
             let revNo = response['rev_no'];
             $('#textProductionLot', $('#formSecondMolding')).val(`${revNo}${twoDigitYear}${twoDigitMonth}${twoDigitDay}`);
+        }
+    });
+}
+
+function getSublotQty(subLotId){
+    $.ajax({
+        type: "get",
+        url: "get_sublot_qty",
+        data: {
+            "sublot_id" : subLotId,
+        },
+        dataType: "json",
+        success: function (response) {
+
+			if(response['sublotDetails'] != null){
+                    $('#txtSublotQty').val(response['sublotDetails'][0]['batch_qty'])
+			}else{
+                toastr.warning('warning messages');
+            }
+			
         }
     });
 }

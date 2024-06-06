@@ -16,7 +16,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'IQC Inspection')
 
     @section('content_page')
 
@@ -305,6 +305,8 @@
                     }
                 });
             */
+                
+
                 $(tbl.iqcWhsDetails).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 
@@ -425,14 +427,14 @@
                     if(e.keyCode == 13){
                         try{
                             scannedItem = JSON.parse($(this).val());
-                            console.log('scannedItem', scannedItem);
+                            // console.log('scannedItem', scannedItem);
                             $('#tblWhsDetails tbody tr').each(function(index, tr){
-                                let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+                                let lot_no = $(tr).find('td:eq(6)').text().trim();
 
                                 let powerOff = $(this).find('td:nth-child(1)').children().children();
 
-                                // console.log('tblWhsDetails', lot_no);
-                                // console.log('scannedItem', scannedItem['lot_no']);
+                                console.log('tblWhsDetails', lot_no);
+                                console.log('scannedItem', scannedItem['new_lot_no']);
                                 if(scannedItem['new_lot_no'] === lot_no){
                                     $(tr).addClass('checked-ok');
                                     powerOff.removeAttr('style');

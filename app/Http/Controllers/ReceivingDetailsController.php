@@ -86,15 +86,25 @@ class ReceivingDetailsController extends Controller
             $result = "";
             $result .= "<center>";
             if($receiving_details_data->status == 0){
-                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$receiving_details_data->id'><i class='fa-solid fa-edit'></i></button>&nbsp";
+                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status' data-status='$receiving_details_data->status'><i class='fa-solid fa-edit'></i></button>&nbsp";
             }else if($receiving_details_data->status == 1){
-                $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
-            }else{
+                if($receiving_details_data->printing_status == 0) {   
+                    $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status' data-status='$receiving_details_data->status'><i class='fa-solid fa-edit'></i></button>&nbsp";   
+                    $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
+                }else{
+                    //REPRINTING
+                    $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status' data-status='$receiving_details_data->status'><i class='fa-solid fa-edit'></i></button>&nbsp";
+                    $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
+                }
+            }
+            else{
+                $result .= "<button class='btn btn-primary btn-sm btnEditReceivingDetails' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status' data-status='$receiving_details_data->status'><i class='fa-solid fa-edit'></i></button>&nbsp";
                 $result .= "<button class='btn btn-primary btn-sm btnPrintReceivingData' data-id='$receiving_details_data->id' data-printcount='$receiving_details_data->printing_status'><i class='fa-solid fa-qrcode'></i></button>";
             }
             $result .= "</center>";
             return $result;
         })
+
         ->addColumn('status', function($receiving_details_data){
             $result = "";
             $result .= "<center>";
@@ -186,6 +196,9 @@ class ReceivingDetailsController extends Controller
         // return $data;
 
         // return $request->scan_id;
+        // return $request->receiving_printing_status;
+
+        // return $request->receiving_status;
 
         $pmi_supplier_lot_no = $request->pmi_lot_no .'/'. $request->supplier_lot_no;
 
@@ -198,7 +211,8 @@ class ReceivingDetailsController extends Controller
         $validator = Validator::make($data, $rules);
         if($validator->passes()){
         // return 'update';
-        ReceivingDetails::where('id', $request->receiving_details_id)
+        if($request->receiving_status == 2 || $request->receiving_status == 1){
+            ReceivingDetails::where('id', $request->receiving_details_id)
             ->update([
                 'supplier_name' => $request->supplier_name,
                 'supplier_lot_no' => $request->supplier_lot_no,
@@ -206,8 +220,23 @@ class ReceivingDetailsController extends Controller
                 'supplier_quantity' => $request->supplier_qty,
                 'supplier_pmi_lot_no' => $pmi_supplier_lot_no,
                 'status' => 1,
+                'printing_status' => 0,
                 'updated_by' => $request->scan_id,
             ]);
+        }else{
+            ReceivingDetails::where('id', $request->receiving_details_id)
+            ->update([
+                'supplier_name' => $request->supplier_name,
+                'supplier_lot_no' => $request->supplier_lot_no,
+                'invoice_no'     => $request->invoice_no,
+                'supplier_quantity' => $request->supplier_qty,
+                'supplier_pmi_lot_no' => $pmi_supplier_lot_no,
+                'status' => 1,
+                // 'printing_status' => 0,
+                'updated_by' => $request->scan_id,
+            ]);
+        }
+        
             return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
         }else{
             return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);

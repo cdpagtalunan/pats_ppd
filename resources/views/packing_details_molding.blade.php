@@ -3,7 +3,7 @@
 @auth
     @extends($layout)
 
-    @section('title', 'Material Process')
+    @section('title', 'Packing')
 
     @section('content_page')
 
@@ -179,93 +179,6 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="modalEditPackingDetails" data-bs-backdrop="static">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title"><i class="fa fa-plus"></i> Edit Packing Details</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form method="post" id="formEditPackingDetails" autocomplete="off">
-                    @csrf
-                    <div class="modal-body">
-                        <input type="hidden" id="txtPackingDetailsId" name="packing_details_id">
-
-                        <div class="row">
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">PO #</label>
-                                    <input type="text" class="form-control form-control-sm" name="po_no" id="txtPONumber" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">PO Quantity</label>
-                                    <input type="text" class="form-control form-control-sm" name="po_quantity" id="txtPOQuantity" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Parts Name</label>
-                                    <input type="text" class="form-control form-control-sm" name="parts_name" id="txtPartsName" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Production Lot #</label>
-                                    <input type="text" class="form-control form-control-sm" name="prod_lot_no" id="txtProdLotNumber" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Drawing #</label>
-                                    <input type="text" class="form-control form-control-sm" name="drawing_no" id="txtDrawingNumber" readonly>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Delivery Balance</label>
-                                    <input type="text" class="form-control form-control-sm" name="delivery_balance" id="txtDeliveryBalance" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">No. of Cuts</label>
-                                    <input type="text" class="form-control form-control-sm" name="number_of_cuts" id="txtNumberOfCuts" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label class="form-label">Material Quality</label>
-                                    <input type="text" class="form-control form-control-sm" name="material_quality" id="txtMaterialQuality" autocomplete="off">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="modal-footer justify-content-between">
-                        <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" id="btnEditPackingDetails" class="btn btn-primary"><i id="btnEditPackingDetailsIcon"
-                                class="fa fa-check"></i> Save</button>
-                    </div>
-                </form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
 
      <!-- MODALS -->
      <div class="modal fade" id="modalPackingScanLotNumber">
@@ -330,7 +243,7 @@
                                 <table id="tblViewSublotDetails" class="table table-sm table-bordered table-striped table-hover"style="width: 100%;">
                                     <thead>
                                         <tr>
-                                            {{-- <th>Action</th> --}}
+                                            <th>Action</th>
                                             {{-- <th>Status</th> --}}
                                             <th>Sub Lot #</th>
                                             <th>PO</th>
@@ -393,357 +306,393 @@
                 <!-- /.modal-dialog -->
         </div>
 
+        <div class="modal fade" id="modalEditSublotQty" data-bs-backdrop="static">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"><i class="fa fa-plus"></i> Edit Sublot Qty</h4>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form method="post" id="formEditSublotQty" autocomplete="off">
+                        @csrf
+
+                        <div class="modal-body">
+                            <input type="hidden" id="txtSublotId" name="sublot_id">
+    
+                            <div class="row">  
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="form-label">Batch Quantity</label>
+                                        <input type="text" class="form-control form-control-sm" name="sublot_qty" id="txtSublotQty">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+    
+                        <div class="modal-footer justify-content-between">
+                            <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="btnEditPackingDetails" class="btn btn-primary"><i id="btnEditPackingDetailsIcon"
+                                    class="fa fa-check"></i> Save</button>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal --> 
+
     @endsection
 
     @section('js_content')
-        <script type="text/javascript">
+    <script type="text/javascript">
 
-                $('.select2').select2({
-                    theme: 'bootstrap-5'
-                });
+            $('.select2').select2({
+                theme: 'bootstrap-5'
+            });
 
-            let scannedPO;
-            let ParseScannedPo;
-            let PackingMoldingId;
+        let scannedPO;
+        let ParseScannedPo;
+        let PackingMoldingId;
 
-            $(document).ready(function(){
+        $(document).ready(function(){
 
-                $('#modalScanPO').on('shown.bs.modal', function () {
-                    $('#txtScanPO').focus();
-                    $('#txtScanPO').on('keyup', function(e){
-                        if(e.keyCode == 13){
-
-                            scannedPO = $('#txtScanPO').val();
-                            ParseScannedPo = JSON.parse(scannedPO);
-                            // console.log(ParseScannedPo['cat']);
-                            if(ParseScannedPo['cat'] != 1){
-                                // alert('heey');
-                                $('#txtSearchPONum').val(ParseScannedPo['po']);
-                                $('#txtSearchMatName').val(ParseScannedPo['name']);
-                                $('#txtSearchPOQty').val(ParseScannedPo['qty']);
-
-                                $('#modalScanPO').modal('hide');
-                                dtPackingDetailsFE.draw()
-                            }else{
-
-                                toastr.error('Invalid Sticker');
-                            }
-
-                        }
-                    });
-                });
-
-                dtPackingDetailsFE = $("#tblPackingDetailsForEndorsement").DataTable({
-                    "processing"    : false,
-                    "serverSide"    : true,
-                    "destroy"       : true,
-                    "ajax" : {
-                        url: "view_packing_details_fe",
-                        data: function (param){
-                            param.po_no = $("#txtSearchPONum").val();
-                        },
-                    },
-
-                    "columns":[
-                        { "data" : "action", orderable:false, searchable:false },
-                        { "data" : "status"},
-                        { "data" : "stamping_production_info.part_code"},
-                        { "data" : "stamping_production_info.material_name"},
-                        { "data" : "fs_lot_no"},
-                        { "data" : "plating_lot_no"},
-                        { "data" : "stamping_production_info.prod_lot_no"},
-                        { "data" : "stamping_production_info.ship_output"},
-                        { "data" : "first_molding_info.user_validated_by_info.firstname"},
-                        { "data" : "first_molding_info.user_checked_by_info.firstname" },
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": "_all"},
-                        {
-                            "targets": [8,9],
-                            "data": null,
-                            "defaultContent": "---"
-                        },
-                    ],
-                });
-
-                //  dtPackingDetailsE = $("#tblPackingDetailsEndorsed").DataTable({
-                //     "processing"    : false,
-                //     "serverSide"    : true,
-                //     "destroy"       : true,
-                //     "ajax" : {
-                //         url: "view_packing_details_e",
-                //         data: function (param){
-                //             param.po_no = $("#txtSearchPONum").val();
-                //         },
-                //     },
-
-                //     "columns":[
-                //         { "data" : "action", orderable:false, searchable:false },
-                //         { "data" : "stamping_production_info.part_code"},
-                //         { "data" : "stamping_production_info.material_name"},
-                //         { "data" : "stamping_production_info.prod_lot_no"},
-                //         { "data" : "stamping_production_info.ship_output"},
-                //         { "data" : "first_molding_info.endorsedby" },
-                //         { "data" : "first_molding_info.date_endorsed"},
-                //         { "data" : "first_molding_info.receivedby"},
-                //         { "data" : "first_molding_info.date_received" },
-                //     ],
-                //     "columnDefs": [
-                //         {"className": "dt-center", "targets": "_all"},
-                //         {
-                //             "targets": [5,6,7,8],
-                //             "data": null,
-                //             "defaultContent": "---"
-                //         },
-                //     ],
-                // });
-
-                let rowCount;
-                let dataStatus;
-                let moldingId;
-                $(document).on('click', '.btnViewSublotForScanning', function(e){
-                    let stampingDetailsId =  $(this).attr('data-id');
-                    moldingId = $(this).attr('molding-id');
-                    // console.log(moldingId);
-                    dataStatus =  $(this).attr('data-status');
-
-                    console.log(dataStatus);
-
-                    if(dataStatus == 0 || dataStatus == null){
-                        $('#btnVerifyScanLotNumber').removeAttr('disabled');
-                    }
-
-                    let oqcDetailsId =  $(this).attr('oqc-id');
-                    let poNumber =  $(this).attr('po-no');
-                    $('#txtMoldingId').val(moldingId)
-                    $('#txtOqcDetailsId').val(oqcDetailsId);
-                    $('#txtScanPONumber').val(poNumber);
-                    $('#txtStampingDetailsId').val(stampingDetailsId);
-
-                    $('#modalViewSubLotDetails').modal('show');
-                    dtViewSublotDetails.draw();
-                    setTimeout(() => {
-                        rowCount = $('#tblViewSublotDetails tbody tr').length;
-                        // rowCount = rowCount - 1;
-                        // console.log('rowCount', rowCount);
-                    }, 500);
-                });
-
-                let dtViewSublotDetails = $("#tblViewSublotDetails").DataTable({
-                    "processing" : true,
-                    "serverSide" : true,
-                    "info"       : false,
-                    "ordering"   : false,
-                    "paging"     : false,
-                    "bFilter"     : false,
-                    "ajax" : {
-                        url: "view_sublot_details",
-                        data: function(param){
-                        param.stamping_details_id =  $("#txtStampingDetailsId").val();
-                        }
-                    },
-                    fixedHeader: true,
-                    "columns":[
-                        // { "data"  : 'DT_RowIndex'},
-                        // { "data" : "action", orderable:false, searchable:false },
-                        // { "data" : "status"},
-                        { "data" : "counter"},
-                        { "data" : "stamping_info.po_num"},
-                        { "data" : "stamping_info.material_name"},
-                        { "data" : "stamping_info.prod_lot_no"},
-                        { "data" : "batch_qty"},
-                    ],
-                });
-
-                $('#modalPackingScanLotNumber').on('shown.bs.modal', function () {
-                    $('#txtScanPackingLotNumber').focus();
-                });
-
-                $('#txtScanPackingLotNumber').on('keyup', function(e){
+            $('#modalScanPO').on('shown.bs.modal', function () {
+                $('#txtScanPO').focus();
+                $('#txtScanPO').on('keyup', function(e){
                     if(e.keyCode == 13){
-                        try{
-                            scannedItem = JSON.parse($(this).val());
-                            // console.log('scannedItem', scannedItem);
-                            $('#tblPackingDetailsForEndorsement tbody tr').each(function(index, tr){
-                                let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
 
-                                let powerOff = $(this).find('td:nth-child(1)').children();
+                        scannedPO = $('#txtScanPO').val();
+                        ParseScannedPo = JSON.parse(scannedPO);
+                        // console.log(ParseScannedPo['cat']);
+                        if(ParseScannedPo['cat'] != 1){
+                            // alert('heey');
+                            $('#txtSearchPONum').val(ParseScannedPo['po']);
+                            $('#txtSearchMatName').val(ParseScannedPo['name']);
+                            $('#txtSearchPOQty').val(ParseScannedPo['qty']);
 
-                                console.log('scannedItem', scannedItem['production_lot_no']);
-                                console.log('lot_no', lot_no);
-                                console.log('powerOff', powerOff);
-
-                                if(scannedItem['production_lot_no'] === lot_no){
-                                    $(tr).addClass('checked-ok');
-                                    powerOff.removeAttr('style');
-                                    $('#modalPackingScanLotNumber').modal('hide');
-                                }
-                                // console.log(lot_no);
-                            })
-                        }
-                        catch (e){
-                            toastr.error('Invalid Sticker');
-                            console.log(e);
-                        }
-                        $(this).val('');
-                    }
-                });
-
-
-                $('#modalVerifyData').on('shown.bs.modal', function () {
-                    $('#txtScanVerifyData').focus();
-                });
-
-                let idsOfSubLotDetails = [];
-                $('#txtScanVerifyData').on('keyup', function(e){
-                    if(e.keyCode == 13){
-                        try{
-                            // alert('hehe');
-                            scannedItem = JSON.parse($(this).val());
-                            console.log('scannedItem', scannedItem);
-                            if(scannedItem['cat'] == 2){
-                                $('#tblViewSublotDetails tbody tr').each(function(index, tr){
-                                    let second_stamping_sub_lot = $(tr).find('td:eq(0)').text().trim().toUpperCase();
-                                    let second_stamping_prod_lot = $(tr).find('td:eq(3)').text().trim().toUpperCase();
-                                    // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
-
-                                    let powerOff = $(this).find('td:nth-child(1)').children();
-
-                                    // 
-
-                                    if(scannedItem['sublot_counter'].substring(0,1) == second_stamping_sub_lot && scannedItem['production_lot_no'] === second_stamping_prod_lot){
-                                        $(tr).addClass('checked-ok');
-                                        let id = $(this).attr('id');
-                                        if(!idsOfSubLotDetails.includes(id)){
-                                            idsOfSubLotDetails.push(id);
-                                        }
-                                    }
-
-                                    let scannedRow = dtViewSublotDetails.$('tr.checked-ok');
-                                    // If some rows are selected
-                                    if(scannedRow.length){
-                                        // console.log('selectedCount', scannedRow.length);
-                                        if (scannedRow.length == rowCount) {
-                                            $('#btnSaveSubLotDetails').removeAttr('disabled');
-                                            $('#modalVerifyData').modal('hide');
-
-                                        }
-                                    // Otherwise, if no rows are selected
-                                    }
-
-                                    console.log(`scannedItemSublot`, scannedItem['sublot_counter']);
-                                    console.log(`tblSubLot`, second_stamping_sub_lot);
-                                })
-                            }else{
-                                toastr.error('Invalid Sticker');
-                            }
-                        }
-                        catch (e){
-                            toastr.error('Invalid Sticker');
-                            // console.log(e);
-                        }
-                        $(this).val('');
-                    }
-                });
-
-                $('#btnSaveSubLotDetails').on('click', function(e){
-                    $('#modalScanEmpId').modal('show');
-                    // alert('hehe');
-                });
-
-                $('#modalScanEmpId').on('shown.bs.modal', function () {
-                    $('#txtScanPackerId').focus();
-                });
-
-                $('#formOqcDetails').submit(function(e){
-                    e.preventDefault();
-                });
-
-                $('#txtScanPackerId').on('keyup', function(e){
-                    let toScanEmpId =  $('#txtScanPackerId').val();
-                    let toScanMoldingId   =  $('#txtMoldingId').val();
-                    let stampingDetailsId   =  $('#txtStampingDetailsId').val();
-                    let scannedEmpId = {
-                    'scanned_emp_id' : toScanEmpId,
-                    'molding_id'     : toScanMoldingId,
-                    'stamping_details_id'     : stampingDetailsId
-                    }
-                    if(e.keyCode == 13){
-                        if(moldingId != null){
-                            validateUser($(this).val().toUpperCase(), [2,5], function(result){
-                                if(result == true){
-                                    let data2 = $('#formOqcDetails').serialize()+ '&' + $.param(scannedEmpId);
-                                    // console.log(data2);
-                                    $.ajax({
-                                        type: "post",
-                                        url: "update_checked_by",
-                                        data: data2,
-                                        dataType: "json",
-                                        success: function (response) {
-                                            if(response['validation'] == 1){
-                                                toastr.error('Saving data failed!');
-
-                                            }else if(response['result'] == 0){
-                                                toastr.success('Validation Succesful!');
-                                                $("#formOqcDetails")[0].reset();
-                                                $('#modalScanEmpId').modal('hide');
-                                                $('#modalViewSubLotDetails').modal('hide');
-                                                dtPackingDetailsFE.draw();
-                                            }
-                                        }
-                                    });
-                                }
-                                else{ // Error Handler
-                                    toastr.error('User not authorize!');
-                                }
-
-                            });
+                            $('#modalScanPO').modal('hide');
+                            dtPackingDetailsFE.draw()
                         }else{
-                            validateUser($(this).val().toUpperCase(), [4,9], function(result){
-                            if(result == true){
-                                    e.preventDefault();
-                                    let data1 = $('#formOqcDetails').serialize() + '&' + $.param(scannedEmpId);
-                                    $.ajax({
-                                        type: "post",
-                                        url: "updated_counted_by",
-                                        data: data1,
-                                        dataType: "json",
-                                        success: function (response) {
-                                            if(response['validation'] == 1){
-                                                toastr.error('Saving data failed!');
-                                            }else if(response['result'] == 0){
-                                                toastr.success('Validation Succesful!');
-                                                $("#formOqcDetails")[0].reset();
-                                                $('#modalScanEmpId').modal('hide');
-                                                $('#modalViewSubLotDetails').modal('hide');
-                                                dtPackingDetailsFE.draw();
-                                            }
-                                        }
-                                    });
-                                }
-                                else{ // Error Handler
-                                    toastr.error('User not authorize!');
-                                }
 
-                            });
+                            toastr.error('Invalid Sticker');
                         }
 
-                        $(this).val('');
                     }
                 });
+            });
 
-                // $('#txtScanQcId').on('keyup', function(e){
-                //     let toScanQcId =  $('#txtScanQcId').val();
-                //     let scannedQcId = {
-                //     'qc_scan_id' : toScanQcId
-                //     }
-                //         if(e.keyCode == 13){
+            dtPackingDetailsFE = $("#tblPackingDetailsForEndorsement").DataTable({
+                "processing"    : false,
+                "serverSide"    : true,
+                "destroy"       : true,
+                "ajax" : {
+                    url: "view_packing_details_fe",
+                    data: function (param){
+                        param.po_no = $("#txtSearchPONum").val();
+                    },
+                },
 
-                //             $(this).val('');
-                //         }
-                // });
+                "columns":[
+                    { "data" : "action", orderable:false, searchable:false },
+                    { "data" : "status"},
+                    { "data" : "stamping_production_info.part_code"},
+                    { "data" : "stamping_production_info.material_name"},
+                    { "data" : "fs_lot_no"},
+                    { "data" : "plating_lot_no"},
+                    { "data" : "stamping_production_info.prod_lot_no"},
+                    { "data" : "stamping_production_info.ship_output"},
+                    { "data" : "first_molding_info.user_validated_by_info.firstname"},
+                    { "data" : "first_molding_info.user_checked_by_info.firstname" },
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": "_all"},
+                    {
+                        "targets": [8,9],
+                        "data": null,
+                        "defaultContent": "---"
+                    },
+                ],
+            });
+
+            //  dtPackingDetailsE = $("#tblPackingDetailsEndorsed").DataTable({
+            //     "processing"    : false,
+            //     "serverSide"    : true,
+            //     "destroy"       : true,
+            //     "ajax" : {
+            //         url: "view_packing_details_e",
+            //         data: function (param){
+            //             param.po_no = $("#txtSearchPONum").val();
+            //         },
+            //     },
+
+            //     "columns":[
+            //         { "data" : "action", orderable:false, searchable:false },
+            //         { "data" : "stamping_production_info.part_code"},
+            //         { "data" : "stamping_production_info.material_name"},
+            //         { "data" : "stamping_production_info.prod_lot_no"},
+            //         { "data" : "stamping_production_info.ship_output"},
+            //         { "data" : "first_molding_info.endorsedby" },
+            //         { "data" : "first_molding_info.date_endorsed"},
+            //         { "data" : "first_molding_info.receivedby"},
+            //         { "data" : "first_molding_info.date_received" },
+            //     ],
+            //     "columnDefs": [
+            //         {"className": "dt-center", "targets": "_all"},
+            //         {
+            //             "targets": [5,6,7,8],
+            //             "data": null,
+            //             "defaultContent": "---"
+            //         },
+            //     ],
+            // });
+
+            let rowCount;
+            let dataStatus;
+            let moldingId;
+            $(document).on('click', '.btnViewSublotForScanning', function(e){
+                let stampingDetailsId =  $(this).attr('data-id');
+                moldingId = $(this).attr('molding-id');
+                // console.log(moldingId);
+                dataStatus =  $(this).attr('data-status');
+
+                console.log(dataStatus);
+
+                if(dataStatus == 0 || dataStatus == null){
+                // if(dataStatus == 0 || dataStatus == 1){
+                    $('#btnVerifyScanLotNumber').removeAttr('disabled');
+                }
+
+                let oqcDetailsId =  $(this).attr('oqc-id');
+                let poNumber =  $(this).attr('po-no');
+                $('#txtMoldingId').val(moldingId)
+                $('#txtOqcDetailsId').val(oqcDetailsId);
+                $('#txtScanPONumber').val(poNumber);
+                $('#txtStampingDetailsId').val(stampingDetailsId);
+
+                $('#modalViewSubLotDetails').modal('show');
+                dtViewSublotDetails.draw();
+                setTimeout(() => {
+                    rowCount = $('#tblViewSublotDetails tbody tr').length;
+                    // rowCount = rowCount - 1;
+                    // console.log('rowCount', rowCount);
+                }, 500);
+            });
+
+            let dtViewSublotDetails = $("#tblViewSublotDetails").DataTable({
+                "processing" : true,
+                "serverSide" : true,
+                "info"       : false,
+                "ordering"   : false,
+                "paging"     : false,
+                "bFilter"     : false,
+                "ajax" : {
+                    url: "view_sublot_details",
+                    data: function(param){
+                    param.stamping_details_id =  $("#txtStampingDetailsId").val();
+                    }
+                },
+                fixedHeader: true,
+                "columns":[
+                    // { "data"  : 'DT_RowIndex'},
+                    { "data" : "action", orderable:false, searchable:false },
+                    // { "data" : "status"},
+                    { "data" : "counter"},
+                    { "data" : "stamping_info.po_num"},
+                    { "data" : "stamping_info.material_name"},
+                    { "data" : "stamping_info.prod_lot_no"},
+                    { "data" : "batch_qty"},
+                ],
+            });
+
+            $('#modalPackingScanLotNumber').on('shown.bs.modal', function () {
+                $('#txtScanPackingLotNumber').focus();
+            });
+
+            $('#txtScanPackingLotNumber').on('keyup', function(e){
+                if(e.keyCode == 13){
+                    try{
+                        scannedItem = JSON.parse($(this).val());
+                        // console.log('scannedItem', scannedItem);
+                        $('#tblPackingDetailsForEndorsement tbody tr').each(function(index, tr){
+                            let lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+
+                            let powerOff = $(this).find('td:nth-child(1)').children();
+
+                            console.log('scannedItem', scannedItem['production_lot_no']);
+                            console.log('lot_no', lot_no);
+                            console.log('powerOff', powerOff);
+
+                            if(scannedItem['production_lot_no'] === lot_no){
+                                $(tr).addClass('checked-ok');
+                                powerOff.removeAttr('style');
+                                $('#modalPackingScanLotNumber').modal('hide');
+                            }
+                            // console.log(lot_no);
+                        })
+                    }
+                    catch (e){
+                        toastr.error('Invalid Sticker');
+                        console.log(e);
+                    }
+                    $(this).val('');
+                }
+            });
+
+
+            $('#modalVerifyData').on('shown.bs.modal', function () {
+                $('#txtScanVerifyData').focus();
+            });
+
+            let idsOfSubLotDetails = [];
+            $('#txtScanVerifyData').on('keyup', function(e){
+                if(e.keyCode == 13){
+                    try{
+                        // alert('hehe');
+                        scannedItem = JSON.parse($(this).val());
+                        // console.log('scannedItem', scannedItem);
+                        if(scannedItem['cat'] == 2){
+                            $('#tblViewSublotDetails tbody tr').each(function(index, tr){
+                                let second_stamping_sub_lot = $(tr).find('td:eq(1)').text().trim().toUpperCase();
+                                let second_stamping_prod_lot = $(tr).find('td:eq(4)').text().trim().toUpperCase();
+                                // let 2nd_stamping_lot_no = $(tr).find('td:eq(6)').text().trim().toUpperCase();
+
+                                // let powerOff = $(this).find('td:nth-child(0)').children();
+                                let powerOff = $(this).find('td:nth-child(1)').children().children();
+
+
+                                if(scannedItem['sublot_counter'].substring(0,1) == second_stamping_sub_lot && scannedItem['production_lot_no'] === second_stamping_prod_lot){
+                                    // powerOff.removeAttr('style');
+                                    $(tr).addClass('checked-ok');
+                                    let id = $(this).attr('id');
+                                    if(!idsOfSubLotDetails.includes(id)){
+                                        idsOfSubLotDetails.push(id);
+                                    }
+                                }
+
+                                let scannedRow = dtViewSublotDetails.$('tr.checked-ok');
+                                // If some rows are selected
+                                if(scannedRow.length){
+                                    // console.log('selectedCount', scannedRow.length);
+                                    if (scannedRow.length == rowCount) {
+                                        powerOff.removeAttr('style');
+                                        $('#btnSaveSubLotDetails').removeAttr('disabled');
+                                        $('#modalVerifyData').modal('hide');
+                                    }
+                                // Otherwise, if no rows are selected
+                                }
+                                // console.log(`scannedItemSublot`, scannedItem['sublot_counter']);
+                                // console.log(`tblSubLot`, second_stamping_sub_lot);
+                            })
+                        }else{
+                            toastr.error('Invalid Sticker');
+                        }
+                    }
+                    catch (e){
+                        toastr.error('Invalid Sticker');
+                        // console.log(e);
+                    }
+                    $(this).val('');
+                }
+            });
+
+            $(document).on('click', '.btnEditMoldingID', function(e){
+                e.preventDefault();
+                let subLotId =  $(this).attr('data-id');
+                // console.log('subLotId', subLotId);
+                $('#txtSublotId').val(subLotId);
+                getSublotQty(subLotId);
+
+                $('#modalEditSublotQty').modal('show');
 
             });
+
+            $('#btnSaveSubLotDetails').on('click', function(e){
+                $('#modalScanEmpId').modal('show');
+            });
+
+            $('#modalScanEmpId').on('shown.bs.modal', function () {
+                $('#txtScanPackerId').focus();
+            });
+
+            $('#formOqcDetails').submit(function(e){
+                e.preventDefault();
+            });
+
+            $('#txtScanPackerId').on('keyup', function(e){
+                let toScanEmpId =  $('#txtScanPackerId').val();
+                let toScanMoldingId   =  $('#txtMoldingId').val();
+                let stampingDetailsId   =  $('#txtStampingDetailsId').val();
+                let scannedEmpId = {
+                'scanned_emp_id' : toScanEmpId,
+                'molding_id'     : toScanMoldingId,
+                'stamping_details_id'     : stampingDetailsId
+                }
+                if(e.keyCode == 13){
+                    if(moldingId != null){
+                        validateUser($(this).val().toUpperCase(), [2,5], function(result){
+                            if(result == true){
+                                let data2 = $('#formOqcDetails').serialize()+ '&' + $.param(scannedEmpId);
+                                // console.log(data2);
+                                $.ajax({
+                                    type: "post",
+                                    url: "update_checked_by",
+                                    data: data2,
+                                    dataType: "json",
+                                    success: function (response) {
+                                        if(response['validation'] == 1){
+                                            toastr.error('Saving data failed!');
+
+                                        }else if(response['result'] == 0){
+                                            toastr.success('Validation Succesful!');
+                                            $("#formOqcDetails")[0].reset();
+                                            $('#modalScanEmpId').modal('hide');
+                                            $('#modalViewSubLotDetails').modal('hide');
+                                            dtPackingDetailsFE.draw();
+                                        }
+                                    }
+                                });
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+
+                        });
+                    }else{
+                        validateUser($(this).val().toUpperCase(), [4,9], function(result){
+                        if(result == true){
+                                e.preventDefault();
+                                let data1 = $('#formOqcDetails').serialize() + '&' + $.param(scannedEmpId);
+                                $.ajax({
+                                    type: "post",
+                                    url: "updated_counted_by",
+                                    data: data1,
+                                    dataType: "json",
+                                    success: function (response) {
+                                        if(response['validation'] == 1){
+                                            toastr.error('Saving data failed!');
+                                        }else if(response['result'] == 0){
+                                            toastr.success('Validation Succesful!');
+                                            $("#formOqcDetails")[0].reset();
+                                            $('#modalScanEmpId').modal('hide');
+                                            $('#modalViewSubLotDetails').modal('hide');
+                                            dtPackingDetailsFE.draw();
+                                        }
+                                    }
+                                });
+                            }
+                            else{ // Error Handler
+                                toastr.error('User not authorize!');
+                            }
+
+                        });
+                    }
+                    $(this).val('');
+                }
+            });
+        });
 
         </script>
     @endsection

@@ -22,7 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->nullable();
             $table->string('employee_id');
             $table->string('password');
-            $table->tinyInteger('position')->default(0)->comment = '0-N/A,1-Prod Supervisor,2-QC Supervisor,3-Material Handler,4-Operator,5-Inspector';
+            $table->tinyInteger('position')->default(0)->comment = '0-ISS,1-Prod Supervisor,2-QC Supervisor,3-Material Handler,4-Operator,5-Inspector';
+            $table->tinyInteger('section')->default(0)->comment = '0-N/A, 1-Stamping,2-molding';
             $table->string('is_password_changed');
             $table->unsignedTinyInteger('status')->default(1)->comment = '1-active,2-inactive';
             $table->string('oqc_stamp')->nullable();

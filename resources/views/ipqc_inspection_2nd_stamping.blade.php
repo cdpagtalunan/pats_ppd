@@ -70,7 +70,7 @@
                                                 <button class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button>
                                                 {{-- <button type="button" class="btn btn-dark" id="btnScanPo" data-toggle="modal" data-target="#mdlScanQrCode"><i class="fa fa-qrcode w-100"></i></button> --}}
                                                 {{-- <i class="fa-solid fa-circle-info fa-lg mt-3 mr-2" data-bs-toggle="tooltip" data-bs-html="true" title="Press Enter Key to Search PO Number"></i> --}}
-                                                <input readonly type="text" class="form-control" placeholder="Search PO Number" aria-label="Username" name="po_number" id="txtSearchPONum">
+                                                <input type="text" class="form-control" placeholder="Search PO Number" aria-label="Username" name="po_number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">
@@ -677,6 +677,46 @@
                     });
                 });
 
+                $('#txtSearchPONum').on('keypress', function(e){
+                    if(e.keyCode == 13){
+                        if($('#txtSearchPONum').val() != ''){
+                                let poNumber = $('#txtSearchPONum').val();
+                                $.ajax({
+                                    type: "get",
+                                    url: "get_data_from_first_stamping_by_po",
+                                    data: {
+                                        "po_number" : poNumber
+                                    },
+                                    dataType: "json",
+                                    beforeSend: function(){
+                                    },
+                                    success: function (response){
+                                        let fs_prod_data = response['first_stamping_data'];
+                                        if(fs_prod_data[0] == undefined){
+                                            toastr.error('Error: PO is not from 1st Stamping Production')
+                                        }else{
+                                            $('#txtSearchPONum').val(fs_prod_data[0]['po_num']);
+                                            $('#txtSearchPartCode').val(fs_prod_data[0]['part_code']);
+                                            $('#txtSearchMatName').val(fs_prod_data[0]['material_name']);
+                                            $('#txtScanQrCode').val('');
+                                            $('#mdlScanQrCode').modal('hide');
+
+                                            GetBDrawingFromACDCS(fs_prod_data[0]['material_name'], 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                            GetInspStandardFromACDCS(fs_prod_data[0]['material_name'], 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                            GetUDFromACDCS(fs_prod_data[0]['material_name'], 'Urgent Direction', $("#txtSelectDocNoUD"));
+
+                                            dt2ndStampingIpqcInspectionPending.draw();
+                                            dt2ndStampingIpqcInspectionCompleted.draw();
+                                            dt2ndStampingIpqcInspectionResetup.draw();
+                                        }
+                                    }
+                                });
+                        }else{
+                            toastr.error('Error: Invalid Data');
+                        }
+                    }
+                });
+
                 // $('#txtSearchPONum').on('keypress', function(e){
                 $('#txtScanQrCode').on('keypress', function(e){
                     if(e.keyCode == 13){
@@ -684,45 +724,45 @@
                         try {
                             let ScanQrCodeVal = JSON.parse(ScanQrCode)
                             getPoNum =  ScanQrCodeVal.po_num
-                        }catch (error) {
-                            toastr.error('PO does not existssss')
-                            getPoNum = ''
-                        }
-
-                        $.ajax({
-                            type: "get",
-                            url: "get_data_from_first_stamping_by_po",
-                            data: {
-                                "po_number" : getPoNum
-                            },
-                            dataType: "json",
-                            beforeSend: function(){
-                            },
-                            success: function (response) {
-                                let fs_prod_data = response['fs_production_data'];
-                                if(fs_prod_data[0] == undefined){
-                                    toastr.error('PO does not exists')
-                                }else{
+                            $.ajax({
+                                type: "get",
+                                url: "get_data_from_first_stamping_by_po",
+                                data: {
+                                    "po_number" : getPoNum
+                                },
+                                dataType: "json",
+                                beforeSend: function(){
+                                },
+                                success: function (response) {
+                                    let fs_prod_data = response['first_stamping_data'];
+                                    if(fs_prod_data[0] == undefined){
+                                        toastr.error('PO does not exists')
+                                    }else{
                                         $('#txtSearchPONum').val(fs_prod_data[0]['po_num']);
                                         $('#txtSearchPartCode').val(fs_prod_data[0]['part_code']);
                                         $('#txtSearchMatName').val(fs_prod_data[0]['material_name']);
                                         $('#txtScanQrCode').val('');
                                         $('#mdlScanQrCode').modal('hide');
 
-                                        let mat_name = fs_prod_data[0]['material_name'];
-                                        mat_name = mat_name.replace(/ /g,'');
-                                        // console.log(mat_name);
+                                        // let mat_name = fs_prod_data[0]['material_name'];
+                                        // mat_name = mat_name.replace(/ /g,'');
+                                        // // console.log(mat_name);
 
-                                        GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
-                                        GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
-                                        GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));
+                                        GetBDrawingFromACDCS(fs_prod_data[0]['material_name'], 'B Drawing', $("#txtSelectDocNoBDrawing"));
+                                        GetInspStandardFromACDCS(fs_prod_data[0]['material_name'], 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
+                                        GetUDFromACDCS(fs_prod_data[0]['material_name'], 'Urgent Direction', $("#txtSelectDocNoUD"));
 
                                         dt2ndStampingIpqcInspectionPending.draw();
                                         dt2ndStampingIpqcInspectionCompleted.draw();
                                         dt2ndStampingIpqcInspectionResetup.draw();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }catch (error) {
+                            toastr.error('PO does not exists');
+                        }
+                        // console.log('getPoNum',getPoNum);
+                        // return
                     }
                 });
 
@@ -779,6 +819,7 @@
                             $('#formIPQCInspectionData')[0].reset();
                         },
                         success: function(response){
+                            // $('#IPQCChangeTitle').html('<i class="fas fa-plus"></i>&nbsp;&nbsp; Add Ink Consumption Target');
                             $('#formIPQCInspectionData input[name="_token"]').val('{{ csrf_token() }}');
                             let fs_prod_data = response['fs_production_data'];
 
@@ -862,7 +903,7 @@
                             $("#txtAddFile").removeAttr('required');
                             $('#txtEditUploadedFile').val(ipqc_data['measdata_attachment']);
 
-                            let download ='<a href="download_file/'+ipqc_data['id']+'">';
+                            let download ='<a href="download_file_stamping/'+ipqc_data['id']+'">';
                                 download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
                                 download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
                                 download +=         '&nbsp;';
@@ -996,9 +1037,13 @@
                                 // GetInspStandardFromACDCS(mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
                                 // GetUDFromACDCS(mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
 
-                                $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
-                                $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
-                                $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
+                                GetBDrawingFromACDCS(fs_prod_data[0]['material_name'], 'B Drawing', $("#txtSelectDocNoBDrawing"), ipqc_data['doc_no_b_drawing']);
+                                GetInspStandardFromACDCS(fs_prod_data[0]['material_name'], 'Inspection Standard', $("#txtSelectDocNoInspStandard"), ipqc_data['doc_no_insp_standard']);
+                                GetUDFromACDCS(fs_prod_data[0]['material_name'], 'Urgent Direction', $("#txtSelectDocNoUD"), ipqc_data['doc_no_urgent_direction']);
+
+                                // $("#txtSelectDocNoBDrawing").val(ipqc_data['doc_no_b_drawing']);
+                                // $("#txtSelectDocNoInspStandard").val(ipqc_data['doc_no_insp_standard']);
+                                // $("#txtSelectDocNoUD").val(ipqc_data['doc_no_urgent_direction']);
 
                                 if(ipqc_data['doc_no_b_drawing'] != null){
                                     $("#btnViewBDrawings").prop('disabled', false);
@@ -1035,7 +1080,7 @@
                                 $("#txtSelectDocNoInspStandard").prop('required', false);
                                 $("#txtSelectDocNoUD").prop('required', false);
 
-                                let download ='<a href="download_file/'+ipqc_data['id']+'">';
+                                let download ='<a href="download_file_stamping/'+ipqc_data['id']+'">';
                                     download +='<button type="button" id="download_file" name="download_file" class="btn btn-primary btn-sm d-none">';
                                     download +=     '<i class="fa-solid fa-file-arrow-down"></i>';
                                     download +=         '&nbsp;';
@@ -1109,6 +1154,7 @@
                                     }
                                 } else {
                                     result = '<option value="0" selected disabled> -- No record found -- </option>';
+                                    result += '<option value="N/A"> N/A </option>';
                                 }
                                 cboElement.html(result);
                                 // cboElement.select2();

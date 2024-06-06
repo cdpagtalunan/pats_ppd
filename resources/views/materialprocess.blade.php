@@ -1222,18 +1222,18 @@
 
     });
 
-    $(document).keydown(function (e) {
-        var nodeName = e.target.nodeName.toLowerCase();
+    // $(document).keydown(function (e) {
+    //     var nodeName = e.target.nodeName.toLowerCase();
 
-        if (e.keyCode === 8) {
-            if ((nodeName === 'select' && e.target.type === 'select') ||
-                nodeName === 'select') {
-                console.log('object');
-            } else {
-                e.preventDefault();
-            }
-        }
-    });
+    //     if (e.keyCode === 8) {
+    //         if ((nodeName === 'select' && e.target.type === 'select') ||
+    //             nodeName === 'select') {
+    //             console.log('object');
+    //         } else {
+    //             // e.preventDefault();
+    //         }
+    //     }
+    // });
   </script>
   @endsection
 @endauth

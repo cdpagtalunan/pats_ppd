@@ -172,22 +172,24 @@ class MoldingAssyIpqcController extends Controller
 
     //================================= VERIFY PRODUCTION LOT =========================
     public function verify_production_lot(Request $request){
+        // return $request;
         if($request->process_category == 1){
             $result = FirstMolding::with(['firstMoldingDevice' => function($query) use ($request) { $query->where('device_name', $request->device_name); }])
                                                     ->where('production_lot', $request->production_lot)
+                                                    ->where('production_lot_extension', $request->production_lot_extension)
                                                     ->whereNull('deleted_at')
                                                     ->get();
 
-        }else if($request->process_category == 2){
+        }elseif($request->process_category == 2){
             $result = SecMoldingRuncard::with(['device_id' => function($query) use ($request) { $query->where('name', $request->device_name); }])
                                                     ->where('device_name', $request->device_name)
                                                     ->where('production_lot', $request->production_lot)
                                                     ->whereNull('deleted_at')
                                                     ->get();
 
-        }else if($request->process_category == 3){
-            $result = AssemblyRuncard::where('device_name', $request->device_name)
-                                        ->where('production_lot', $request->production_lot)
+        }elseif($request->process_category == 3){
+            $result = AssemblyRuncard::select('runcard_no as production_lot')->where('device_name', $request->device_name)
+                                        ->where('runcard_no', $request->production_lot)
                                         ->whereNull('deleted_at')
                                         ->get();
         }
@@ -195,10 +197,12 @@ class MoldingAssyIpqcController extends Controller
         if($result->isEmpty()){
         // if($result->isEmpty()){
             $production_lot = '';
+        }else if($request->process_category == 1){
+            $production_lot = $result[0]->production_lot .''. $result[0]->production_lot_extension;
         }else{
             $production_lot = $result[0]->production_lot;
         }
-        // return $production_lot;
+
         return response()->json(['production_lot' => $production_lot]);
     }
 
@@ -222,6 +226,7 @@ class MoldingAssyIpqcController extends Controller
         date_default_timezone_set('Asia/Manila');
         session_start();
         $data = $request->all();
+        // return $data;
         if($request->ipqc_id == 0){
             $validator = Validator::make($data, [
                 'doc_no_b_drawing' => 'required',
@@ -241,7 +246,7 @@ class MoldingAssyIpqcController extends Controller
                 }
 
                 Storage::putFileAs('public/molding_assy_ipqc_insp_files', $request->uploaded_file,  $original_filename);
-                MoldingAssyIpqcInspection::insert(['fk_molding_assy_id'     => $request->first_molding_id,
+                MoldingAssyIpqcInspection::insert([
                                                 'process_category'        => $request->process_category,
                                                 'po_number'               => $request->po_number,
                                                 'part_code'               => $request->part_code,
@@ -327,9 +332,9 @@ class MoldingAssyIpqcController extends Controller
                         SecMoldingRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
                             ->update(['status' => $request->cnfrm_ipqc_status]);
                     }else if($request->cnfrm_ipqc_process_category == 3){ //UPDATE ASSEMBLY STATUS
-                        $assy_runcard_id = AssemblyRuncard::select('id')->where('production_lot', $request->cnfrm_ipqc_production_lot)->first();
+                        $assy_runcard_id = AssemblyRuncard::select('id')->where('runcard_no', $request->cnfrm_ipqc_production_lot)->first();
 
-                        AssemblyRuncard::where('production_lot', $request->cnfrm_ipqc_production_lot)
+                        AssemblyRuncard::where('runcard_no', $request->cnfrm_ipqc_production_lot)
                                             ->update(['status' => $request->cnfrm_ipqc_status]);
 
                         AssemblyRuncardStation::where('assembly_runcards_id', $assy_runcard_id)

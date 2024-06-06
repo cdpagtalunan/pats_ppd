@@ -100,7 +100,7 @@
             success: function(JsonObject){
                 if(JsonObject['result'] == 1){
                     // console.log('login success pats_ppd', JsonObject['username']);
-                    SignInAdmin(JsonObject['username']); //CLARK COMMENT
+                    SignInAdmin(JsonObject['username']); //CLARK ADMIN LOGIN RAPIDX
                     window.location = "dashboard";
                 }
                 else if(JsonObject['result'] == 2){

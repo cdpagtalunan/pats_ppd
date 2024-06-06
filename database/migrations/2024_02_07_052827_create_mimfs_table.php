@@ -28,6 +28,7 @@ class CreateMimfsTable extends Migration
             $table->string('material_code')->nullable();
             $table->string('material_type')->nullable();
             $table->string('qty_invt')->nullable();
+            $table->string('request_pins_pcs')->nullable()->comment = 'For 2nd Stamping';
             $table->string('needed_kgs')->nullable();
             $table->string('virgin_material')->nullable();
             $table->string('recycled')->nullable();
@@ -39,6 +40,7 @@ class CreateMimfsTable extends Migration
             $table->string('updated_by')->nullable()->comment = 'user login';
             $table->unsignedTinyInteger('logdel')->default(0)->comment = '0-show,1-hide';
             $table->unsignedTinyInteger('status')->default(0)->comment = '1-Stamping,2-Molding';
+            $table->unsignedTinyInteger('category')->default(0)->comment = '1-First,2-Second';
             $table->timestamps();
         });
     }

@@ -19,7 +19,6 @@ class CreateStampingWorkingReportWorkDetailsTable extends Migration
             $table->string('time_end')->nullable();
             $table->string('total_minutes')->nullable();
             $table->string('work_details')->nullable();
-            $table->string('sequence_number')->nullable();
             
             $table->foreignId('stamping_working_report_id')->references('id')->on('stamping_working_reports')->index('stamping_working_report_id')->comment ='Id from stamping_working_reports(table)';
             $table->foreignId('created_by')->references('id')->on('users')->comment ='Id from users(table)';

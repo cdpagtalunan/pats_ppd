@@ -121,9 +121,9 @@
                                                     <th>Mode of Defects</th>
                                                     <th>No. of Detective</th>
                                                     <th>Judgement</th>
+                                                    <th>Family</th>
                                                     <th>Inspector</th>
                                                     <th>Remarks</th>
-                                                    <th>Family</th>
                                                     <th>Updated By</th>
                                                     <th>Update Date</th>
                                                 </tr>
@@ -198,7 +198,7 @@
                         <div class="row p-3 drawing">
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend w-25">
-                                    <button type="button" class="btn btn-dark" id="btnViewRDrawings"><i class="fa fa-file" title="View"></i></button>
+                                    <button type="button" class="btn btn-dark" id="btnViewBDrawings"><i class="fa fa-file" title="View"></i></button>
                                     <span class="input-group-text w-100 b-drawing remove-class"><strong>B Drawing</strong></span>
                                 </div>
                                 <input type="text" class="form-control b-drawing remove-class" id="txtBDrawing" name="b_drawing" readonly>
@@ -526,7 +526,7 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100"><strong>Remarks</strong></span>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionRemarks" name="oqc_inspection_remarks">
+                                        <input type="text" class="form-control form-control-sm" id="txtOqcInspectionRemarks" name="oqc_inspection_remarks" value="appearance okay">
                                     </div>
 
                                     <div class="input-group input-group-sm mb-3">
@@ -603,7 +603,7 @@
     @section('js_content')
         <script type="text/javascript">
             let getPoNo
-            let checkedDrawCount
+            let checkedDrawCountFirstStamping
             let dataTableOQCInspectionFirstStamping
             $(document).ready(function() {
                 $('.select2bs4').select2({
@@ -639,9 +639,9 @@
                         { "data" : "mod" },
                         { "data" : "num_of_defects" },
                         { "data" : "judgement" },
+                        { "data" : "family" },
                         { "data" : "inspector" },
                         { "data" : "remarks" },
-                        { "data" : "family" },
                         { "data" : "update_user" },
                         { "data" : "created_at" }
                     ],
@@ -723,8 +723,8 @@
 
                 $(document).on('click', '.actionOqcInspectionFirstStamping', function(e){
                     e.preventDefault()
-                    console.log('actionOqcInspectionFirstStamping')
-
+                    console.log('qwe: ', $('#dateOqcInspectionDateInspected').val())
+                    
                     getPo                       = $(this).attr('first_stamping_prod-po')
                     getPoQty                    = $(this).attr('first_stamping_prod-po_qty')
                     getOqcId                    = $(this).attr('first_stamping_oqc_inspection-id')
@@ -850,19 +850,38 @@
                         ],
                     })
                 })
-
-                $('#btnViewRDrawings').on('click', function(){
+                
+                checkedDrawCountFirstStamping = [0,0,0]
+                function RedirectToDrawingForFirstStamping(drawing, index) {
+                    console.log('Drawing No.:',drawing)
+                    if( drawing  == 'N/A'){
+                        alert('No Document Required')
+                    }
+                    else{
+                        window.open("http://rapid/ACDCS/prdn_home_pats_ppd?doc_no="+drawing)
+                            checkedDrawCountFirstStamping[index] = 1
+                    }
+                    console.log('Check View Document:', checkedDrawCountFirstStamping)
+                }
+                $('#btnViewBDrawings').on('click', function(){
                     console.log('b drawing click');
-                    redirect_to_drawing($('#txtBDrawingNo').val(), 0)
-                    SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
+                    setTimeout(() => {     
+                        RedirectToDrawingForFirstStamping($('#txtBDrawingNo').val(), 0)
+                        SetClassRemove('b-drawing', 'bg-success-custom font-weight-bold text-white')
+                    }, 200);
                 })
                 $('#btnViewUdDrawings').on('click', function(){
-                    redirect_to_drawing($('#txtUdDrawingNo').val(), 1)
-                    SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white')
+                    setTimeout(() => {     
+                        RedirectToDrawingForFirstStamping($('#txtUdDrawingNo').val(), 1)
+                        SetClassRemove('ud-drawing', 'bg-success-custom font-weight-bold text-white')
+                    }, 200);
                 })
                 $('#btnViewInspStdDrawings').on('click', function(){
-                    redirect_to_drawing($('#txtInspStdDrawingNo').val(), 2)
-                    SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white')
+                    setTimeout(() => {     
+                        RedirectToDrawingForFirstStamping($('#txtInspStdDrawingNo').val(), 2)
+                        SetClassRemove('is-drawing', 'bg-success-custom font-weight-bold text-white')
+                    }, 200);
+
                 })
 
                 $('#oqcInspectionNextButton').on('click', function(){
@@ -872,7 +891,7 @@
                     for (var i = 0; i < drawingId.length; i++) {
                         let drawings = $('#' + drawingId[i]).val()
                         if ( drawings != 'N/A' && drawings != ''){
-                            if( checkedDrawCount[i] == 0 ){
+                            if( checkedDrawCountFirstStamping[i] == 0 ){
                                 checkDrawings = true
                             }
                         }
@@ -895,7 +914,7 @@
                     $('.drawing').removeClass('d-none')
                     $('.acceCheckBox').css({display:false, required:true})
 
-                    checkedDrawCount = [0,0,0]
+                    checkedDrawCountFirstStamping = [0,0,0]
                     $(`.remove-class`).removeClass('bg-success-custom font-weight-bold text-white')
                     $("#formOqcInspection")[0].reset()
                     dataTableOQCInspectionFirstStamping.draw()
@@ -1066,11 +1085,43 @@
                 $('#txtPoNumber').attr('readonly', false)
                 $('#txtPoNumber').on('keypress',function(e){
                     if( e.keyCode == 13 ){
-                        getPoNo =  $('#txtPoNumber').val();
+                        getPoNo =  $('#txtPoNumber').val()
                         dataTableOQCInspectionFirstStamping.draw()
                     }
                 })
             }
+
+            $(document).ready(function(){
+                let currYear = moment().format("YYYY");
+                var dateRange = getFirstWeekDay(currYear + "-04-01", 0, ($(this).val() - 1));
+
+                function getFirstWeekDay(dateString, dayOfWeek, workWeek) {
+                    var date = moment(dateString, "YYYY-MM-DD");
+
+                    var day = date.day();
+                    var diffDays = 0;
+
+                    var dateFrom = "";
+                    var dateTo = "";
+
+                    if (day > dayOfWeek) {
+                        diffDays = (0 * workWeek) - (day - dayOfWeek);
+                    } else {
+                        diffDays = dayOfWeek - day;
+                    }
+
+                    var tempDateFrom = date.add(diffDays, 'day');
+                    var dateFrom = tempDateFrom.format("YYYY-MM-DD");
+                    dateTo = tempDateFrom.add(6, 'day').format("YYYY-MM-DD");
+
+                    return {
+                        dateFrom: dateFrom,
+                        dateTo: dateTo
+                    };
+                }
+
+                console.log('FY: ',dateRange);
+            });
 
         </script>
     @endsection

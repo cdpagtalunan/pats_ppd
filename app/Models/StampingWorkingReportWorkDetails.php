@@ -7,5 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StampingWorkingReportWorkDetails extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $table = "stamping_working_reports";
+    protected $connection = "mysql";
 }

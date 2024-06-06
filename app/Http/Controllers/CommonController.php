@@ -43,8 +43,10 @@ class CommonController extends Controller
     }
 
     public function get_data_from_acdcs(Request $request){
+
+        $exploded_device_name = explode("-",$request->doc_title);
         $acdcs_data = DB::connection('mysql_rapid_acdcs')
-        ->select("SELECT DISTINCT `doc_no`,`doc_type` FROM tbl_active_docs WHERE `doc_type` = '".$request->doc_type."' AND `doc_title` LIKE '%".$request->doc_title."%'");
+        ->select("SELECT DISTINCT `doc_no`,`doc_type` FROM tbl_active_docs WHERE `doc_type` = '".$request->doc_type."' AND `doc_title` LIKE '%".$exploded_device_name[0]."%'");
         return response()->json(['acdcs_data' => $acdcs_data]);
     }
 

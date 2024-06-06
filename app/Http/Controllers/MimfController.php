@@ -26,6 +26,7 @@ class MimfController extends Controller
         
         $get_mimfs = Mimf::with([
             'pps_po_received_info',
+            'pps_request_info',
             // 'pps_po_received_info.matrix_info',
             'pps_po_received_info.mimf_stamping_matrix_info.pps_whse_info',
             'pps_po_received_info.pps_dieset_info.pps_warehouse_info',
@@ -34,7 +35,7 @@ class MimfController extends Controller
         ->where('status', $request->mimfCategory)
         ->orderBy('control_no', 'DESC')
         ->get();
-
+        // return  $get_mimfs;
         // return PPSRequest::orderBy('control_number', 'DESC')->get();
 
         return DataTables::of($get_mimfs)
@@ -42,7 +43,7 @@ class MimfController extends Controller
             $result = '<center>';
             if($request->mimfCategory == 1){
                 $matrix = ' mimf_matrix-id="'. $get_mimf->pps_po_received_info->mimf_stamping_matrix_info->id .'" '; 
-                $dieset  = '  ';
+                $dieset  = '';
                 $whse = ' whse-id="'. $get_mimf->pps_po_received_info->mimf_stamping_matrix_info->pps_whse_info->id .'" ';
             }
             else{ 
@@ -52,22 +53,41 @@ class MimfController extends Controller
             }
 
             if($get_mimf->pps_po_received_info->POBalance != 0){
-                $result .= '
-                <button class="btn btn-dark btn-sm text-center 
-                    actionEditMimf" 
-                    mimf-id="'. $get_mimf->id .'" 
-                    mimf-status="'. $get_mimf->status .'" 
-                    po_received-id="'. $get_mimf->pps_po_received_info->id .'" 
-                    '.$matrix.'
-                    '.$dieset.'
-                    '.$whse.'
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalMimf"
-                    data-bs-keyboard="false" title="Edit">
-                    <i class="nav-icon fa fa-edit"></i>
-                </button>';
+                // if($get_mimf->pps_request_info != null && $get_mimf->pps_request_info->updated_by == ''){
+                    $result .= '
+                    <button class="btn btn-dark btn-sm text-center 
+                        actionEditMimf" 
+                        mimf-id="'. $get_mimf->id .'" 
+                        mimf-status="'. $get_mimf->status .'" 
+                        po_received-id="'. $get_mimf->pps_po_received_info->id .'" 
+                        '.$matrix.'
+                        '.$dieset.'
+                        '.$whse.'
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalMimf"
+                        data-bs-keyboard="false" title="Edit">
+                        <i class="nav-icon fa fa-edit"></i>
+                    </button>';
+                // }
             }else{
-                $result .= '<span class="badge badge-pill badge-success"> Done! </span>';
+                $result .= '<span class="badge badge-pill badge-success"> COMPLETED! </span>';
+            }
+            $result .= '</center>';
+            return $result;
+        })
+
+        ->addColumn('category', function($get_mimf){
+            $result = '<center>';
+            $get_category = $get_mimf->category;
+            if($get_category == 1){
+                $category = 'First';
+            }else{
+                $category = 'Second';
+            }
+            if($get_mimf->status == 1){
+                $result .= $category.' <br>Stamping';
+            }else{
+                $result .= $category.' <br>Molding';
             }
             $result .= '</center>';
             return $result;
@@ -95,6 +115,7 @@ class MimfController extends Controller
         
         ->rawColumns([
             'action',
+            'category',
             'yec_po_no',
             'po_balance'
         ])
@@ -108,18 +129,17 @@ class MimfController extends Controller
         if($request->category == 1){
             $control_no_format = "MIMF-STAMPING-".NOW()->format('ym')."-";
         }else{
-            $control_no_format = "MIMF-".NOW()->format('ym')."-";
+            $control_no_format = "MIMF-MOLDING-".NOW()->format('ym')."-";
         }
-
         if ($get_last_control_no == null){
             $new_control_no = $control_no_format.'001';
-        }elseif(explode('-',$get_last_control_no->control_no)[1] != NOW()->format('ym')){
+        }elseif(explode('-',$get_last_control_no->control_no)[2] != NOW()->format('ym')){
             $new_control_no = $control_no_format.'001';
         }else{
             $explode_control_no = explode("-",  $get_last_control_no->control_no);
             // $increment_control_number = $explode_control_no[2]+1;
             // $string_pad = str_pad($increment_control_number,3,"0",STR_PAD_LEFT);
-            $string_pad = str_pad($explode_control_no[2]+1,3,"0",STR_PAD_LEFT);
+            $string_pad = str_pad($explode_control_no[3]+1,3,"0",STR_PAD_LEFT);
             $new_control_no = $control_no_format.$string_pad;
         }
         return response()->json(['newControlNo' => $new_control_no]);
@@ -135,18 +155,24 @@ class MimfController extends Controller
     public function updateMimf(Request $request){
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
-
-        if($request->mimf_stamping_matrix_status == 1){
+        // return $request->mimf_status;
+        if($request->mimf_status == 1){
+            if($request->category == 1){
+                $request_qty = $request->mimf_needed_kgs;
+            }else{
+                $request_qty = $request->mimf_request_pins_pcs;
+            }
             $test = 'ppd_mimf_stamping_matrix_id';
             $tist = 'created_by';
         }else{
             $test = 'ppd_matrix_id';
             $tist = 'pps_dieset_id';
+            $request_qty = $request->mimf_virgin_material;
         }
         $validator = Validator::make($data, [
             $test                           => 'required',
             $tist                           => 'required',
-            'mimf_stamping_matrix_status'   => 'required',
+            'mimf_status'                   => 'required',
             'pps_whse_id'                   => 'required',
             'pps_po_rcvd_id'                => 'required',
             'mimf_control_no'               => 'required',
@@ -169,70 +195,100 @@ class MimfController extends Controller
         }else{
             DB::beginTransaction();
             try {
-                $check_existing_control_no = Mimf::where('control_no', $request->mimf_control_no)->where('pmi_po_no', $request->mimf_pmi_po_no)->where('status', $request->mimf_stamping_matrix_status)->where('logdel', 0)->get();
-                $check_existing_po = Mimf::where('pmi_po_no', $request->mimf_pmi_po_no)->where('status', $request->mimf_stamping_matrix_status)->where('logdel', 0)->exists();
-                // return $check_existing_po;
+                $check_existing_control_no = Mimf::where('control_no', $request->mimf_control_no)
+                    ->where('pmi_po_no', $request->mimf_pmi_po_no)
+                    ->where('status', $request->mimf_status)
+                    ->where('logdel', 0)
+                    ->get();
+
+                $check_existing_po = Mimf::where('pmi_po_no', $request->mimf_pmi_po_no)
+                    ->where('status', $request->mimf_status)
+                    ->where('category', $request->category)
+                    ->where('logdel', 0)
+                    ->exists();
+
+                $get_control_no = PPSRequest::orderBy('pkid', 'DESC')
+                    ->where('deleted', 0)
+                    ->first();
+
+                $get_last_request_per_id = PPSRequest::where('mimf_id', $request->mimf_id)
+                    ->orderBy('created_on', 'DESC')
+                    ->first();
+
+                $get_itemlist_id = PPSItemList::where('partcode', $request->mimf_material_code)
+                    ->where('partname', $request->mimf_material_type)
+                    ->where('Factory', 3)
+                    ->first();
+
+                $explode_pps_request_control_no = explode("-",  $get_control_no->control_number);
+                $control_no_format = "PPS-".NOW()->format('ym')."-";
+                if(explode('-',$get_control_no->control_number)[1] != NOW()->format('ym')){
+                    $pps_request_new_control_no = $control_no_format.'001';
+                }else{
+                    $string_pad = str_pad($explode_pps_request_control_no[2]+1,3,"0",STR_PAD_LEFT);
+                    $pps_request_new_control_no = $control_no_format.$string_pad;
+                }
+
                 $mimf = [
-                    'status'            => $request->mimf_stamping_matrix_status,
-                    'pps_po_rcvd_id'    => $request->pps_po_rcvd_id,
-                    'pps_dieset_id'     => $request->pps_dieset_id,
-                    'pps_whse_id'       => $request->pps_whse_id,
-                    'ppd_matrix_id'     => $request->ppd_matrix_id,
-                    'control_no'        => $request->mimf_control_no,
-                    'date_issuance'     => $request->mimf_date_issuance,
-                    'pmi_po_no'         => $request->mimf_pmi_po_no,
-                    'prodn_qty'         => $request->mimf_prodn_quantity,
-                    'device_code'       => $request->mimf_device_code,
-                    'device_name'       => $request->mimf_device_name,
-                    'material_code'     => $request->mimf_material_code,
-                    'material_type'     => $request->mimf_material_type,
-                    'qty_invt'          => $request->mimf_quantity_from_inventory,
-                    'needed_kgs'        => $request->mimf_needed_kgs,
-                    'virgin_material'   => $request->mimf_virgin_material,
-                    'recycled'          => $request->mimf_recycled,
-                    'prodn'             => $request->date_mimf_prodn,
-                    'delivery'          => $request->mimf_delivery,
-                    'remarks'           => $request->mimf_remark,
-                    'scan_by'           => $request->employee_no,
-                ];   
-                
+                    'status'                => $request->mimf_status,
+                    'category'              => $request->category,
+                    'pps_po_rcvd_id'        => $request->pps_po_rcvd_id,
+                    'pps_dieset_id'         => $request->pps_dieset_id,
+                    'pps_whse_id'           => $request->pps_whse_id,
+                    'ppd_matrix_id'         => $request->ppd_matrix_id,
+                    'ppd_mimf_matrix_id'    => $request->ppd_mimf_stamping_matrix_id,
+                    'control_no'            => $request->mimf_control_no,
+                    'date_issuance'         => $request->mimf_date_issuance,
+                    'pmi_po_no'             => $request->mimf_pmi_po_no,
+                    'prodn_qty'             => $request->mimf_prodn_quantity,
+                    'device_code'           => $request->mimf_device_code,
+                    'device_name'           => $request->mimf_device_name,
+                    'material_code'         => $request->mimf_material_code,
+                    'material_type'         => $request->mimf_material_type,
+                    'qty_invt'              => $request->mimf_quantity_from_inventory,
+                    'request_pins_pcs'      => $request->mimf_request_pins_pcs,
+                    'needed_kgs'            => $request->mimf_needed_kgs,
+                    'virgin_material'       => $request->mimf_virgin_material,
+                    'recycled'              => $request->mimf_recycled,
+                    'prodn'                 => $request->date_mimf_prodn,
+                    'delivery'              => $request->mimf_delivery,
+                    'remarks'               => $request->mimf_remark,
+                    'scan_by'               => $request->employee_no,
+                ];
+
+                $pps_request = [
+                    'created_on'        => date('Y-m-d H:i:s'),
+                    'created_by'        => Auth::user()->username,
+                    'updated_by'        => '',
+                    'deleted'           => '0',
+                    'control_number'    => $pps_request_new_control_no,
+                    'fk_itemlist'       => $get_itemlist_id->pkid_itemlist,
+                    'matls_cat'         => $get_itemlist_id->matls_cat,
+                    'qty'               => $request_qty,
+                    'destination'       => 'PPD-CN',
+                    'fk_issuance'       => '0',
+                    'r_remarks'         => '',
+                    'i_remarks'         => '',
+                    'cancelled'         => '0',
+                    'acknowledgedby'    => '',
+                    'acknowledged'      => '0',
+                    'receive_date'      => '',
+                ];
+
                 if($check_existing_po != 1){
                     if(count($check_existing_control_no) != 1){
+                        // return 'ADD / MIMF / PPS REQUEST';
                         $mimf['created_by']  = $request->created_by;
                         $mimf['created_at']  = date('Y-m-d H:i:s');
-                        Mimf::insert(
+
+                        $get_mimf_id = Mimf::insertGetId(
                             $mimf
                         );
-
-                        $get_control_no = PPSRequest::orderBy('pkid', 'DESC')->where('deleted', 0)->first();
-                        $get_itemlist_id = PPSItemList::where('partcode', $request->mimf_material_code)->first();
-                        $explode_pps_request_control_no = explode("-",  $get_control_no->control_number);
-                        $control_no_format = "PPS-".NOW()->format('ym')."-";
-        
-                        if(explode('-',$get_control_no->control_number)[1] != NOW()->format('ym')){
-                            $pps_request_new_control_no = $control_no_format.'001';
-                        }else{
-                            $string_pad = str_pad($explode_pps_request_control_no[2]+1,3,"0",STR_PAD_LEFT);
-                            $pps_request_new_control_no = $control_no_format.$string_pad;
-                        }
-
-                        PPSRequest::insert([
-                            'created_on'        => date('Y-m-d H:i:s'),
-                            'created_by'        => Auth::user()->username,
-                            'updated_by'        => '',
-                            'deleted'           => '0',
-                            'control_number'    => $pps_request_new_control_no,
-                            'fk_itemlist'       => $get_itemlist_id->pkid_itemlist,
-                            'qty'               => $request->mimf_needed_kgs,
-                            'destination'       => 'PPD-CN',
-                            'fk_issuance'       => '0',
-                            'r_remarks'         => '',
-                            'i_remarks'         => '',
-                            'cancelled'         => '0',
-                            'acknowledgedby'    => '',
-                            'acknowledged'      => '0',
-                            'receive_date'      => ''
-                        ]);
+                        
+                        $pps_request['mimf_id']  = $get_mimf_id;
+                        PPSRequest::insert(
+                            $pps_request
+                        );
                     }else{
                         if($request->mimf_id != ''){
                             $mimf['updated_by']  = $request->created_by;
@@ -241,12 +297,51 @@ class MimfController extends Controller
                             ->update(
                                 $mimf
                             );
+
+                            if($request->update_mimf_and_pps_request == 1){
+                                // return 'EDIT PPS REQUEST';
+                                PPSRequest::where('mimf_id', $request->mimf_id)->where('pkid', $get_last_request_per_id->pkid)
+                                ->update([
+                                    'fk_itemlist'   => $get_itemlist_id->pkid_itemlist,
+                                    'qty'           => $request_qty
+                                ]);
+                            }else{
+                                // return '1ST ELSE ADD PPS REQUEST';
+                                $pps_request['mimf_id']  = $request->mimf_id;
+                                PPSRequest::insert(
+                                    $pps_request
+                                );
+                            }
                         }else{
                             return response()->json(['result' => 1]);
                         }
                     }
                 }else{
-                    return response()->json(['result' => 2]);
+                    if($request->mimf_id != ''){
+                        $mimf['updated_by']  = $request->created_by;
+                        $mimf['updated_at']  = date('Y-m-d H:i:s');
+                        Mimf::where('id', $request->mimf_id)
+                        ->update(
+                            $mimf
+                        );
+                        if($request->update_mimf_and_pps_request == 1){
+                            // return 'EDIT / MIMF / PPS REQUEST';
+                            PPSRequest::where('mimf_id', $request->mimf_id)->where('pkid', $get_last_request_per_id->pkid)
+                            ->update([
+                                'fk_itemlist'   => $get_itemlist_id->pkid_itemlist,
+                                'qty'           => $request_qty
+                            ]);
+                        }else{
+                            // return '2ND ELSE ADD PPS REQUEST';
+                            $pps_request['mimf_id']  = $request->mimf_id;
+                            PPSRequest::insert(
+                                $pps_request
+                            );
+                        }
+
+                    }else{
+                        return response()->json(['result' => 2]);
+                    }
                 }
 
                 DB::commit();
@@ -261,7 +356,8 @@ class MimfController extends Controller
     public function getMimfById(Request $request){
         date_default_timezone_set('Asia/Manila');
         
-        $get_mimf_to_edit = Mimf::where('id', $request->mimfID)->get();
+        $get_mimf_to_edit = Mimf::with(['pps_request_info'])->where('id', $request->mimfID)->get();
+        // return $get_mimf_to_edit;
         return response()->json(['getMimfToEdit'  => $get_mimf_to_edit]);
     }
 
@@ -277,7 +373,7 @@ class MimfController extends Controller
             ->where('OrderNo',$request->getValue)
             ->where('logdel', 0)
             ->get();
-
+            // return  $get_po_received_pmi_po_for_molding;
             $in = 0;
             $out = 0;
             $total_balanace_for_molding = 0;
@@ -367,12 +463,13 @@ class MimfController extends Controller
 
     public function getPpsWarehouse(Request $request){
         if($request->ppsWhseDb == ''){
-            $get_partnumber = TblWarehouse::orderBy('id', 'DESC')->get(['id','PartNumber']);
+            $get_partnumber = TblWarehouse::orderBy('id', 'DESC')->get(['id','PartNumber', 'MaterialType']);
             return response()->json(['getPartNumber'  => $get_partnumber]);
         }else{
             $get_materialtype = TblWarehouse::where('id', $request->ppsWhseDb)->get();
             return response()->json(['getMaterialType'  => $get_materialtype]);
         }
+        // return $get_partnumber;
     }
 
     public function getPpsPoReceivedItemName(Request $request){
@@ -462,6 +559,4 @@ class MimfController extends Controller
         $get_mimf_stamping_matrix_to_edit = MimfStampingMatrix::with(['pps_whse_info'])->where('id', $request->mimfStampingMatrixID)->get();
         return response()->json(['getMimfStampingMatrixToEdit'  => $get_mimf_stamping_matrix_to_edit]);
     }
-
-
 }

@@ -40,15 +40,18 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
     // }
     use Exportable;
 
-    protected $stamping_data;
+    protected $stamping_data_1;
+    protected $stamping_data_2;
     // protected $receiving_data;
 
     // protected $device_name;
 
     function __construct(
-    $stamping_data
+    $stamping_data_1,
+    $stamping_data_2
     ){
-        $this->stamping_data = $stamping_data;
+        $this->stamping_data_1 = $stamping_data_1;
+        $this->stamping_data_2 = $stamping_data_2;
         // $this->receiving_data = $receiving_data;
     }
 
@@ -63,7 +66,8 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
 
     public function registerEvents(): array
     {
-        $stamping_data = $this->stamping_data;
+        $stamping_data_1 = $this->stamping_data_1;
+        $stamping_data_2 = $this->stamping_data_2;
         // $receiving_data = $this->receiving_data;
 
         $arial_font12_bold = array(
@@ -161,7 +165,8 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $hcv_top,
                 $arial_font20,
                 $arial_font8_bold,
-                $stamping_data
+                $stamping_data_1,
+                $stamping_data_2
             ) {
                 // code here
                 $event->sheet->getDelegate()->getRowDimension('1')->setRowHeight(30);
@@ -233,12 +238,12 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->getColumnDimension('BK')->setWidth(10);
                 // $event->sheet->getColumnDimension('BL')->setWidth(10);
 
-                if(isset($stamping_data[0]->material_name)){
-                    $event->sheet->setCellValue('A1', $stamping_data[0]->material_name .' Parts Lot Management Record');
+                if(isset($stamping_data_1[0]->material_name)){
+                    $event->sheet->setCellValue('A1', $stamping_data_1[0]->material_name .' Parts Lot Management Record');
                     $event->sheet->getDelegate()->mergeCells('A1:BK1');
                     $event->sheet->getDelegate()->getStyle('A1:BK1')->applyFromArray($arial_font20);
                 }else{
-                    // $event->sheet->setCellValue('A1', $stamping_data[0]->material_name .' Parts Lot Management Record');
+                    // $event->sheet->setCellValue('A1', $stamping_data_1[0]->material_name .' Parts Lot Management Record');
                     $event->sheet->getDelegate()->mergeCells('A1:BK1');
                     $event->sheet->getDelegate()->getStyle('A1:BK1')->applyFromArray($arial_font20);
                 }
@@ -386,108 +391,128 @@ class ExportCN171TraceabilityReport implements FromView, WithEvents, WithTitle
                 $event->sheet->getDelegate()->getStyle('A2:BK4')->applyFromArray($styleBorderAll);
 
                 $start_col = 5;
-                for ($i=0; $i < count($stamping_data); $i++) { 
-                    
-                    $event->sheet->setCellValue('A'.$start_col, $stamping_data[$i]->user->firstname);
-                    $event->sheet->setCellValue('B'.$start_col, $stamping_data[$i]->shift);
-                    $event->sheet->setCellValue('C'.$start_col, $stamping_data[$i]->po_num);
-                    $event->sheet->setCellValue('D'.$start_col, $stamping_data[$i]->part_code);
-                    $event->sheet->setCellValue('E'.$start_col, $stamping_data[$i]->po_qty);
-                    $event->sheet->setCellValue('F'.$start_col, $stamping_data[$i]->drawing_no);
-                    $event->sheet->setCellValue('G'.$start_col, $stamping_data[$i]->drawing_rev);
-                    $event->sheet->setCellValue('H'.$start_col, $stamping_data[$i]->material_name);
-                    $event->sheet->setCellValue('I'.$start_col, $stamping_data[$i]->material_lot_no);
-                    $event->sheet->setCellValue('J'.$start_col, $stamping_data[$i]->prod_date);
-                    $event->sheet->setCellValue('K'.$start_col, $stamping_data[$i]->prod_lot_no);
-                    $event->sheet->setCellValue('L'.$start_col, $stamping_data[$i]->input_coil_weight);
-                    $event->sheet->setCellValue('M'.$start_col, "=L".$start_col."/0.005");
-                    $event->sheet->setCellValue('N'.$start_col, "=M".$start_col."*0.1");
-                    $event->sheet->setCellValue('O'.$start_col, $stamping_data[$i]->set_up_pins);
-                    $event->sheet->setCellValue('P'.$start_col, $stamping_data[$i]->adj_pins);
-                    $event->sheet->setCellValue('Q'.$start_col, $stamping_data[$i]->qc_samp);
-                    $event->sheet->setCellValue('R'.$start_col, $stamping_data[$i]->prod_samp);
-                    $event->sheet->setCellValue('S'.$start_col, $stamping_data[$i]->total_mach_output);
-                    $event->sheet->setCellValue('T'.$start_col,"=S".$start_col."-(SUM(O".$start_col.":R".$start_col."))");
-                    $event->sheet->setCellValue('U'.$start_col, ("=T".$start_col."/S".$start_col));
+                $start_col_2 = 5;
+                for ($i=0; $i < count($stamping_data_1); $i++) { 
+                    if($stamping_data_1[$i]->stamping_cat == 1){
+                        $event->sheet->setCellValue('A'.$start_col, $stamping_data_1[$i]->user->firstname);
+                        $event->sheet->setCellValue('B'.$start_col, $stamping_data_1[$i]->shift);
+                        $event->sheet->setCellValue('C'.$start_col, $stamping_data_1[$i]->po_num);
+                        $event->sheet->setCellValue('D'.$start_col, $stamping_data_1[$i]->part_code);
+                        $event->sheet->setCellValue('E'.$start_col, $stamping_data_1[$i]->po_qty);
+                        $event->sheet->setCellValue('F'.$start_col, $stamping_data_1[$i]->drawing_no);
+                        $event->sheet->setCellValue('G'.$start_col, $stamping_data_1[$i]->drawing_rev);
+                        $event->sheet->setCellValue('H'.$start_col, $stamping_data_1[$i]->material_name);
+                        $event->sheet->setCellValue('I'.$start_col, $stamping_data_1[$i]->material_lot_no);
+                        $event->sheet->setCellValue('J'.$start_col, $stamping_data_1[$i]->prod_date);
+                        $event->sheet->setCellValue('K'.$start_col, $stamping_data_1[$i]->prod_lot_no);
+                        $event->sheet->setCellValue('L'.$start_col, $stamping_data_1[$i]->input_coil_weight);
+                        $event->sheet->setCellValue('M'.$start_col, "=L".$start_col."/0.005");
+                        $event->sheet->setCellValue('N'.$start_col, "=M".$start_col."*0.1");
+                        $event->sheet->setCellValue('O'.$start_col, $stamping_data_1[$i]->set_up_pins);
+                        $event->sheet->setCellValue('P'.$start_col, $stamping_data_1[$i]->adj_pins);
+                        $event->sheet->setCellValue('Q'.$start_col, $stamping_data_1[$i]->qc_samp);
+                        $event->sheet->setCellValue('R'.$start_col, $stamping_data_1[$i]->prod_samp);
+                        $event->sheet->setCellValue('S'.$start_col, $stamping_data_1[$i]->total_mach_output);
+                        $event->sheet->setCellValue('T'.$start_col,"=S".$start_col."-(SUM(O".$start_col.":R".$start_col."))");
+                        $event->sheet->setCellValue('U'.$start_col, ("=T".$start_col."/S".$start_col));
 
 
-                    if (isset($stamping_data[$i]->stamping_ipqc)) {
-                        $event->sheet->setCellValue('V'.$start_col, $stamping_data[$i]->stamping_ipqc->ipqc_insp_name->firstname);
-                    }
-
-                    if (isset($stamping_data[$i]->oqc_details)) {
-                        $event->sheet->setCellValue('X'.$start_col, $stamping_data[$i]->oqc_details->inspector);
-                        $event->sheet->setCellValue('Y'.$start_col, $stamping_data[$i]->oqc_details->date_inspected);
-                        $event->sheet->setCellValue('Z'.$start_col, $stamping_data[$i]->oqc_details->num_of_defects);
-                        $event->sheet->setCellValue('AA'.$start_col, ("=(T".$start_col."-Z".$start_col.")/T".$start_col.""));
-                    }
-
-                    if (isset($stamping_data[$i]->oqc_details->packing_info)) {
-                        $packing_date = substr($stamping_data[$i]->oqc_details->packing_info->validated_date_packer,0,10);
-                        $event->sheet->setCellValue('AB'.$start_col, $stamping_data[$i]->oqc_details->packing_info->user_validated_by_info->firstname);
-                        $event->sheet->setCellValue('AC'.$start_col, $packing_date);
-                        $event->sheet->setCellValue('AD'.$start_col, ("=T".$start_col."-Z".$start_col));
-                    }
-
-                    for ($u=0; $u <count($stamping_data[$i]->receiving_info) ; $u++) { 
-                        $receiving_date = substr($stamping_data[$i]->receiving_info[$u]->updated_at,0,10);
-                        $event->sheet->setCellValue('AF'.$start_col, $receiving_date);
-                        $event->sheet->setCellValue('AG'.$start_col, $stamping_data[$i]->receiving_info[$u]->supplier_lot_no);
-                        $event->sheet->setCellValue('AH'.$start_col, $stamping_data[$i]->receiving_info[$u]->supplier_quantity);
-
-                        if (isset($stamping_data[$i]->receiving_info[$u]->iqc_info->user_iqc)) {
-                            $event->sheet->setCellValue('AJ'.$start_col, $stamping_data[$i]->receiving_info[$u]->iqc_info->user_iqc->firstname);
-                        }
-                        
-                        if (isset($stamping_data[$i]->receiving_info[$u]->iqc_info)) {
-                            $event->sheet->setCellValue('AK'.$start_col, $stamping_data[$i]->receiving_info[$u]->iqc_info->sampling_size);
-                            $event->sheet->setCellValue('AL'.$start_col, $stamping_data[$i]->receiving_info[$u]->iqc_info->date_inspected);
-                        }
-                    }
-                    
-                        $event->sheet->setCellValue('AI'.$start_col, ("=AH".$start_col."/AD".$start_col));
-                        $event->sheet->setCellValue('AM'.$start_col, ("=AH".$start_col."-AK".$start_col));
-                    
-                    if($stamping_data[$i]->stamping_cat == 2){
-                    
-                        $event->sheet->setCellValue('AN'.$start_col, $stamping_data[$i]->user->firstname);
-                        $event->sheet->setCellValue('AO'.$start_col, $stamping_data[$i]->shift);
-                        $event->sheet->setCellValue('AP'.$start_col, $stamping_data[$i]->prod_date);
-                        $event->sheet->setCellValue('AQ'.$start_col, $stamping_data[$i]->prod_lot_no);
-                        $event->sheet->setCellValue('AR'.$start_col, ("=AM".$start_col));
-                        $event->sheet->setCellValue('AS'.$start_col, ("=AR".$start_col."-AT".$start_col));
-                        $event->sheet->setCellValue('AT'.$start_col, "=AR".$start_col."*0.1");
-                        $event->sheet->setCellValue('AU'.$start_col, $stamping_data[$i]->set_up_pins);
-                        $event->sheet->setCellValue('AV'.$start_col, $stamping_data[$i]->adj_pins);
-                        $event->sheet->setCellValue('AW'.$start_col, $stamping_data[$i]->qc_samp);
-                        $event->sheet->setCellValue('AX'.$start_col, $stamping_data[$i]->prod_samp);
-                        $event->sheet->setCellValue('AY'.$start_col, $stamping_data[$i]->total_mach_output);
-                        $event->sheet->setCellValue('AZ'.$start_col,"=AY".$start_col."-(SUM(AU".$start_col.":AX".$start_col."))");
-                        $event->sheet->setCellValue('BA'.$start_col, ("=AZ".$start_col."/AY".$start_col));
-
-                        if (isset($stamping_data[$i]->stamping_ipqc)) {
-                            $event->sheet->setCellValue('BB'.$start_col, $stamping_data[$i]->stamping_ipqc->ipqc_insp_name->firstname);
+                        if (isset($stamping_data_1[$i]->stamping_ipqc)) {
+                            $event->sheet->setCellValue('V'.$start_col, $stamping_data_1[$i]->stamping_ipqc->ipqc_insp_name->firstname);
                         }
 
-                        if (isset($stamping_data[$i]->oqc_details)) {
-                            $event->sheet->setCellValue('BD'.$start_col, $stamping_data[$i]->oqc_details->inspector);
-                            $event->sheet->setCellValue('BE'.$start_col, $stamping_data[$i]->oqc_details->date_inspected);
-                            $event->sheet->setCellValue('BF'.$start_col, $stamping_data[$i]->oqc_details->num_of_defects);
-                            $event->sheet->setCellValue('BG'.$start_col, ("=(AZ".$start_col."-BF".$start_col.")/AZ".$start_col.""));
+                        if (isset($stamping_data_1[$i]->oqc_details)) {
+                            $event->sheet->setCellValue('X'.$start_col, $stamping_data_1[$i]->oqc_details->inspector);
+                            $event->sheet->setCellValue('Y'.$start_col, $stamping_data_1[$i]->oqc_details->date_inspected);
+                            $event->sheet->setCellValue('Z'.$start_col, $stamping_data_1[$i]->oqc_details->num_of_defects);
+                            $event->sheet->setCellValue('AA'.$start_col, ("=(T".$start_col."-Z".$start_col.")/T".$start_col.""));
+                        }
 
-                            if (isset($stamping_data[$i]->oqc_details->first_molding_info)){
-                                $second_molding_packing_date = substr($stamping_data[$i]->oqc_details->first_molding_info->date_counted,0,10);
+                        if (isset($stamping_data_1[$i]->oqc_details->packing_info)) {
+                            $packing_date = substr($stamping_data_1[$i]->oqc_details->packing_info->validated_date_packer,0,10);
+                            if(isset($stamping_data_1[$i]->oqc_details->packing_info->user_validated_by_info)){
 
-                                $event->sheet->setCellValue('BH'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->user_validated_by_info->firstname);
-                                $event->sheet->setCellValue('BI'.$start_col, $second_molding_packing_date);
-                                $event->sheet->setCellValue('BJ'.$start_col, $stamping_data[$i]->oqc_details->first_molding_info->shipment_output);
+                                $event->sheet->setCellValue('AB'.$start_col, $stamping_data_1[$i]->oqc_details->packing_info->user_validated_by_info->firstname);
+                            }else{
+                                $event->sheet->setCellValue('AB'.$start_col, '');
+
+                            }
+                            $event->sheet->setCellValue('AC'.$start_col, $packing_date);
+                            $event->sheet->setCellValue('AD'.$start_col, ("=T".$start_col."-Z".$start_col));
+                            // $event->sheet->setCellValue('AE'.$start_col, $stamping_data_1[$i]->packing_list_details->pick_up_date);
+                        }else{
+                            $event->sheet->setCellValue('AB'.$start_col, '');
+
+                        }
+
+                        for ($j=0; $j <count($stamping_data_1[$i]->packing_list_details) ; $j++) { 
+                            $event->sheet->setCellValue('AE'.$start_col, $stamping_data_1[$i]->packing_list_details[$j]->pick_up_date);
+
+                        }
+
+                        for ($u=0; $u <count($stamping_data_1[$i]->receiving_info) ; $u++) { 
+                            $receiving_date = substr($stamping_data_1[$i]->receiving_info[$u]->updated_at,0,10);
+                            $event->sheet->setCellValue('AF'.$start_col, $receiving_date);
+                            $event->sheet->setCellValue('AG'.$start_col, $stamping_data_1[$i]->receiving_info[$u]->supplier_lot_no);
+                            $event->sheet->setCellValue('AH'.$start_col, $stamping_data_1[$i]->receiving_info[$u]->supplier_quantity);
+
+                            if (isset($stamping_data_1[$i]->receiving_info[$u]->iqc_info->user_iqc)) {
+                                $event->sheet->setCellValue('AJ'.$start_col, $stamping_data_1[$i]->receiving_info[$u]->iqc_info->user_iqc->firstname);
+                            }
+                            
+                            if (isset($stamping_data_1[$i]->receiving_info[$u]->iqc_info)) {
+                                $event->sheet->setCellValue('AK'.$start_col, $stamping_data_1[$i]->receiving_info[$u]->iqc_info->sampling_size);
+                                $event->sheet->setCellValue('AL'.$start_col, $stamping_data_1[$i]->receiving_info[$u]->iqc_info->date_inspected);
                             }
                         }
+                            $event->sheet->setCellValue('AI'.$start_col, ("=AH".$start_col."/AD".$start_col));
+                            $event->sheet->setCellValue('AM'.$start_col, ("=AH".$start_col."-AK".$start_col));
+                    
                     }
+
+                    // }
 
                     $event->sheet->getDelegate()->getStyle('A'.$start_col.':'.'BK'.$start_col)->applyFromArray($styleBorderAll);
                     $start_col++;
                 }
+
+                for ($u=0; $u <count($stamping_data_2); $u++) { 
+                    $event->sheet->setCellValue('AN'.$start_col_2, $stamping_data_2[$u]->user->firstname);
+                    $event->sheet->setCellValue('AO'.$start_col_2, $stamping_data_2[$u]->shift);
+                    $event->sheet->setCellValue('AP'.$start_col_2, $stamping_data_2[$u]->prod_date);
+                    $event->sheet->setCellValue('AQ'.$start_col_2, $stamping_data_2[$u]->prod_lot_no);
+                    $event->sheet->setCellValue('AR'.$start_col_2, ("=AM".$start_col_2));
+                    $event->sheet->setCellValue('AS'.$start_col_2, ("=AR".$start_col_2."-AT".$start_col_2));
+                    $event->sheet->setCellValue('AT'.$start_col_2, "=AR".$start_col_2."*0.1");
+                    $event->sheet->setCellValue('AU'.$start_col_2, $stamping_data_2[$u]->set_up_pins);
+                    $event->sheet->setCellValue('AV'.$start_col_2, $stamping_data_2[$u]->adj_pins);
+                    $event->sheet->setCellValue('AW'.$start_col_2, $stamping_data_2[$u]->qc_samp);
+                    $event->sheet->setCellValue('AX'.$start_col_2, $stamping_data_2[$u]->prod_samp);
+                    $event->sheet->setCellValue('AY'.$start_col_2, $stamping_data_2[$u]->total_mach_output);
+                    $event->sheet->setCellValue('AZ'.$start_col_2,"=AY".$start_col_2."-(SUM(AU".$start_col_2.":AX".$start_col_2."))");
+                    $event->sheet->setCellValue('BA'.$start_col_2, ("=AZ".$start_col_2."/AY".$start_col_2));
+
+                    if (isset($stamping_data_2[$u]->stamping_ipqc)) {
+                        $event->sheet->setCellValue('BB'.$start_col_2, $stamping_data_2[$u]->stamping_ipqc->ipqc_insp_name->firstname);
+                    }
+
+                    if (isset($stamping_data_2[$u]->oqc_details)) {
+                        $event->sheet->setCellValue('BD'.$start_col_2, $stamping_data_2[$u]->oqc_details->inspector);
+                        $event->sheet->setCellValue('BE'.$start_col_2, $stamping_data_2[$u]->oqc_details->date_inspected);
+                        $event->sheet->setCellValue('BF'.$start_col_2, $stamping_data_2[$u]->oqc_details->num_of_defects);
+                        $event->sheet->setCellValue('BG'.$start_col_2, ("=(AZ".$start_col_2."-BF".$start_col_2.")/AZ".$start_col_2.""));
+
+                        if (isset($stamping_data_2[$u]->oqc_details->first_molding_info)){
+                            $second_molding_packing_date = substr($stamping_data_2[$u]->oqc_details->first_molding_info->date_counted,0,10);
+
+                            $event->sheet->setCellValue('BH'.$start_col_2, $stamping_data_2[$u]->oqc_details->first_molding_info->user_validated_by_info->firstname);
+                            $event->sheet->setCellValue('BI'.$start_col_2, $second_molding_packing_date);
+                            $event->sheet->setCellValue('BJ'.$start_col_2, $stamping_data_2[$u]->oqc_details->first_molding_info->shipment_output);
+                        }
+                    }
+                    $start_col_2++;
+                }
+
                 $event->sheet->getDelegate()->getStyle('U5'.':'.'U'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
                 $event->sheet->getDelegate()->getStyle('AA5'.':'.'AA'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 
                 $event->sheet->getDelegate()->getStyle('AI5'.':'.'AI'.$start_col)->getNumberFormat()->setFormatCode('0.00%'); 

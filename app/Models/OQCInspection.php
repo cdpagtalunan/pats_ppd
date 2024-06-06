@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\DropdownOqcAql;
 use App\Models\PackingDetails;
+use App\Models\DropdownOqcFamily;
 use App\Models\PreliminaryPacking;
 use App\Models\OqcInspectionReelLot;
 use App\Models\OqcInspectionPrintLot;
@@ -50,6 +51,10 @@ class OQCInspection extends Model
 
     public function oqc_inspection_type_info(){
         return $this->hasOne(DropdownOqcInspectionType::class,'id', 'type_of_inspection');
+    }
+
+    public function oqc_inspection_family_info(){
+        return $this->hasOne(DropdownOqcFamily::class,'id', 'family');
     }
 
     public function oqc_inspection_level_info(){

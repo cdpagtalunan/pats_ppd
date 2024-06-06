@@ -133,9 +133,9 @@
 
                     <form method="post" id="formStampingHistory" autocomplete="off">
                         @csrf
-                        <input type="text" class="col-2 input_hidden" id="txtStampingHistoryId" name="stamping_history_id" readonly>
-                        <input type="text" class="col-2 input_hidden" id="txtPartName" name="partname" readonly>
-                        <input type="text" class="col-2 input_hidden" id="txtEmployeeNo" name="employee_no" readonly>
+                        <input type="text" class="col-2 scanQrBarCode" id="txtStampingHistoryId" name="stamping_history_id" readonly>
+                        <input type="text" class="col-2 scanQrBarCode" id="txtPartName" name="partname" readonly>
+                        <input type="text" class="col-2 scanQrBarCode" id="txtEmployeeNo" name="employee_no" readonly>
                         
                         <div class="modal-body">
                             <div class="row"><!-- Start Row Stamping History -->
@@ -269,7 +269,7 @@
             <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body mt-3">
-                        <input type="text" class="input_hidden" id="txtScanOperatorID" name="scan_operator_id" autocomplete="off" readonly>
+                        <input type="text" class="scanQrBarCode" id="txtScanOperatorID" name="scan_operator_id" autocomplete="off" readonly>
                         <input type="text" class="scanQrBarCode w-100" id="txtScanEmployeeID" name="scan_employee_id" autocomplete="off">
                         <div class="text-center text-secondary"><h1><i class="fa fa-qrcode fa-lg"></i></h1>Scan Employee ID</div>
                     </div>

@@ -36,7 +36,7 @@ class FirstMoldingStationController extends Controller
                 $result .= '<button type="button" class="btn btn-outline-danger btn-sm mb-1" first-molding-station-id='.$row->id.' id="btnDeleteFirstMoldingStation"><i class="fa-solid fa-times"></i></button>';
                 // $result .= '';
             }else{
-                if($row->size_category != ""){
+                if($row->belongsToFirstMolding['first_molding_device_id'] == 1 && $row->size_category != ""){
                     $result .= "<button class='btn btn-success btn-sm mr-1'  first-molding-station-id=".$row->id." id='btnPrintFirstMoldingStation'><i class='fa-solid fa-print' disabled></i></button>";
                 }else{
                     $result .= '';
@@ -154,7 +154,7 @@ class FirstMoldingStationController extends Controller
 
     public function saveFirstMoldingStation(FirstMoldingStationRequest $request)
     {
-        // return $request->all();
+        // return $request->station;
 
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
@@ -183,7 +183,13 @@ class FirstMoldingStationController extends Controller
                 return response()->json( [ 'result' => 2,'error_msg' => 'Station is already exists' ] ,409);
             }
 
-            if($request->station == 7 ){ //nmodify Camera Inspection
+            //TODO: if($request->station == 7 ){ //nmodify Camera Inspection TEST
+            //TODO:  Size category is for CN171S-08#IN-VE
+            $get_first_molding_by_id = FirstMolding::with('firstMoldingDevice')->where('id',$request->first_molding_id)->whereNull('deleted_at')->get('first_molding_device_id');
+            // $get_first_molding_by_id[0]->first_molding_device_id;
+            // DB::rollback();
+            // $device_name = $get_first_molding_by_id[0]->firstMoldingDevice['device_name'];
+            if($get_first_molding_by_id[0]->first_molding_device_id == 1 && $request->station == 5 ){ //nmodify Camera Inspection LIVE
                 $validation = array(
                     'size_category' => ['required'],
                 );
@@ -236,9 +242,9 @@ class FirstMoldingStationController extends Controller
                 TODO: Save Auto Prod Lot
                 TODO: Multiple Resin Lot Number Virgin at Recycle
             */
+
             if(isset($request->mod_id)){
                 if(FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->exists()){
-
                     $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
                 }
                 foreach ( $request->mod_id as $key => $value_mod_id) {
@@ -252,13 +258,12 @@ class FirstMoldingStationController extends Controller
                 }
             }else{
                 if(FirstMoldingDetailMod::where('first_molding_detail_id', $first_molding_detail_id)->exists()){
-
                     $is_first_molding_deleted=FirstMoldingDetailMod::find($first_molding_detail_id)->delete(); //returns true/false
                 }
             }
-            /*
-                TODO: Save the Step Number to First Molding Detail Table
-            */
+
+
+            //TODO: Get the Step Number to Matrix Table
             $get_first_molding_by_id = FirstMolding::with('firstMoldingDevice')->where('id',$request->first_molding_id)->whereNull('deleted_at')->get();
             $device_name = $get_first_molding_by_id[0]->firstMoldingDevice['device_name'];
             $material_processes_by_device_name = DB::connection('mysql')
@@ -267,9 +272,18 @@ class FirstMoldingStationController extends Controller
                         INNER JOIN devices ON devices.id = material_processes.device_id
                         INNER JOIN material_process_stations ON material_process_stations.mat_proc_id = material_processes.id
                         INNER JOIN stations ON stations.id = material_process_stations.station_id
-                        WHERE devices.name = '$device_name' AND stations.id = $request->station
+                        WHERE devices.name = '".$device_name."' AND stations.id = $request->station
                         AND material_processes.process = 4 AND material_processes.status = 0
             ");
+
+            //TODO: If material_processes_by_device_name == 0 please check the matrix then add the process
+            if( count($material_processes_by_device_name) == 0 ){
+                DB::rollback();
+                return response()->json([
+                    "result" => 0,
+                    "error_msg" => "Please check the matrix, then add or edit the process !",
+                ]);
+            }
             $station_step = $material_processes_by_device_name[0]->step;
 
             $first_molding_detail_id = FirstMoldingDetail::where('id',$first_molding_detail_id)
@@ -468,9 +482,9 @@ class FirstMoldingStationController extends Controller
     }
 
     public function getOperatioNames(){
-        // $arr_data = User::where('position',4)->get();
+        //TODO: nmodify Filter Section
+        // $arr_data = User::where('section',2)->get();
         $arr_data = User::all();
-
         foreach ($arr_data as $key => $value_data) {
             $arr_value_id[] =$value_data['id'];
             $arr_value_name[] =$value_data['firstname'] .' '.$value_data['lastname'];
@@ -520,16 +534,28 @@ class FirstMoldingStationController extends Controller
         'first_molding_details.size_category AS size',
         ]);
 
+
+        $first_molding_label = FirstMoldingDetail::rightJoin('first_moldings', function($join) {
+            $join->on('first_moldings.id', '=', 'first_molding_details.first_molding_id');
+        })
+        ->leftJoin('first_molding_devices', function($join) {
+            $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
+        })
+        ->where('first_molding_details.id',$request->first_molding_detail_id)
+        ->whereNull('first_moldings.deleted_at')
+        ->first(['pmi_po_no AS pmi_po']);
+
         $qrcode = QrCode::format('png')
         ->size(250)->errorCorrection('H')
         ->generate($first_molding);
-
         $qr_code = "data:image/png;base64," . base64_encode($qrcode);
 
         $data[] = array(
             'img' => $qr_code,
-            'text' =>  "<strong>$first_molding->po</strong><br>
-            <strong>$first_molding->code</strong><br>
+            'text' =>  "
+            <strong>1st Molding</strong><br>
+            <strong>$first_molding_label->pmi_po</strong><br>
+            <strong>$first_molding->po</strong><br>
             <strong>$first_molding->device_name</strong><br>
             <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
             <strong>$first_molding->qty</strong><br>
@@ -537,16 +563,18 @@ class FirstMoldingStationController extends Controller
             <strong>$first_molding->size</strong><br>
             "
         );
-
         $label = "
             <table class='table table-sm table-borderless' style='width: 100%;'>
                 <tr>
-                    <td>PO No.:</td>
-                    <td>$first_molding->po</td>
+                    <td>1st Molding</td>
                 </tr>
                 <tr>
-                    <td>Material Code:</td>
-                    <td>$first_molding->code</td>
+                    <td>PMI PO No.:</td>
+                    <td>$first_molding_label->pmi_po</td>
+                </tr>
+                <tr>
+                    <td>PO No.:</td>
+                    <td>$first_molding->po</td>
                 </tr>
                 <tr>
                     <td>Material Name:</td>

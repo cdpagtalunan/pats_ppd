@@ -222,7 +222,7 @@
                                                 <input type="text" class="form-control datetimepicker" style="width: 25%" id="textProductionLotTime" placeholder="07:30-04:30" name="textProductionLotTime">
                                             </div>
                                             <div>
-                                                <span class="badge badge-secondary">2.</span> 
+                                                <span class="badge badge-secondary">2.</span>
                                                 <span data-bs-toggle="collapse" style="cursor: pointer" data-bs-target="#collapseScanLotNumbers" aria-expanded="false" aria-controls="collapseScanLotNumbers">
                                                     Scan Lot Numbers <i class="fas fa-angle-down"> </i>
                                                 </span>
@@ -243,7 +243,7 @@
                                                             <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMaterialLotNumberEight" name="formProductionLotNumberEight[]" form-value="formProductionLotNumberEight"><i class="fa fa-qrcode"></i></button>
                                                         </div>
                                                     </div>
-                                                    
+
                                                     <div class="input-group input-group-sm mb-3">
                                                         <div class="input-group-prepend w-50">
                                                             <span class="input-group-text w-100" id="basic-addon1">CN171S-09#IN-VE - Lot #</span>
@@ -315,49 +315,49 @@
                                                     </div>
                                                     <input type="text" class="form-control form-control-sm sumTotalMachineOutput" id="target_shots" name="target_shots" value="25" readonly>
                                                 </div>
-                                            
+
                                                 <div class="input-group input-group-sm mb-3">
                                                     <div class="input-group-prepend w-50">
                                                         <span class="input-group-text w-100" id="basic-addon1">Adjustment Shots</span>
                                                     </div>
                                                     <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="adjustment_shots" name="adjustment_shots" min="0">
                                                 </div>
-                                            
+
                                                 <div class="input-group input-group-sm mb-3">
                                                     <div class="input-group-prepend w-50">
                                                         <span class="input-group-text w-100" id="basic-addon1">QC Samples</span>
                                                     </div>
                                                     <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="qc_samples" name="qc_samples" min="0">
                                                 </div>
-                                            
+
                                                 <div class="input-group input-group-sm mb-3">
                                                     <div class="input-group-prepend w-50">
                                                         <span class="input-group-text w-100" id="basic-addon1">Prod Samples</span>
                                                     </div>
                                                     <input type="number" class="form-control form-control-sm sumTotalMachineOutput" id="prod_samples" name="prod_samples" min="0">
                                                 </div>
-                                            
+
                                                 <div class="input-group input-group-sm mb-3">
                                                     <div class="input-group-prepend w-50">
                                                         <span class="input-group-text w-100" id="basic-addon1">NG Count</span>
                                                     </div>
                                                     <input type="number" class="form-control form-control-sm sumTotalMachineOutput" readonly id="ng_count" name="ng_count" min="0">
                                                 </div>
-                                            
+
                                                 <div class="input-group input-group-sm mb-3">
                                                     <div class="input-group-prepend w-50">
                                                         <span class="input-group-text w-100" id="basic-addon1">Shipment Output:</span>
                                                     </div>
                                                     <input type="number" class="form-control form-control-sm sumTotalMachineOutput" readonly id="shipment_output" name="shipment_output" min="0">
                                                 </div>
-        
+
                                                 <div class="input-group input-group-sm mb-3">
                                                     <div class="input-group-prepend w-50">
                                                         <span class="input-group-text w-100" id="basic-addon1">Total Machine Output</span>
                                                     </div>
                                                     <input type="number" class="form-control form-control-sm" id="total_machine_output" readonly name="total_machine_output" min="0">
                                                 </div>
-                                            
+
                                                 <div class="input-group input-group-sm mb-3">
                                                     <div class="input-group-prepend w-50">
                                                         <span class="input-group-text w-100" id="basic-addon1">Material Yield</span>
@@ -403,7 +403,7 @@
                                                         <th style="border-top: 1px solid #dee2e6"></th>
                                                         <th style="border-top: 1px solid #dee2e6; white-space: nowrap;">Total Count:</th>
                                                         <th style="border-top: 1px solid #dee2e6" title="Total NG Count of Station" class="text-danger"></th>
-                                                        <th style="border-top: 1px solid #dee2e6" title="Total Visual Inspection" class="text-success"></th>
+                                                        <th style="border-top: 1px solid #dee2e6" title="Total Last Output" class="text-success"></th>
                                                         <th style="border-top: 1px solid #dee2e6"></th>
                                                     </tr>
                                                 </tfoot>
@@ -435,6 +435,25 @@
                         <input type="text" id="textQrScanner" class="hidden_scanner_input" class="" autocomplete="off">
                         <div class="text-center text-secondary">
                             Please scan Material Lot #
+                            <br><br>
+                            <h1><i class="fa fa-qrcode fa-lg"></i></h1>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modalEmployeeNumberQrScanner" data-form-id="" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <input type="text" id="textEmployeeNumberQrScanner" class="hidden_scanner_input" class="" autocomplete="off">
+                        <div class="text-center text-secondary">
+                            Please scan Employee #
                             <br><br>
                             <h1><i class="fa fa-qrcode fa-lg"></i></h1>
                         </div>
@@ -497,9 +516,12 @@
                                         <div class="input-group-prepend w-50">
                                             <span class="input-group-text w-100" id="basic-addon1">Operator Name</span>
                                         </div>
-                                        <select type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name" placeholder="Operator Name">
+                                        <select type="text" class="form-control form-control-sm select2bs4" id="textOperatorName"
+                                            name="operator_name" placeholder="Operator Name">
                                             {{-- <option value="{{ Auth::user()->id }}">{{ Auth::user()->firstname  .' '. Auth::user()->lastname }}</option> --}}
                                         </select>
+                                        {{-- <select type="text" class="form-control form-control-sm" id="textOperatorName" name="operator_name" placeholder="Operator Name">
+                                        </select> --}}
                                     </div>
                                 </div>
                             </div>
@@ -573,7 +595,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -585,7 +607,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -597,7 +619,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -608,7 +630,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -619,7 +641,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -630,7 +652,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -641,7 +663,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -652,7 +674,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -663,7 +685,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -678,7 +700,7 @@
                                         </div>
                                     </div>
                                 </div>
-    
+
                                 <div class="row">
                                     <div class="col">
                                         <div class="input-group input-group-sm mb-3">
@@ -694,7 +716,7 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
 
                             <div class="row">
                                 <div class="col">
@@ -757,6 +779,20 @@
     @section('js_content')
         <script>
             $(document).ready(function(){
+                /**
+                 * Global variables
+                */
+                let poNumber;
+                let materialName;
+                let dataTablesSecondMolding, dataTablesSecondMoldingStation;
+
+                $('.select2bs4').each(function() {
+                    $(this).select2({
+                        theme: 'bootstrap-5',
+                        dropdownParent: $(this).parent(),
+                    });
+                });
+
                 $('#textProductionLotTime').mask('00:00-00:00', {reverse: false});
                 $('#textProductionLotTime').keyup(delay(function(e){
                     let textProductionLot = $('#textProductionLot').val();
@@ -767,11 +803,13 @@
                         $('#textProductionLot').val(concattedProductionLot)
                     }
                 }, 400));
+
                 
-                let dataTablesSecondMolding, dataTablesSecondMoldingStation;
                 $(document).on('keypress', '#textSearchPMIPONumber', function(e){
                     if(e.keyCode == 13){
                         getPOReceivedByPONumber($(this).val());
+                        materialName = $('#textSearchMaterialName').val();
+                        poNumber = $('#textSearchPMIPONumber').val();
                         dataTablesSecondMolding.draw();
                     }
                 });
@@ -781,10 +819,8 @@
                  * Start
                 */
                 $('#buttonAddSecondMolding').on('click', function(e){
-                    let poNumber = $('#textSearchPMIPONumber').val();
-                    let materialName = $('#textSearchMaterialName').val();
                     // let materialNameSubstring = materialName.substring(0,6);
-                    
+
                     if(poNumber != "" && materialName != ""){
                         getMachineDropdown($('#selMachineNumber'), materialName); // Added Chris to get Data on matrix machine
                         getPOReceivedByPONumber(poNumber);
@@ -857,12 +893,12 @@
                  * QR Code Scanner
                  * Start
                 */
-                
+
                 $('#buttonQrScanMaterialLotNumber, #buttonQrScanMaterialLotNumberNine, #buttonQrScanMaterialLotNumberTen, #buttonQrScanContactLotNumberOne, #buttonQrScanContactLotNumberSecond, #buttonQrScanMELotNumberOne, #buttonQrScanMELotNumberSecond').each(function(e){
                     $(this).on('click',function (e) {
                         let formValue = $(this).attr('form-value');
                         console.log('formValue ',formValue);
-                        
+
                         $('#modalQrScanner').attr('data-form-id', formValue).modal('show');
                         $('#textQrScanner').val('');
                         setTimeout(() => {
@@ -877,13 +913,13 @@
                     let formValue = $(this).attr('form-value');
                     console.log('formValue ',formValue);
                     scannerRow = this;
-                    
+
                     // for (let index = 0; index < $('button[name="formProductionLotNumberEight[]"]').length; index++) {
                     //     const size = $('input[name="lot_number_eight_size_category[]"]')[index];
                     //     const qty = $('input[name="lot_number_eight_quantity[]"]')[index];
                     //     console.log(`index: ${index} and size: ${$(size).attr('value')} qty: ${$(qty).attr('value')}`);
                     // }
-                    
+
                     $('#modalQrScanner').attr({
                         'data-form-id':formValue,
                     }).modal('show');
@@ -1199,9 +1235,9 @@
                                                     <input type="text" class="form-control form-control-sm" id="textLotNumberEightQuantity" name="lot_number_eight_quantity[]" value="${arrayLotNumberEightQuantity[i]}" readonly placeholder="Quantity">
                                                     <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" value="${responseData[0].lot_number_eight_first_molding_id}" readonly placeholder="Lot #">
                                                     <button class="btn btn-xs btn-danger buttonRemoveLotNumber" title="Remove" type="button"><i class="fa fa-times"></i></button>
-                                                    <button class="btn btn-info" 
-                                                        type="button" title="Scan code" 
-                                                        id="buttonQrScanMaterialLotNumberEight" 
+                                                    <button class="btn btn-info"
+                                                        type="button" title="Scan code"
+                                                        id="buttonQrScanMaterialLotNumberEight"
                                                         form-value="formProductionLotNumberEight"
                                                         name="formProductionLotNumberEight[]">
                                                         <i class="fa fa-qrcode"></i>
@@ -1226,7 +1262,7 @@
                                         }
                                     }
                                 }
-                                
+
                                 $('#textSecondMoldingId', $('#formSecondMolding')).val(responseData[0].id);
                                 $('#textDeviceName', $('#formSecondMolding')).val(responseData[0].device_name);
                                 $('#textPartsCode', $('#formSecondMolding')).val(responseData[0].parts_code);
@@ -1244,7 +1280,7 @@
                                 $('#textProductionLot', $('#formSecondMolding')).val(textProductionLot);
                                 let subTextProductionLotTime = textProductionLot.substr(-11);
                                 $('#textProductionLotTime', $('#formSecondMolding')).val(subTextProductionLotTime);
-                                
+
                                 // $('#textLotNumberEight', $('#formSecondMolding')).val(responseData[0].lot_number_eight);
                                 $('#textLotNumberEightFirstMoldingId', $('#formSecondMolding')).val(responseData[0].lot_number_eight_first_molding_id);
                                 $('#textLotNumberNine', $('#formSecondMolding')).val(responseData[0].lot_number_nine);
@@ -1269,6 +1305,27 @@
 
                                 dataTablesSecondMoldingStation.draw();
                                 $('#buttonAddStation').prop('disabled', false);
+
+                                /**
+                                 * Add disabled for Add Station(button)
+                                */
+                                $.ajax({
+                                    type: "GET",
+                                    url: "check_if_last_step_by_material_name",
+                                    data: {
+                                        second_molding_id: id,
+                                        material_name: materialName,
+                                    },
+                                    dataType: "json",
+                                    success: function (response) {
+                                        console.log('response ', response);
+                                        if(response['checkIfLastStepByMaterialName']){
+                                            $('#buttonAddStation').prop('disabled', true);
+                                        }else{
+                                            $('#buttonAddStation').prop('disabled', false);
+                                        }
+                                    }
+                                });
                             }
                         }
                     });
@@ -1336,24 +1393,31 @@
                     footerCallback: function (row, data, start, end, display) {
                         let api = this.api();
 
-                        let countNGQuantity = 0;
-                        let countVisualInspectionQuantity = 0;
+                        let countOfNGQuantity = 0;
+                        let lastOutputQuantity = 0;
+                        console.log('materialName on tableStation ', materialName);
                         if(data.length > 0){
                             for (let index = 0; index < data.length; index++) {
-                                countNGQuantity += parseInt(data[index].ng_quantity);
-                                if(data[index].station_name == "Visual Inspection"){
-                                    countVisualInspectionQuantity += parseInt(data[index].output_quantity);
-                                }
+                                countOfNGQuantity += parseInt(data[index].ng_quantity);
+                                    if(materialName == 'CN171S-07#IN-VE'){
+                                        if(data[index].station_name == "Visual Inspection"){
+                                            lastOutputQuantity += parseInt(data[index].output_quantity);
+                                        }
+                                    }else if (materialName == 'CN171P-02#IN-VE'){
+                                        if(data[index].station_name == "Camera Inspection"){
+                                            lastOutputQuantity += parseInt(data[index].output_quantity);
+                                        }
+                                    }
                             }
                         }
-                        // console.log('countNGQuantity ', countNGQuantity);
-                        $(api.column(5).footer()).html(`${countNGQuantity}`)
-                        $(api.column(6).footer()).html(`${countVisualInspectionQuantity}`)
+                        // console.log('countOfNGQuantity ', countOfNGQuantity);
+                        $(api.column(5).footer()).html(`${countOfNGQuantity}`)
+                        $(api.column(6).footer()).html(`${lastOutputQuantity}`)
                     }
                 });
                 /**
                  * DataTables of Second Molding Station
-                 * End
+                 * EndP
                 */
 
                 /**
@@ -1380,14 +1444,14 @@
                     $('#textStep').val($(this).find(':selected').attr('step'));
                 });
 
-                
+
 
                 /**
-                 * Get Id of Second Molding after click 
+                 * Get Id of Second Molding after click
                  * to be use in Second Molding Station
                  * Start
                 */
-                $('#checkPartial').on('change',function (e) { 
+                $('#checkPartial').on('change',function (e) {
                     if($('#checkPartial').is(':checked')){
                         console.log('checked');
                         $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
@@ -1396,9 +1460,10 @@
                         $('#textInputQuantity', $('#formAddStation')).prop('readonly', true);
                     }
                 });
-                
+
                 getUser($('#textOperatorName'));
                 $('#buttonAddStation').click(function(){
+                    console.log('materialName ', materialName);
                     let secondMoldingId = $('#textSecondMoldingId', $('#formSecondMolding')).val();
                     $('#textSecondMoldingId', $('#formAddStation')).val(secondMoldingId);
                     $('#labelTotalNumberOfNG', $('#formAddStation')).text(0);
@@ -1408,38 +1473,43 @@
                         type: "get",
                         url: "get_last_shipment_output",
                         data: {
-                            second_molding_id: secondMoldingId
+                            second_molding_id: secondMoldingId,
+                            material_name: materialName,
                         },
                         dataType: "json",
                         success: function (response) {
-                            if(response['getShipmentOuputOfVisualInspection'].length > 0){
-                                console.log('object 1 ', response['getShipmentOuputOfVisualInspection'][0].output_quantity);
-                                $('#textInputQuantity', $('#formAddStation')).val(response['getShipmentOuputOfVisualInspection'][0].output_quantity).trigger('keyup');
-
-                                if(response['disabledInputQuantity']){
-                                    $('#textInputQuantity', $('#formAddStation')).prop('readonly', true);
-                                }else{
-                                    $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
-                                }
-                            }else{
-                                if(response['data'].length > 0){
-                                    console.log('object 2 ', response['data'][0].station);
-                                    $('#textInputQuantity', $('#formAddStation')).val(response['data'][0].output_quantity).trigger('keyup');
-                                    if(response['data'].length == 2){
-                                        $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
-                                    }else{
+                            if(materialName == 'CN171S-07#IN-VE'){
+                                if(response['getShipmentOuputOfVisualInspection'].length > 0){
+                                    console.log('object 1 ', response['getShipmentOuputOfVisualInspection'][0].output_quantity);
+                                    $('#textInputQuantity', $('#formAddStation')).val(response['getShipmentOuputOfVisualInspection'][0].output_quantity).trigger('keyup');
+                                    if(response['disabledInputQuantity']){
                                         $('#textInputQuantity', $('#formAddStation')).prop('readonly', true);
+                                    }else{
+                                        $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
+                                    }
+                                }else{
+                                    if(response['data'].length > 0){
+                                        console.log('object 2 ', response['data'][0].station);
+                                        $('#textInputQuantity', $('#formAddStation')).val(response['data'][0].output_quantity).trigger('keyup');
+                                        if(response['data'].length == 2){
+                                            $('#textInputQuantity', $('#formAddStation')).prop('readonly', false);
+                                        }else{
+                                            $('#textInputQuantity', $('#formAddStation')).prop('readonly', true);
+                                        }
                                     }
                                 }
+                            }else if (materialName == 'CN171P-02#IN-VE'){
+                                $('#textInputQuantity', $('#formAddStation')).prop('readonly', response['disabledInputQuantity']);
+                                if(response['data'].length > 0){
+                                    $('#textInputQuantity', $('#formAddStation')).val(response['data'][0].output_quantity).trigger('keyup');
+                                }
                             }
-                            
-
                             
                         }
                     });
                 });
                 /**
-                 * Get Id of Second Molding after click 
+                 * Get Id of Second Molding after click
                  * to be use in Second Molding Station
                  * End
                 */
@@ -1450,7 +1520,7 @@
                 */
                 $('#formAddStation').submit(function (e) {
                     e.preventDefault();
-                    let data = $(this).serialize();
+                    let data = $(this).serialize()+`&material_name=${materialName}`;
                     $.ajax({
                         type: "POST",
                         url: "save_second_molding_station",
@@ -1486,7 +1556,7 @@
                                 else{
                                     isResponseError('textDeviceName', true);
                                 }
-                                
+
                                 if(response['error']['type_of_inspection'] === undefined){
                                     isResponseError('selectTypeOfInspection', false);
                                 }
@@ -1535,7 +1605,7 @@
                                 else{
                                     isResponseError('textReject', true);
                                 }
-                                
+
                                 if(response['error']['lot_inspected'] === undefined){
                                     isResponseError('textLotInspected', false);
                                 }
@@ -1606,8 +1676,8 @@
                     }else{
                         $("#textStationYield").val(`${stationYieldPercentage.toFixed(2)}%`);
                     }
-                }); 
-                
+                });
+
                 $("#textInputQuantity").keyup(function(){
                     let inputQuantity = parseInt($("#textInputQuantity").val());
                     let outputQuantity = parseInt($('#textOutputQuantity').val());
@@ -1674,7 +1744,7 @@
                         }
                         $("#labelTotalNumberOfNG").text(totalNumberOfMOD);
                     })
-                    
+
                 });
                 /**
                  * Auto compute NG Quantity onkeyup
@@ -1752,7 +1822,7 @@
                 /**
                  * Add/Remove Mode Of Defect
                  * End
-                */ 
+                */
 
                 /**
                  * Get Second Molding Data to be use in Edit
@@ -1849,7 +1919,7 @@
                  * Get Second Molding Data to be use in Edit
                  * End
                 */
-                
+
                 /**
                  * Edit of Second Molding Station to be use in Update
                  * Start
@@ -1887,25 +1957,66 @@
                  * Complete Second Molding for Assembly
                  * Start
                 */
-                $('#buttonSubmitSecondMolding').click(function(){
+                $('#buttonSubmitSecondMolding').click(function(e){
                     console.log(`buttonSubmitSecondMolding clicked`);
-                    $.ajax({
-                        type: "POST",
-                        url: "complete_second_molding",
-                        data: {
-                            'second_molding_id': $('#textSecondMoldingId').val(),
-                            "_token": "{{ csrf_token() }}",
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            if(!response.hasError){
-                                toastr.success('Successfully saved');
-                                dataTablesSecondMolding.draw();
-                                $('#modalSecondMolding').modal('hide');
-                            }
+                    e.preventDefault();
+                    Swal.fire({
+                        // title: "Are you sure?",
+                        text: "Are you sure you want to submit this process?",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Yes"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#modalEmployeeNumberQrScanner').attr('data-form-id', 'buttonSubmitSecondMoldingStation').modal('show');
+                            $('#textEmployeeNumberQrScanner').val('');
+                            setTimeout(() => {
+                                $('#textEmployeeNumberQrScanner').focus();
+                            }, 500);
                         }
                     });
                 });
+
+                $('#textEmployeeNumberQrScanner').keyup(delay(function(e){
+                    let textEmployeeNumberQrScanner = $('#textEmployeeNumberQrScanner').val();
+                    let formId = $('#modalEmployeeNumberQrScanner').attr('data-form-id');
+                    if (e.keyCode == 13) {
+                        switch (formId) {
+                            case 'buttonSubmitSecondMoldingStation':
+                                validateUser(textEmployeeNumberQrScanner, [0,4,9], function(result) {
+                                    if (result == true) {
+                                        $.ajax({
+                                            type: "POST",
+                                            url: "complete_second_molding",
+                                            data: {
+                                                'second_molding_id': $('#textSecondMoldingId').val(),
+                                                "_token": "{{ csrf_token() }}",
+                                            },
+                                            dataType: "json",
+                                            success: function (response) {
+                                                if(!response.hasError){
+                                                    toastr.success('Successfully saved');
+                                                    dataTablesSecondMolding.draw();
+                                                    $('#modalEmployeeNumberQrScanner').modal('hide');
+                                                    $('#modalSecondMolding').modal('hide');
+                                                }
+                                            }
+                                        });
+                                    } else { // Error Handler
+                                        toastr.error('User not authorize!');
+                                    }
+                                });
+                                break;
+                            default:
+                                toastr.error('Error: Please call the ISS ! ');
+                                $('#modalEmployeeNumberQrScanner').attr('data-form-id');
+                                break;
+                        }
+                        $(this).val('');
+                    }
+                }, 100));
                 /**
                  * Complete Second Molding for Assembly
                  * End
@@ -1980,9 +2091,9 @@
                             <input type="text" class="form-control form-control-sm" id="textLotNumberEightQuantity" name="lot_number_eight_quantity[]" value="0" readonly placeholder="Quantity">
                             <input type="hidden" class="form-control form-control-sm" id="textLotNumberEightFirstMoldingId" name="lot_number_eight_first_molding_id" readonly placeholder="Lot #">
                             <button class="btn btn-xs btn-danger buttonRemoveLotNumber" title="Remove" type="button"><i class="fa fa-times"></i></button>
-                            <button class="btn btn-info" 
-                                type="button" title="Scan code" 
-                                id="buttonQrScanMaterialLotNumberEight" 
+                            <button class="btn btn-info"
+                                type="button" title="Scan code"
+                                id="buttonQrScanMaterialLotNumberEight"
                                 form-value="formProductionLotNumberEight"
                                 name="formProductionLotNumberEight[]">
                                 <i class="fa fa-qrcode"></i>

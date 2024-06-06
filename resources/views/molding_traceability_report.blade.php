@@ -1,6 +1,6 @@
 @extends('layouts.admin_layout')
 
-@section('title', 'Dashboard')
+@section('title', 'Molding Traceability')
 @section('content_page')
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

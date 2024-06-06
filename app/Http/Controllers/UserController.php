@@ -363,6 +363,7 @@ class UserController extends Controller
                     'email' => $request->email,
                     'employee_id' => $request->employee_id,
                     'position' => $request->position,
+                    'section' => $request->section,
                     'password' => Hash::make($password),
                     'is_password_changed' => 0,
                     'status' => 1,
@@ -385,14 +386,6 @@ class UserController extends Controller
                         'created_at' => date('Y-m-d H:i:s')
                     ]);
                 }
-
-                // if(isset($request->send_email)){
-                //     $subject = 'PATS User Registration';
-                //     $email = $request->email;
-                //     $message = 'This is a notification from PATS. Your PATS user account was successfully registered.';
-
-                //     // dispatch(new SendUserPasswordJob($subject, $message, $request->username, $password, $email));
-                // }
 
                 DB::commit();
 
@@ -506,6 +499,7 @@ class UserController extends Controller
                     'employee_id' => $request->employee_id,
                     'user_level_id' => $request->user_level_id,
                     'position' => $request->position,
+                    'section' => $request->section,
                     'last_updated_by' => Auth::user()->id,
                     'update_version' => 1,
                     'updated_at' => date('Y-m-d H:i:s'),

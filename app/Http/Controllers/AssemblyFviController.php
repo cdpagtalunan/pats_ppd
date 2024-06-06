@@ -50,12 +50,12 @@ class AssemblyFviController extends Controller
             $result = "";
             $result .= "<center>";
             if($fvi_data->status == 0){
-                
+
                 $result .='<span class="badge badge-pill badge-info">For Visual Inspection</span>';
             }
             else if($fvi_data->status == 1){
                 $result .='<span class="badge badge-pill badge-success">Done</span>';
-                
+
             }
             $result .= "</center>";
             return $result;
@@ -101,7 +101,7 @@ class AssemblyFviController extends Controller
             ->where('assembly_runcard_stations_mods.assembly_runcard_stations_id', $fvi_runcards->prod_runcard_station_id)
             ->whereNull('assembly_runcard_stations_mods.deleted_at')
             ->get();
-            
+
             foreach( $runcard_mod as $mod ){
                 $result .= "$mod->fk_defect_name <br>";
             }
@@ -163,7 +163,7 @@ class AssemblyFviController extends Controller
 
         if($validator->passes()){
             DB::beginTransaction();
-             
+
             try{
                 $lot_ext;
                 $bundle_ext;
@@ -199,7 +199,7 @@ class AssemblyFviController extends Controller
                 $dt = Carbon::now();
 
                 $year = $dt->year;
-                
+
                 $substr_year = substr(strval($year), 3, 4);
                 $month = $dt->month;
                 if($month == 10){
@@ -283,11 +283,11 @@ class AssemblyFviController extends Controller
         ->join('assembly_runcard_stations', 'assembly_runcards.id', '=', 'assembly_runcard_stations.assembly_runcards_id')
         ->join('stations', 'assembly_runcard_stations.station', '=', 'stations.id')
         ->select(
-            'assembly_runcards.*', 
-            'assembly_runcard_stations.id AS fk_station_id', 
-            'assembly_runcard_stations.station AS fk_station_station', 
-            'assembly_runcard_stations.input_quantity AS fk_station_input_quantity', 
-            'assembly_runcard_stations.output_quantity AS fk_station_output_quantity', 
+            'assembly_runcards.*',
+            'assembly_runcard_stations.id AS fk_station_id',
+            'assembly_runcard_stations.station AS fk_station_station',
+            'assembly_runcard_stations.input_quantity AS fk_station_input_quantity',
+            'assembly_runcard_stations.output_quantity AS fk_station_output_quantity',
             'stations.station_name AS fk_station_name'
         )
         ->where('assembly_runcards.runcard_no', $request->runcard_no)
@@ -333,7 +333,7 @@ class AssemblyFviController extends Controller
                     'created_by'              => session()->get('user_id'),
                     'created_at'              => NOW()
                 );
-    
+
                 AssemblyFvisRuncard::insert($runcard_array);
             }
             else{
@@ -341,10 +341,10 @@ class AssemblyFviController extends Controller
                     'msg' => "Runcard Already Exist!"
                 ], 422);
             }
-           
+
 
             DB::commit();
-            
+
             return response()->json([
                 'result' => true,
                 'msg' => 'successfully Added'
@@ -376,6 +376,8 @@ class AssemblyFviController extends Controller
         ->where('status', 1)
         ->first();
 
+        // return $device;
+
         return response()->json([
             'device' => $device
         ]);
@@ -386,7 +388,7 @@ class AssemblyFviController extends Controller
 
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
-        
+
         try{
             AssemblyFvi::where('id', $request->id)
             ->update([
@@ -405,17 +407,15 @@ class AssemblyFviController extends Controller
             return $e;
         }
 
-     
+
     }
 
     public function search_po(Request $request){
-        // return $request->all();
-
         $details = DB::connection('mysql')
-        ->table('assembly_runcards')
-        ->where('po_number', $request->po_number)
-        ->whereNull('deleted_at')
-        ->first();
+            ->table('assembly_runcards')
+            ->where('po_number', $request->po_number)
+            ->whereNull('deleted_at')
+            ->first();
 
         return response()->json([
             'details' => $details

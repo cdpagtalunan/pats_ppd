@@ -239,7 +239,7 @@
                         @csrf
                         <div class="modal-body">
                             <input type="hidden" id="txtIpqcId" name="ipqc_id">
-                            <input type="hidden" id="txtFirstMoldingId" name="second_molding_id">
+                            {{-- <input type="hidden" id="txtFirstMoldingId" name="second_molding_id"> --}}
                             <input type="hidden" id="txtProcessCategory" name="process_category" value="2">
                             <div class="row">
                                 <div class="col-sm-6">
@@ -461,8 +461,8 @@
                         type: "get",
                         url: "verify_production_lot",
                         data: {
-                            'production_lot': ScanQrCodeVal.lot_no,
-                            'device_name': ScanQrCodeVal.name,
+                            'production_lot': ScanQrCodeVal.production_lot,
+                            'device_name': ScanQrCodeVal.device_name,
                             'process_category': 2
                         },
                         dataType: "json",
@@ -475,14 +475,14 @@
                                 $('#txtPartCode').val('');
                                 $('#txtMaterialName').val('');
 
-                            }else if(response['production_lot'] == ScanQrCodeVal.lot_no){
+                            }else if(response['production_lot'] == ScanQrCodeVal.production_lot){
                                 toastr.success('Production Lot Matched!');
-                                $('#txtProductionLot').val(ScanQrCodeVal.lot_no);
-                                $('#txtPoNumber').val(ScanQrCodeVal.po);
-                                $('#txtPartCode').val(ScanQrCodeVal.code);
-                                $('#txtMaterialName').val(ScanQrCodeVal.name);
+                                $('#txtProductionLot').val(ScanQrCodeVal.production_lot);
+                                $('#txtPoNumber').val(ScanQrCodeVal.po_number);
+                                $('#txtPartCode').val(ScanQrCodeVal.parts_code);
+                                $('#txtMaterialName').val(ScanQrCodeVal.device_name);
 
-                                const trimmed_mat_name = ScanQrCodeVal.name.replace(/ /g,'');
+                                const trimmed_mat_name = ScanQrCodeVal.device_name.replace(/ /g,'');
                                 console.log(trimmed_mat_name);
 
                                 GetBDrawingFromACDCS(trimmed_mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
@@ -624,6 +624,7 @@
                             url: "get_ipqc_data",
                             data: {
                                 "device_id" : searchMatNameFrmSecondMolding
+                                // "process_category" : 2
                             },
                             dataType: "json",
                             success: function (response) {
@@ -666,7 +667,8 @@
                     frmIPQCInspectionData.find("#ScanProductLot").prop('disabled', false)
                     frmIPQCInspectionData.find("#txtQcSamples").prop('disabled', false);
                     frmIPQCInspectionData.find("#txtOkSamples").prop('disabled', false);
-                    frmIPQCInspectionData.find("#txtJudgement").prop('disabled', false);
+                    frmIPQCInspectionData.find("#txtKeepSample1").prop('disabled', false);
+                    frmIPQCInspectionData.find("#txtKeepSample2").prop('disabled', false);
                     frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop({hidden:false, disabled:false, required:true});
                     frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop({hidden:false, disabled:false, required:true});
                     frmIPQCInspectionData.find("#txtSelectDocNoUD").prop({hidden:false, disabled:false, required:true});
@@ -727,6 +729,8 @@
                             frmIPQCInspectionData.find("#frmSaveBtn").prop('hidden', false);
                             frmIPQCInspectionData.find("#txtQcSamples").prop('disabled', false);
                             frmIPQCInspectionData.find("#txtOkSamples").prop('disabled', false);
+                            frmIPQCInspectionData.find("#txtKeepSample1").prop('disabled', false);
+                            frmIPQCInspectionData.find("#txtKeepSample2").prop('disabled', false);
                             frmIPQCInspectionData.find("#txtJudgement").prop('disabled', false);
                             frmIPQCInspectionData.find("#txtSelectDocNoBDrawing").prop({hidden:false, disabled:false});
                             frmIPQCInspectionData.find("#txtSelectDocNoInspStandard").prop({hidden:false, disabled:false});
@@ -1101,6 +1105,15 @@
                         }
 
                     });
+                });
+
+                $("#modalIpqcInspection").on('hidden.bs.modal', function () {
+                    // Reset form values
+                    $("#formIPQCInspectionData")[0].reset();
+                    $('#txtIpqcId').val('');
+                    // Remove invalid & title validation
+                    $('div').find('input').removeClass('is-invalid');
+                    $("div").find('input').attr('title', '');
                 });
 
                 // ================================= RE-UPLOAD FILE =================================

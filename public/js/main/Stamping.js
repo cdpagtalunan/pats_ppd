@@ -476,6 +476,7 @@ const getSecondStampReq = (params) => {
             
             $('#txtSearchPONum').val(response['poDetails'][0]['po_num'])
             $('#txtSearchMatName').val(response['poDetails'][0]['material_name'])
+            $('#txtSearchMatCode').val(response['poDetails'][0]['part_code'])
             $('#txtSearchPO').val(response['poDetails'][0]['po_qty'])
 
             poDetails = response['poDetails'][0];

@@ -49,7 +49,7 @@ class AssemblyOqcLotAppController extends Controller
             }
             // else if($fvi_inspection->oqc_lot_app->status > 0){
 
-            if($fvi_inspection->oqc_lot_app->status == 3 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 1){
+            else if($fvi_inspection->oqc_lot_app->status == 3 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 1){
                 $result.='<button type="button" class="btn btn-sm btn-success btn_update_lot" id="btn_update" data-toggle="modal" sub_count="'.$submission.'" value="'.$fvi_inspection->id.'" title="View/Update Details"><i class="fa fa-pencil-alt fa-sm"></i></button>';
 
             }else if($fvi_inspection->oqc_lot_app->status == 1 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 2){
@@ -60,12 +60,12 @@ class AssemblyOqcLotAppController extends Controller
                             </button>';
             }else if($fvi_inspection->oqc_lot_app->status == 2){
 
-                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
+                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" sub_count="'.$submission.'" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-primary btn_print_lotapp_inner_box" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print Lot Tray QR Sticker"><i class="fa fa-print fa-sm"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-warning btn_print_lotapp" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print OQC Lot Application QR STICKER"><i class="fa fa-print fa-sm"></i></button>';
 
             }else{
-                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
+                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" sub_count="'.$submission.'" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
             }
 
                 // $result.=' <button type="button" class="btn btn-sm btn-primary btn_print_lotapp_inner_box" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print Lot Tray QR Sticker"><i class="fa fa-print fa-sm"></i></button>';
@@ -162,16 +162,28 @@ class AssemblyOqcLotAppController extends Controller
 
     public function view_assy_oqc_lot_app_summary(Request $request){
 
-        $oqc_inspections = AssemblyOqcLotAppSummary::with(['oqc_lot_app_summ.user','oqc_lot_app_summ' => function ($query) use ($request){
-                                                            return $query ->where('assy_fvi_id', $request->assy_fvi_id);
-                                                        }])->orderBy('submission','asc')->get();
+        // $oqc_inspections = AssemblyOqcLotAppSummary::with([
+        //     'oqc_lot_app_summ.user',
+        //     'oqc_lot_app_summ' => function ($query) use ($request){
+        //         return $query ->where('assy_fvi_id', $request->assy_fvi_id);
+        //     }
+        // ])->orderBy('submission','asc')->get();
+        $oqc_inspections = AssemblyOqcLotAppSummary::with([
+            'oqc_lot_app_summ.user',
+            'oqc_lot_app_summ'
 
+        ])
+        ->orderBy('submission','asc')->get();
+
+
+        $collection = collect($oqc_inspections)->where('oqc_lot_app_summ.assy_fvi_id', $request->assy_fvi_id)->flatten(0);
         // $oqc_lot_app_summ = $oqc_inspections[0]->oqc_lot_app_summ;
         // return $oqc_inspections;
         // $oqc_inspections = AssemblyOqcLotApp::where( 'fkid_runcard', $request['lot_batch_no'] )
         // ->orderBy('submission','asc')->get();
 
-        return DataTables::of($oqc_inspections)
+        // return DataTables::of($oqc_inspections)
+        return DataTables::of($collection)
         ->addColumn('sub_raw', function($oqc_inspection){
             $result = "";
 
@@ -237,7 +249,7 @@ class AssemblyOqcLotAppController extends Controller
     }
 
     public function get_po_number_from_assy_fvi(Request $request){
-        $po_number = AssemblyFvi::select('po_no')->whereNull('deleted_at')->get();
+        $po_number = AssemblyFvi::select('po_no')->whereNull('deleted_at')->distinct()->get();
 
         return response()->json(['po_number' => $po_number]);
     }
@@ -257,7 +269,7 @@ class AssemblyOqcLotAppController extends Controller
                                                                         return $sub ->where('submission', $request->sub_count);
                                                                     });
                                                                 },
-                                    ])->where('id', $request->fvi_id);
+                                        ])->where('id', $request->fvi_id);
                                     })
                                     ->whereNull('deleted_at')->first();
 
@@ -272,7 +284,7 @@ class AssemblyOqcLotAppController extends Controller
         if(isset($request->fvi_id)){
             $total_qty_output = 0;
             for ($i = 0; $i < count($fvi_details->fvi_runcards); $i++){
-                $total_qty_output = $total_qty_output + $fvi_details->fvi_runcards[$i]->assy_runcard_station_details->output;
+                $total_qty_output = $total_qty_output + $fvi_details->fvi_runcards[$i]->assy_runcard_station_details->output_quantity;
             }
         }else{
             $total_qty_output = '';
@@ -316,11 +328,25 @@ class AssemblyOqcLotAppController extends Controller
                 $submission_count = $request->submission_count;
             }
 
+            $validator = Validator::make($data, [
+                'device_cat' => 'required',
+                'cert_lot' => 'required',
+                'guaranteed_lot' => 'required',
+                'applied_by_operator_name' => 'required',
+                'id_applied_by_operator_name' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json(['validation' => 'hasError', 'error' => $validator->messages()]);
+            }else {
                 if(!isset($request->oqc_lot_app_id)){
                         $assy_oqc_lot_app_id = AssemblyOqcLotApp::insertGetId([
                                         'assy_fvi_id'      => $request->assy_fvi_id,
                                         'submission'       => $submission_count,
                                         'po_no'            => $request->po_number,
+                                        'po_qty'           => $request->po_qty,
+                                        'device_name'      => $request->device_name,
+                                        'device_code'      => $request->device_code,
                                         'status'           => $status,
                                         'lot_batch_no'     => $request->lot_no,
                                         'print_lot'        => $request->print_lot_no,
@@ -407,6 +433,7 @@ class AssemblyOqcLotAppController extends Controller
                     //     ]);
                     // }
                 }
+            }
         } catch (\Throwable $th) {
             return $th;
         }
@@ -431,11 +458,30 @@ class AssemblyOqcLotAppController extends Controller
                                     ->where('id', $request->fvi_id)
                                     ->whereNull('deleted_at')->first();
 
+        $fvi_details_qr = AssemblyFvi::select('po_no', 'po_qty', 'device_name','device_code')
+                                    ->where('id', $request->fvi_id)
+                                    ->whereNull('deleted_at')->first();
+
+                                    // return $fvi_details_qr;
         // return $fvi_details;
+        // $collection = collect($fvi_details)->select('po_no', 'po_qty', 'device_name','device_code')->flatten(0);
+        // $fvi_details_qr = [];
+        // $fvi_details_qr[] = $fvi_details->po_no;
+        // $fvi_details_qr[] = $fvi_details->po_qty;
+        // $fvi_details_qr[] = $fvi_details->device_name;
+        // $fvi_details_qr[] = $fvi_details->device_code;
+        // $fvi_details_qr = implode(",",$fvi_details_qr);
+        // $fvi_details_qr =  json_encode($fvi_details_qr);
+        // return $fvi_details_qr;
+        // $fvi_details_qr = ( $fvi_details->po_no, $fvi_details->po_qty, $fvi_details->device_name, $fvi_details->device_code );
 
         $po_qrcode = "";
-        $po_qrcode = QrCode::format('png')->size(200)->errorCorrection('H')->generate($fvi_details->po_no);
+        // $po_qrcode = QrCode::format('png')->size(200)->errorCorrection('H')->generate($fvi_details_qr);
+        $po_qrcode = QrCode::format('png')
+                                    ->size(300)->errorCorrection('H')
+                                    ->generate(json_encode($fvi_details_qr));
         $po_qrcode = "data:image/png;base64," . base64_encode($po_qrcode);
+
 
         $po_no        = $fvi_details->po_no;
         $product_name = $fvi_details->device_name;
@@ -443,6 +489,7 @@ class AssemblyOqcLotAppController extends Controller
         $lot_qty      = $fvi_details->oqc_lot_app->output_qty;
         $assy_line    = $fvi_details->fvi_runcards[0]->assy_runcard_station_details->station_name->station_name;
         $applied_date = $fvi_details->oqc_lot_app->app_date;
+        // return ;
 
         // $lbl = 'PO #: ' . $fvi_details[0]->po_no . '<br>Product Name: ' . $fvi_details[0]->device_name. '<br>Lot #: ' . $fvi_details[0]->lot_no . '<br>Lot Qty: ' . $fvi_details[0]->oqc_lot_app->output_quantity . '<br> Assy Line: ' . $data[0]->assy_details->name . '<br>Date/Time Applied: ' . $data[0]->created_at . '<br>WW: ' . $data[0]->ww;
         $lbl = 'PO #: '.$po_no.'<br>Product Name: '.$product_name.'<br>Lot #: '.$lot_no.'<br>Lot Qty: '.$lot_qty.'<br> Assy Line: '.$assy_line.'<br>Date/Time Applied: '.$applied_date.'';

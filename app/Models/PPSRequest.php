@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PPSRequest extends Model
 {
     protected $table = "tbl_request";
-    protected $connection = "mysql_rapid_pps_test";
+    protected $connection = "mysql_rapid_pps";
+    public $timestamps = false;
 }
