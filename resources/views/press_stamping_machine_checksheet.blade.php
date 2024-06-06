@@ -1,5 +1,5 @@
 @php $layout = 'layouts.admin_layout'; @endphp
-    {{-- @auth
+    @auth
 @php
     if(Auth::user()->user_level_id == 1){
       $layout = 'layouts.super_user_layout';
@@ -11,7 +11,7 @@
       $layout = 'layouts.user_layout';
     }
 @endphp
-@endauth--}}
+@endauth
 
 @auth
 @extends($layout)
@@ -104,7 +104,7 @@
                                             <li class="nav-item">
                                                 <a class="nav-link" id="Monthky-tab" data-bs-toggle="tab" href="#maintenanceHighlights" role="tab" aria-controls="maintenanceHighlights" aria-selected="false">Maintenance/Repair Highlights</a>
                                             </li>
-                                            
+
                                         </ul>
                                     </div>
                                     <div class="tab-content" id="myTabContent">
@@ -248,7 +248,7 @@
                                             <input type="text" class="form-control form-control-sm" id="txtCheckDiv" name="division" value="Operations Division" readonly>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
 
                                 <div class="row mt-2">
@@ -1552,7 +1552,7 @@
             <!-- /.modal-dialog -->
     </div>
 
-    
+
     <div class="modal fade" id="modalAddWeeklyChecksheet" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl-custom">
             <div class="modal-content">
@@ -1598,7 +1598,7 @@
                                             <input type="text" class="form-control form-control-sm" id="txtWeeklyCheckDiv" name="weekly_division" value="Operations Division" readonly>
                                         </div>
                                     </div>
-                                    
+
                                 </div>
 
                                 <div class="row mt-2">
@@ -1696,8 +1696,8 @@
                                                             <label>W2</label>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label>W3</label> 
-                                                        </div>  
+                                                            <label>W3</label>
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-sm-3">
@@ -1767,8 +1767,8 @@
                                                             <label>W2</label>
                                                         </div>
                                                         <div class="form-group">
-                                                            <label>W3</label> 
-                                                        </div>  
+                                                            <label>W3</label>
+                                                        </div>
                                                     </div>
 
                                                     <div class="col-sm-3">
@@ -1920,7 +1920,7 @@
             <!-- /.modal-dialog -->
     </div>
 
-        
+
     <div class="modal fade" id="modalAddMonthlyChecksheet" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -1969,7 +1969,7 @@
                                             <input type="text" class="form-control form-control-sm" id="txtMonthlyMonth" name="monthly_month" readonly>
                                         </div>
                                     </div>
-                            
+
                                     <div class="col-sm-12 col-md-12 col-lg-6">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
@@ -1979,11 +1979,11 @@
                                         </div>
                                     </div>
 
-                                    
+
                                 </div>
-                                
+
                                 <div class="row mt-2">
-                                    
+
                                     <div class="col-sm-12 col-md-12 col-lg-6">
                                         <div class="input-group input-group-sm">
                                             <div class="input-group-prepend w-50">
@@ -2019,7 +2019,7 @@
                                             <input type="text" class="form-control form-control-sm" id="txtMonthlyCheckedBy" name="checked_by_monthly" readonly>
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
 
                                 <div class="row mt-2">
                                     <div class="col-sm-12 col-md-12 col-lg-6">
@@ -2119,7 +2119,7 @@
                                                             <div class="col-sm-6">
                                                                 <input type="text" name="monthly_remarks2" id="txtMonthlyRemarks2" autocomplete="off">
                                                             </div>
-                                                        </div>                                                       
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -2148,7 +2148,7 @@
                                                             <div class="col-sm-6">
                                                                 <input type="text" name="monthly_remarks3" id="txtMonthlyRemarks3" autocomplete="off">
                                                             </div>
-                                                        </div>                                                       
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -2177,7 +2177,7 @@
                                                             <div class="col-sm-6">
                                                                 <input type="text" name="monthly_remarks4" id="txtMonthlyRemarks4" autocomplete="off">
                                                             </div>
-                                                        </div>                                                       
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -2206,7 +2206,7 @@
                                                             <div class="col-sm-6">
                                                                 <input type="text" name="monthly_remarks5" id="txtMonthlyRemarks5" autocomplete="off">
                                                             </div>
-                                                        </div>                                                       
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -2240,7 +2240,7 @@
                                                                 <div class="input-group">
                                                                     <label style="margin-left: 3rem;">Remarks</label>
                                                                     <input style="width: 11rem;" type="text" name="komatsu_monthly_remarks1" id="txtKomatsuRemarksId1" autocomplete="off">
-                                                                </div>                                                         
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -2276,7 +2276,7 @@
                                                             <div class="col-sm-6">
                                                                 <input style="width: 11rem;" type="text" name="komatsu_monthly_remarks2" id="txtKomatsuRemarksId2" autocomplete="off">
                                                             </div>
-                                                        </div>                                                       
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -2396,18 +2396,18 @@
     var dtWeeklyChecksheet;
     var dtMonthlyChecksheet;
     var dtMaintenanceRepairHighlights;
-    
+
 
     $(document).ready(function(e){
         var date = new Date();
         var today = new Date(date.getFullYear(), date.getMonth());
         $(".datepicker").datepicker( {
             format: "yyyy-mm",
-            viewMode: "months", 
+            viewMode: "months",
             minViewMode: "months",
             // startDate: today,
         }).datepicker("setDate", "now");
-        
+
         dtDailyChecksheet = $("#tblDailyChecksheet").DataTable({
             "processing": true,
             "serverSide": true,
@@ -2424,7 +2424,7 @@
                 { "data": "date" },
                 { "data": "machine_details.machine_name" },
             ],
-           
+
         });
 
         dtWeeklyChecksheet = $("#tblWeeklyChecksheet").DataTable({
@@ -2480,7 +2480,7 @@
                 { "data": "maintenance_repair_highlights" },
                 { "data": "in_charge" },
                 { "data": "machine_details.machine_name" },
-                { "data": "date" },        
+                { "data": "date" },
             ],
         });
 
@@ -2498,7 +2498,7 @@
             $('#txtCheckTime').val(time)
             $('#txtMonth').val(month)
             $('#modalAddDailyChecksheet').modal('show');
-            
+
         });
 
 
@@ -2556,7 +2556,7 @@
                     $('#txtResult1XId').attr('disabled', true);
                     $('#txtResult1NpId').attr('disabled', true);
                     $('#txtResult1NaId').attr('disabled', true);
-                }   
+                }
             }else{
                 $('#txtResult1ChkId').removeAttr('checked');
                 $('#txtResult1XId').removeAttr('checked');
@@ -2565,7 +2565,7 @@
                 $('#txtResult1NpId').removeAttr('disabled');
                 $('#txtResult1NaId').removeAttr('disabled');
             }
-            
+
         }, 400));
 
         $('#txtActualMeasurement').keyup(delay(function(e){
@@ -2583,7 +2583,7 @@
                     $('#txtResult1XId').attr('disabled', true);
                     $('#txtResult1NpId').attr('disabled', true);
                     $('#txtResult1NaId').attr('disabled', true);
-                }   
+                }
             }else{
                 $('#txtResult1ChkId').removeAttr('checked');
                 $('#txtResult1XId').removeAttr('checked');
@@ -2592,7 +2592,7 @@
                 $('#txtResult1NpId').removeAttr('disabled');
                 $('#txtResult1NaId').removeAttr('disabled');
             }
-            
+
         }, 400));
 
         $('#txtKomatsuActualMeasurement2').keyup(delay(function(e){
@@ -2610,7 +2610,7 @@
                     $('#txtKomatsuResult2XId').attr('disabled', true);
                     $('#txtKomatsuResult2NpId').attr('disabled', true);
                     $('#txtKomatsuResult2NaId').attr('disabled', true);
-                }   
+                }
             }else{
                 $('#txtKomatsuResult2ChkId').removeAttr('checked');
                 $('#txtKomatsuResult2XId').removeAttr('checked');
@@ -2619,7 +2619,7 @@
                 $('#txtKomatsuResult2NpId').removeAttr('disabled');
                 $('#txtKomatsuResult2NaId').removeAttr('disabled');
             }
-            
+
         }, 400));
 
         $('#txtKomatsuActualMeasurement3').keyup(delay(function(e){
@@ -2637,7 +2637,7 @@
                     $('#txtKomatsuResult3XId').attr('disabled', true);
                     $('#txtKomatsuResult3NpId').attr('disabled', true);
                     $('#txtKomatsuResult3NaId').attr('disabled', true);
-                }   
+                }
             }else{
                 $('#txtKomatsuResult3ChkId').removeAttr('checked');
                 $('#txtKomatsuResult3XId').removeAttr('checked');
@@ -2646,7 +2646,7 @@
                 $('#txtKomatsuResult3NpId').removeAttr('disabled');
                 $('#txtKomatsuResult3NaId').removeAttr('disabled');
             }
-            
+
         }, 400));
 
         $('#txtActualMeasurement2').keyup(delay(function(e){
@@ -2664,7 +2664,7 @@
                     $('#txtResult2XId').attr('disabled', true);
                     $('#txtResult2NpId').attr('disabled', true);
                     $('#txtResult2NaId').attr('disabled', true);
-                }   
+                }
             }else{
                 $('#txtResult2ChkId').removeAttr('checked');
                 $('#txtResult2XId').removeAttr('checked');
@@ -2673,15 +2673,15 @@
                 $('#txtResult2NpId').removeAttr('disabled');
                 $('#txtResult2NaId').removeAttr('disabled');
             }
-            
+
         }, 400));
-        
+
 
         let dailyUnitValue;
         let dailyMachinevalue;
 
-        // $('.dailyUnitClass').change(function (e) { 
-            $('#selMachine').change(function (e) { 
+        // $('.dailyUnitClass').change(function (e) {
+            $('#selMachine').change(function (e) {
                 e.preventDefault();
                 // e.preventDefault();
                 dailyMachinevalue = $('#selMachine').val();
@@ -2731,7 +2731,7 @@
         let dailyCheckSheetId;
         let dailyCheckSheetStatus;
 
-        
+
         $(document).on('click', '.btnView', function(e){
             dailyCheckSheetStatus = $(this).data('status')
             dailyCheckSheetId = $(this).data('id');
@@ -2869,14 +2869,14 @@
         });
 
         // WEEKLY
-    
+
         let weeklyUnitValue;
         let weeklyMachinevalue;
 
-        // $('.weeklyUnitClass').change(function (e) { 
+        // $('.weeklyUnitClass').change(function (e) {
             // e.preventDefault();
             // weeklyUnitValue = $(this).val();
-            $('#selWeeklyMachine').change(function (e) { 
+            $('#selWeeklyMachine').change(function (e) {
                 // e.preventDefault();
                 weeklyMachinevalue = $('#selWeeklyMachine').val();
                 if(weeklyMachinevalue == 2){
@@ -2898,10 +2898,10 @@
             let date = moment().format('YYYY-MM-DD');
             let time = moment().format('kk:mm');
             let month = moment().format('MMMM');
-            
+
             var dated = new Date();
             var weekOfMonth = (0 | dated.getDate() / 6)+1;
-            
+
             // console.log(dated.getDate());
 
             getMachineForChecksheet($('#selWeeklyMachine'));
@@ -2910,9 +2910,9 @@
             $('#txtWeeklyCheckDate').val(date)
             $('#txtWeeklyCheckTime').val(time)
             $('#txtWeeklyMonth').val(month)
-            
+
             $('#modalAddWeeklyChecksheet').modal('show');
-            
+
         });
 
 
@@ -3061,8 +3061,8 @@
                 $(this).val('');
             }
         });
-        
-        
+
+
         $("#modalAddWeeklyChecksheet").on('hidden.bs.modal', function () {
             // console.log('hidden.bs.modal');
             $('#kyoriWeeklyDivId').addClass('text-block-header')
@@ -3076,10 +3076,10 @@
 
         // MONTHLY
 
-        // $('.monthlyUnitClass').change(function (e) { 
+        // $('.monthlyUnitClass').change(function (e) {
         //     e.preventDefault();
         //     MonthlyUnitValue = $(this).val();
-            $('#selMonthlyMachine').change(function (e) { 
+            $('#selMonthlyMachine').change(function (e) {
                 // e.preventDefault();
                 MonthlyMachinevalue = $('#selMonthlyMachine').val();
                 if(MonthlyMachinevalue == 2){
@@ -3108,8 +3108,8 @@
             $('#txtMonthlyCheckDate').val(date)
             $('#txtMonthlyCheckTime').val(time)
             $('#txtMonthlyMonth').val(month)
-            
-            $('#modalAddMonthlyChecksheet').modal('show');        
+
+            $('#modalAddMonthlyChecksheet').modal('show');
         });
 
         $('#formAddMonthlyChecksheet').submit(function(e){
@@ -3165,8 +3165,8 @@
             getMachineForChecksheet($('#selMachineMaintenance'));
             getTechnicianForMaintenanceRepairHighlights(($('#selInCharge')));
 
-            $('#modalAddMaintenanceRepairHighlights').modal('show');      
-            $('#txtMaintenanceDate').val(date)  
+            $('#modalAddMaintenanceRepairHighlights').modal('show');
+            $('#txtMaintenanceDate').val(date)
         });
 
         $('#formAddMaintenanceRepairHighlights').submit(function(e){
