@@ -12,7 +12,8 @@ class TblWarehouse extends Model
     use HasFactory;
 
     protected $table = 'tbl_Warehouse';
-    protected $connection = 'mysql_rapid_pps';
+    protected $connection = 'mysql_rapid_pps_test';
+    // protected $connection = 'mysql_rapid_pps';
 
     public function pps_warehouse_transaction_info(){
         return $this->hasMany(TblWarehouseTransaction::class, 'fkid','id')->orderBy('pkid', 'DESC');

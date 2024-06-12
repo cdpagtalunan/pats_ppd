@@ -424,14 +424,6 @@ class SecondMoldingController extends Controller
                     LIMIT 1
         ");
 
-        // For Clark confirmation
-        // $moldingAssyIpqcInspectionResult = DB::connection('mysql')
-        // ->select("SELECT * FROM molding_assy_ipqc_inspections
-        //             WHERE fk_molding_assy_id = '$request->second_molding_id'
-        //             AND process_category = '2'
-        //             AND status = '3'
-        //             LIMIT 1
-        // ");
         return response()->json(['data' => $secondMoldingResult]);
     }
 
@@ -460,8 +452,7 @@ class SecondMoldingController extends Controller
 
     public function getMachine(Request $request){ // Added by Chris to get machine on matrix
         $machine = DB::connection('mysql')
-        ->select("SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machi
-        dbnes.* FROM material_processes
+        ->select("SELECT material_processes.id, material_processes.device_id, devices.*, material_process_machines.* FROM material_processes
             INNER JOIN devices
                 ON devices.id = material_processes.device_id
             INNER JOIN material_process_machines

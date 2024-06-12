@@ -699,7 +699,7 @@
                             beforeSend: function(){
                             },
                             success: function (response) {
-                                let fs_prod_data = response['fs_production_data'];
+                                let fs_prod_data = response['first_stamping_data'];
                                 if(fs_prod_data[0] == undefined){
                                     toastr.error('PO does not exists')
                                 }else{

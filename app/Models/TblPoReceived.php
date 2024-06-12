@@ -14,6 +14,7 @@ class TblPoReceived extends Model
     use HasFactory;
 
     protected $connection = 'mysql_rapid_pps';
+    // protected $connection = 'mysql_rapid_pps_test';
     protected $table = 'tbl_POReceived';
 
     public function pps_dieset_info(){

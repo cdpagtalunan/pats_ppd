@@ -16,7 +16,7 @@ class CreateAssemblyRuncardStationsTable extends Migration
         Schema::create('assembly_runcard_stations', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('assembly_runcards_id')->comment ='Id from assembly_runcards(table)';
-            $table->string('station')->nullable();
+            $table->string('station_step')->nullable();
             $table->string('date')->nullable();
             $table->string('operator_name')->nullable();
             $table->string('input_quantity')->nullable();

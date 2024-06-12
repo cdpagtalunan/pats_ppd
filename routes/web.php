@@ -47,6 +47,7 @@ use App\Http\Controllers\ExportTraceabilityReportController;
 use App\Http\Controllers\ExportOqcInspectionController;
 use App\Http\Controllers\ExportIqcInspectionController;
 use App\Http\Controllers\MachineParameterController;
+use App\Http\Controllers\AssemblyPreProdController;
 
 
 /*
@@ -155,6 +156,9 @@ Route::view('/machine_parameter','machine_parameter')->name('machine_parameter')
 
 /* CASEMARK VIEW */
 Route::view('/casemark_sticker','casemark_sticker')->name('casemark_sticker');
+
+/* ASSEMBLY PRE-PROD VIEW */
+Route::view('/assembly_pre_prod','assembly_pre_prod')->name('assembly_pre_prod');
 
 // USER CONTROLLER
 Route::controller(UserController::class)->group(function () {
@@ -374,6 +378,7 @@ Route::controller(PackingListDetailsController::class)->group(function () {
     Route::get('/get_carrier_data', 'getCarrierDetails')->name('get_carrier_data');
     Route::get('/get_loading_port_data', 'getLoadingPortDetails')->name('get_loading_port_data');
     Route::get('/get_destination_port_data', 'getDestinationPortDetails')->name('get_destination_port_data');
+    Route::get('/get_po_from_production', 'getPoFromProduction')->name('get_po_from_production'); //Clark Modified
     Route::get('/get_data_from_production', 'getDataFromProduction')->name('get_data_from_production');
     Route::post('/add_packing_list_details', 'addPackingListData')->name('add_packing_list_details');
     Route::get('/get_ppc_clerk_details', 'getPpcClerk')->name('get_ppc_clerk_details');
@@ -656,6 +661,21 @@ Route::controller(MachineParameterController::class)->group(function () {
     Route::get('/get_operator_name','getOperatorName')->name('get_operator_name');
     Route::get('/load_injection_tab_list','loadInjectionTabList')->name('load_injection_tab_list');
     Route::get('/edit_injection_tab_list', 'editInjectionTabList')->name('edit_injection_tab_list');
+});
+
+/* ASSEMBLY PRE PROD */
+Route::controller(AssemblyPreProdController::class)->group(function () {
+    Route::get('/view_assembly_pre_prod', 'viewAssemblyPreProd')->name('view_assembly_pre_prod');
+    Route::post('/add_assembly_pre_prod', 'addAssemblyPreProd')->name('add_assembly_pre_prod');
+    Route::get('/get_assembly_pre_prod', 'getAssemblyPreProdData')->name('get_assembly_pre_prod');
+    Route::post('/update_assembly_pre_prod_checked_status', 'updateAssemblyCheckedByStatus')->name('update_assembly_pre_prod_checked_status');
+    Route::post('/update_assembly_pre_prod_conform_status', 'updateAssemblyConformedByStatus')->name('update_assembly_pre_prod_conform_status');
+
+
+    Route::get('/view_issue_logs', 'viewIssueLogs')->name('view_issue_logs');
+    Route::post('/add_issue', 'addIssue')->name('add_issue');
+    Route::get('/get_issue_logs', 'getIssueLogs')->name('get_issue_logs');
+
 });
 
 

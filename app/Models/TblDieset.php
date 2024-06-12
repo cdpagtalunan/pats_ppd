@@ -11,8 +11,9 @@ class TblDieset extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql_rapid_pps';
     protected $table = 'tbl_dieset';
+    protected $connection = 'mysql_rapid_pps';
+    // protected $connection = 'mysql_rapid_pps_test';
 
     public function pps_warehouse_info(){
         return $this->hasOne(TblWarehouse::class, 'MaterialType','Material');

@@ -371,8 +371,8 @@ function UpdateOqcInspection(){
                 $('#modalOqcInspection').modal('hide')
                 toastr.success('Succesfully saved!')
 
-                dataTableOQCInspectionFirstStamping.draw()
-                dataTableOQCInspectionSecondStamping.draw()
+                // dataTableOQCInspectionFirstStamping.draw()
+                // dataTableOQCInspectionSecondStamping.draw()
 
                 // $('#modalOqcInspectionFirstStamping').on('hide.bs.modal', function() {
                 //     dataTableOQCInspectionFirstStamping.draw()
@@ -393,7 +393,8 @@ function UpdateOqcInspection(){
     })
 }
 
-function GetOqcInspectionById(getPo,
+function GetOqcInspectionById(
+    getPo,
     getPoQty,
     getOqcId,
     getProdId,
@@ -431,21 +432,30 @@ function GetOqcInspectionById(getPo,
 
             if(firstStampingProduction[0].stamping_ipqc != null){
                 if(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0] != null){
+                    $('#btnViewBDrawings').attr('disabled', false)
                     $('#txtBDrawing').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_title)
                     $('#txtBDrawingNo').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].doc_no)
                     $('#txtBDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.bdrawing_active_doc_info[0].rev_no)
+                }else{
+                    $('#btnViewBDrawings').attr('disabled', true)
                 }
 
                 if(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0] != null){
+                    $('#btnViewUdDrawings').attr('disabled', false)
                     $('#txtUdDrawing').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_title)
                     $('#txtUdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].doc_no)
                     $('#txtUdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.ud_drawing_active_doc_info[0].rev_no)
+                }else{
+                    $('#btnViewUdDrawings').attr('disabled', true)
                 }
 
                 if(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0] != null){
+                    $('#btnViewInspStdDrawings').attr('disabled', false)
                     $('#txtInspStdDrawing').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_title)
                     $('#txtInspStdDrawingNo').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].doc_no)
                     $('#txtInspStdDrawingRevision').val(firstStampingProduction[0].stamping_ipqc.insp_std_drawing_active_doc_info[0].rev_no)
+                }else{
+                    $('#btnViewInspStdDrawings').attr('disabled', true)
                 }
             }
 

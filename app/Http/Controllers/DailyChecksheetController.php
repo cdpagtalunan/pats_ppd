@@ -174,6 +174,7 @@ class DailyChecksheetController extends Controller
 
 
     public function addDailyChecksheet(Request $request){
+        date_default_timezone_set('Asia/Manila');
         $mutable = Carbon::now()->format('Y-m-d');
         $user_details = User::where('employee_id', $request->scanned_id)->first();
 
@@ -292,6 +293,7 @@ class DailyChecksheetController extends Controller
     }
 
     function insert_daily_chksheet_data($request, $daily_checksheet_array){
+        date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
 
         try{

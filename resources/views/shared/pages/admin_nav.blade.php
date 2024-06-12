@@ -25,7 +25,7 @@
                     </a>
                 </li> --}}
                 @auth
-                    @if (in_array(Auth::user()->user_level_id, [1,2]))
+                    @if (in_array(Auth::user()->user_level_id, [1,2]) && Auth::user()->position == 7)
                         <li class="nav-header"><strong>ADMINISTRATOR</strong></li>
                         <li class="nav-item">
                             <a href="{{ route('user') }}" class="nav-link">
@@ -376,6 +376,13 @@
                                     <a href="{{ route('assy_oqc_lot_app') }}" class="nav-link">
                                         <i class="far fa-circle nav-icon ml-2"> </i>
                                         <p>OQC Lot Application</p>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="{{ route('assembly_pre_prod') }}" class="nav-link">
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Assembly Pre-Prod</p>
                                     </a>
                                 </li>
                             </ul>

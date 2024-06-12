@@ -26,6 +26,7 @@ class AssemblyOqcLotAppController extends Controller
                                         // ->whereIn('status', [3,4])
                                         ->get();
         // return $fvi_inspections;
+        // return $fvi_inspections[0]->oqc_lot_app->status;
 
         if( count($fvi_inspections) > 0 )
             $device = Device::where('name', $request->device_name)->get();
@@ -49,7 +50,7 @@ class AssemblyOqcLotAppController extends Controller
             }
             // else if($fvi_inspection->oqc_lot_app->status > 0){
 
-            if($fvi_inspection->oqc_lot_app->status == 3 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 1){
+            else if($fvi_inspection->oqc_lot_app->status == 3 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 1){
                 $result.='<button type="button" class="btn btn-sm btn-success btn_update_lot" id="btn_update" data-toggle="modal" sub_count="'.$submission.'" value="'.$fvi_inspection->id.'" title="View/Update Details"><i class="fa fa-pencil-alt fa-sm"></i></button>';
 
             }else if($fvi_inspection->oqc_lot_app->status == 1 && $fvi_inspection->oqc_lot_app->guaranteed_lot == 2){
@@ -60,12 +61,12 @@ class AssemblyOqcLotAppController extends Controller
                             </button>';
             }else if($fvi_inspection->oqc_lot_app->status == 2){
 
-                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
+                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" sub_count="'.$submission.'" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-primary btn_print_lotapp_inner_box" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print Lot Tray QR Sticker"><i class="fa fa-print fa-sm"></i></button>';
                 $result.=' <button type="button" class="btn btn-sm btn-warning btn_print_lotapp" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print OQC Lot Application QR STICKER"><i class="fa fa-print fa-sm"></i></button>';
 
             }else{
-                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
+                $result .= '<button type="button" class="btn btn-sm btn-info btn_view_app_lot" sub_count="'.$submission.'" value="'.$fvi_inspection->oqc_lot_app->id.'"><i class="fa-solid fa-eye" title="View Lot Application"></i></button>';
             }
 
                 // $result.=' <button type="button" class="btn btn-sm btn-primary btn_print_lotapp_inner_box" id="btn_print" data-toggle="modal" value="'.$fvi_inspection->oqc_lot_app->assy_fvi_id.'" title="Print Lot Tray QR Sticker"><i class="fa fa-print fa-sm"></i></button>';
@@ -87,6 +88,7 @@ class AssemblyOqcLotAppController extends Controller
         })
         ->addColumn('status_raw', function($fvi_inspection){
             $result = "";
+            $status = "";
             if($fvi_inspection->oqc_lot_app != null){
                 $status = $fvi_inspection->oqc_lot_app->status;
             }else{
@@ -272,7 +274,7 @@ class AssemblyOqcLotAppController extends Controller
         if(isset($request->fvi_id)){
             $total_qty_output = 0;
             for ($i = 0; $i < count($fvi_details->fvi_runcards); $i++){
-                $total_qty_output = $total_qty_output + $fvi_details->fvi_runcards[$i]->assy_runcard_station_details->output;
+                $total_qty_output = $total_qty_output + $fvi_details->fvi_runcards[$i]->assy_runcard_station_details->output_quantity;
             }
         }else{
             $total_qty_output = '';
@@ -427,14 +429,14 @@ class AssemblyOqcLotAppController extends Controller
 
     public function gen_oqclotapp_qrsticker(Request $request){
         date_default_timezone_set('Asia/Manila');
-        $fvi_details = AssemblyFvi::with(['fvi_runcards.assy_runcard_station_details.station_name', 'oqc_lot_app'])
+        $fvi_details = AssemblyFvi::select('po_no','device_name','device_code','po_qty')->with(['fvi_runcards.assy_runcard_station_details.station_name', 'oqc_lot_app'])
                                     ->where('id', $request->fvi_id)
                                     ->whereNull('deleted_at')->first();
 
         // return $fvi_details;
 
         $po_qrcode = "";
-        $po_qrcode = QrCode::format('png')->size(200)->errorCorrection('H')->generate($fvi_details->po_no);
+        $po_qrcode = QrCode::format('png')->size(200)->errorCorrection('H')->generate($fvi_details);
         $po_qrcode = "data:image/png;base64," . base64_encode($po_qrcode);
 
         $po_no        = $fvi_details->po_no;

@@ -247,7 +247,7 @@
                     iqcWhsDetails :'#tblWhsDetails',
                     iqcInspected:'#tblIqcInspected'
                 };
-            /*
+
                 $('a[href="#menu1"]').click(function (e) {
                     e.preventDefault();
                     $('#txtSearchLotNum').val('');
@@ -282,9 +282,11 @@
                 });
 
                 $('#txtLotNum').on('keyup', function(e){
-
                     if(e.keyCode == 13){
-                        // getSecondStampReq($(this).val());
+                        let scanFirstMoldingMaterialLotNo = $(this).val()
+                        let arrFirstMoldingMaterialLotNo = scanFirstMoldingMaterialLotNo.split("|");
+                        console.log('dsad', arrFirstMoldingMaterialLotNo[0]);
+                        return;
                         $('#txtSearchLotNum').val($(this).val());
                         dataTable.iqcInspection.draw();
                         dataTable.iqcInspected.draw();
@@ -292,7 +294,7 @@
                         $('#modalLotNum').modal('hide');
                     }
                 });
-            */
+            /**/
                 $(tbl.iqcInspection).on('click','#btnEditIqcInspection', editReceivingDetails);
                 $(tbl.iqcInspected).on('click','#btnEditIqcInspection', editIqcInspection);
 

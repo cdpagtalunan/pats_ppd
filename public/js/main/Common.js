@@ -20,21 +20,17 @@ $("#modalAddUser").on('hidden.bs.modal', function () {
 
 var invalidChars = ["-","+","e"];
 $('input[type="number"]').on('keydown', function(e){
-    if (invalidChars.includes(e.key)) {
+    if (invalidChars.includes(e.key)){
         e.preventDefault();
     }
 });
-
-
-
-
 
 function resetFormProcessValues() {
     // Reset values
     $("#formProcess")[0].reset();
 }
 
-$("#modalAddProcess").on('hidden.bs.modal', function () {
+$("#modalAddProcess").on('hidden.bs.modal', function(){
     console.log('hidden.bs.modal');
     resetFormProcessValues();
 });
@@ -48,7 +44,7 @@ function resetFormSublot() {
     $('#txtSublotMultipleCounter').val(1)
 }
 
-$("#modalMultipleSublot").on('hidden.bs.modal', function () {
+$("#modalMultipleSublot").on('hidden.bs.modal', function(){
     console.log('hidden.bs.modal');
     resetFormSublot();
 });

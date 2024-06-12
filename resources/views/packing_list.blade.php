@@ -161,12 +161,21 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-6">
-                                <input type="text" class="form-control" id="textSearchPackingListDetails" name="search_packing_list_details" autocomplete="off">
+                                {{-- <input type="text" class="form-control" id="textSearchPackingListDetails" name="search_packing_list_details" autocomplete="off"> --}}
+                                <select class="form-control select2" id="selPackingListDetails" name="search_packing_list_details[]" multiple>
+                                </select>
                             </div>
-                            <div class="col-sm-6">
+                            {{-- <div class="col-sm-6">
                                 <button class="btn btn-primary searchBtn" id="btnSearchPO">
                                     <i class="fa fa-search"></i>
                                     Search
+                                </button>
+                            </div> --}}
+
+                            <div class="col-sm-6">
+                                <button class="btn btn-primary searchBtn" id="btnSearchPO">
+                                    <i class="fa fa-plus"></i>
+                                    Add PO
                                 </button>
                             </div>
                         </div>
@@ -348,9 +357,9 @@
                                         <input type="text" class="form-control form-control-sm" name="edit_ctrl_num" id="getTextCtrlNumber" readonly>
                                     </div>
                                 </div>
-    
+
                             </div>
-                            
+
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label for="textPickUpDateAndTime">Pick-up Time & Date</label>
@@ -445,40 +454,124 @@
         // });+
         $(document).ready(function(){
 
+            // $(document).on('click', '.searchBtn',function(e){
+            //     e.preventDefault();
+            //         // dtProductionDetails.columns(0).visible(false);
+            //         let search_data = $('#selPackingListDetails').val();
+            //         $.ajax({
+            //             type: "get",
+            //             url: "get_data_from_production",
+            //             data: {
+            //                 "search_data" : search_data
+            //             },
+            //             dataType: "json",
+            //             beforeSend: function(){
+            //             },
+            //             success: function (response) {
+            //                 let productionData = response['productionData'];
+            //                 // console.log(productionData);
+            //                 if(productionData > 0){
+            //                     // $('#selPackingListDetails').val(productionData[0]['po_num']);
+            //                     const po_no_array = [];
+            //                     for (let index = 0; index < response['productionData'].length; index++) {
+            //                         // const element = array[index];
+            //                         po_no_array.push(`${response['productionData'][x].po_no}`);
+            //                     }
+            //                     GetPOFromProductionData($("#selPackingListDetails"), po_no_array);
+            //                     dtProductionDetails.draw();
+            //                 }else{
+            //                     dtProductionDetails.draw();
+            //                 }
+            //             }
+            //         });
+            // });
+
+            $(document).on('click', '.searchBtn',function(e){
+                e.preventDefault();
+                dtProductionDetails.draw();
+            });
+
+            $('#selPackingListDetails').change( function(e){
+                e.preventDefault();
+                dtProductionDetails.draw();
+            });
+
+            GetPOFromProductionData($("#selPackingListDetails"));
+            // GetBDrawingFromACDCS(mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
+
+            // function GetBDrawingFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo){
+            //         GetDocumentNoFromACDCS(doc_title, doc_type, cboElement, IpqcDocumentNo);
+            //     };
+
+            function GetPOFromProductionData(cboElement, currentPO = null){
+                $.ajax({
+                    url: 'get_po_from_production',
+                    method: 'get',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response['productionData'].length > 0){
+                            result = "";
+                            for (let index = 0; index < response['productionData'].length; index++) {
+                                result += '<option value="' + response['productionData'][index].po_no + '">' + response['productionData'][index].po_no + '</option>';
+                            }
+                        } else {
+                            result = '<option value="0" selected disabled> -- No record found -- </option>';
+                        }
+                        cboElement.html(result);
+                    },
+                    error: function(data, xhr, status) {
+                        result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                        cboElement.html(result);
+                        console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                    }
+                });
+            }
+
             $('#btnExportPackingList').click( function(e){
                 $('#modalExportPackingList').modal('show');
                 GetPackingListControlNo($(".selectControlNumber"));
             });
 
             function GetPackingListControlNo(cboElement){
-                    let result = '<option value="" disabled selected>--Select Control No.--</option>';
-                        $.ajax({
-                            url: 'get_packing_list_data',
-                            method: 'get',
-                            dataType: 'json',
-                            beforeSend: function() {
-                                    result = '<option value="0" disabled selected>--Loading--</option>';
-                                    cboElement.html(result);
-                            },
-                            success: function(response) {
-                                if (response['packing_list_data'].length > 0) {
-                                        result = '<option value="" disabled selected>--Select Control No.--</option>';
-                                    for (let index = 0; index < response['packing_list_data'].length; index++) {
-                                        result += '<option value="' + response['packing_list_data'][index].control_no + '">' + response['packing_list_data'][index].control_no + '</option>';
-                                    }
-                                } else {
-                                    result = '<option value="0" selected disabled> -- No record found -- </option>';
-                                }
-                                cboElement.html(result);
-                                cboElement.select2();
-                            },
-                            error: function(data, xhr, status) {
-                                result = '<option value="0" selected disabled> -- Reload Again -- </option>';
-                                cboElement.html(result);
-                                console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                let result = '<option value="" disabled selected>--Select Control No.--</option>';
+                $.ajax({
+                    url: 'get_packing_list_data',
+                    method: 'get',
+                    dataType: 'json',
+                    beforeSend: function() {
+                            result = '<option value="0" disabled selected>--Loading--</option>';
+                            cboElement.html(result);
+                    },
+                    success: function(response) {
+                        console.log(response['packing_list_data']);
+                        // function unique(array) {
+                        let control_no = $.grep(response['packing_list_data'], function(el, index){
+                                            return index === $.inArray(el, response['packing_list_data']);
+                                        });
+                        // }
+                        // console.log(response['packing_list_data']);
+                        console.log(control_no);
+
+                        if (control_no.length > 0) {
+                                result = '<option value="" disabled selected>--Select Control No.--</option>';
+                            for (let index = 0; index < control_no.length; index++) {
+                                    // let control_no = control_no[index].control_no;
+                                    // let sub_control_no = control_no.substring(0, 12);
+                                result += '<option value="' + control_no[index] + '">' + control_no[index] + '</option>';
                             }
-                        });
+                        } else {
+                            result = '<option value="0" selected disabled> -- No record found -- </option>';
+                        }
+                        cboElement.html(result);
+                        cboElement.select2();
+                    },
+                    error: function(data, xhr, status) {
+                        result = '<option value="0" selected disabled> -- Reload Again -- </option>';
+                        cboElement.html(result);
+                        console.log('Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
                     }
+                });
+            }
 
             $('#formGeneratePackingList').submit(function (e){
                 e.preventDefault();
@@ -502,7 +595,7 @@
                 "ajax" : {
                     url: "view_production_data",
                     data: function(param){
-                    param.search_data =  $("#textSearchPackingListDetails").val();
+                    param.search_data =  $('#selPackingListDetails').val();
                     }
                 },
                 fixedHeader: true,
@@ -525,7 +618,7 @@
                 "ajax" : {
                     url: "view_packing_list_data",
                     data: function(param){
-                    param.search_data =  $("#textSearchPackingListDetails").val();
+                    param.search_data =  $('#selPackingListDetails').val();
                     }
                 },
                 fixedHeader: true,
@@ -543,31 +636,31 @@
             });
 
 
-            $(document).on('click', '.searchBtn',function(e){
-                e.preventDefault();
-                    // dtProductionDetails.columns(0).visible(false);
-                    let search_data = $('#textSearchPackingListDetails').val();
-                    $.ajax({
-                        type: "get",
-                        url: "get_data_from_production",
-                        data: {
-                            "search_data" : search_data
-                        },
-                        dataType: "json",
-                        beforeSend: function(){
-                        },
-                        success: function (response) {
-                            let productionData = response['productionData'];
-                            // console.log(productionData);
-                            if(productionData > 0){
-                                $('#textSearchPackingListDetails').val(productionData[0]['po_num']);
-                                dtProductionDetails.draw();
-                            }else{
-                                dtProductionDetails.draw();
-                            }
-                        }
-                    });
-            });
+            // $(document).on('click', '.searchBtn',function(e){
+            //     e.preventDefault();
+            //         // dtProductionDetails.columns(0).visible(false);
+            //         let search_data = $('#textSearchPackingListDetails').val();
+            //         $.ajax({
+            //             type: "get",
+            //             url: "get_data_from_production",
+            //             data: {
+            //                 "search_data" : search_data
+            //             },
+            //             dataType: "json",
+            //             beforeSend: function(){
+            //             },
+            //             success: function (response) {
+            //                 let productionData = response['productionData'];
+            //                 // console.log(productionData);
+            //                 if(productionData > 0){
+            //                     $('#textSearchPackingListDetails').val(productionData[0]['po_num']);
+            //                     dtProductionDetails.draw();
+            //                 }else{
+            //                     dtProductionDetails.draw();
+            //                 }
+            //             }
+            //         });
+            // });
 
             let packing_list_data_array = [];
 
@@ -714,7 +807,7 @@
                     });
                 });
 
-                // 
+                //
                 // let dtViewPackingListDetails;
                 $(document).on('click', '.btnEditPackingListDetails', function(e){
                     // alert('xd');
@@ -724,7 +817,7 @@
                     $('#txtPackingListCtrlId').val(packingDetailsCtrlNo);
                     // console.log(packingDetailsCtrlNo);
                     getPackingListDetails(packingDetailsCtrlNo);
-                    
+
                     $('#modalViewPackingListDetails').modal('show');
                     dtViewPackingListDetails.draw();
                 });

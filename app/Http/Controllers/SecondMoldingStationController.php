@@ -340,7 +340,7 @@ class SecondMoldingStationController extends Controller
                             $computedNGCount = DB::connection('mysql')
                                 ->table('sec_molding_runcard_stations')
                                 ->where('sec_molding_runcard_stations.sec_molding_runcard_id', $request->second_molding_id)
-                                ->select(
+                                ->select( 
                                     DB::raw('SUM(ng_quantity) AS ngCount'),
                                 )
                                 ->first();

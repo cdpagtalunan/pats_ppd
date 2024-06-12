@@ -9,4 +9,5 @@ class PPSRequest extends Model
 {
     protected $table = "tbl_request";
     protected $connection = "mysql_rapid_pps_test";
+    public $timestamps = false;
 }

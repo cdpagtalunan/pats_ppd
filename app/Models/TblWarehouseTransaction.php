@@ -11,5 +11,6 @@ class TblWarehouseTransaction extends Model
     use HasFactory;
 
     protected $table = 'tbl_WarehouseTransaction';
-    protected $connection = 'mysql_rapid_pps';
+    // protected $connection = 'mysql_rapid_pps';
+    protected $connection = 'mysql_rapid_pps_test';
 }

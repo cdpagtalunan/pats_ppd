@@ -637,13 +637,13 @@
         // btn_view_app_lot
         $(document).on('click', '.btn_view_app_lot', function(){
             let id = $(this).val();
-            // let sub_count = $(this).attr('sub_count');
+            let sub_count = $(this).attr('sub_count');
             $.ajax({
                 type: "get",
                 url: "get_data_from_assy_fvi",
                 data: {
                     "fvi_id" : id,
-                    // "sub_count" : sub_count,
+                    "sub_count" : sub_count,
                     "po_number" : $('#txtSelectFVIPoNumber').val()
                 },
                 dataType: "json",

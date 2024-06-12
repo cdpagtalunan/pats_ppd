@@ -241,7 +241,7 @@ class MoldingAssyIpqcController extends Controller
                 }
 
                 Storage::putFileAs('public/molding_assy_ipqc_insp_files', $request->uploaded_file,  $original_filename);
-                MoldingAssyIpqcInspection::insert(['fk_molding_assy_id'     => $request->first_molding_id,
+                MoldingAssyIpqcInspection::insert([
                                                 'process_category'        => $request->process_category,
                                                 'po_number'               => $request->po_number,
                                                 'part_code'               => $request->part_code,

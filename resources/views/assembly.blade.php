@@ -1502,11 +1502,12 @@
 
                             if(deviceName == 'CN171P-007-1002-VE(01)'){
                                 if(step == 1){//Lubricant Coating Station
-                                    $('#LubricantCoatingDiv').removeClass('d-none');
+                                    // $('#LubricantCoatingDiv').removeClass('d-none');
+                                    $('#LubricantCoatingDiv').addClass('d-none');
                                     $('#VisualInspDocNoDiv').addClass('d-none');
                                 }else{
                                     $('#LubricantCoatingDiv').addClass('d-none');
-                                    $('#VisualInspDocNoDiv').addClass('d-none');
+                                    $('#VisualInspDocNoDiv').removeClass('d-none');
                                 }
                             }else if(deviceName == 'CN171S-007-1002-VE(01)'){
                                 if(step == 3){// Visual Inspection
@@ -1708,23 +1709,26 @@
 
                             $('#formCNAssemblyRuncard #txtTotalAssyYield').val(`${total_assy_yield.toFixed(2)}%`);
                             // `${station_yield.toFixed(2)}%`
-                            $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
+                            // $('#formCNAssemblyRuncard #txtAveOveallYield').val(assy_runcard_data[0].average_overall_yield);
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
                             let s_zero_two_prod_lot = assy_runcard_data[0].s_zero_two_prod_lot;
-                                s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
-                                s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
 
-                                // s_zero_two_prod_lot_ext = s_zero_two_prod_lot.split('-');
-                                if(s_zero_two_prod_lot_split.length > 3){
-                                    s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
-                                }else{
-                                    s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
-                                }
-                                // s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
+                            s_zero_two_prod_lot_split = s_zero_two_prod_lot.split('-');
+                            s_zero_two_prod_lot = s_zero_two_prod_lot_split[0] +'-'
+
+                            // s_zero_two_prod_lot_ext = s_zero_two_prod_lot.split('-');
+                            if(s_zero_two_prod_lot_split.length > 3){
+                                s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
+                            }else{
+                                s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2];
+                            }
+                            // s_zero_two_prod_lot_ext = s_zero_two_prod_lot_split[1] +'-'+ s_zero_two_prod_lot_split[2] +'-'+ s_zero_two_prod_lot_split[3];
+
                             verifyProdLotfromMolding(assy_runcard_data[0].s_zero_seven_prod_lot, '', 'ScanSZeroSevenProdLot', 'txtSZeroSevenProdLot', 'txtSZeroSevenDeviceId', 'CN171S-07#IN-VE', 'txtSZeroSevenDevicePO' ,'txtSZeroSevenDeviceQty');
                             verifyProdLotfromMolding(s_zero_two_prod_lot, s_zero_two_prod_lot_ext, 'ScanSZeroTwoProdLot', 'txtSZeroTwoProdLot', 'txtSZeroTwoDeviceId', 'CN171S-02#MO-VE', 'txtSZeroTwoDevicePO', 'txtSZeroTwoDeviceQty');
+
 
                             dtAssemblyRuncardStation.draw();
                         },
