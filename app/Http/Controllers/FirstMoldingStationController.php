@@ -527,38 +527,43 @@ class FirstMoldingStationController extends Controller
         })
         ->where('first_molding_details.id',$request->first_molding_detail_id)
         ->whereNull('first_moldings.deleted_at')
+        // ->get();
         ->first([
-        'po_no AS po','item_code AS code','item_name AS name',
+        'pmi_po_no AS pmi_po','item_name AS name',
         'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
-        'po_qty AS qty','first_molding_details.output AS output_qty','first_molding_devices.device_name AS device_name',
+        'first_molding_details.output AS output_qty','first_molding_devices.device_name AS device_name',
         'first_molding_details.size_category AS size',
         ]);
-
+        // ->first([
+        // 'pmi_po_no AS pmi_po','po_no AS po','item_code AS code','item_name AS name',
+        // 'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
+        // 'po_qty AS qty','first_molding_details.output AS output_qty','first_molding_devices.device_name AS device_name',
+        // 'first_molding_details.size_category AS size',
+        // ]);
 
         $first_molding_label = FirstMoldingDetail::rightJoin('first_moldings', function($join) {
             $join->on('first_moldings.id', '=', 'first_molding_details.first_molding_id');
-        })
-        ->leftJoin('first_molding_devices', function($join) {
+        })->leftJoin('first_molding_devices', function($join) {
             $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
-        })
-        ->where('first_molding_details.id',$request->first_molding_detail_id)
+        })->where('first_molding_details.id',$request->first_molding_detail_id)
         ->whereNull('first_moldings.deleted_at')
-        ->first(['pmi_po_no AS pmi_po']);
+        // ->get();
+        ->first(['po_no AS po','po_qty AS qty']);
 
         $qrcode = QrCode::format('png')
         ->size(250)->errorCorrection('H')
         ->generate($first_molding);
+
         $qr_code = "data:image/png;base64," . base64_encode($qrcode);
 
         $data[] = array(
             'img' => $qr_code,
             'text' =>  "
             <strong>1st Molding</strong><br>
-            <strong>$first_molding_label->pmi_po</strong><br>
-            <strong>$first_molding->po</strong><br>
+            <strong>$first_molding->pmi_po</strong><br>
             <strong>$first_molding->device_name</strong><br>
             <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
-            <strong>$first_molding->qty</strong><br>
+            <strong>$first_molding_label->qty</strong><br>
             <strong>$first_molding->output_qty</strong><br>
             <strong>$first_molding->size</strong><br>
             "
@@ -570,11 +575,11 @@ class FirstMoldingStationController extends Controller
                 </tr>
                 <tr>
                     <td>PMI PO No.:</td>
-                    <td>$first_molding_label->pmi_po</td>
+                    <td>$first_molding->pmi_po</td>
                 </tr>
                 <tr>
                     <td>PO No.:</td>
-                    <td>$first_molding->po</td>
+                    <td>$first_molding_label->po</td>
                 </tr>
                 <tr>
                     <td>Material Name:</td>
@@ -590,7 +595,7 @@ class FirstMoldingStationController extends Controller
                 </tr>
                 <tr>
                     <td>PO Quantity:</td>
-                    <td>$first_molding->qty</td>
+                    <td>$first_molding_label->qty</td>
                 </tr>
                 <tr>
                     <td>Size</td>

@@ -412,19 +412,23 @@ class FirstMoldingController extends Controller
         })
         ->where('first_moldings.id',$request->first_molding_id)
         ->whereNull('first_moldings.deleted_at')
-        // ->get();
         ->first([
-        'po_no AS po','item_code AS code','item_name AS name',
-        'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
-        'po_qty AS qty','shipment_output AS output_qty','first_molding_devices.device_name AS device_name'
+            'pmi_po_no AS pmi_po','item_name AS name',
+            'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
+            'shipment_output AS output_qty','first_molding_devices.device_name AS device_name',
         ]);
+        // ->first([
+            //     'pmi_po_no AS pmi_po','po_no AS po','item_code AS code','item_name AS name',
+            //     'production_lot AS lot_no','production_lot_extension AS lot_no_ext',
+            //     'po_qty AS qty','shipment_output AS output_qty','first_molding_devices.device_name AS device_name'
+            //     ]);
 
         $first_molding_label = FirstMolding::leftJoin('first_molding_devices', function($join) {
             $join->on('first_moldings.first_molding_device_id', '=', 'first_molding_devices.id');
         })
         ->where('first_moldings.id',$request->first_molding_id)
         ->whereNull('first_moldings.deleted_at')
-        ->first(['pmi_po_no AS pmi_po']);
+        ->first(['po_no AS po','po_qty AS qty']);
 
         $qrcode = QrCode::format('png')
         ->size(250)->errorCorrection('H')
@@ -437,49 +441,49 @@ class FirstMoldingController extends Controller
             //     <td>$first_molding->code</td>
             // </tr>
 
-        $data[] = array(
-            'img' => $qr_code,
-            'text' =>  "
-            <strong>1st Molding</strong><br>
-            <strong>$first_molding_label->pmi_po</strong><br>
-            <strong>$first_molding->po</strong><br>
-            <strong>$first_molding->device_name</strong><br>
-            <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
-            <strong>$first_molding->qty</strong><br>
-            <strong>$first_molding->output_qty</strong><br>
-        ");
-
-        $label = "
-            <table class='table table-sm table-borderless' style='width: 100%;'>
-                <tr>
-                    <td>1st Molding</td>
-                </tr>
-                <tr>
-                    <td>PMI PO No.:</td>
-                    <td>$first_molding_label->pmi_po</td>
-                </tr>
-                <tr>
-                    <td>PO No.:</td>
-                    <td>$first_molding->po</td>
-                </tr>
-                <tr>
-                    <td>Material Name:</td>
-                    <td>$first_molding->device_name</td>
-                </tr>
-                <tr>
-                    <td>Production Lot #:</td>
-                    <td>".$first_molding->lot_no."".$first_molding->lot_no_ext."</td>
-                </tr>
-                <tr>
-                    <td>Shipment Output:</td>
-                    <td>$first_molding->output_qty</td>
-                </tr>
-                <tr>
-                    <td>PO Quantity:</td>
-                    <td>$first_molding->qty</td>
-                </tr>
-            </table>
-        ";
+            $data[] = array(
+                'img' => $qr_code,
+                'text' =>  "
+                <strong>1st Molding</strong><br>
+                <strong>$first_molding->pmi_po</strong><br>
+                <strong>$first_molding->device_name</strong><br>
+                <strong>".$first_molding->lot_no."".$first_molding->lot_no_ext."</strong><br>
+                <strong>$first_molding_label->qty</strong><br>
+                <strong>$first_molding->output_qty</strong><br>
+                <strong>$first_molding->size</strong><br>
+                "
+            );
+            $label = "
+                <table class='table table-sm table-borderless' style='width: 100%;'>
+                    <tr>
+                        <td>1st Molding</td>
+                    </tr>
+                    <tr>
+                        <td>PMI PO No.:</td>
+                        <td>$first_molding->pmi_po</td>
+                    </tr>
+                    <tr>
+                        <td>PO No.:</td>
+                        <td>$first_molding_label->po</td>
+                    </tr>
+                    <tr>
+                        <td>Material Name:</td>
+                        <td>$first_molding->device_name</td>
+                    </tr>
+                    <tr>
+                        <td>Production Lot #:</td>
+                        <td>".$first_molding->lot_no."".$first_molding->lot_no_ext."</td>
+                    </tr>
+                    <tr>
+                        <td>Shipment Output:</td>
+                        <td>$first_molding->output_qty</td>
+                    </tr>
+                    <tr>
+                        <td>PO Quantity:</td>
+                        <td>$first_molding_label->qty</td>
+                    </tr>
+                </table>
+            ";
 
         return response()->json(['qr_code' => $qr_code, 'label_hidden' => $data, 'label' => $label, 'first_molding_data' => $first_molding]);
     }
