@@ -51,7 +51,7 @@
                               <div class="row">
 
                                   <div class="col-12">
-                                      <h1>Welcome to PATS-PPD</h1>
+                                      <h1>Welcome to PATS-PPD TIST</h1>
                                   </div>
                                   <div class="col-12">
                                       <h5>For concerns/issues, please contact ISS at local numbers 205, 206, or 208.
