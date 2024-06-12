@@ -43,7 +43,7 @@ public function exportCN171TraceabilityReport(Request $request){
         ])
         // ->where('po_num', $po_number)
         ->where('material_name', $material_name)
-        ->where('stamping_cat', 1)
+        // ->where('stamping_cat', 1)
         ->whereBetween('prod_date', [$request->date_from,$request->date_to])
         ->get();
 
@@ -67,6 +67,8 @@ public function exportCN171TraceabilityReport(Request $request){
                 ->where('stamping_cat', 2)
                 ->whereBetween('prod_date', [$request->date_from,$request->date_to])
                 ->get();
+
+        // $
         
         // return $stamping_data_1;
 

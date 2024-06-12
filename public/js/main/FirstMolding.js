@@ -733,54 +733,91 @@
 
     const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){
 
-        // TODO: Validate Contact Lot Num
+        if(firstMoldingDeviceId === "6"){ //CN171S-02#MO-VE from Rapid PPD DB
+            let firstMoldingMaterialLotNo = scanFirstMoldingContactLotNo.split("|");
+            $.ajax({
+                type: "GET",
+                url: "validate_material_lot_no",
+                data: {
+                    "first_molding_material_lot_no": firstMoldingMaterialLotNo[0]
+                },
+                dataType: "json",
+                success: function(response) {
+                    let is_exist_lot_no = (response['is_exist_lot_no'] > 0) ? 'true' : 'false';
+                    if (is_exist_lot_no === 'true') {
+                        formModal.firstMolding.find('#contact_lot_number').val(firstMoldingMaterialLotNo[0]);
+                        formModal.firstMolding.find('#contact_lot_qty').val(firstMoldingMaterialLotNo[1]);
+                        $('#mdlScanQrCodeFirstMolding').modal('hide');
+                    } else {
+                        toastr.error(
+                            `Error: Invalid Material Lot Number,Please check to Rapid Issuance Module`
+                        );
+                        formModal.firstMolding.find('#contact_lot_number').val('');
+                        formModal.firstMolding.find('#contact_lot_qty').val('');
+                    }
 
-        let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
-        let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
+                },
+                error: function(data, xhr, status) {
+                    toastr.error(`Error: ${data.status}`);
+                    formModal.firstMolding.find('#contact_lot_number').val('');
+                    formModal.firstMolding.find('#contact_lot_qty').val('');
+                }
+            });
+            $('#txtScanQrCodeFirstMolding').val('');
 
-        // TODO: Validate Contact Lot Num
+        }else{ //From 2nd Stamping
+            // TODO: Validate Contact Lot Num
+            let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
+            let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
+            // console.log('parse',JSON.parse(scanFirstMoldingContactLotNo));
 
-        formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
-        formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
-        $('#txtScanQrCodeFirstMolding').val('');
-        $('#mdlScanQrCodeFirstMolding').modal('hide');
-        return;
-        $.ajax({
-            type: "GET",
-            url: "validate_scan_first_molding_contact_lot_num", //nmodify
-            data: {"contact_lot_num" :contactLotNo ,"first_molding_device_id": firstMoldingDeviceId},
-            dataType: "json",
-            success: function (response) {
-                console.log(response);
-                if(response.result == 1){
-                    formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
-                    formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
-                    toastr.success('Scanned Successfully !')
-                }else{
+            // formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
+            // formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
+            // $('#txtScanQrCodeFirstMolding').val('');
+            // $('#mdlScanQrCodeFirstMolding').modal('hide');
+            // return;
+            $.ajax({
+                type: "GET",
+                url: "validate_scan_first_molding_contact_lot_num", //nmodify
+                data: {"contact_lot_num" :contactLotNo ,"first_molding_device_id": firstMoldingDeviceId},
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                    if(response.result == 1){
+                        formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
+                        formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
+                        toastr.success('Scanned Successfully !')
+                    }else{
+                        Swal.fire({
+                            position: "center",
+                            icon: "warning",
+                            title: `${contactLotNo}: This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                        formModal.firstMolding.find('#contact_lot_number').val('');
+                        formModal.firstMolding.find('#contact_lot_qty').val('');
+                    }
+                    $('#txtScanQrCodeFirstMolding').val('');
+                    $('#mdlScanQrCodeFirstMolding').modal('hide');
+                },error: function (data, xhr, status){
+                    let errors = data.responseJSON.errors ;
                     Swal.fire({
                         position: "center",
-                        icon: "warning",
-                        title: `${contactLotNo}: This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
+                        icon: "error",
+                        title: `${contactLotNo}: Invalid Prodn Lot Number. Please Check to 2nd Stamping Module ! !`,
                         showConfirmButton: false,
                         timer: 3000
                     });
-                }
-                $('#txtScanQrCodeFirstMolding').val('');
-                $('#mdlScanQrCodeFirstMolding').modal('hide');
-            },error: function (data, xhr, status){
-                let errors = data.responseJSON.errors ;
-                Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: `${contactLotNo}: Invalid Prodn Lot Number. Please Check to 2nd Stamping Module ! !`,
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-                $('#txtScanQrCodeFirstMolding').val('');
-                $('#mdlScanQrCodeFirstMolding').modal('hide');
+                    formModal.firstMolding.find('#contact_lot_number').val('');
+                    formModal.firstMolding.find('#contact_lot_qty').val('');
+                    $('#txtScanQrCodeFirstMolding').val('');
+                    $('#mdlScanQrCodeFirstMolding').modal('hide');
 
-            }
-        });
+                }
+            });
+        }
+
     }
 
     const firstMoldingUpdateStatus = function (){

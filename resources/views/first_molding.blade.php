@@ -1567,8 +1567,7 @@
                 let firstMoldingDeviceId = formModal.firstMolding.find('#first_molding_device_id').val()
                 try {
                     if (e.keyCode == 13) {
-                        validateScanFirstMoldingContactLotNum(scanFirstMoldingContactLotNo,
-                            firstMoldingDeviceId);
+                        validateScanFirstMoldingContactLotNum(scanFirstMoldingContactLotNo,firstMoldingDeviceId);
                     }
                 } catch (error) {
                     // console.log(error);
