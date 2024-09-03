@@ -115,6 +115,7 @@ Route::view('/Material_Issuance_Monitoring_Form','mimf')->name('Material_Issuanc
 
 /* MOLDING */
 Route::view('/second_molding','second_molding')->name('second_molding');
+Route::view('/second_molding_test','second_molding_test')->name('second_molding_test');
 Route::view('/first_molding','first_molding')->name('first_molding');
 Route::view('/first_molding_ipqc_inspection','first_molding_ipqc_inspection')->name('first_molding_ipqc_inspection'); //clark comment 02042024
 Route::view('/ipqc_inspection_1st_molding','ipqc_inspection_1st_molding')->name('ipqc_inspection_1st_molding');
@@ -126,6 +127,8 @@ Route::view('/mprs','mprs')->name('mprs');
 Route::view('/assembly','assembly')->name('assembly');
 
 /* * PPTS VIEW */
+Route::view('/ppts_user','ppts_user')->name('ppts_user');
+Route::view('/ppts_matrix','ppts_matrix')->name('ppts_matrix');
 Route::view('/ppts_oqc_inspection','ppts_oqc_inspection')->name('ppts_oqc_inspection');
 Route::view('/ppts_packing_and_shipping','ppts_packing_and_shipping')->name('ppts_packing_and_shipping');
 Route::view('/ppts_export_packing_and_shipping','ppts_export_packing_and_shipping')->name('ppts_export_packing_and_shipping');
@@ -208,17 +211,6 @@ Route::controller(StationController::class)->group(function () {
 
 });
 
-// MATERIAL PROCESS CONTROLLER
-Route::controller(MaterialProcessController::class)->group(function () {
-
-    Route::get('/view_material_process_by_device_id', 'view_material_process_by_device_id');
-    Route::get('/get_mat_proc_for_add', 'get_mat_proc_for_add');
-    Route::get('/get_step', 'get_step');
-    Route::get('/get_mat_proc_data', 'get_mat_proc_data');
-    Route::post('/add_material_process', 'add_material_process');
-    Route::post('/change_mat_proc_status', 'change_mat_proc_status');
-
-});
 
 // PROCESS CONTROLLER
 Route::controller(ProcessController::class)->group(function () {
@@ -320,7 +312,6 @@ Route::controller(IqcInspectionController::class)->group(function () {
 
 //OQC Inspection
 Route::controller(OQCInspectionController::class)->group(function () {
-    Route::get('/MimfController', 'viewOqcInspectionFirstStamping')->name('MimfController');
     Route::get('/view_oqc_inspection_first_stamping', 'viewOqcInspectionFirstStamping')->name('view_oqc_inspection_first_stamping');
     Route::get('/view_oqc_inspection_history', 'viewOqcInspectionHistory')->name('view_oqc_inspection_history');
     Route::get('/view_oqc_inspection_second_stamping', 'viewOqcInspectionSecondStamping')->name('view_oqc_inspection_second_stamping');
@@ -426,7 +417,7 @@ Route::controller(FirstMoldingController::class)->group(function () {
     Route::get('/load_first_molding_details', 'loadFirstMoldingDetails')->name('load_first_molding_details');
     Route::get('/get_molding_details', 'getMoldingDetails')->name('get_molding_details');
     Route::get('/first_molding_update_status', 'firstMoldingUpdateStatus')->name('first_molding_update_status');
-Route::get('/get_pmi_po_received_details', 'getPmiPoReceivedDetails')->name('get_pmi_po_received_details');
+    Route::get('/get_pmi_po_received_details', 'getPmiPoReceivedDetails')->name('get_pmi_po_received_details');
     Route::get('/get_dieset_details_by_device_name', 'getDiesetDetailsByDeviceName')->name('get_dieset_details_by_device_name');
     Route::get('/get_first_molding_qr_code', 'getFirstMoldingQrCode')->name('get_first_molding_qr_code');
     Route::get('/get_machine_from_material_process', 'getMachineFromMaterialProcess')->name('get_machine_from_material_process');
@@ -471,12 +462,14 @@ Route::controller(SecondMoldingController::class)->group(function () {
     Route::get('/get_mode_of_defect_for_second_molding', 'getModeOfDefectForSecondMolding')->name('get_mode_of_defect_for_second_molding');
     Route::post('/complete_second_molding', 'completeSecondMolding')->name('complete_second_molding');
     Route::get('/get_second_molding_qr_code', 'getSecondMoldingQrCode')->name('get_second_molding_qr_code');
+    Route::get('/get_material_drying_qr_code', 'getMaterialDryingQrCode')->name('get_material_drying_qr_code');
     Route::get('/get_last_shipment_output', 'getLastShipmentOuput')->name('get_last_shipment_output');
     Route::get('/get_user_for_second_molding', 'getUser')->name('get_user_for_second_molding');
     Route::get('/get_machine', 'getMachine')->name('get_machine');
     Route::get('/get_dieset_details_by_device_name_second_molding', 'getDiesetDetailsByDeviceNameSecondMolding')->name('get_dieset_details_by_device_name_second_molding');
     Route::get('/get_count_of_station', 'getCountOfStation')->name('get_count_of_station');
     Route::get('/check_if_last_step_by_material_name', 'checkIfLastStepByMaterialName')->name('check_if_last_step_by_material_name');
+    Route::post('/save_material_drying', 'saveMaterialDrying')->name('save_material_drying');
 });
 /* Second Molding Station Controller */
 Route::controller(SecondMoldingStationController::class)->group(function () {
@@ -513,7 +506,7 @@ Route::controller(AssemblyRuncardController::class)->group(function(){
     Route::get('/get_total_yield', 'get_total_yield')->name('get_total_yield');
     Route::get('/connect_ypics', 'connect_ypics')->name('connect_ypics');
     Route::get('/chck_existing_stations', 'chck_existing_stations')->name('chck_existing_stations');
-    Route::post('/update_assembly_status', 'update_assembly_status')->name('update_assembly_status'); //CLARK DITO KANA
+    Route::post('/update_assembly_status', 'update_assembly_status')->name('update_assembly_status');
 });
 
 // MODE OF DEFECTS CONTROLLER
@@ -644,10 +637,10 @@ Route::controller(ExportOqcInspectionController::class)->group(function () {
 // EXPORT IQC Inspection DATA
 Route::controller(ExportIqcInspectionController::class)->group(function () {
     Route::get('/search_iqc_inspection_material_name', 'searchIqcInspectionMaterialName')->name('search_iqc_inspection_material_name');
-    Route::get('/export_iqc_inspection/{materialName}/{processType}/{from}/{to}', 'exportIqcInspection');
+    Route::get('/export_iqc_inspection/{any}', 'exportIqcInspection')->where('any', '.*');
 });
 
-// EXPORT IQC Inspection DATA
+// MachineParameter Controller
 Route::controller(MachineParameterController::class)->group(function () {
     Route::post('/save_machine_one', 'saveMachineOne')->name('save_machine_one');
     Route::post('/save_injection_tab_list','saveInjectionTabList')->name('save_injection_tab_list');
@@ -661,5 +654,12 @@ Route::controller(MachineParameterController::class)->group(function () {
     Route::get('/edit_injection_tab_list', 'editInjectionTabList')->name('edit_injection_tab_list');
 });
 
-
-
+// MATERIAL PROCESS CONTROLLER
+Route::controller(MaterialProcessController::class)->group(function () {
+    Route::get('/view_material_process_by_device_id', 'view_material_process_by_device_id');
+    Route::get('/get_mat_proc_for_add', 'get_mat_proc_for_add');
+    Route::get('/get_step', 'get_step');
+    Route::get('/get_mat_proc_data', 'get_mat_proc_data');
+    Route::post('/add_material_process', 'add_material_process');
+    Route::post('/change_mat_proc_status', 'change_mat_proc_status');
+});

@@ -552,9 +552,11 @@ class StampingController extends Controller
         $day   = date('d');
 
         $ctrl_count = DB::connection('mysql')
-        ->select("SELECT MAX(ctrl_counter) as ctrl FROM stamping_productions WHERE `created_at` LIKE '%$date%' AND `stamping_cat` = 1");
+        // ->select("SELECT MAX(ctrl_counter) as ctrl FROM stamping_productions WHERE `created_at` LIKE '%$date%' AND `stamping_cat` = 1");
+        ->select("SELECT MAX(ctrl_counter) as ctrl FROM stamping_productions WHERE `created_at` LIKE '%$date%' AND `stamping_cat` = 1 AND po_num = '$request->po'");
 
         $ctrl_counter = $ctrl_count[0]->ctrl + 1;
+        // $ctrl_counter = $ctrl_count[0]->ctrl; // darren 7-3-24
         return response()->json([
             'year'  => $year,
             'month' => $month,

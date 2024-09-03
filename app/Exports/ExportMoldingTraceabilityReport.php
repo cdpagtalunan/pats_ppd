@@ -45,8 +45,11 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
     protected $secondMoldingInitialData;
     protected $secondMoldingCameraData;
     protected $secondMoldingVisualData;
+    protected $secondMoldingFirstOqcData;
     protected $assemblyMarkingData;
     protected $assemblyMOData;
+    protected $assemblyVisualData;
+    protected $assemblyData;
 
     // protected $device_name;
 
@@ -56,18 +59,22 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
     $secondMoldingInitialData,
     $secondMoldingCameraData,
     $secondMoldingVisualData,
+    $secondMoldingFirstOqcData,
     $assemblyMarkingData,
     $assemblyMOData,
-    $assemblyVisualData
+    $assemblyVisualData,
+    $assemblyData
     ){
         $this->material = $material;
         $this->secondMoldingData = $secondMoldingData;
         $this->secondMoldingInitialData = $secondMoldingInitialData;
         $this->secondMoldingCameraData = $secondMoldingCameraData;
         $this->secondMoldingVisualData = $secondMoldingVisualData;
+        $this->secondMoldingFirstOqcData = $secondMoldingFirstOqcData;
         $this->assemblyMarkingData = $assemblyMarkingData;
         $this->assemblyMOData = $assemblyMOData;
         $this->assemblyVisualData = $assemblyVisualData;
+        $this->assemblyData = $assemblyData;
     }
 
     public function view(): View
@@ -86,9 +93,11 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
         $secondMoldingInitialData = $this->secondMoldingInitialData;
         $secondMoldingCameraData = $this->secondMoldingCameraData;
         $secondMoldingVisualData = $this->secondMoldingVisualData;
+        $secondMoldingFirstOqcData = $this->secondMoldingFirstOqcData;
         $assemblyMarkingData = $this->assemblyMarkingData;
         $assemblyMOData = $this->assemblyMOData;
         $assemblyVisualData = $this->assemblyVisualData;
+        $assemblyData = $this->assemblyData;
 
         $arial_font12_bold = array(
             'font' => array(
@@ -201,9 +210,11 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                 $secondMoldingInitialData,
                 $secondMoldingCameraData,
                 $secondMoldingVisualData,
+                $secondMoldingFirstOqcData,
                 $assemblyMarkingData,
                 $assemblyMOData,
-                $assemblyVisualData
+                $assemblyVisualData,
+                $assemblyData
             ) {
                 if($material == 'CN171S-07#IN-VE'){ // CN171S
                     $event->sheet->getColumnDimension('A')->setWidth(15);
@@ -383,23 +394,42 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                     $event->sheet->setCellValue('AF'.$start_col, $secondMoldingVisualData[$o]->visual_operator);
                             }
                         }
-                        for ($v=0; $v <count($secondMoldingFirstOqcData); $v++) {
-                            if ($secondMoldingData[$i]->id == $secondMoldingFirstOqcData[$v]->sec_molding_runcard_id){
 
-                                $dppm = ($secondMoldingFirstOqcData[$v]->no_of_defects / $secondMoldingFirstOqcData[$v]->sample_size) * 1000000;
-                                $lar = ($secondMoldingFirstOqcData[$v]->lot_accepted / $secondMoldingFirstOqcData[$v]->lot_inspected) * 100;
+                        if(isset($secondMoldingFirstOqcData)){
+                            for ($v=0; $v <count($secondMoldingFirstOqcData); $v++) {
+                                if ($secondMoldingData[$i]->id == $secondMoldingFirstOqcData[$v]->sec_molding_runcard_id){
 
-                                $event->sheet->setCellValue('J'.$start_col, $secondMoldingFirstOqcData[$v]->first_oqc_sum);
-                                $event->sheet->setCellValue('K'.$start_col, $dppm);
-                                $event->sheet->setCellValue('L'.$start_col, $lar.'%');
+                                    $defects = $secondMoldingFirstOqcData[$v]->no_of_defects;
+                                    
+                                    // dd($defects);
 
+                                    if($defects != 0 ){
+                                        $dppm = ($defects / $secondMoldingFirstOqcData[$v]->sample_size) * 1000000;
+                                        $event->sheet->setCellValue('K'.$start_col, $dppm);
+                                    }else{
+                                        $event->sheet->setCellValue('K'.$start_col, 0);
+
+                                    }
+
+                                    
+                                    $lar = ($secondMoldingFirstOqcData[$v]->lot_accepted / $secondMoldingFirstOqcData[$v]->lot_inspected) * 100;
+    
+                                    $event->sheet->setCellValue('J'.$start_col, $secondMoldingFirstOqcData[$v]->first_oqc_sum);
+                                    $event->sheet->setCellValue('L'.$start_col, $lar.'%');
+    
+                                }
                             }
                         }
+
+                        // dd($assemblyMarkingData);
+                        
                         if(isset($assemblyMarkingData)){
+                            // dd($assemblyMarkingSum);
                             for ($z=0; $z <count($assemblyMarkingData); $z++) {
                                 if($assemblyMarkingData[$z]->s_lot_no != null && $assemblyMarkingData[$z]->s_lot_no == $secondMoldingData[$i]->production_lot){
                                     $assemblyMarkingSum = $assemblyMarkingData[$z]->marking_sum;
                                     $assemblyMarkingYield = $assemblyMarkingData[$z]->marking_yield;
+
 
                                     $event->sheet->setCellValue('M'.$start_col, $assemblyMarkingSum);
                                     $event->sheet->setCellValue('N'.$start_col, $assemblyMarkingYield.'%');
@@ -487,115 +517,168 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                 }
 
                 else{ // CN171P
-                    // $event->sheet->getColumnDimension('A')->setWidth(15);
-                    // $event->sheet->getColumnDimension('B')->setWidth(15);
-                    // $event->sheet->getColumnDimension('C')->setWidth(15);
-                    // $event->sheet->getColumnDimension('D')->setWidth(15);
-                    // $event->sheet->getColumnDimension('E')->setWidth(15);
-                    // $event->sheet->getColumnDimension('F')->setWidth(15);
-                    // $event->sheet->getColumnDimension('G')->setWidth(15);
-                    // $event->sheet->getColumnDimension('H')->setWidth(15);
-                    // $event->sheet->getColumnDimension('I')->setWidth(15);
-                    // $event->sheet->getColumnDimension('J')->setWidth(15);
-                    // $event->sheet->getColumnDimension('K')->setWidth(15);
-                    // $event->sheet->getColumnDimension('L')->setWidth(15);
-                    // $event->sheet->getColumnDimension('M')->setWidth(15);
-                    // $event->sheet->getColumnDimension('N')->setWidth(15);
-                    // $event->sheet->getColumnDimension('O')->setWidth(15);
-                    // $event->sheet->getColumnDimension('P')->setWidth(15);
-                    // $event->sheet->getColumnDimension('Q')->setWidth(15);
-                    // $event->sheet->getColumnDimension('R')->setWidth(15);
-                    // $event->sheet->getColumnDimension('S')->setWidth(15);
-                    // $event->sheet->getColumnDimension('T')->setWidth(15);
-                    // $event->sheet->getColumnDimension('U')->setWidth(15);
-                    // $event->sheet->getColumnDimension('V')->setWidth(15);
-                    // $event->sheet->getColumnDimension('W')->setWidth(15);
-                    // $event->sheet->getColumnDimension('X')->setWidth(15);
-                    // $event->sheet->getColumnDimension('Y')->setWidth(15);
-                    // $event->sheet->getColumnDimension('Z')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AA')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AB')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AC')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AD')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AE')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AF')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AG')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AH')->setWidth(15);
-                    // $event->sheet->getColumnDimension('AI')->setWidth(15);
+                    $start_col = 4;
+                    $event->sheet->getColumnDimension('A')->setWidth(15);
+                    $event->sheet->getColumnDimension('B')->setWidth(15);
+                    $event->sheet->getColumnDimension('C')->setWidth(15);
+                    $event->sheet->getColumnDimension('D')->setWidth(15);
+                    $event->sheet->getColumnDimension('E')->setWidth(15);
+                    $event->sheet->getColumnDimension('F')->setWidth(15);
+                    $event->sheet->getColumnDimension('G')->setWidth(15);
+                    $event->sheet->getColumnDimension('H')->setWidth(15);
+                    $event->sheet->getColumnDimension('I')->setWidth(15);
+                    $event->sheet->getColumnDimension('J')->setWidth(15);
+                    $event->sheet->getColumnDimension('K')->setWidth(15);
+                    $event->sheet->getColumnDimension('L')->setWidth(15);
+                    $event->sheet->getColumnDimension('M')->setWidth(15);
+                    $event->sheet->getColumnDimension('N')->setWidth(15);
+                    $event->sheet->getColumnDimension('O')->setWidth(15);
+                    $event->sheet->getColumnDimension('P')->setWidth(15);
+                    $event->sheet->getColumnDimension('Q')->setWidth(15);
+                    $event->sheet->getColumnDimension('R')->setWidth(15);
+                    $event->sheet->getColumnDimension('S')->setWidth(30);
+                    $event->sheet->getColumnDimension('T')->setWidth(15);
+                    $event->sheet->getColumnDimension('U')->setWidth(15);
+                    $event->sheet->getColumnDimension('V')->setWidth(15);
+                    $event->sheet->getColumnDimension('W')->setWidth(15);
+                    $event->sheet->getColumnDimension('X')->setWidth(15);
+                    $event->sheet->getColumnDimension('Y')->setWidth(15);
+                    $event->sheet->getColumnDimension('Z')->setWidth(15);
+                    $event->sheet->getColumnDimension('AA')->setWidth(15);
+                    $event->sheet->getColumnDimension('AB')->setWidth(15);
+                    $event->sheet->getColumnDimension('AC')->setWidth(15);
+                    $event->sheet->getColumnDimension('AD')->setWidth(15);
 
-                    // $event->sheet->setCellValue('A1', $material.' Parts Lot Management Record');
-                    // $event->sheet->getDelegate()->mergeCells('A1:V1');
-                    // $event->sheet->getDelegate()->getStyle('A1:V1')->applyFromArray($arial_font12);
+                    $event->sheet->setCellValue('A1', $material.' Parts Lot Management Record');
+                    $event->sheet->getDelegate()->mergeCells('A1:V1');
+                    $event->sheet->getDelegate()->getStyle('A1:V1')->applyFromArray($arial_font12);
 
-                    // $event->sheet->getDelegate()->mergeCells('A2:A3');
-                    // $event->sheet->getDelegate()->mergeCells('B2:B3');
-                    // $event->sheet->getDelegate()->mergeCells('C2:C3');
-                    // $event->sheet->getDelegate()->mergeCells('D2:D3');
-                    // $event->sheet->getDelegate()->mergeCells('E2:E3');
-                    // $event->sheet->getDelegate()->mergeCells('F2:F3');
-                    // $event->sheet->getDelegate()->mergeCells('G2:G3');
-                    // $event->sheet->getDelegate()->mergeCells('H2:H3');
-                    // $event->sheet->getDelegate()->mergeCells('I2:I3');
-                    // $event->sheet->getDelegate()->mergeCells('J2:J3');
-                    // $event->sheet->getDelegate()->mergeCells('K2:K3');
-                    // $event->sheet->getDelegate()->mergeCells('L2:L3');
-                    // $event->sheet->getDelegate()->mergeCells('M2:M3');
-                    // $event->sheet->getDelegate()->mergeCells('N2:N3');
-                    // $event->sheet->getDelegate()->mergeCells('O2:O3');
-                    // $event->sheet->getDelegate()->mergeCells('P2:P3');
-                    // $event->sheet->getDelegate()->mergeCells('Q2:Q3');
-                    // $event->sheet->getDelegate()->mergeCells('R2:R3');
-                    // $event->sheet->getDelegate()->mergeCells('S2:S3');
-                    // $event->sheet->getDelegate()->mergeCells('T2:T3');
-                    // $event->sheet->getDelegate()->mergeCells('U2:U3');
-                    // $event->sheet->getDelegate()->mergeCells('V2:V3');
+                    $event->sheet->getDelegate()->mergeCells('A2:A3');
+                    $event->sheet->getDelegate()->mergeCells('B2:B3');
+                    $event->sheet->getDelegate()->mergeCells('C2:C3');
+                    $event->sheet->getDelegate()->mergeCells('D2:D3');
+                    $event->sheet->getDelegate()->mergeCells('E2:E3');
+                    $event->sheet->getDelegate()->mergeCells('F2:F3');
+                    $event->sheet->getDelegate()->mergeCells('G2:G3');
+                    $event->sheet->getDelegate()->mergeCells('H2:H3');
+                    $event->sheet->getDelegate()->mergeCells('I2:I3');
+                    $event->sheet->getDelegate()->mergeCells('J2:J3');
+                    $event->sheet->getDelegate()->mergeCells('K2:K3');
+                    $event->sheet->getDelegate()->mergeCells('L2:L3');
+                    $event->sheet->getDelegate()->mergeCells('M2:M3');
+                    $event->sheet->getDelegate()->mergeCells('N2:N3');
+                    $event->sheet->getDelegate()->mergeCells('O2:O3');
+                    $event->sheet->getDelegate()->mergeCells('P2:P3');
+                    $event->sheet->getDelegate()->mergeCells('Q2:Q3');
+                    $event->sheet->getDelegate()->mergeCells('R2:R3');
+                    $event->sheet->getDelegate()->mergeCells('S2:S3');
+                    $event->sheet->getDelegate()->mergeCells('T2:T3');
+                    $event->sheet->getDelegate()->mergeCells('U2:U3');
+                    $event->sheet->getDelegate()->mergeCells('V2:V3');
+                    $event->sheet->getDelegate()->mergeCells('W2:W3');
+                    $event->sheet->getDelegate()->mergeCells('X2:X3');
+                    $event->sheet->getDelegate()->mergeCells('Y2:AA2');
+                    // $event->sheet->getDelegate()->mergeCells('Z2:Z3');
+                    $event->sheet->getDelegate()->mergeCells('AB2:AE2');
                     // $event->sheet->getDelegate()->mergeCells('W2:W3');
-                    // $event->sheet->getDelegate()->mergeCells('X2:AC2');
                     // $event->sheet->getDelegate()->mergeCells('AD2:AD3');
                     // $event->sheet->getDelegate()->mergeCells('AE2:AG2');
 
 
-                    // $event->sheet->setCellValue('A2',"投入日 Production Date");
-                    // $event->sheet->setCellValue('B2',"Shift");
-                    // $event->sheet->setCellValue('C2',"Production Lot #");
-                    // $event->sheet->setCellValue('D2',"数量 Prodn Qty");
-                    // $event->sheet->setCellValue('E2',"Camera Inspection");
-                    // $event->sheet->setCellValue('F2',"Yield");
-                    // $event->sheet->setCellValue('G2',"Visual Inspection");
-                    // $event->sheet->setCellValue('H2',"Yield");
-                    // $event->sheet->setCellValue('I2',"Over-all Yield");
-                    // $event->sheet->setCellValue('J2',"Lot Marking");
-                    // $event->sheet->setCellValue('K2',"Yield");
-                    // $event->sheet->setCellValue('L2',"MO Assembly");
-                    // $event->sheet->setCellValue('M2',"Yield");
-                    // $event->sheet->setCellValue('N2',"Visual Inspection");
-                    // $event->sheet->setCellValue('O2',"Yield");
-                    // $event->sheet->setCellValue('P2',"Over-all Yield");
-                    // $event->sheet->setCellValue('Q2',"Material Name");
-                    // $event->sheet->setCellValue('R2',"Material Lot # (Resin Lot #)");
-                    // $event->sheet->setCellValue('S2',"Product Drawing");
-                    // $event->sheet->setCellValue('T2',"Product Drawing Rev.");
-                    // $event->sheet->setCellValue('U2',"CAV");
-                    // $event->sheet->setCellValue('V2',"识别表示 Special adoption document or any special instruction");
-                    // $event->sheet->setCellValue('W2',"Remarks");
+                    $event->sheet->setCellValue('A2',"投入日 Production Date");
+                    $event->sheet->setCellValue('B2',"Shift");
+                    $event->sheet->setCellValue('C2',"Production Lot #");
+                    $event->sheet->setCellValue('D2',"数量 Prodn Qty");
+                    $event->sheet->setCellValue('E2',"投入日 Shipment Date");
+                    $event->sheet->setCellValue('F2',"投入日 Shipment Date QTY");
+                    $event->sheet->setCellValue('G2',"Accum");
+                    $event->sheet->setCellValue('H2',"Camera NG");
+                    $event->sheet->setCellValue('I2',"Lot Marking NG");
+                    $event->sheet->setCellValue('J2',"PRINT CODE");
+                    $event->sheet->setCellValue('K2',"Visual NG");
+                    $event->sheet->setCellValue('L2',"Assesment #");
+                    $event->sheet->setCellValue('M2',"Bundle #");
+                    $event->sheet->setCellValue('N2',"Runcard #");
+                    $event->sheet->setCellValue('O2',"Machine #");
+                    $event->sheet->setCellValue('P2',"FVI Operator");
+                    $event->sheet->setCellValue('Q2',"Material Name");
+                    $event->sheet->setCellValue('R2',"Material Lot # (Resin Lot #)");
+                    $event->sheet->setCellValue('S2',"Product Drawing");
+                    $event->sheet->setCellValue('T2',"Product Drawing Rev.");
+                    $event->sheet->setCellValue('U2',"CAV");
+                    $event->sheet->setCellValue('V2',"识别表示 Special adoption document or any special instruction");
+                    $event->sheet->setCellValue('W2',"Remarks");
+                    $event->sheet->setCellValue('X2',"QC Inspector Name");
 
-                    // $event->sheet->setCellValue('X2',"Operator Name");
-                    // $event->sheet->setCellValue('X3',"Rotary Machine");
-                    // $event->sheet->setCellValue('Y3',"Camera Inspection");
-                    // $event->sheet->setCellValue('Z3',"Visual Inspection");
-                    // $event->sheet->setCellValue('AA3',"Lot Marking");
-                    // $event->sheet->setCellValue('AB3',"MO Assembly");
-                    // $event->sheet->setCellValue('AC3',"Visual Inspection");
-                    // $event->sheet->setCellValue('AD2',"QC Inspector Name");
 
-                    // $event->sheet->setCellValue('AE2',"Parts Name");
-                    // $event->sheet->setCellValue('AE3',"CT5869-VE");
-                    // $event->sheet->setCellValue('AF3',"CT5870-VE");
-                    // $event->sheet->setCellValue('AG3',"CN171P-02#ME-VE");
+                    $event->sheet->setCellValue('Y2',"Operator Name");
+                    $event->sheet->setCellValue('Y3',"Rotary Machine");
+                    $event->sheet->setCellValue('Z3',"Camera Inspection");
+                    $event->sheet->setCellValue('AA3',"Visual Inspection");
+
+                    $event->sheet->setCellValue('AB2',"LOT NUMBER");
+
+                    $event->sheet->setCellValue('AB3',"CN171P-02#IN");
+                    $event->sheet->setCellValue('AC3',"CN171P-02#ME");
+                    $event->sheet->setCellValue('AD3',"CT5869");
+                    $event->sheet->setCellValue('AE3',"CT5870");
+
+                    // dd($secondMoldingData);
+                    for ($i=0; $i < count($secondMoldingData); $i++) {
+                        $created_at = substr($secondMoldingData[$i]->created_at,0,10);
+
+                        $event->sheet->setCellValue('A'.$start_col, $created_at);
+                        $event->sheet->setCellValue('C'.$start_col, $secondMoldingData[$i]->production_lot);
+                        $event->sheet->setCellValue('D'.$start_col, $secondMoldingData[$i]->po_quantity);
+                        $event->sheet->setCellValue('O'.$start_col, $secondMoldingData[$i]->machine_number);
+                        $event->sheet->setCellValue('Q'.$start_col, $secondMoldingData[$i]->material_name);
+                        $event->sheet->setCellValue('R'.$start_col, $secondMoldingData[$i]->material_lot_number);
+                        $event->sheet->setCellValue('S'.$start_col, $secondMoldingData[$i]->drawing_number);
+                        $event->sheet->setCellValue('T'.$start_col, $secondMoldingData[$i]->revision_number);
+
+                        if(str_contains($secondMoldingData[$i]->machine_number, '3')){
+                            $event->sheet->setCellValue('U'.$start_col, 'AB');
+                        }else{
+                            $event->sheet->setCellValue('U'.$start_col, 'CD');
+                        }
+
+                        $event->sheet->setCellValue('Y'.$start_col, $secondMoldingData[$i]->r_machine_operator);
+
+                        for ($u=0; $u < count($secondMoldingCameraData); $u++) {
+                            if ($secondMoldingData[$i]->id == $secondMoldingCameraData[$u]->sec_molding_runcard_id) {
+
+                                $event->sheet->setCellValue('H'.$start_col, $secondMoldingCameraData[$u]->camera_ng);
+                                $event->sheet->setCellValue('Z'.$start_col, $secondMoldingCameraData[$u]->camera_operator);
+                            }
+                        }
+
+                        for ($o=0; $o <count($secondMoldingVisualData); $o++) {
+                            if ($secondMoldingData[$i]->id == $secondMoldingVisualData[$o]->sec_molding_runcard_id) {
+                                $event->sheet->setCellValue('AA'.$start_col, $secondMoldingVisualData[$o]->visual_operator);
+                            }
+                        }
+
+                        for ($y=0; $y <count($assemblyData); $y++) { 
+                            if ($secondMoldingData[$i]->production_lot == $assemblyData[$y]->p_zero_two_prod_lot) {
+                                $event->sheet->setCellValue('N'.$start_col, $assemblyData[$y]->runcard_no);
+                                $event->sheet->setCellValue('M'.$start_col, $assemblyData[$y]->bundle_no);
+                                $event->sheet->setCellValue('P'.$start_col, $assemblyData[$y]->operator_name);
+                            }
+                        }
+
+                        $event->sheet->getDelegate()->getStyle('A4'.':'.'AE'.$start_col)->applyFromArray($styleBorderAll);
+                        $start_col++;
+                    }
+                    // $event->sheet->getDelegate()->getStyle('H4'.':'.'H'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
+                    // $event->sheet->getDelegate()->getStyle('I4'.':'.'I'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
+                    // $event->sheet->getDelegate()->getStyle('S4'.':'.'S'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
+                    $event->sheet->getDelegate()->getStyle('A4'.':'.'AE'.$start_col)->getAlignment()->setWrapText(true);
+                    $event->sheet->getDelegate()->getStyle('A2:AE3')->applyFromArray($hv_center);
+                    $event->sheet->getDelegate()->getStyle('A4'.':'.'AE'.$start_col)->applyFromArray($hv_center);
+                    $event->sheet->getDelegate()->getStyle('A2:AE3')->getAlignment()->setWrapText(true);
+                    $event->sheet->getDelegate()->getStyle('A2:AE3')->applyFromArray($styleBorderAll);
 
                 }
-
-
             },
         ];
     }

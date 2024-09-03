@@ -855,33 +855,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="modalMaterialDryingPrintQr">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Print QR Code</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <center>
-                                    <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="imageMaterialDryingBarcode" style="max-width: 200px;"><br>
-                                </center>
-                                <div id="bodyMaterialDryingBarcodeDetails"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" id="buttonMaterialDryingPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
     @endsection
 
     @section('js_content')
@@ -2289,8 +2262,8 @@
                 // Add 30mins for Drying Time End
                 $('#textDryingTimeStart').change(function (e) { 
                     let dryingTimeStart = $('#textDryingTimeStart').val();
-                    let dryingTimeEndWithThirtyMins = moment(dryingTimeStart, 'HH:mm').add(30, 'minutes').format('HH:mm');;
-                    $('#textDryingTimeEnd').val(dryingTimeEndWithThirtyMins);
+                    let startDateWithThirtyMins = moment(dryingTimeStart, 'HH:mm').add(30, 'minutes').format('HH:mm');;
+                    $('#textDryingTimeEnd').val(startDateWithThirtyMins);
                 });
                 
                 // Save Material Drying form
@@ -2308,59 +2281,6 @@
                             console.log('response ', response);
                         }
                     });
-                });
-
-                // Get Material Drying Details Data for QR Code printing
-                let dataDetails = '';
-                $('#tableSecondMolding').on('click', '.buttonPrintMaterialDrying',function(e){
-                    e.preventDefault();
-                    let secondMoldingId = $(this).attr('second-molding-id');
-                    console.log('buttonPrintMaterialDrying clicked');
-                    $.ajax({
-                        type: "get",
-                        url: "get_material_drying_qr_code",
-                        data: {
-                            "second_molding_id" : secondMoldingId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            console.log(response);
-                            
-                            $("#imageMaterialDryingBarcode").attr('src', response['qr_code']);
-                            $("#bodyMaterialDryingBarcodeDetails").html(response['label']);
-                            dataDetails = response['label_hidden'];
-                            $('#modalMaterialDryingPrintQr').modal('show');
-                        }
-                    });
-                });
-
-                // Print(button)
-                $('#buttonMaterialDryingPrintQrCode').on('click', function(){
-                    popup = window.open();
-                    let content = '';
-                    content += '<html>';
-                    content += '<head>';
-                    content += '<title></title>';
-                    content += '<style type="text/css">';
-                    content += '@media print { .pagebreak { page-break-before: always; } }';
-                    content += '</style>';
-                    content += '</head>';
-                    content += '<body>';
-                    content += '<table style="margin-left: -5px; margin-top: 18px;">';
-                        content += '<tr style="width: 290px;">';
-                            content += '<td style="vertical-align: bottom;">';
-                                content += '<img src="' + dataDetails[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
-                            content += '</td>';
-                            content += '<td style="font-size: 10px; font-family: Calibri;">' + dataDetails[0]['text'] + '</td>';
-                        content += '</tr>';
-                    content += '</table>';
-                    content += '<br>';
-                    content += '</body>';
-                    content += '</html>';
-                    popup.document.write(content);
-                    popup.focus(); //required for IE
-                    popup.print();
-                    popup.close();
                 });
             });
         </script>

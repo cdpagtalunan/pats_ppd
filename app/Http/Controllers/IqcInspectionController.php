@@ -30,28 +30,29 @@ class IqcInspectionController extends Controller
     }
 
     public function loadWhsTransaction(Request $request)
-    {
-        /*  Get the data only withwhs_transaction.inspection_class = 1 - For Inspection, while
+    { //RAPID WHS Whs Transaction
+        /*  Get the data only with whs_transaction.inspection_class = 1 - For Inspection, while
             Transfer the data with whs_transaction.inspection_class = 3 to Inspected Tab
         */
 
-        // return $request->lotNum;
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select('
-                SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
+            ->select(' SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE whs_transaction.inspection_class = 1 AND whs_transaction.Lot_number = "'.$request->lotNum.'"
+                WHERE 1=1
+                AND whs.Factory = 3 
+                AND  whs_transaction.inspection_class = 1 AND whs_transaction.Lot_number = "'.$request->lotNum.'"
                 ORDER BY whs.PartNumber DESC
             ');
         }else{
             $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select('
-                SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
+            ->select('SELECT  whs.*,whs_transaction.*,whs_transaction.pkid as "whs_transaction_id",whs_transaction.inspection_class
                 FROM tbl_WarehouseTransaction whs_transaction
                 INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE whs_transaction.inspection_class = 1
+                WHERE 1=1
+                AND whs.Factory = 3  
+                AND whs_transaction.inspection_class = 1
                 ORDER BY whs.PartNumber DESC
             ');
         }
@@ -90,25 +91,24 @@ class IqcInspectionController extends Controller
         */
     }
 
-
     public function loadWhsDetails(Request $request)
-    {
+    { //PATS PPD WHS Receiving
         if( isset( $request->lotNum ) ){
             $tbl_whs_trasanction = DB::connection('mysql')
-            ->select('
-                SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
+            ->select(' SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
                         mat_name as"MaterialType",supplier_pmi_lot_no as "Lot_number",po_no
                 FROM receiving_details
-                WHERE status = 1 AND supplier_pmi_lot_no = "'.$request->lotNum.'"
+                WHERE 1=1
+                AND status = 1 AND supplier_pmi_lot_no = "'.$request->lotNum.'"
                 ORDER BY created_at DESC
             ');
         }else{
             $tbl_whs_trasanction = DB::connection('mysql')
-            ->select('
-                SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
+            ->select(' SELECT id as "receiving_detail_id",supplier_name as "Supplier",part_code as "PartNumber",
                         mat_name as"MaterialType",supplier_pmi_lot_no as "Lot_number",po_no
                 FROM receiving_details
-                WHERE status = 1
+                WHERE 1=1
+                AND status = 1
                 ORDER BY created_at DESC
             ');
         }

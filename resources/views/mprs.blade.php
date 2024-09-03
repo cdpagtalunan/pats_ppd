@@ -33,7 +33,7 @@
 							&emp_id={{ Auth::user()->employee_id }}
 							&iframe=oqc
 							&system_table=assembly_oqc_lot_apps
-							&system_db=db_pats_cn_ppd" style="border: none;" no-border height="850" width="100%">></iframe>
+							&system_db=db_pats_ppd" style="border: none;" no-border height="850" width="100%">></iframe>
  					</div>
 				</div>
 			</div>

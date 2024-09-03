@@ -20,7 +20,7 @@
   <div class="card" style="box-shadow: 1px 1px 50px black;">
     <br>
     <div class="login-logo">
-      <a href="{{ route('login') }}"><h2>Product Automated Traceability System - CN171</h2></a>
+      <a href="{{ route('login') }}"><h2>Product Automated Traceability System <br><b>PPD-CN171 </b></h2></a>
     </div>
     <div class="card-body login-card-body">
       <p class="login-box-msg">Sign in to start your session</p>

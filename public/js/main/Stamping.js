@@ -396,6 +396,7 @@ const checkMatrix = async (code, name, process) => {
                 $('#modalProdData').modal('show');
             }
             else if(response['result'] == 2){ // SECOND STAMPING
+                console.log(poDetails);
                 $('#txtPoNumber').val(poDetails['po_num']);
                 $('#txtPoQty').val(poDetails['po_qty']);
                 $('#txtPartCode').val(poDetails['part_code']);
@@ -413,11 +414,13 @@ const checkMatrix = async (code, name, process) => {
     });
 }
 
-const getProdLotNoCtrl = () => {
+const getProdLotNoCtrl = (po) => {
     $.ajax({
         type: "get",
         url: "get_prod_lot_no_ctrl",
-        data: "",
+        data: {
+            "po" : po
+        },
         dataType: "json",
         beforeSend: function(){
             getOperatorList($('.selOpName'));

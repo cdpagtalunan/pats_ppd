@@ -180,9 +180,9 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title"><i class="fa fa-plus"></i> Add Production Data</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <but ton type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
-                        </button>
+                        </but>
                     </div>
                     <input type="hidden" name="stamp_cat" id="txtStampCat" value="1">
 
@@ -685,7 +685,7 @@
 
                     if($('#txtSearchPONum').val() != "" && $('#txtSearchMatName').val() != ""){
                         checkMatrix(prodData['poReceiveData']['ItemCode'], prodData['poReceiveData']['ItemName'], '1st Stamping')
-                        getProdLotNoCtrl();
+                        getProdLotNoCtrl($('#txtSearchPONum').val());
 
                         // OPERATOR SHIFT
                         $time_now = moment().format('HH:mm:ss');

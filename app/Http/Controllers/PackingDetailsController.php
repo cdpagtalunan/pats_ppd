@@ -24,6 +24,7 @@ class PackingDetailsController extends Controller
         ->where('po_no', $request->po_no )
         ->where('lot_accepted', 1)
         ->orderBy('status', 'DESC')
+        ->where('logdel', 0)
         ->get();
 
         // return $preliminary_packing_data;
@@ -238,6 +239,8 @@ class PackingDetailsController extends Controller
         $data = $request->all();
 
         // return $data;
+
+        // return $request->oqc_details_id;
 
                 // return $id_to_update;
                 $array = [

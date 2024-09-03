@@ -167,6 +167,7 @@ class MimfController extends Controller
         }else{
             $test = 'ppd_matrix_id';
             $tist = 'pps_dieset_id';
+            // $request_qty = $request->mimf_needed_kgs;
             $request_qty = $request->mimf_virgin_material;
         }
         $validator = Validator::make($data, [
@@ -193,8 +194,8 @@ class MimfController extends Controller
         if ($validator->fails()) {
             return response()->json(['validationHasError' => 1, 'error' => $validator->messages()]);
         }else{
-            DB::beginTransaction();
-            try {
+            // DB::beginTransaction();
+            // try {
                 $check_existing_control_no = Mimf::where('control_no', $request->mimf_control_no)
                     ->where('pmi_po_no', $request->mimf_pmi_po_no)
                     ->where('status', $request->mimf_status)
@@ -215,10 +216,16 @@ class MimfController extends Controller
                     ->orderBy('created_on', 'DESC')
                     ->first();
 
-                $get_itemlist_id = PPSItemList::where('partcode', $request->mimf_material_code)
-                    ->where('partname', $request->mimf_material_type)
+                if($request->mimf_status == 1 && $request->category == 2){
+                    $get_itemlist_id = PPSItemList::where('partcode', $request->mimf_device_code)
                     ->where('Factory', 3)
                     ->first();
+                }else{
+                    $get_itemlist_id = PPSItemList::where('partcode', $request->mimf_material_code)
+                        ->where('partname', $request->mimf_material_type)
+                        ->where('Factory', 3)
+                        ->first();
+                } 
 
                 $explode_pps_request_control_no = explode("-",  $get_control_no->control_number);
                 $control_no_format = "PPS-".NOW()->format('ym')."-";
@@ -344,12 +351,12 @@ class MimfController extends Controller
                     }
                 }
 
-                DB::commit();
+                // DB::commit();
                 return response()->json(['hasError' => 0]);
-            } catch (\Exception $e) {
-                DB::rollback();
-                return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
-            }
+            // } catch (\Exception $e) {
+            //     DB::rollback();
+            //     return response()->json(['hasError' => 1, 'exceptionError' => $e->getMessage()]);
+            // }
         }
     }
 

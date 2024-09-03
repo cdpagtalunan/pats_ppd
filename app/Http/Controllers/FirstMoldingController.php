@@ -115,7 +115,7 @@ class FirstMoldingController extends Controller
             $result = '';
             switch ($row->status) {
                 case 3:
-                    $result .= $row->date_created;
+                    $result .= $row->shipment_output;
                     break;
                 default:
                     $result .= 0;
@@ -149,7 +149,6 @@ class FirstMoldingController extends Controller
             $validator = Validator::make($data, $validation);
 
             if ($validator->fails()) {
-
                 return response()->json(['result' => '0', 'error' => $validator->messages()]);
             }
 
@@ -193,21 +192,10 @@ class FirstMoldingController extends Controller
                     }
                 */
             }else{ //Add
-                /*
-                    //TODO: Check if Production Lot is exist
-                        $first_molding = DB::connection('mysql')
-                        ->select('SELECT * FROM `first_moldings`
-                        WHERE `production_lot` = "'.$request->production_lot.'"
-                        AND `production_lot_extension` = "'.$request->production_lot_extension.'"
-                        AND `deleted_at` IS NULL
-                    ');
-                    if( count($first_molding) > 1 ){
-                        DB::rollback();
-                        return response()->json(['result' => '0', 'error' => 'Saving Failed. Production Lot already exists'],500);
-                    }
-                */
                 $is_exist_first_molding = FirstMolding::where('production_lot',$request->production_lot)
                                                     ->where('production_lot_extension',$request->production_lot_extension)
+                                                    ->where('first_molding_device_id',$request->first_molding_device_id)
+                                                    ->where('pmi_po_no',$request->pmi_po_no)
                                                     ->whereNull('deleted_at')->exists();
                 if( $is_exist_first_molding == 1 ){
                     DB::rollback();
@@ -549,10 +537,20 @@ class FirstMoldingController extends Controller
 
         */
         try{
+            // return $material_station_by_device_name = DB::connection('mysql')
+            // ->select("  SELECT material_processes.*, devices.*, stations.station_name AS 'station_name',material.material_type,material.id as 'material_id' FROM material_processes
+            //             INNER JOIN devices
+            //             ON devices.id = material_processes.device_id
+            //             INNER JOIN material_process_materials material
+            //             ON material.mat_proc_id = material_processes.id
+            //             WHERE devices.name = '$request->device_name' AND material_processes.status = 0
+            //             ORDER BY material.id ASC
+            // ");
+
             $get_first_molding_device =  FirstMoldingDevice::where('id',$request->first_molding_device_id)->get(['contact_name']);
             $stamping_prod = FirstStampingProduction::where('prod_lot_no',$request->contact_lot_num)->whereNull('deleted_at')->get(['status','material_name']);
             $current_status = $stamping_prod[0]->status;
-
+        //CT 6010-R-VE CT6010-R-VE
             if( count($get_first_molding_device) == 0 ){
                 return response()->json([
                     "result" => 0,
@@ -618,20 +616,37 @@ class FirstMoldingController extends Controller
         date_default_timezone_set('Asia/Manila');
         try {
             // 3918K56 Lot_number 3707K30
-            // return $request->first_molding_material_lot_no;
-            $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
-            ->select('
-                SELECT  whs_transaction.Lot_number
-                FROM tbl_WarehouseTransaction whs_transaction
-                INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
-                WHERE whs_transaction.Lot_number = "'.$request->first_molding_material_lot_no.'"
-                ORDER BY whs.PartNumber DESC
-            ');
-            return response()->json(['is_success' => 'true', 'is_exist_lot_no' => count($tbl_whs_trasanction)]);
+            // return $request->first_molding_material_lot_no; D240301-01-1
+            // contact_name
+            if($request->first_molding_material_lot_no != ""){
+                $tbl_whs_trasanction = DB::connection('mysql_rapid_pps')
+                ->select(' SELECT whs_transaction.Lot_number AS lot_num,whs.MaterialType AS whs_transaction_material_type, whs_transaction.In AS whs_transaction_qty, whs_transaction.pkid AS warehouse_transaction_id
+                    FROM tbl_WarehouseTransaction whs_transaction
+                    INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
+                    WHERE whs_transaction.Lot_number = "'.$request->first_molding_material_lot_no.'"
+                    ORDER BY whs.PartNumber DESC
+                ');
+                $first_molding_device = FirstMoldingDevice::whereNull('deleted_at')->where('process_type',1)->where('contact_name',$tbl_whs_trasanction[0]->whs_transaction_material_type)->count();
+
+                return response()->json([
+                    'is_success' => 'true',
+                    'tbl_whs_trasanction' => $tbl_whs_trasanction,
+                    'is_exist_lot_no' => count($tbl_whs_trasanction) >= 1 ? 'true' : 'false',
+                    'is_valid_first_molding_device' => $first_molding_device == 1 ? 'true' : 'false', //WHS Material Type === FistMolding Device
+                ]);
+            }else{
+                return response()->json(['is_success' => 'false', 'exceptionError' => 'Invalid Qr Code']);
+            }
+
         } catch (\Exception $e) {
             return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
         }
     }
 
+/*
+"SELECT `active`.*,`docs`.`pkid` AS `doc_pkid`,`docs`.`fk_csaf` as `csaf_pkid`,`docs`.`file_type`,`docs`.`doc_status`,`set_docs`.`control_number`,`set_docs`.`checksheet_type`,`set_docs`.`final_signatory_status`,`docs`.`section`,`docs`.`dcs_remarks`,`docs`.`ta_remarks`,`docs`.`csaf_remarks`,`docs`.`fs_remarks`,`docs`.`dcc_approver_remarks`,`docs`.`checksheet_remarks`,`docs`.`translator_remarks`,val.pkid AS val_pkid,`active`.`page_no`,`masterlist`.`is_expiration_date_exist`,`disposition`.`dcc_email`FROM `tbl_active_docs` active LEFT JOIN tbl_documents docs ON docs.pkid = active.fkid_document LEFT JOIN tbl_set_documents set_docs ON set_docs.pkid = docs.fk_control_number LEFT JOIN tbl_dcc_validations val ON val.fkid = docs.pkid WHERE active.view_status = 1 AND active.`logdel`=0 AND docs.doc_status =1 AND active.`originator_code`='PCO-PEZA' ORDER BY `active`.`doc_no` DESC LIMIT 0,100;"
 
+"SELECT `active`.*,`docs`.`pkid` AS `doc_pkid`,`docs`.`fk_csaf` as `csaf_pkid`,`docs`.`file_type`,`docs`.`doc_status`,`set_docs`.`control_number`,`set_docs`.`checksheet_type`,`set_docs`.`final_signatory_status`,`docs`.`section`,`docs`.`dcs_remarks`,`docs`.`ta_remarks`,`docs`.`csaf_remarks`,`docs`.`fs_remarks`,`docs`.`dcc_approver_remarks`,`docs`.`checksheet_remarks`,`docs`.`translator_remarks`,val.pkid AS val_pkid,`active`.`page_no`,`masterlist`.`is_expiration_date_exist`,`disposition`.`dcc_email`FROM `tbl_active_docs` active LEFT JOIN tbl_documents docs ON docs.pkid = active.fkid_document LEFT JOIN tbl_set_documents set_docs ON set_docs.pkid = docs.fk_control_number LEFT JOIN tbl_dcc_validations val ON val.fkid = docs.pkid LEFT JOIN tbl_doc_review_masterlist masterlist ON masterlist.fkid_document = docs.pkid LEFT JOIN tbl_doc_review_disposition disposition ON disposition.tbl_doc_review_masterlist_id = masterlist.id WHERE active.view_status = 1 AND active.`logdel`=0 AND docs.doc_status =1 AND active.`originator_code`='PCO-PEZA' ORDER BY `active`.`doc_no` DESC LIMIT 0,100;"
+
+*/
 }

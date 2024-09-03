@@ -24,6 +24,7 @@ class AssemblyOqcLotAppController extends Controller
         $fvi_inspections = AssemblyFvi::with(['oqc_lot_app.user','fvi_runcards.assy_runcard_station_details'])
                                         ->where('po_no', $request->po_no)
                                         // ->whereIn('status', [3,4])
+                                        ->whereNull('deleted_at')
                                         ->get();
         // return $fvi_inspections;
 
@@ -504,7 +505,7 @@ class AssemblyOqcLotAppController extends Controller
 
         // return $fvi_to_lotapp_details;
 
-        $prd_runcards = AssemblyFvi::where('po_no', $fvi_to_lotapp_details->po_no)->orderBy('id')->get();
+        $prd_runcards = AssemblyFvi::where('po_no', $fvi_to_lotapp_details->po_no)->orderBy('id')->whereNull('deleted_at')->get();
         $prd_runcards_counter = [];
         for ($i=0; $i < count($prd_runcards); $i++)
             $prd_runcards_counter[ $prd_runcards[$i]->id ] = ($i+1);

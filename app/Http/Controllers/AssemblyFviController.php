@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\AssemblyFvisRuncard;
 use Illuminate\Support\Facades\Validator;
 use App\Models\AssemblyRuncardStationsMods;
+use App\Models\AcdcsActiveDocs;
 
 class AssemblyFviController extends Controller
 {
@@ -112,11 +113,26 @@ class AssemblyFviController extends Controller
     }
 
     public function get_fvi_doc(Request $request){
+
+        /* 07272024*/
+         $device_name_print = 'not found';
+        if(isset($request->device_name)){
+            $device_name_print = $request->device_name;
+            if( strpos( $device_name_print, "PREQ" ) !== false) {
+                $temp = explode('-', $device_name_print);
+                unset($temp[count($temp) - 1]);
+                unset($temp[count($temp) - 1]);
+                $device_name_print = implode('-', $temp);
+                $device_name_print = trim($device_name_print);
+                //  return $device_name_print;
+            }
+        }
+
         $document = DB::connection('mysql_rapid_acdcs')
         ->table('tbl_active_docs')
-        ->where('doc_title', 'LIKE', "%$request->device_name%")
+        // ->where('doc_title', 'LIKE', "%$request->device_name%")
+        ->where('doc_title', 'LIKE', "%$device_name_print%")
         ->where('originator_code',"CN")
-        ->select('*')
         ->get();
 
         $a_drawing = $document->filter(
@@ -125,7 +141,7 @@ class AssemblyFviController extends Controller
             })
         ->flatten(1);
 
-        $g_drawing = $document->filter(
+           $g_drawing = $document->filter(
             function($item){
                 return ($item->doc_type == 'G Drawing');
             })
@@ -184,7 +200,7 @@ class AssemblyFviController extends Controller
 
                 $get_bundle_lot = DB::connection('mysql')
                 ->table('assembly_fvis')
-                ->where('created_at', 'LIKE', "2024-02-23%")
+                // ->where('created_at', 'LIKE', "2024-02-23%")
                 ->whereNull('deleted_at')
                 ->get()
                 ->count('id');
@@ -215,7 +231,14 @@ class AssemblyFviController extends Controller
                 $day = $dt->day;
                 $bundle_lot_no = $substr_year.$month.str_pad($day, 2, '0', STR_PAD_LEFT)."-".str_pad($bundle_ext, 3, '0', STR_PAD_LEFT);
 
-                $fvi_lot_no = substr($request->txt_po_number, 5, -5) ." LOT-".str_pad($lot_ext, 3, '0', STR_PAD_LEFT);
+                // $fvi_lot_no = substr($request->txt_po_number, 5, -5) ." LOT-".str_pad($lot_ext, 3, '0', STR_PAD_LEFT);
+                if($lot_ext > 999){
+                    $fvi_lot_no = "L".str_pad($lot_ext, 4, '0', STR_PAD_LEFT);
+                }
+                else{
+
+                    $fvi_lot_no = "L".str_pad($lot_ext, 3, '0', STR_PAD_LEFT);
+                }
 
                 // $fvi_details_array = array(
                 //     'po_no'         => $request->txt_po_number,

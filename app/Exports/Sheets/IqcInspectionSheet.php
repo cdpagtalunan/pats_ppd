@@ -304,8 +304,8 @@ class IqcInspectionSheet implements FromView, ShouldAutoSize, WithEvents, WithTi
                     $result = 'Accept';
                 }
 
-                $event->sheet->setCellValue('N3',$accept_sum += $search_material_name[$i]->accept);
-                $event->sheet->setCellValue('N4',$reject_sum += $search_material_name[$i]->reject);
+                $event->sheet->setCellValue('N3', 0);
+                $event->sheet->setCellValue('N4', 1);
 
                 $event->sheet->setCellValue('N'.$start_column,$result);
                 $event->sheet->setCellValue('O'.$start_column,$search_material_name[$i]->user_iqc->firstname.' '.$search_material_name[$i]->user_iqc->lastname);

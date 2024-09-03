@@ -5,7 +5,7 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         // Remove invalid & title validation
         $('div').find('input').removeClass('is-invalid');
         $('div').find('input').attr('title', '');
-        
+
         $('#tableSecondMoldingStationMOD tbody').html(''); // Clear Mode of Defect table
         $('#textStation').prop('disabled', false);
         $('#textDate').prop('disabled', false);
@@ -26,7 +26,7 @@ const resetFormValuesOnModalClose = (modalId, formId) => {
         $('body').find($('#divLotNumberEightRow')).attr('row-count', rowCounter)
         $('#divLotNumberEightRow').attr('camera-inspection-count', 0);
         // $('#buttonAddLotNumber').prop('disabled', false);
-        
+
         // Reset form values
         $(`#${formId}`)[0].reset();
         console.log(`modalId ${modalId}`);
@@ -85,7 +85,7 @@ const getPOReceivedByPONumber = (poNumber) => {
                 let poQuantityPercentage = parseFloat(poQuantity * usage * 0.05);
                 let requiredOutput = (poQuantity * usage) + poQuantityPercentage;
                 $('#textRequiredOutput').val(requiredOutput.toFixed(2));
-                
+
                 /**
                  * Computation of Target Output with Usage allowance
                  */
@@ -105,7 +105,7 @@ const getPOReceivedByPONumber = (poNumber) => {
 }
 
 /**
- * 
+ *
  * Original Code
  * Commented as of 04-11-2024
  */
@@ -136,14 +136,14 @@ const checkMaterialLotNumber = (qrScannerValue) => {
     console.log('splittedQrScannerValue ', splittedQrScannerValue);
     console.log('splittedQrScannerValue ', splittedQrScannerValue[0]);
     console.log('splittedQrScannerValue ', splittedQrScannerValue[3]);
-    
-    
+
+
     $('#textMaterialLotNumber').val('');
     $('#textMaterialName').val('');
     $('#textMaterialLotNumber').val(splittedQrScannerValue[0]);
     $('#textMaterialName').val(splittedQrScannerValue[3]);
     $('#modalQrScanner').modal('hide');
-            
+
 }
 
 const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue, scannerRow = null) => {
@@ -172,7 +172,7 @@ const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue, scann
         textLotNumberIdValue = 'textLotNumberTenFirstMoldingId';
         firstMoldingDeviceId = 3;
     }
-    
+
     $.ajax({
         type: "get",
         url: "check_material_lot_number_of_first_molding",
@@ -214,7 +214,7 @@ const checkProductionLotNumberOfFirstMolding = (qrScannerValue, formValue, scann
                         $(`#${textLotNumberValue}`).val(data[0].production_lot);
                         $(`#${textLotNumberIdValue}`).val(data[0].first_molding_id);
                     }
-                    
+
                     $('#modalQrScanner').modal('hide');
                 }else{
                     toastr.error('Incorrect material lot number.')
@@ -237,7 +237,7 @@ const getMaterialProcessStation = () => {
         },
         dataType: "json",
         success: function (response) {
-            
+
             if(response['data'].length > 0){
                 for (let i = 0; i < response['data'].length; i++) {
                     result += `<option value="${response['data'][i].station_id}" step="${response['data'][i].step}">${response['data'][i].station_name}</option>`;
@@ -367,13 +367,18 @@ const getDiesetDetailsByDeviceNameSecondMolding = (deviceName) => {
         },
         dataType: "json",
         success: function (response) {
+            if(response['is_success'] == "false"){
+                $('#modalSecondMolding').modal('hide');
+                alert('Invalid device name. Please check the RAPID/DMCMS');
+                return;
+            }
             let dateNow = new Date();
             let twoDigitYear = dateNow.getFullYear().toString().substr(-2);
             // console.log(`twoDigitYear ${twoDigitYear}`);
-            
+
             let twoDigitMonth = (dateNow.getMonth() + 1).toString().padStart(2, "0");
             // console.log(`twoDigitMonth ${twoDigitMonth}`);
-            
+
             let twoDigitDay = String(dateNow.getDate()).padStart(2, '0');
             // console.log(`twoDigitDay ${twoDigitDay}`);
 
@@ -398,7 +403,7 @@ function getSublotQty(subLotId){
 			}else{
                 toastr.warning('warning messages');
             }
-			
+
         }
     });
 }

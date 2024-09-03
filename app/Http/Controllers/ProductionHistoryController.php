@@ -141,35 +141,26 @@ class ProductionHistoryController extends Controller
 
         date_default_timezone_set('Asia/Manila');
 
-        if($request->prodn_history_id != ""){
-            $validation = array(
-                'shots' => ['required'],
-                'prodn_etime' => ['required'],
-                'qc_id' => ['required'],
-                // 'material_name' => ['required'],
-                // 'material_lot' => ['required'],
-            );
-        }
-        else{
-            $validation = array(
-                'global_device_name_id' => ['required'],
-                'prodn_date' => ['required'],
-                'prodn_stime' => ['required'],
-                'shift' => ['required'],
-                // 'machine_no' => ['required'],
-                'standard_para_date' => ['required'],
-                'act_cycle_time' => ['required'],
-                'shot_weight' => ['required'],
-                'product_weight' => ['required'],
-                'screw_most_fwd' => ['required'],
-                'ccd_setting_s1' => ['required'],
-                'ccd_setting_s2' => ['required'],
-                'ccd_setting_ng' => ['required'],
-                'remarks' => ['required'],
-                'opt_id' => ['required'],
-
-            );
-        }
+        $validation = array(
+            'global_device_name_id' => ['required'],
+            'prodn_date' => ['required'],
+            'prodn_stime' => ['required'],
+            'shift' => ['required'],
+            'machine_no' => ['required'],
+            'standard_para_date' => ['required'],
+            'act_cycle_time' => ['required'],
+            'shot_weight' => ['required'],
+            'product_weight' => ['required'],
+            'screw_most_fwd' => ['required'],
+            'ccd_setting_s1' => ['required'],
+            'ccd_setting_s2' => ['required'],
+            'ccd_setting_ng' => ['required'],
+            'remarks' => ['required'],
+            'opt_id' => ['required'],
+            'shots' => ['required'],
+            'prodn_etime' => ['required'],
+            'qc_id' => ['required'],
+        );
 
         $data = $request->all();
         $validator = Validator::make($data, $validation);
@@ -178,7 +169,6 @@ class ProductionHistoryController extends Controller
         }
         else{
             DB::beginTransaction();
-
             try{
                 // $operator = implode($request->opt_name, ', ');
                 // return $request->all();
@@ -201,6 +191,9 @@ class ProductionHistoryController extends Controller
                     'changes_para' => $request->changes_para,
                     'remarks' => $request->remarks,
                     'opt_id' => $request->opt_id,
+                    'shots' => $request->shots,
+                    'prodn_etime' => $request->prodn_etime,
+                    'qc_id' => $request->qc_id,
 
                 );
 
@@ -214,14 +207,16 @@ class ProductionHistoryController extends Controller
 
                 );
                 if(isset($request->prodn_history_id)){ // EDIT
+                    return 'EDIT';
+
                     if($request->pm_cat == 1){
                         /*
                             * pmaterial_code, pmaterial_name only
                             * pmat_lot_no only
-                        */ 
+                        */
                         $pm_code = $request->pmaterial_code;
                         $pm_name = $request->pmaterial_name;
-                        for ($i=0; $i < count($request->pmat_lot_no); $i++) { 
+                        for ($i=0; $i < count($request->pmat_lot_no); $i++) {
                             ProductionHistoryPartsMat::insert([
                                 'prod_history_id' => $request->prodn_history_id,
                                 'pm_group'        => 1,
@@ -235,7 +230,7 @@ class ProductionHistoryController extends Controller
 
                     }
                     else if($request->pm_cat == 2){
-                        for ($i=0; $i < 3; $i++) { 
+                        for ($i=0; $i < 3; $i++) {
                             $pm_code = $request["pmaterial_code2_$i"];
                             $pm_name = $request["pmaterial_name2_$i"];
                             $counter = 0;
@@ -255,7 +250,7 @@ class ProductionHistoryController extends Controller
                     }
                     else if($request->pm_cat == 3){
                         // return $request->all();
-                        for ($i=0; $i < 4; $i++) { 
+                        for ($i=0; $i < 4; $i++) {
                             $pm_code = $request["pmaterial_code3_$i"];
                             $pm_name = $request["pmaterial_name3_$i"];
                             $counter = 0;
@@ -274,17 +269,14 @@ class ProductionHistoryController extends Controller
                             }
                         }
                     }
-
-
                     ProductionHistory::where('id', $request->prodn_history_id)
                     ->update($edit_process_array);
                 }
                 else{ // ADD
+                    // return $add_process_array;
                     ProductionHistory::insert($add_process_array);
                 }
-
                 DB::commit();
-
                 return response()->json(['result' => 1, 'msg' => 'Transaction Succesful']);
             }
             catch(Exemption $e){
@@ -312,7 +304,7 @@ class ProductionHistoryController extends Controller
     public function get_prodn_history_by_id(Request $request){
         $prod_history =  ProductionHistory::with([
             'operator_info',
-            'qc_info', 
+            'qc_info',
         ])->where('id', $request->id)->first();
 
         $prod_history_part_mat = ProductionHistoryPartsMat::where('prod_history_id', $prod_history->id)

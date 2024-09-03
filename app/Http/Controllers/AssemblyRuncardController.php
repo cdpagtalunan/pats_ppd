@@ -25,6 +25,7 @@ class AssemblyRuncardController extends Controller
     public function get_data_from_matrix(Request $request){
         $material_name = [];
         $matrix_data = Device::with(['material_process.material_details', 'material_process.station_details.stations'])->where('name', $request->device_name)->where('status', 1)->get();
+
         foreach($matrix_data[0]->material_process[0]->material_details as $material_details){
             $material_name[] = $material_details->material_type;
         }
@@ -320,10 +321,10 @@ class AssemblyRuncardController extends Controller
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
 
-        if($request->device_name == 'CN171P-007-1002-VE(01)'){
-            $validate_array = ['po_number' => 'required', 'p_zero_two_prod_lot' => 'required'];
+        if($request->device_name == 'CN171P-007-1002-VE(01)' || $request->device_name == 'CN171P-007-1002-VE(01)PREQ'){
+            $validate_array = ['runcard_no' => 'required', 'po_number' => 'required', 'p_zero_two_prod_lot' => 'required'];
         }else{
-            $validate_array = ['po_number' => 'required', 's_zero_seven_prod_lot' => 'required', 's_zero_two_prod_lot' => 'required'];
+            $validate_array = ['runcard_no' => 'required', 'po_number' => 'required', 's_zero_seven_prod_lot' => 'required', 's_zero_two_prod_lot' => 'required'];
         }
 
         $validator = Validator::make($data, $validate_array);
@@ -392,19 +393,32 @@ class AssemblyRuncardController extends Controller
 
         // return $data;
         $validator = Validator::make($data, [
-            'runcard_station' => 'required'
+            'runcard_station' => 'required',
+            'input_qty' => 'required',
+            'ng_qty' => 'required'
         ]);
 
-        // if($request->runcard_station == 4){ //Lubricant Coating
-        //     $validate_array = ['runcard_station' => 'required', 'p_zero_two_prod_lot' => 'required'];
-        // }else if($request->runcard_station == 5){//Lot Marking
-        //     $validate_array = ['runcard_station' => 'required', 's_zero_seven_prod_lot' => 'required', 's_zero_two_prod_lot' => 'required'];
-        // }else if($request->runcard_station == 6){//Visual Inspection
-        //     $validate_array = ['runcard_station' => 'required', ];
-        // }
+        // station_assy_runcard_id
 
-        // $validator = Validator::make($data, $validate_array);
+        $device_name = AssemblyRuncard::select('device_name')->where('id', $request->station_assy_runcard_id)->first();
 
+        if($request->step == 1){
+            $validate_array = ['runcard_station' => 'required', 'input_qty' => 'required', 'ng_qty' => 'required'];
+        }else if($request->step == 2 && ($device_name->device_name == 'CN171P-007-1002-VE(01)' || $device_name->device_name == 'CN171P-007-1002-VE(01)PREQ')){//Visual Inspection
+            $validate_array = ['runcard_station' => 'required','input_qty' => 'required','ng_qty' => 'required','doc_no_r_drawing' => 'required','doc_no_a_drawing' => 'required', 'doc_no_g_drawing' => 'required'];
+        }else if($request->step == 2 && $device_name->device_name == 'CN171S-007-1002-VE(01)'){
+            $validate_array = ['runcard_station' => 'required', 'input_qty' => 'required', 'ng_qty' => 'required'];
+        }else if($request->step == 3 && $device_name->device_name == 'CN171S-007-1002-VE(01)'){//Visual Inspection
+            $validate_array = ['runcard_station' => 'required',
+                                'input_qty' => 'required',
+                                'ng_qty' => 'required',
+                                'doc_no_r_drawing' => 'required',
+                                'doc_no_a_drawing' => 'required',
+                                'doc_no_g_drawing' => 'required'];
+        }
+
+        $validator = Validator::make($data, $validate_array);
+        // return $validate_array;
         if ($validator->fails()) {
             return response()->json(['validation' => 'hasError', 'error' => $validator->messages()]);
         }else {
@@ -426,7 +440,7 @@ class AssemblyRuncardController extends Controller
                                             'ng_quantity'           => $request->ng_qty,
                                             'output_quantity'       => $request->output_qty,
                                             'station_yield'         => $request->station_yield,
-                                            'mode_of_defect'         => $request->mode_of_defect,
+                                            'mode_of_defect'        => $request->mode_of_defect,
                                             'defect_qty'            => $request->defect_quantity,
                                             'ml_per_shot'           => $request->ml_per_shot,
                                             'total_lubricant_usage' => $request->total_lubricant_usage,

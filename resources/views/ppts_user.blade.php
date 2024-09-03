@@ -26,13 +26,13 @@
 		<div class="container-fluid">
 			<div class="row mb-2">
 				<div class="col-sm-6">
-					<h1>OQC Inspection</h1>
+					<h1>PPTS User</h1>
 				</div>
 				<div class="col-sm-6">
 					<ol class="breadcrumb float-sm-right">
 						<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a>
 						</li>
-						<li class="breadcrumb-item active">OQC Inspection</li>
+						<li class="breadcrumb-item active">PPTS User</li>
 					</ol>
 				</div>
 			</div>
@@ -54,9 +54,7 @@
 						--}}
 						<iframe  src="http://rapidx/cn_ppts/iframe_request?username={{ Auth::user()->username }}
 							&emp_id={{ Auth::user()->employee_id }}
-							&iframe=oqc
-							&system_table=assembly_oqc_lot_apps
-							&system_db=db_pats_ppd" style="border: none;" no-border height="850" width="100%">></iframe>
+							&iframe=user" style="border: none;" no-border height="850" width="100%">></iframe>
  					</div>
 				</div>
 			</div>

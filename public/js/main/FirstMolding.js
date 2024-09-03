@@ -731,94 +731,123 @@
         });
     }
 
-    const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){
-
-        if(firstMoldingDeviceId === "6"){ //CN171S-02#MO-VE from Rapid PPD DB
-            let firstMoldingMaterialLotNo = scanFirstMoldingContactLotNo.split("|");
-            $.ajax({
-                type: "GET",
-                url: "validate_material_lot_no",
-                data: {
-                    "first_molding_material_lot_no": firstMoldingMaterialLotNo[0]
-                },
-                dataType: "json",
-                success: function(response) {
-                    let is_exist_lot_no = (response['is_exist_lot_no'] > 0) ? 'true' : 'false';
-                    if (is_exist_lot_no === 'true') {
-                        formModal.firstMolding.find('#contact_lot_number').val(firstMoldingMaterialLotNo[0]);
-                        formModal.firstMolding.find('#contact_lot_qty').val(firstMoldingMaterialLotNo[1]);
-                        $('#mdlScanQrCodeFirstMolding').modal('hide');
-                    } else {
-                        toastr.error(
-                            `Error: Invalid Material Lot Number,Please check to Rapid Issuance Module`
-                        );
-                        formModal.firstMolding.find('#contact_lot_number').val('');
-                        formModal.firstMolding.find('#contact_lot_qty').val('');
-                    }
-
-                },
-                error: function(data, xhr, status) {
-                    toastr.error(`Error: ${data.status}`);
+    const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){ //Sticker From WHS
+        let firstMoldingMaterialLotNo = scanFirstMoldingContactLotNo.split("|");
+        $.ajax({
+            type: "GET",
+            url: "validate_material_lot_no",
+            data: {
+                "first_molding_material_lot_no": firstMoldingMaterialLotNo[0],
+                "first_molding_device_id": firstMoldingDeviceId
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.is_valid_first_molding_device === 'true') {
+                    formModal.firstMolding.find('#contact_lot_number').val(response.tbl_whs_trasanction[0].lot_num);
+                    formModal.firstMolding.find('#contact_lot_qty').val(response.tbl_whs_trasanction[0].whs_transaction_qty);
+                    $('#mdlScanQrCodeFirstMolding').modal('hide');
+                }
+                if (response.is_valid_first_molding_device === 'false'){
+                    toastr.error(`Error: Invalid Material Lot Number,Matrix Material Name & Sticker Material Name is not match ! Please the matrix !`);
                     formModal.firstMolding.find('#contact_lot_number').val('');
                     formModal.firstMolding.find('#contact_lot_qty').val('');
                 }
-            });
-            $('#txtScanQrCodeFirstMolding').val('');
-
-        }else{ //From 2nd Stamping
-            // TODO: Validate Contact Lot Num
-            let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
-            let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
-            // console.log('parse',JSON.parse(scanFirstMoldingContactLotNo));
-
-            // formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
-            // formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
-            // $('#txtScanQrCodeFirstMolding').val('');
-            // $('#mdlScanQrCodeFirstMolding').modal('hide');
-            // return;
-            $.ajax({
-                type: "GET",
-                url: "validate_scan_first_molding_contact_lot_num", //nmodify
-                data: {"contact_lot_num" :contactLotNo ,"first_molding_device_id": firstMoldingDeviceId},
-                dataType: "json",
-                success: function (response) {
-                    console.log(response);
-                    if(response.result == 1){
-                        formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
-                        formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
-                        toastr.success('Scanned Successfully !')
-                    }else{
-                        Swal.fire({
-                            position: "center",
-                            icon: "warning",
-                            title: `${contactLotNo}: This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
-                            showConfirmButton: false,
-                            timer: 3000
-                        });
-                        formModal.firstMolding.find('#contact_lot_number').val('');
-                        formModal.firstMolding.find('#contact_lot_qty').val('');
-                    }
-                    $('#txtScanQrCodeFirstMolding').val('');
-                    $('#mdlScanQrCodeFirstMolding').modal('hide');
-                },error: function (data, xhr, status){
-                    let errors = data.responseJSON.errors ;
-                    Swal.fire({
-                        position: "center",
-                        icon: "error",
-                        title: `${contactLotNo}: Invalid Prodn Lot Number. Please Check to 2nd Stamping Module ! !`,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
+                if (response.is_exist_lot_no === 'false'){
+                    toastr.error(`Error: Material Lot Number Not Exist, Please check to Rapid Issuance Module`);
                     formModal.firstMolding.find('#contact_lot_number').val('');
                     formModal.firstMolding.find('#contact_lot_qty').val('');
-                    $('#txtScanQrCodeFirstMolding').val('');
-                    $('#mdlScanQrCodeFirstMolding').modal('hide');
-
                 }
-            });
-        }
-
+            },
+            error: function(data, xhr, status) {
+                toastr.error(`Error: ${data.status}`);
+                formModal.firstMolding.find('#contact_lot_number').val('');
+                formModal.firstMolding.find('#contact_lot_qty').val('');
+            }
+        });
+        $('#txtScanQrCodeFirstMolding').val('');
     }
+
+    // const validateScanFirstMoldingContactLotNum = function (scanFirstMoldingContactLotNo,firstMoldingDeviceId){
+
+    //     if(firstMoldingDeviceId === "6"){ //CN171S-02#MO-VE from Rapid PPD DB
+    //         let firstMoldingMaterialLotNo = scanFirstMoldingContactLotNo.split("|");
+    //         $.ajax({
+    //             type: "GET",
+    //             url: "validate_material_lot_no",
+    //             data: {
+    //                 "first_molding_material_lot_no": firstMoldingMaterialLotNo[0]
+    //             },
+    //             dataType: "json",
+    //             success: function(response) {
+    //                 let is_exist_lot_no = (response['is_exist_lot_no'] > 0) ? 'true' : 'false';
+    //                 if (is_exist_lot_no === 'true') {
+    //                     formModal.firstMolding.find('#contact_lot_number').val(firstMoldingMaterialLotNo[0]);
+    //                     formModal.firstMolding.find('#contact_lot_qty').val(firstMoldingMaterialLotNo[1]);
+    //                     $('#mdlScanQrCodeFirstMolding').modal('hide');
+    //                 } else {
+    //                     toastr.error(
+    //                         `Error: Invalid Material Lot Number,Please check to Rapid Issuance Module`
+    //                     );
+    //                     formModal.firstMolding.find('#contact_lot_number').val('');
+    //                     formModal.firstMolding.find('#contact_lot_qty').val('');
+    //                 }
+
+    //             },
+    //             error: function(data, xhr, status) {
+    //                 toastr.error(`Error: ${data.status}`);
+    //                 formModal.firstMolding.find('#contact_lot_number').val('');
+    //                 formModal.firstMolding.find('#contact_lot_qty').val('');
+    //             }
+    //         });
+    //         $('#txtScanQrCodeFirstMolding').val('');
+
+    //     }else{ //From 2nd Stamping
+    //         // TODO: Validate Contact Lot Num
+    //         let contactLotNo = JSON.parse(scanFirstMoldingContactLotNo).production_lot_no;
+    //         let outputQty = JSON.parse(scanFirstMoldingContactLotNo).output_qty;
+    //         $.ajax({
+    //             type: "GET",
+    //             url: "validate_scan_first_molding_contact_lot_num", //nmodify
+    //             data: {"contact_lot_num" :contactLotNo ,"first_molding_device_id": firstMoldingDeviceId},
+    //             dataType: "json",
+    //             success: function (response) {
+    //                 console.log(response);
+    //                 if(response.result == 1){
+    //                     formModal.firstMolding.find('#contact_lot_number').val(contactLotNo);
+    //                     formModal.firstMolding.find('#contact_lot_qty').val(outputQty);
+    //                     toastr.success('Scanned Successfully !')
+    //                 }else{
+    //                     Swal.fire({
+    //                         position: "center",
+    //                         icon: "warning",
+    //                         title: `${contactLotNo}: This Prodn Lot is not yet DONE. Please Check to 2nd Stamping Module !`,
+    //                         showConfirmButton: false,
+    //                         timer: 3000
+    //                     });
+    //                     formModal.firstMolding.find('#contact_lot_number').val('');
+    //                     formModal.firstMolding.find('#contact_lot_qty').val('');
+    //                 }
+    //                 $('#txtScanQrCodeFirstMolding').val('');
+    //                 $('#mdlScanQrCodeFirstMolding').modal('hide');
+    //             },error: function (data, xhr, status){
+    //                 let errors = data.responseJSON.errors ;
+    //                 Swal.fire({
+    //                     position: "center",
+    //                     icon: "error",
+    //                     title: `${contactLotNo}: Invalid Prodn Lot Number. Please Check to 2nd Stamping Module ! !`,
+    //                     showConfirmButton: false,
+    //                     timer: 3000
+    //                 });
+    //                 formModal.firstMolding.find('#contact_lot_number').val('');
+    //                 formModal.firstMolding.find('#contact_lot_qty').val('');
+    //                 $('#txtScanQrCodeFirstMolding').val('');
+    //                 $('#mdlScanQrCodeFirstMolding').modal('hide');
+
+    //             }
+    //         });
+    //     }
+
+    // }
 
     const firstMoldingUpdateStatus = function (){
         $.ajax({
@@ -873,4 +902,30 @@
                 }
             }
         });
+    }
+
+    const validateMaterialLotNo = function(firstMoldingMaterialLotNo) {
+        $.ajax({
+            type: "GET",
+            url: "validate_material_lot_no",
+            data: {
+                "first_molding_material_lot_no": firstMoldingMaterialLotNo
+            },
+            dataType: "json",
+            success: function(response) {
+                if (response.is_exist_lot_no === 'true') {
+                    toastr.success(`Scan Successfully`);
+                    $('#virgin_material').val(firstMoldingMaterialLotNo);
+                    $('#modalMaterialLotNum').modal('hide');
+                } else {
+                    toastr.error(
+                        `Error: Invalid Material Lot Number,Please check to Rapid Issuance Module`
+                    );
+                }
+            },
+            error: function(data, xhr, status) {
+                toastr.error(`Error: ${data.status}`);
+            }
+        });
+        $('#txtLotNum').val('');
     }

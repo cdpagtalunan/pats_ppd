@@ -265,8 +265,8 @@
                                                 </div>
                                                 {{-- <input type="text" class="form-control" id="txtADrawingNo"
                                                     name="txt_Adrawing_no" readonly=""> --}}
-                                                    <select class="form-control" name="a_drawing" id="selADrawing">
-                                                        
+                                                    <select class="form-control" name="a_drawing" id="selADrawing" style="pointer-events: none;">
+
                                                     </select>
                                                 <input type="text" value="N/A" class="form-control form-control-sm"
                                                     id="txtARevNo" name="a_revision" readonly>
@@ -286,7 +286,7 @@
                                                 </div>
                                                 {{-- <input type="text" class="form-control" id="txtGDrawingNo"
                                                     name="txt_Gdrawing_no" readonly=""> --}}
-                                                    <select class="form-control" name="g_drawing" id="selGDrawing">
+                                                    <select class="form-control" name="g_drawing" id="selGDrawing" style="pointer-events: none;">
 
                                                     </select>
                                                 <input type="text" value="N/A" class="form-control form-control-sm"
@@ -593,7 +593,7 @@
 
         getAssemblyLine();
 
-        
+
 
         dtVisualInspection = $("#tblVisualInspection").DataTable({
             "processing": true,
@@ -671,7 +671,7 @@
                     console.log('totalNGQty', totalNGQty);
                     console.log('totalOutput', totalOutput);
 
-                  
+
                 }
                 $(dtApi.column(3).footer()).html(`${totalInput}`)
                 $(dtApi.column(4).footer()).html(`${totalOutput}`)
@@ -696,7 +696,7 @@
 			],
 		});
 
-        
+
 
         $('#btnAddFVI').on('click', function(){
             if(
@@ -716,7 +716,7 @@
             getDocumentRequirement($('#txtDeviceName').val());
             // getAssemblyLine();
             $('#modalFVI').modal('show');
-            
+
         });
 
         $('#btnAddFVIRuncard').on('click', function(e){
@@ -834,7 +834,7 @@
             $('#txtRuncardStationId').val('')
             runcardModList = [];
 			dtRuncardStationMod.clear().draw();
-            
+
         });
 
         $('#btnSubmitToLotApp').on('click', function(e){
@@ -864,7 +864,7 @@
                 } catch (e) {
                     toastr.error('Invalid Sticker');
                 }
-            } 
+            }
             else if (modalVal == "scanRuncard") {
                 try {
                     scannedItem = JSON.parse($('#txtScannedItem').val());
@@ -897,7 +897,7 @@
 
             }
             else{
-                validateUser($('#txtScanUserId').val().toUpperCase(), [0,2,5], function(result){
+                validateUser($('#txtScanUserId').val().toUpperCase(), [0,2,4,5], function(result){
                     if(result == true){
                         $('#modalScanQRSave').modal('hide');
                         SubmitToLotApp($('#txtScanUserId').val().toUpperCase());
@@ -909,14 +909,14 @@
                 });
 
             }
-           
+
             setTimeout(() => {
                 $('#txtScanUserId').val('');
             }, 500);
         }
     });
 
-    
+
 </script>
 @if (in_array(Auth::user()->position, [0,2]) || in_array(Auth::user()->user_level_id, [1,2]))
 <script>

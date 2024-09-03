@@ -503,7 +503,7 @@
                 
                 $('#formMachineNumber').submit(function (e) {
                     e.preventDefault();
-                        
+                    let data = $(this).serialize();
                     console.log(`data ${data}`);
 
                     $.ajax({

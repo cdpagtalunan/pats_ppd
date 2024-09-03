@@ -184,6 +184,7 @@ class MoldingAssyIpqcController extends Controller
             $result = SecMoldingRuncard::with(['device_id' => function($query) use ($request) { $query->where('name', $request->device_name); }])
                                                     ->where('device_name', $request->device_name)
                                                     ->where('production_lot', $request->production_lot)
+                                                    ->where('machine_number', $request->machine_no) //CLARK Added Code 08202024
                                                     ->whereNull('deleted_at')
                                                     ->get();
 

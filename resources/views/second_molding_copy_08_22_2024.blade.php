@@ -304,35 +304,6 @@
                                                         <button class="btn btn-info" type="button" title="Scan code" id="buttonQrScanMELotNumberSecond" form-value="formMELotNumberSecond"><i class="fa fa-qrcode"></i></button>
                                                     </div>
                                                 </div>
-                                                <div id="divMaterialDryingForm" class="d-none">
-                                                    <div class="row">
-                                                        <div class="col">Material Drying Form</div>
-                                                    </div>
-                                                    <div class="input-group input-group-sm mb-3">
-                                                        <span class="input-group-text w-50" id="basic-addon1">Part Name</span>
-                                                        <input type="text" class="form-control" id="textPartName" name="part_name" value="CN171P-02#ME" placeholder="PartName">
-                                                    </div>
-                                                    <div class="input-group input-group-sm mb-3">
-                                                        <span class="input-group-text w-50" id="basic-addon1">Lubricant</span>
-                                                        <input type="text" class="form-control" id="textLubricant" name="lubricant" value="B-06077X DAIZO Nichimoly" placeholder="Lubricant">
-                                                    </div>
-                                                    <div class="input-group input-group-sm mb-3">
-                                                        <span class="input-group-text w-50" id="basic-addon1">Applied Date</span>
-                                                        <input type="date" class="form-control" id="textAppliedDate" name="applied_date" value="{{ date('Y-m-d') }}" placeholder="Applied Date">
-                                                    </div>
-                                                    <div class="input-group input-group-sm mb-3">
-                                                        <span class="input-group-text w-50" id="basic-addon1">Drying Time</span>
-                                                        <input type="time" class="form-control" id="textDryingTimeStart" name="drying_time_start" placeholder="Start">
-                                                        <input type="time" class="form-control" id="textDryingTimeEnd" name="drying_time_end" readonly placeholder="End">
-                                                    </div>
-                
-                                                    <div class="input-group input-group-sm mb-3">
-                                                        <span class="input-group-text w-50" id="basic-addon1">Operator</span>
-                                                        <select class="form-select select2" id="selectOperator" name="operator_id">
-                                                            <!-- Auto Generated -->
-                                                        </select>
-                                                    </div>
-                                                </div>
                                             </div>
                                             <div data-bs-toggle="collapse" style="cursor: pointer" data-bs-target="#collapseAddShotsSamples" aria-expanded="false" aria-controls="collapseAddShotsSamples">
                                                 <span class="badge badge-secondary">3.</span> Add Shots, Samples etc. <i class="fas fa-angle-down"> </i>
@@ -855,33 +826,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="modal fade" id="modalMaterialDryingPrintQr">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Print QR Code</h4>
-                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <center>
-                                    <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(150)->errorCorrection('H')->generate('0')) !!}" id="imageMaterialDryingBarcode" style="max-width: 200px;"><br>
-                                </center>
-                                <div id="bodyMaterialDryingBarcodeDetails"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" id="buttonMaterialDryingPrintQrCode" class="btn btn-primary btn-sm"><i class="fa fa-print fa-xs"></i> Print</button>
-                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div><!-- /.modal-content -->
-            </div><!-- /.modal-dialog -->
-        </div>
     @endsection
 
     @section('js_content')
@@ -1099,10 +1043,9 @@
                                      * Material Drying Form
                                      * only show this form if device name is equal to CN171P-02#IN-VE
                                     */
-                                    if($('#textDeviceName').val() == 'CN171P-02#IN-VE'){
-                                        console.log('true');
-                                        $('#divMaterialDryingForm').removeClass('d-none');
-                                    }
+                                    // if($('#textDeviceName').val() == 'CN171P-02#IN-VE'){
+                                    //     $('#modalMaterialDrying').modal('show');
+                                    // }
                                 }else{
                                     $('#textMELotNumberOne').val('N/A');
                                     toastr.error('Please scan ME lot number.')
@@ -1461,17 +1404,6 @@
                                         }
                                     }
                                 });
-
-                                /**
-                                 * Material Drying Form
-                                */
-                                $('#textPartName', $('#formSecondMolding')).val(responseData[0].part_name);
-                                $('#textLubricant', $('#formSecondMolding')).val(responseData[0].lubricant);
-                                $('#textAppliedDate', $('#formSecondMolding')).val(responseData[0].applied_date);
-                                $('#textDryingTimeStart', $('#formSecondMolding')).val(responseData[0].drying_time_start);
-                                $('#textDryingTimeEnd', $('#formSecondMolding')).val(responseData[0].drying_time_end);
-                                $('#selectOperator', $('#formSecondMolding')).val(responseData[0].operator_id).trigger('change');
-                                $('#divMaterialDryingForm').removeClass('d-none');
                             }
                         }
                     });
@@ -2289,8 +2221,8 @@
                 // Add 30mins for Drying Time End
                 $('#textDryingTimeStart').change(function (e) { 
                     let dryingTimeStart = $('#textDryingTimeStart').val();
-                    let dryingTimeEndWithThirtyMins = moment(dryingTimeStart, 'HH:mm').add(30, 'minutes').format('HH:mm');;
-                    $('#textDryingTimeEnd').val(dryingTimeEndWithThirtyMins);
+                    let startDateWithThirtyMins = moment(dryingTimeStart, 'HH:mm').add(30, 'minutes').format('HH:mm');;
+                    $('#textDryingTimeEnd').val(startDateWithThirtyMins);
                 });
                 
                 // Save Material Drying form
@@ -2308,59 +2240,6 @@
                             console.log('response ', response);
                         }
                     });
-                });
-
-                // Get Material Drying Details Data for QR Code printing
-                let dataDetails = '';
-                $('#tableSecondMolding').on('click', '.buttonPrintMaterialDrying',function(e){
-                    e.preventDefault();
-                    let secondMoldingId = $(this).attr('second-molding-id');
-                    console.log('buttonPrintMaterialDrying clicked');
-                    $.ajax({
-                        type: "get",
-                        url: "get_material_drying_qr_code",
-                        data: {
-                            "second_molding_id" : secondMoldingId
-                        },
-                        dataType: "json",
-                        success: function (response) {
-                            console.log(response);
-                            
-                            $("#imageMaterialDryingBarcode").attr('src', response['qr_code']);
-                            $("#bodyMaterialDryingBarcodeDetails").html(response['label']);
-                            dataDetails = response['label_hidden'];
-                            $('#modalMaterialDryingPrintQr').modal('show');
-                        }
-                    });
-                });
-
-                // Print(button)
-                $('#buttonMaterialDryingPrintQrCode').on('click', function(){
-                    popup = window.open();
-                    let content = '';
-                    content += '<html>';
-                    content += '<head>';
-                    content += '<title></title>';
-                    content += '<style type="text/css">';
-                    content += '@media print { .pagebreak { page-break-before: always; } }';
-                    content += '</style>';
-                    content += '</head>';
-                    content += '<body>';
-                    content += '<table style="margin-left: -5px; margin-top: 18px;">';
-                        content += '<tr style="width: 290px;">';
-                            content += '<td style="vertical-align: bottom;">';
-                                content += '<img src="' + dataDetails[0]['img'] + '" style="min-width: 75px; max-width: 75px;">';
-                            content += '</td>';
-                            content += '<td style="font-size: 10px; font-family: Calibri;">' + dataDetails[0]['text'] + '</td>';
-                        content += '</tr>';
-                    content += '</table>';
-                    content += '<br>';
-                    content += '</body>';
-                    content += '</html>';
-                    popup.document.write(content);
-                    popup.focus(); //required for IE
-                    popup.print();
-                    popup.close();
                 });
             });
         </script>

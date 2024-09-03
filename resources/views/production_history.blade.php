@@ -183,7 +183,8 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Production Date</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="prodn_date" name="prodn_date" value="<?php echo date('Y-m-d'); ?>" readonly>
+                                                {{-- <input class="form-control form-control-sm" type="date" id="prodn_date" name="prodn_date" value="<?php echo date('Y-m-d'); ?>"> --}}
+                                                <input class="form-control form-control-sm" type="date" id="prodn_date" name="prodn_date">
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
@@ -201,7 +202,7 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Machine No.</span>
                                                 </div>
-                                                <select type="text" class="form-control form-control-sm select2bs4" id="machine_no" name="machine_no[]" multiple>
+                                                <select type="text" class="form-control form-control-sm select2bs4" id="machine_no" name="machine_no">
                                                 </select>
                                                 {{-- <input class="form-control form-control-sm" type="text" id="machine_no" name="machine_no" required readonly>
                                                 <div class="input-group-append">
@@ -304,7 +305,7 @@
                                                 <input class="form-control form-control-sm" type="text" id="qc_name" name="qc_name" placeholder="QC" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="qc_id" name="qc_id" readonly hidden>
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-info" type="button" title="Scan code" id="btnScanQrQCID" form-value="formQCName" disabled><i class="fa fa-qrcode"></i></button>
+                                                    <button class="btn btn-info" type="button" title="Scan code" id="btnScanQrQCID" form-value="formQCName"><i class="fa fa-qrcode"></i></button>
                                                 </div>
                                             </div>
 
@@ -333,7 +334,7 @@
                                             </div>
                                             <input class="form-control form-control-sm" type="text" id="material_lotno" name="material_lotno" readonly>
                                             <div class="input-group-prepend">
-                                                <button type="button" class="btn btn-primary" id="btnScanQrMaterialLotNo" form-value="formMaterialLotNo" disabled><i class="fa fa-qrcode w-100"></i></button>
+                                                <button type="button" class="btn btn-primary" id="btnScanQrMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
                                             </div>
                                         </div><br>
 
@@ -358,9 +359,9 @@
                                                 <input class="form-control form-control-sm pmMatName" type="text" id="pmaterial_name" name="pmaterial_name" value="CT 6009-VE" readonly>
                                             </div>
 
-                                           
-                                            
-                                            <div class="input-group input-group-sm mb-3">
+
+
+                                            <div class="input-group input-group-sm mb-3 d-none">
                                                 {{-- <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking"> --}}
 
                                                 <div class="input-group-prepend w-25">
@@ -411,8 +412,8 @@
                                                 <input class="form-control form-control-sm pmMatCode2" type="text" id="pmaterial_code2_0" name="pmaterial_code2_0" value="107977701" readonly>
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_0" name="pmaterial_name2_0" value="CT 5869-VE" readonly>
                                             </div>
-                                           
-                                            <div class="input-group input-group-sm mb-3">
+
+                                            <div class="input-group input-group-sm mb-3 d-none">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
                                                 </div>
@@ -440,7 +441,7 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_1" name="pmaterial_name2_1" value="CT 5870-VE" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3 d-none">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
                                                 </div>
@@ -468,7 +469,7 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_2" name="pmaterial_name2_2" value="CN171P-02#ME-VE" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3 d-none">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
                                                 </div>
@@ -527,7 +528,7 @@
                                                 <input class="form-control form-control-sm pmMatName4" type="text" id="pmaterial_name3_1" name="pmaterial_name3_1" value="CN171S-03#ME-VE" readonly>
                                             </div>
 
-                                          
+
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
@@ -556,7 +557,7 @@
                                                 <input class="form-control form-control-sm pmMatName4" type="text" id="pmaterial_name3_2" name="pmaterial_name3_2" value="CN171S-05#ME-VE" readonly>
                                             </div>
 
-                                           
+
 
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
@@ -571,7 +572,7 @@
                                             <div id="divMultiplePartsLot3_2">
 
                                             </div>
-                                            
+
                                             <input type="text" class="d-none" id="pmLot3_3Counter" value="0">
 
                                             <div class="d-flex justify-content-end mb-1 divBtnMultiples">
@@ -587,7 +588,7 @@
                                                 <input class="form-control form-control-sm pmMatName4" type="text" id="pmaterial_name3_3" name="pmaterial_name3_3" value="CN171S-09/10#IN-VE" readonly>
                                             </div>
 
-                                           
+
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.4</span>
@@ -735,6 +736,10 @@
         let ProductionHistory;
         var first_molding_device_id;
         $(document).ready(function () {
+
+            // $('#prodn_date').change(function (e) {
+            //     e.preventDefault();
+            // });
             // getFirstModlingDevices();
             getFirstModlingDevicesForHistory();
             // getOperatorList($('.selOpName'));
@@ -847,7 +852,7 @@
                 //             console.log('pmaterial_name ', "CT 6010R/L-VE");
 
                 //             $('#divMaterialName').removeClass('d-none');
-                            
+
                 //             $('#pmaterial_code').val('108668401')
                 //             $('#pmaterial_name').val('CT 6010R/L-VE')
                 //         }
@@ -900,15 +905,13 @@
                 $("#opt_name").val('');
                 $("#opt_name").val('');
 
-                $('#shots').prop('readonly',true);
-                $('#prodn_etime').prop('readonly',true);
-                $('#btnScanQrQCID').prop('disabled',true);
-                $('#btnScanQrMaterialLotNo').prop('disabled',true);
-                $('#btnScanQrPMaterialLotNo').prop('disabled',true);
-                $('.btnPmScan').prop('disabled',true);
-
+                // $('#shots').prop('readonly',true);
+                // $('#prodn_etime').prop('readonly',true);
+                // $('#btnScanQrQCID').prop('disabled',true);
+                // $('#btnScanQrMaterialLotNo').prop('disabled',true);
+                // $('#btnScanQrPMaterialLotNo').prop('disabled',true);
+                // $('.btnPmScan').prop('disabled',true);
                 $('#modalProductionHistory').modal('show');
-
                 getMachineDropdown($('#machine_no'), materialName);
 
             });
@@ -1268,14 +1271,14 @@
                     try{
                         scannedItem = JSON.parse($(this).val());
                         console.log(scannedItem)
-                        
+
                         // if ( $('#pmaterial_code1').val() == scannedItem['code'] || $('#pmaterial_name1').val() == scannedItem['name']){
                         //     $('#pmat_lot_no1').val(scannedItem['production_lot_no']);
                         //     $('#modalQrLotNo').modal('hide');
                         // }
                         if(otherScanningInputId != null){
                             // let splittedData = otherScanningInputData.split("-");
-                           
+
                             console.log('scanning input', otherScanningInputData);
 
                             // return;
@@ -1359,7 +1362,7 @@
 
             })
 
-            /* 
+            /*
                 * START OF MULTIPLE PM LOT FOR CN171P-02#IN-VE
             */
             $('#btnAddPmLotNo2_0').on('click', function(e){
@@ -1421,7 +1424,7 @@
                 $('#divMultiplePartsLot2_1').append(result);
 
             });
-            
+
             $('#btnRemovePmLotNo2_1').on('click', function(e){
                 e.preventDefault();
                 let counter = $('#pmLot2_1Counter').val();
@@ -1470,11 +1473,11 @@
                     $('#btnRemovePmLotNo2_2').addClass('d-none');
                 }
             })
-            /* 
+            /*
                 * END OF MULTIPLE PM LOT FOR CN171P-02#IN-VE
             */
 
-            /* 
+            /*
                 * START OF MULTIPLE PM LOT FOR CN171S-07#IN-VE
             */
             $('#btnAddPmLotNo3_0').on('click', function(e){
@@ -1582,7 +1585,7 @@
                 }
             })
 
-            
+
             $('#btnAddPmLotNo3_3').on('click', function(e){
                 e.preventDefault();
                 let counter = $('#pmLot3_3Counter').val();
@@ -1618,7 +1621,7 @@
                 }
             })
 
-            /* 
+            /*
                 * END OF MULTIPLE PM LOT FOR CN171S-07#IN-VE
             */
             $("#modalProductionHistory").on('hidden.bs.modal', function () {
@@ -1765,8 +1768,8 @@
 
 
 
-       
-       
+
+
     </script>
     @endsection
 @endauth

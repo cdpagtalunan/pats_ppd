@@ -57,7 +57,7 @@ class CustomerDetailsController extends Controller
             'company_name'                 => 'required',
             // 'company_contact_no'      => 'required',
             'company_address'      => 'required',
-            'company_contact_person'      => 'required'
+            // 'company_contact_person'      => 'required'
         ];
 
         $validator = Validator::make($data, $rules);
@@ -81,7 +81,7 @@ class CustomerDetailsController extends Controller
                 return response()->json(['result' => 0, 'message' => "SuccessFully Saved!"]);
         }
         else{
-            return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]);
+            return response()->json(['validation' => 1, "hasError", 'error' => $validator->messages()]); 
         }
     }
 

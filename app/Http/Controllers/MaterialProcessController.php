@@ -200,8 +200,6 @@ class MaterialProcessController extends Controller
         }
         else{
             DB::beginTransaction();
-
-            // return $request->all();
             try{
                 $mat_proc_array = array(
                     'step'      => $request->step,
@@ -242,9 +240,25 @@ class MaterialProcessController extends Controller
                     //         ]);
                     //     }
                     // }
-                }
-                else{ // ADD
-                    // return 'else';
+
+                    if(isset($request->material_name)){
+                        for ($i=0; $i < count($request->material_name); $i++) {
+                            $exploded_material = explode(' || ',$request->material_name[$i]);
+                            //Edit First Molding Devices for Production History Module
+                            if($request->process == 4){
+                                $is_exist_first_molding_device = FirstMoldingDevice::where('device_name',$request->device_name)->get();
+                                $is_exist_first_molding_device[0]['id'];
+                                if( count( $is_exist_first_molding_device ) > 0 ){
+                                    FirstMoldingDevice::where('id',$is_exist_first_molding_device[0]['id'])->update([
+                                        'contact_name' => $exploded_material[1],
+                                        'process_type' => 1,
+                                        'updated_at'    => NOW(),
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                }else{ // ADD
                     $mat_proc_array['device_id'] = $request->device_id;
                     $mat_proc_array['created_by'] = Auth::user()->id;
                     $mat_proc_array['created_at'] = NOW();
@@ -275,45 +289,31 @@ class MaterialProcessController extends Controller
                 }
 
                 if(isset($request->material_name)){
-                    // if(is_array($request->material_name)){
-                        for ($i=0; $i < count($request->material_name); $i++) {
-                            $exploded_material = explode(' || ',$request->material_name[$i]);
-                            MaterialProcessMaterial::insert([
-                                'mat_proc_id'   => $material_process_id,
-                                'material_code' => $exploded_material[0],
-                                'material_type' => $exploded_material[1],
-                                'created_by'    => Auth::user()->id,
-                                'created_at'    => NOW()
-                            ]);
-                            //Add Molding Devices for Production History Module
-                            if($request->process == 4){
-                                $is_exist_first_molding_device = FirstMoldingDevice::where('device_name',$request->device_name)->exists();
-                                if( !isset( $is_exist_first_molding_device ) ){
-                                    FirstMoldingDevice::insert([
-                                        'device_name' => $request->device_name,
-                                        'contact_name' => $exploded_material[1],
-                                        'process_type' => 1,
-                                        'created_at'    => NOW(),
-                                    ]);
-                                }
+                    for ($i=0; $i < count($request->material_name); $i++) {
+                        $exploded_material = explode(' || ',$request->material_name[$i]);
+                        MaterialProcessMaterial::insert([
+                            'mat_proc_id'   => $material_process_id,
+                            'material_code' => $exploded_material[0],
+                            'material_type' => $exploded_material[1],
+                            'created_by'    => Auth::user()->id,
+                            'created_at'    => NOW()
+                        ]);
+                        //Add Molding Devices for Production History Module
+                        if($request->process == 4){
+                            $is_exist_first_molding_device = FirstMoldingDevice::where('device_name',$request->device_name)->exists();
+                            if( !isset( $is_exist_first_molding_device ) ){
+                                FirstMoldingDevice::insert([
+                                    'device_name' => $request->device_name,
+                                    'contact_name' => $exploded_material[1],
+                                    'process_type' => 1,
+                                    'created_at'    => NOW(),
+                                ]);
                             }
                         }
-                    // }
-                    // else{
-                    //     $exploded_material = explode(' || ', $request->material_name);
-
-                    //     MaterialProcessMaterial::insert([
-                    //         'mat_proc_id'   => $material_process_id,
-                    //         'material_code' => $exploded_material[0],
-                    //         'material_type' => $exploded_material[1],
-                    //         'created_by'    => Auth::user()->id,
-                    //         'created_at'    => NOW()
-                    //     ]);
-                    // }
-
+                    }
                 }
 
-        if(isset($request->station)){
+                if(isset($request->station)){
                     if(is_array($request->station)){
                         for ($j=0; $j < count($request->station); $j++) {
                             MaterialProcessStation::insert([
@@ -331,15 +331,12 @@ class MaterialProcessController extends Controller
                         ]);
                     }
                 }
-
-
-
                 DB::commit();
                 return response()->json([
                     'result' => 1,
                     'msg'    => 'Transaction Successful'
                 ]);
-            }catch(Exemption $e){
+            }catch(\Exception $e){
                 DB::rollback();
                 return $e;
             }

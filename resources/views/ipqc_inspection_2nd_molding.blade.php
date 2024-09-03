@@ -463,6 +463,7 @@
                         data: {
                             'production_lot': ScanQrCodeVal.production_lot,
                             'device_name': ScanQrCodeVal.device_name,
+                            'machine_no': ScanQrCodeVal.machine_number,
                             'process_category': 2
                         },
                         dataType: "json",

@@ -6,6 +6,7 @@
         iqcWhsDetails :'#tblWhsDetails',
         iqcInspected:'#tblIqcInspected'
     };
+    
     const dataTable = {
         iqcInspection:'', //iqcInspection
         iqcWshDetails: '',

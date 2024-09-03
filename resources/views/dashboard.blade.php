@@ -51,14 +51,14 @@
                               <div class="row">
 
                                   <div class="col-12">
-                                      <h1>Welcome to PATS-PPD</h1>
+                                      <h1> Welcome to Product Automated Traceabilty System (PATS) <br> for PPD-CN171 </h1>
                                   </div>
                                   <div class="col-12">
-                                      <h5>For concerns/issues, please contact ISS at local numbers 205, 206, or 208.
+                                      <h5><br> For concerns/issues, please contact ISS at local numbers 205, 206, or 208.
                                       </h5>
                                   </div>
                                   <div class="col-12">
-                                      <h5>Or you may send us e-mail at servicerequest@pricon.ph. Thank you! </h5>
+                                      <h5> Or you may send us e-mail at servicerequest@pricon.ph. Thank you! </h5>
                                   </div>
 
 

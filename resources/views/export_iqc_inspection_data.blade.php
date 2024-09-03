@@ -38,6 +38,7 @@
                                         <option selected disabled> --- Select Process Type --- </option>
                                         <option value="1">First Stamping</option>
                                         <option value="2">Second Stamping</option>
+                                        <option value="3">Molding</option>
                                     </select>
                                 </div>
 
@@ -94,7 +95,10 @@
                     console.log('to',to)
                     alert('Select Date To');
                 }else{
-                    window.location.href = `export_iqc_inspection/${materialName}/${processType}/${from}/${to}`;
+                    if (materialName.includes('#')) {
+                        materialName = encodeURIComponent(materialName);
+                    }
+                    window.location.href = `export_iqc_inspection/${materialName}+${processType}+${from}+${to}`;
                     $('.alert').remove();
                 }
             });

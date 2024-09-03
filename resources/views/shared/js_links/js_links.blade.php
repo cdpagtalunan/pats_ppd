@@ -68,7 +68,9 @@
 <script src="{{ asset('public/js/main/OqcInspection.js') }}"></script>
 
 <!-- STAMPING JS -->
-<script src="{{ asset('public/js/main/Stamping.js') }}"></script>
+{{-- <script src="{{ asset('public/js/main/Stamping.js') }}"></script> --}}
+<script src="@php echo asset("public/js/main/Stamping.js?".date("YmdHis")) @endphp"></script>
+
 <script src="{{ asset('public/js/main/StampingChecksheet.js') }}"></script>
 <script src="{{ asset('public/js/main/StampingHistory.js') }}"></script>
 

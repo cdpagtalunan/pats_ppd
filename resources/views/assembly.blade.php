@@ -54,6 +54,7 @@
                                                 <select class="form-control" type="text" name="device_name" id="txtSelectDeviceName" required>
                                                     <option value="" disabled selected>Select Device Name</option>
                                                     <option value="CN171P-007-1002-VE(01)">CN171P-007-1002-VE(01)</option>
+                                                    <option value="CN171P-007-1002-VE(01)PREQ">CN171P-007-1002-VE(01)PREQ</option>
                                                     <option value="CN171S-007-1002-VE(01)">CN171S-007-1002-VE(01)</option>
                                                 </select>
                                             </div>
@@ -176,7 +177,8 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">PO Quantity</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtPoQuantity" name="po_quantity" placeholder="Auto generated"
+                                                onkeydown="return false;" style="background-color: #e9ecef !important; pointer-events: none" required>
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
@@ -188,7 +190,9 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Runcard No.</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Auto generated" readonly>
+                                                <input type="text" class="form-control form-control-sm" id="txtRuncardNo" name="runcard_no" placeholder="Auto generated"
+                                                onkeydown="return false;" style="background-color: #e9ecef !important; pointer-events: none" required>
+
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-50">
@@ -621,7 +625,7 @@
                                                 </div>
                                                 <span class="input-group-text w-100" id="basic-addon1">Doc No. (R Drawing):</span>
                                             </div>
-                                            <select class="form-control form-control-sm" id="txtSelectDocNoRDrawing" name="doc_no_r_drawing"></select>
+                                            <select class="form-control form-control-sm" id="txtSelectDocNoRDrawing" name="doc_no_r_drawing" required></select>
                                         </div>
                                     </div>
                                 </div>
@@ -634,7 +638,7 @@
                                                 </div>
                                                 <span class="input-group-text w-100" id="basic-addon1">Doc No. (A Drawing):</span>
                                             </div>
-                                            <select class="form-control form-control-sm" id="txtSelectDocNoADrawing" name="doc_no_a_drawing"></select>
+                                            <select class="form-control form-control-sm" id="txtSelectDocNoADrawing" name="doc_no_a_drawing" required></select>
                                         </div>
                                     </div>
                                 </div>
@@ -647,7 +651,7 @@
                                                 </div>
                                                 <span class="input-group-text w-100" id="basic-addon1">Doc No. (G Drawing):</span>
                                             </div>
-                                            <select class="form-control form-control-sm" id="txtSelectDocNoGDrawing" name="doc_no_g_drawing"></select>
+                                            <select class="form-control form-control-sm" id="txtSelectDocNoGDrawing" name="doc_no_g_drawing" required></select>
                                         </div>
                                     </div>
                                 </div>
@@ -1000,7 +1004,6 @@
                         success: function(response){
                             // result = '';
                             result = `<option value="0" selected disabled> Please Select Mode of Defect </option>`;
-                            // console.log('ggg',response['data']);
                             if(response['data'].length > 0){
                                 for(let index = 0; index < response['data'].length; index++){
                                     result += `<option value="${response['data'][index].id}">${response['data'][index].defects}</option>`;
@@ -1272,7 +1275,7 @@
                             // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
                             // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
-                            if(deviceName == 'CN171P-007-1002-VE(01)'){
+                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ'){
                                 $('#sSeriesName').prop('hidden', true);
                                 $('#pSeriesName').prop('hidden', false);
                             }else if(deviceName == 'CN171S-007-1002-VE(01)'){
@@ -1298,34 +1301,6 @@
                             dtAssemblyRuncard.draw();
                         }
                     });
-                });
-
-                // clark ongoing
-                $('#btnAddRuncardStation').on('click', function(e){
-                    $('#modalAddStation').modal('show');
-                    let runcard_id = $(this).attr('runcard_id');
-
-                    $.ajax({
-                        type: "get",
-                        url: "chck_existing_stations",
-                        data: {
-                            "runcard_id" : runcard_id,
-                        },
-                        dataType: "json",
-                        success: function (response){
-                            GetStations($('#txtSelectRuncardStation'), response['current_step']);
-                            $('#txtStep').val(response['current_step']);
-                            // $('#txtSelectRuncardStation').attr('step', 2);
-                            // .attr('data-form-id', formValue)
-                        }
-                    });
-
-                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"));
-                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"));
-                        GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"));
-
-                     $('#txtStationAssyRuncardId').val(runcard_id);
-                     $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
                 });
 
                 function GetStations(cboElement, step = null){
@@ -1359,9 +1334,9 @@
                             $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
                             $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
 
-                            if(deviceName == 'CN171P-007-1002-VE(01)'){
+                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ'){
                                 if(step == 1){//Lubricant Coating Station
-                                    // $('#LubricantCoatingDiv').removeClass('d-none'); //disable this btn clark 04152024
+                                    // $('# ').removeClass('d-none'); //disable this btn clark 04152024
                                     $('#LubricantCoatingDiv').addClass('d-none');
                                     $('#VisualInspDocNoDiv').addClass('d-none');
                                 }else if(step == 2){
@@ -1598,8 +1573,34 @@
                     // }else{
                     //     toastr.error('Error!, Please Contanct ISS Local 208');
                     // }
-
                 });
+
+                // $('#btnAddRuncardStation').on('click', function(e){
+                //     $('#modalAddStation').modal('show');
+                //     let runcard_id = $(this).attr('runcard_id');
+
+                //     $.ajax({
+                //         type: "get",
+                //         url: "chck_existing_stations",
+                //         data: {
+                //             "runcard_id" : runcard_id,
+                //         },
+                //         dataType: "json",
+                //         success: function (response){
+                //             GetStations($('#txtSelectRuncardStation'), response['current_step']);
+                //             $('#txtStep').val(response['current_step']);
+                //             // $('#txtSelectRuncardStation').attr('step', 2);
+                //             // .attr('data-form-id', formValue)
+                //         }
+                //     });
+
+                //         GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"));
+                //         GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"));
+                //         GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"));
+
+                //      $('#txtStationAssyRuncardId').val(runcard_id);
+                //      $("#buttonAddAssemblyModeOfDefect").prop('disabled', true);
+                // });
 
                 // clark ongoing
                 $('#btnAddRuncardStation').on('click', function(e){
@@ -1617,6 +1618,11 @@
                     $('#btnSaveNewAssemblyRuncardStation').prop('hidden', false);
 
                     CheckExistingStations(runcard_id);
+
+                    GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'R Drawing', $("#txtSelectDocNoRDrawing"));
+                    GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'A Drawing', $("#txtSelectDocNoADrawing"));
+                    GetDocumentNoFromACDCS($('#txtDeviceName').val(), 'G Drawing', $("#txtSelectDocNoGDrawing"));
+
                     // $.ajax({
                     //     type: "get",
                     //     url: "chck_existing_stations",
@@ -1735,7 +1741,49 @@
                         data: $('#formCNAssemblyRuncard').serialize(),
                         dataType: "json",
                         success: function(response){
-                            if (response['result'] == 1 ) {
+                            if(response['validation'] == 'hasError'){
+                                toastr.error('Saving failed!, Please complete all required fields');
+                                if (response['error']['runcard_no'] === undefined) {
+                                    $("#txtRuncardNo").removeClass('is-invalid');
+                                    $("#txtRuncardNo").attr('title', '');
+                                } else {
+                                    $("#txtRuncardNo").addClass('is-invalid');
+                                    $("#txtRuncardNo").attr('title', response['error']['runcard_no']);
+                                }
+
+                                if (response['error']['po_number'] === undefined) {
+                                    $("#txtPONumber").removeClass('is-invalid');
+                                    $("#txtPONumber").attr('title', '');
+                                } else {
+                                    $("#txtPONumber").addClass('is-invalid');
+                                    $("#txtPONumber").attr('title', response['error']['po_number']);
+                                }
+
+                                if (response['error']['p_zero_two_prod_lot'] === undefined) {
+                                    $("#txtPZeroTwoProdLot").removeClass('is-invalid');
+                                    $("#txtPZeroTwoProdLot").attr('title', '');
+                                } else {
+                                    $("#txtPZeroTwoProdLot").addClass('is-invalid');
+                                    $("#txtPZeroTwoProdLot").attr('title', response['error']['p_zero_two_prod_lot']);
+                                }
+
+                                if (response['error']['s_zero_seven_prod_lot'] === undefined) {
+                                    $("#txtSZeroSevenProdLot").removeClass('is-invalid');
+                                    $("#txtSZeroSevenProdLot").attr('title', '');
+                                } else {
+                                    $("#txtSZeroSevenProdLot").addClass('is-invalid');
+                                    $("#txtSZeroSevenProdLot").attr('title', response['error']['s_zero_seven_prod_lot']);
+                                }
+
+                                if (response['error']['s_zero_two_prod_lot'] === undefined) {
+                                    $("#txtSZeroTwoProdLot").removeClass('is-invalid');
+                                    $("#txtSZeroTwoProdLot").attr('title', '');
+                                } else {
+                                    $("#txtSZeroTwoProdLot").addClass('is-invalid');
+                                    $("#txtSZeroTwoProdLot").attr('title', response['error']['s_zero_two_prod_lot']);
+                                }
+
+                            }else if (response['result'] == 1 ) {
                                 toastr.success('Successful!');
                                 $("#modalCNAssembly").modal('hide');
                                 dtAssemblyRuncard.draw();
@@ -1799,7 +1847,48 @@
                         data: $('#formAddAssemblyRuncardStation').serialize(),
                         dataType: "json",
                         success: function(response){
-                            if (response['result'] == 1) {
+                            if(response['validation'] == 'hasError'){
+                                toastr.error('Saving failed!, Please complete all required fields');
+                                if (response['error']['input_qty'] === undefined) {
+                                    $("#txtInputQuantity").removeClass('is-invalid');
+                                    $("#txtInputQuantity").attr('title', '');
+                                } else {
+                                    $("#txtInputQuantity").addClass('is-invalid');
+                                    $("#txtInputQuantity").attr('title', response['error']['input_qty']);
+                                }
+
+                                if (response['error']['ng_qty'] === undefined) {
+                                    $("#txtNgQuantity").removeClass('is-invalid');
+                                    $("#txtNgQuantity").attr('title', '');
+                                } else {
+                                    $("#txtNgQuantity").addClass('is-invalid');
+                                    $("#txtNgQuantity").attr('title', response['error']['ng_qty']);
+                                }
+
+                                if (response['error']['doc_no_r_drawing'] === undefined) {
+                                    $("#txtSelectDocNoRDrawing").removeClass('is-invalid');
+                                    $("#txtSelectDocNoRDrawing").attr('title', '');
+                                } else {
+                                    $("#txtSelectDocNoRDrawing").addClass('is-invalid');
+                                    $("#txtSelectDocNoRDrawing").attr('title', response['error']['doc_no_r_drawing']);
+                                }
+
+                                if (response['error']['doc_no_a_drawing'] === undefined) {
+                                    $("#txtSelectDocNoADrawing").removeClass('is-invalid');
+                                    $("#txtSelectDocNoADrawing").attr('title', '');
+                                } else {
+                                    $("#txtSelectDocNoADrawing").addClass('is-invalid');
+                                    $("#txtSelectDocNoADrawing").attr('title', response['error']['doc_no_a_drawing']);
+                                }
+
+                                if (response['error']['doc_no_g_drawing'] === undefined) {
+                                    $("#txtSelectDocNoGDrawing").removeClass('is-invalid');
+                                    $("#txtSelectDocNoGDrawing").attr('title', '');
+                                } else {
+                                    $("#txtSelectDocNoGDrawing").addClass('is-invalid');
+                                    $("#txtSelectDocNoGDrawing").attr('title', response['error']['doc_no_g_drawing']);
+                                }
+                            }else if(response['result'] == 1) {
                                 toastr.success('Successful!');
                                 $('#txtShipmentOutput').val(response['shipment_output']);
                                 $("#modalAddStation").modal('hide');
@@ -1895,7 +1984,7 @@
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)'){
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ'){
 
                                 verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
 
@@ -1981,7 +2070,7 @@
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)'){
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ'){
 
                                 verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
 

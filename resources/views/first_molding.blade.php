@@ -227,9 +227,9 @@
                                                 <span class="input-group-text w-100" id="basic-addon1">Production
                                                     Lot</span>
                                             </div>
-                                            <input value="2E240130-" type="text" class="form-control form-control-sm"
+                                            <input type="text" class="form-control form-control-sm"
                                                 id="production_lot" name="production_lot" readonly>
-                                            <input value="M-7:30-11:30" type="text"
+                                            <input type="text"
                                                 class="form-control form-control-sm" id="production_lot_extension"
                                                 name="production_lot_extension" placeholder="7:30-11:30">
                                         </div>
@@ -335,7 +335,7 @@
                                             </div>
                                             <input type="text"
                                                 class="form-control form-control-sm sumTotalMachineOutput"
-                                                id="target_shots" name="target_shots" readonly>
+                                                id="target_shots" name="target_shots">
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
@@ -1588,8 +1588,7 @@
                     },
                     dataType: "json",
                     success: function(response) {
-                        let is_exist_lot_no = (response['is_exist_lot_no'] > 0) ? 'true' : 'false';
-                        if (is_exist_lot_no === 'true') {
+                        if (response.is_exist_lot_no === 'true') {
                             toastr.success(`Scan Successfully`);
                             $('#virgin_material').val(firstMoldingMaterialLotNo);
                             $('#modalMaterialLotNum').modal('hide');
@@ -1613,8 +1612,6 @@
                         let scanFirstMoldingMaterialLotNo = $(this).val()
                         let arrFirstMoldingMaterialLotNo = scanFirstMoldingMaterialLotNo.split("|");
                         validateMaterialLotNo(arrFirstMoldingMaterialLotNo[0])
-                        console.log('dsad', arrFirstMoldingMaterialLotNo[0]);
-
                     }
                 } catch (error) {
                     console.log(error);

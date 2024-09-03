@@ -8,7 +8,7 @@
         <img src="" class="brand-image img-circle elevation-3" style="opacity: .8">
 
         <span class="brand-text font-weight-light font-size">
-            <h5>PATS-PPD</h5>
+            <h5>PATS PPD-CN171</h5>
         </span>
     </a> <!-- System title and logo -->
 
@@ -25,51 +25,96 @@
                     </a>
                 </li> --}}
                 @auth
-                    @if ( in_array( Auth::user()->user_level_id, [1,2]) || (in_array(Auth::user()->position, [1,2,9]) ) )
+                    @if ( in_array( Auth::user()->user_level_id, [1,2]) || (in_array(Auth::user()->position, [1,2,9,10]) ) )
                         <li class="nav-header"><strong>ADMINISTRATOR</strong></li>
-                        @if (in_array(Auth::user()->user_level_id, [1,2]) || (in_array(Auth::user()->position, [1,2,9]) ))
-                            <li class="nav-item">
-                                <a href="{{ route('user') }}" class="nav-link">
-                                    <i class="fas fa-users"> </i>
-                                    <p>
-                                        User
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('defectsinfo') }}" class="nav-link">
-                                    <i class="fas fa-bolt"> </i>
-                                    <p>
-                                        Defects
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('process') }}" class="nav-link">
-                                    <i class="fas fa-list-ol"> </i>
-                                    <p>
-                                        Process / Station
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('materialprocess') }}" class="nav-link">
-                                    <i class="fas fa-list-ol"> </i>
-                                    <p>
-                                        Matrix
-                                    </p>
-                                </a>
-                            </li>
-                        @else
-                            <li class="nav-item">
-                                <a href="{{ route('materialprocess') }}" class="nav-link">
-                                    <i class="fas fa-list-ol"> </i>
-                                    <p>
-                                        Matrix
-                                    </p>
-                                </a>
-                            </li>
-                        @endif
+                        <li class="nav-item">
+                            <a href="{{ route('user') }}" class="nav-link">
+                                <i class="fas fa-users"> </i>
+                                <p>
+                                    User
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('defectsinfo') }}" class="nav-link">
+                                <i class="fas fa-bolt"> </i>
+                                <p>
+                                    Defects
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('process') }}" class="nav-link">
+                                <i class="fas fa-list-ol"> </i>
+                                <p>
+                                    Process / Station
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('materialprocess') }}" class="nav-link">
+                                <i class="fas fa-list-ol"> </i>
+                                <p>
+                                    Matrix
+                                </p>
+                            </a>
+                        </li>
+                    @endif
+                    
+                    @if ( in_array(Auth::user()->position, [7,8]) )
+                        <li class="nav-header"><strong>ADMINISTRATOR</strong></li>
+                        <li class="nav-item">
+                            <a href="{{ route('materialprocess') }}" class="nav-link">
+                                <i class="fas fa-list-ol"> </i>
+                                <p>
+                                    Matrix
+                                </p>
+                            </a>
+                        </li>
+                    @endif
+
+                    @if (in_array(Auth::user()->position, [0,7,8,9,10])  && in_array(Auth::user()->section, [0,1]))
+                        <li class="nav-header mt-3"><strong>PPC</strong></li>
+                        <li class="nav-item has-treeview">
+                            <a href="#" class="nav-link">
+                                <i class="fas fa-shipping-fast"> </i>
+                                <p> Packing List Details</p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"> </i>
+                            </a>
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('packing_list_settings') }}" class="nav-link">
+                                        {{-- <i class="fas fa-map-marked-alt"> </i> --}}
+                                        {{-- <i class="fas fa-cog"> </i> --}}
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Packing List Settings</p>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('packing_list') }}" class="nav-link">
+                                        {{-- <i class="fas fa-dolly"> </i> --}}
+                                        <i class="far fa-circle nav-icon ml-2"> </i>
+                                        <p>Packing List </p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('Material_Issuance_Monitoring_Form') }}" class="nav-link">
+                                <i class="fa-solid fa-person-chalkboard"></i>
+                                <p>Material Issuance</p><br>
+                                <p class="ml-4">Monitoring Form</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route("pats_shipment_con") }}" class="nav-link">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <p>Shipment Confimation</p>
+                            </a>
+                        </li>
                     @endif
 
                     @if ( in_array(Auth::user()->position, [0,2,5]))
@@ -177,7 +222,7 @@
                         </a>
                     </li> --}}
 
-                    @if (in_array(Auth::user()->position, [0,1,4,11]) && in_array(Auth::user()->section, [0,1]))
+                    @if (in_array(Auth::user()->position, [0,1,4,10,11]) && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>STAMPING</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -230,7 +275,7 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,4,6,7,9,11,13,2,5]) && in_array(Auth::user()->section, [0,1]))
+                    @if (in_array(Auth::user()->position, [0,4,6,7,9,10,11,13,2,5]) && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>PACKING</strong></li>
 
                         <li class="nav-item has-treeview">
@@ -259,50 +304,6 @@
                         </li>
                     @endif
 
-                    @if (in_array(Auth::user()->position, [0,7,8,9,10])  && in_array(Auth::user()->section, [0,1]))
-                        <li class="nav-header mt-3"><strong>PPC</strong></li>
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-shipping-fast"> </i>
-                                <p> Packing List Details</p>&nbsp;&nbsp;&nbsp;<i class="fas fa-angle-down"> </i>
-                            </a>
-
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('packing_list_settings') }}" class="nav-link">
-                                        {{-- <i class="fas fa-map-marked-alt"> </i> --}}
-                                        {{-- <i class="fas fa-cog"> </i> --}}
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>Packing List Settings</p>
-                                    </a>
-                                </li>
-                            </ul>
-
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('packing_list') }}" class="nav-link">
-                                        {{-- <i class="fas fa-dolly"> </i> --}}
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>Packing List </p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('Material_Issuance_Monitoring_Form') }}" class="nav-link">
-                                <i class="fa-solid fa-person-chalkboard"></i>
-                                <p>Material Issuance</p><br>
-                                <p class="ml-4">Monitoring Form</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route("pats_shipment_con") }}" class="nav-link">
-                                <i class="fa-solid fa-file-excel"></i>
-                                <p>Shipment Confimation</p>
-                            </a>
-                        </li>
-                    @endif
-
                     @if (in_array(Auth::user()->position, [0,6])  && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>WAREHOUSE</strong></li>
                         <li class="nav-item has-treeview">
@@ -324,9 +325,7 @@
                                         <p>SANNO</p>
                                     </a>
                                 </li>
-
                             </ul>
-
                         </li>
 
                         {{-- <li class="nav-item has-treeview">
@@ -344,12 +343,11 @@
                                 </li>
                             </ul>
                         </li> --}}
-
                     @endif
 
                     @if (in_array(Auth::user()->position, [0,1,4,11])  || in_array(Auth::user()->section, [0,2]))
                         <li class="nav-header mt-3 font-weight-bold">MOLDING
-                             {{-- {{ Auth::user()->section }} --}}
+                            {{-- {{ Auth::user()->section }} --}}
                         </li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -439,29 +437,41 @@
 
                     {{-- @if (in_array(Auth::user()->position, [0])) --}}
                         <li class="nav-header mt-3 font-weight-bold">MOLDING PACKING</li>
-                        <li class="nav-item has-treeview">
-                            <a href="#" class="nav-link">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <p><i class="fa-solid fa-boxes-packing"></i> PPTS </p>
-                                    <i class="fas fa-angle-down"> </i>
-                                </div>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route("ppts_oqc_inspection") }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>OQC Inspection</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route("ppts_packing_and_shipping") }}" class="nav-link">
-                                        <i class="far fa-circle nav-icon ml-2"> </i>
-                                        <p>Packing and Shipping</p>
-                                    </a>
-                                </li>
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p><i class="fa-solid fa-boxes-packing"></i> PPTS </p>
+                                        <i class="fas fa-angle-down"> </i>
+                                    </div>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="{{ route("ppts_user") }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon ml-2"> </i>
+                                            <p>PPTS User</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route("ppts_matrix") }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon ml-2"> </i>
+                                            <p>PPTS Matrix</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route("ppts_oqc_inspection") }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon ml-2"> </i>
+                                            <p>OQC Inspection</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route("ppts_packing_and_shipping") }}" class="nav-link">
+                                            <i class="far fa-circle nav-icon ml-2"> </i>
+                                            <p>Packing and Shipping</p>
+                                        </a>
+                                    </li>
 
-                            </ul>
-                        </li>
+                                </ul>
+                            </li>
                     {{-- @endif --}}
 
                     @if (in_array(Auth::user()->position, [0,2,8,9,10]))
@@ -501,9 +511,8 @@
                             <p> Casemark</p>
                         </a>
                     </li>
-                {{-- nmodify OQC Inspection --}}
+                    {{-- nmodify OQC Inspection --}}
                 @endauth
-
             </ul>
         </nav>
     </div><!-- Sidebar -->

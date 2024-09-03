@@ -211,8 +211,8 @@
                                     <label class="form-label">Ctrl #</label>
                                     <div class="input-group mb-2 w-75">
                                         <div class="input-group-prepend w-25" id="ControlPrefixDiv">
-                                            {{-- <input class="input-group-text w-100" id="basic-addon1" name="ctrl_num" value="PC-<?php //echo date('ym');?>-" readonly> --}}
-                                            <input class="input-group-text w-100" id="basic-addon1" name="ctrl_num" value="PC-2404-" readonly>
+                                            <input class="input-group-text w-100" id="basic-addon1" name="ctrl_num" value="BC-<?php echo date('ym');?>-" readonly>
+                                            {{-- <input class="input-group-text w-100" id="basic-addon1" name="ctrl_num" value="PC-2404-" readonly> --}}
                                         </div>
                                         <input type="text" class="form-control" name="ctrl_num_extension" id="txtCtrlNumber" autocomplete="off">
                                     </div>
