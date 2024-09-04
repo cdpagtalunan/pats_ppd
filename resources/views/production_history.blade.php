@@ -361,7 +361,7 @@
 
 
 
-                                            <div class="input-group input-group-sm mb-3 d-none">
+                                            <div class="input-group input-group-sm mb-3">
                                                 {{-- <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking"> --}}
 
                                                 <div class="input-group-prepend w-25">
@@ -413,9 +413,9 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_0" name="pmaterial_name2_0" value="CT 5869-VE" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-3 d-none">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
-                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
                                                 <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_0_0" name="pmat_lot_no2_0[]" data-ref="2_0" readonly>
                                                 <div class="input-group-prepend">
@@ -441,9 +441,9 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_1" name="pmaterial_name2_1" value="CT 5870-VE" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-3 d-none">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
-                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
                                                 <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_1_0" name="pmat_lot_no2_1[]"  data-ref="2_1" readonly>
                                                 <div class="input-group-prepend">
@@ -469,9 +469,9 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_2" name="pmaterial_name2_2" value="CN171P-02#ME-VE" readonly>
                                             </div>
 
-                                            <div class="input-group input-group-sm mb-3 d-none">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
-                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
                                                 <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_2_0" name="pmat_lot_no2_2[]"  data-ref="2_2" readonly>
                                                 <div class="input-group-prepend">
@@ -531,7 +531,7 @@
 
                                             <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
-                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.3</span>
+                                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
                                                 <input class="form-control form-control-sm pmLotNum4" type="text" id="pmat_lot_no-3_1_0" name="pmat_lot_no3_1[]" data-ref="3_1" readonly>
                                                 <div class="input-group-prepend">
@@ -737,9 +737,11 @@
         var first_molding_device_id;
         $(document).ready(function () {
 
-            // $('#prodn_date').change(function (e) {
-            //     e.preventDefault();
-            // });
+            $('#formProductionHistory').find('#prodn_date').change(function (e) {
+                e.preventDefault();
+                alert('dsad')
+                console.log($(this).val());
+            });
             // getFirstModlingDevices();
             getFirstModlingDevicesForHistory();
             // getOperatorList($('.selOpName'));
@@ -912,7 +914,7 @@
                 // $('#btnScanQrPMaterialLotNo').prop('disabled',true);
                 // $('.btnPmScan').prop('disabled',true);
                 $('#modalProductionHistory').modal('show');
-                getMachineDropdown($('#machine_no'), materialName);
+                getMachineFromMaterialProcess($('#machine_no'), materialName);
 
             });
 
@@ -1385,7 +1387,6 @@
                 $('#pmLot2Counter').val(counter);
 
                 $('#divMultiplePartsLot2_0').append(result);
-
             });
 
             $('#btnRemovePmLotNo2_0').on('click', function(e){
@@ -1642,11 +1643,11 @@
                 $('#ccd_setting_s2', $('#formProductionHistory')).prop('readonly', false);
                 $('#ccd_setting_ng', $('#formProductionHistory')).prop('readonly', false);
                 $('#changes_para', $('#formProductionHistory')).prop('readonly', false);
-                $('#shots', $('#formProductionHistory')).prop('disabled', false);
-                $('#remarks', $('#formProductionHistory')).prop('disabled', false);
-                $('#machine_no', $('#formProductionHistory')).prop('disabled', false);
+                $('#shots', $('#formProductionHistory')).prop('readonly', false);
+                $('#remarks', $('#formProductionHistory')).prop('readonly', false);
+                $('#machine_no', $('#formProductionHistory')).prop('readonly', false);
                 $('#prodn_etime', $('#formProductionHistory')).prop('readonly', false);
-                $('#btnScanQrMaterialLotNo', $('#formProductionHistory')).prop('disabled', false);
+                $('#btnScanQrMaterialLotNo', $('#formProductionHistory')).prop('readonly', false);
                 $('#btnScanQrPMaterialLotNo', $('#formProductionHistory')).prop('disabled', false);
                 $('.divBtnMultiples').attr('style', '');
 

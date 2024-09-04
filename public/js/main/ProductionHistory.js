@@ -87,7 +87,7 @@ function AddProdnHistory() {
         },
         success: function (JsonObject) {
             if (JsonObject['result'] == 1) {
-                $("#modalProductionHistory").modal('hide');
+                // $("#modalProductionHistory").modal('hide');
                 // $("#formProductionHistory")[0].reset();
                 $("#prodn_stime").val('');
                 $("#machine_no").val('');
@@ -112,8 +112,7 @@ function AddProdnHistory() {
 
                 // ProductionHistory.draw();
                 toastr.success('Production History was succesfully saved!');
-            }
-            else {
+            }else {
                 toastr.error('Saving Productionsss History Failed!');
                 if (JsonObject['error']['prodn_stime'] === undefined) {
                     $("#prodn_stime").removeClass('is-invalid');
@@ -272,12 +271,12 @@ const getFirstModlingDevicesForHistory = () => {
     });
 }
 
-const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => { 
+const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
     // 0= viewing, 1-edit
     /*
         * firstMoldingDevId => for viewing purposes only.
-        * check getFirstMoldingDeviceById() on blade for reference 
-    */  
+        * check getFirstMoldingDeviceById() on blade for reference
+    */
     $.ajax({
         type: "get",
         url: "get_prodn_history_by_id",
@@ -286,7 +285,7 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
         },
         dataType: "json",
         beforeSend: function(){
-            if(btnFunction == 0){ 
+            if(btnFunction == 0){
                 console.log(btnFunction);
                 $('#prodn_stime', $('#formProductionHistory')).prop('readonly', true);
                 $('#standard_para_date', $('#formProductionHistory')).prop('readonly', true);
@@ -298,19 +297,22 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
                 $('#ccd_setting_s2', $('#formProductionHistory')).prop('readonly', true);
                 $('#ccd_setting_ng', $('#formProductionHistory')).prop('readonly', true);
                 $('#changes_para', $('#formProductionHistory')).prop('readonly', true);
-                $('#shots', $('#formProductionHistory')).prop('disabled', true);
-                $('#remarks', $('#formProductionHistory')).prop('disabled', true);
-                $('#prodn_etime', $('#formProductionHistory')).prop('disabled', true);
-                $('#machine_no', $('#formProductionHistory')).prop('disabled', true);
+                $('#shots', $('#formProductionHistory')).prop('readonly', true);
+                $('#remarks', $('#formProductionHistory')).prop('readonly', true);
+                $('#prodn_etime', $('#formProductionHistory')).prop('readonly', true);
+                $('#machine_no', $('#formProductionHistory')).prop('readonly', true);
                 $('#btnScanQrMaterialLotNo', $('#formProductionHistory')).prop('disabled', true);
                 $('#btnScanQrPMaterialLotNo', $('#formProductionHistory')).prop('disabled', true);
                 $('#btnSubmit',  $('#formProductionHistory')).hide();
                 $('.divBtnMultiples').attr('style', 'display: none !important');
-                
+
             }
         },
         success: function (data) {
-            let prodPartsMat;
+            let prodPartsMat; //collection
+
+            //get machine
+            getMachineDropdown($('#machine_no'), $('#device_name').val());
             $('#prodn_history_id').val(pId);
             $('#prodn_date').val(data['prodHistory']['prodn_date']);
             $('#prodn_stime').val(data['prodHistory']['prodn_stime']);
@@ -356,14 +358,14 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
                         for(let y = 1; y < data['prodHistoryPartMat'][x]['count_pm']; y++){ // for clicking the add btn for multiple
                             $(`#btnAddPmLotNo${data['prodHistoryPartMat'][x]['pm_group']}`).click();
                         }
-    
+
                         for(let z = 0; z < data['collection'][data['prodHistoryPartMat'][x]['pm_group']].length; z++){
                             // pmat_lot_no-2_0_0
                             let data1 = data['collection'][data['prodHistoryPartMat'][x]['pm_group']][z];
-                            console.log(`pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`);
+                            console.log('pm_group',`pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`);
                             $(`#pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`).val(data1['pm_lot_no']);
                         }
-    
+
                     }
                 }
                 else{
@@ -371,12 +373,12 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
                         if(x != $('#pmLot1Counter').val()){
                             $('#btnAddPmLotNo1').click();
                         }
-    
+
                         $(`#pmat_lot_no_${x}`).val(data['collection'][1][x]['pm_lot_no']);
                     }
                 }
             }
-            
+
 
             $('#modalProductionHistory').modal('show');
 
