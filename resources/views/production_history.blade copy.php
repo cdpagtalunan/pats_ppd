@@ -328,7 +328,7 @@
                                             <input class="form-control form-control-sm" type="text" id="material_code" name="material_code" value="101862401" readonly>
                                             <input class="form-control form-control-sm" type="text" id="material_name" name="material_name" value="GENESTAR GN2450-1 BLK" readonly>
                                         </div>
-                                        {{-- <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group input-group-sm mb-3">
                                             <div class="input-group-prepend w-25">
                                                 <span class="input-group-text w-100" id="basic-addon1">Material Lot No.</span>
                                             </div>
@@ -336,7 +336,7 @@
                                             <div class="input-group-prepend">
                                                 <button type="button" class="btn btn-primary" id="btnScanQrMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
                                             </div>
-                                        </div><br> --}}
+                                        </div><br>
 
                                         <input type="hidden" id="txtPMCat" name="pm_cat">
                                         <div class="py-3">
@@ -361,7 +361,9 @@
 
 
 
-                                            {{-- <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3">
+                                                {{-- <input type="hidden" class="form-control form-control-sm" id="textMaterialLotNumberChecking" name="material_lot_number_checking"> --}}
+
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.1</span>
                                                 </div>
@@ -369,7 +371,7 @@
                                                 <div class="input-group-prepend">
                                                     <button type="button" class="btn btn-primary btnPMScanQR1" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo" disabled><i class="fa fa-qrcode w-100"></i></button>
                                                 </div>
-                                            </div> --}}
+                                            </div>
                                             <div id="divMultiplePartsLot1">
 
                                             </div>
@@ -411,16 +413,15 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_0" name="pmaterial_name2_0" value="CT 5869-VE" readonly>
                                             </div>
 
-                                            {{-- nmodify <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
                                                 <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_0_0" name="pmat_lot_no2_0[]" data-ref="2_0" readonly>
-                                                <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_prod_runcard-2_0_0" name="pmat_prod_runcard2_0[]" data-ref="2_0" disabled>
                                                 <div class="input-group-prepend">
                                                     <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
                                                 </div>
-                                            </div> --}}
+                                            </div>
                                             <div id="divMultiplePartsLot2_0">
 
                                             </div>
@@ -440,7 +441,7 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_1" name="pmaterial_name2_1" value="CT 5870-VE" readonly>
                                             </div>
 
-                                            {{-- <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
@@ -448,7 +449,7 @@
                                                 <div class="input-group-prepend">
                                                     <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
                                                 </div>
-                                            </div> --}}
+                                            </div>
 
                                             <div id="divMultiplePartsLot2_1">
 
@@ -468,7 +469,7 @@
                                                 <input class="form-control form-control-sm pmMatName2" type="text" id="pmaterial_name2_2" name="pmaterial_name2_2" value="CN171P-02#ME-VE" readonly>
                                             </div>
 
-                                            {{-- <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
@@ -476,7 +477,7 @@
                                                 <div class="input-group-prepend">
                                                     <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
                                                 </div>
-                                            </div> --}}
+                                            </div>
 
                                             <div id="divMultiplePartsLot2_2">
 
@@ -528,7 +529,7 @@
                                             </div>
 
 
-                                            {{-- <div class="input-group input-group-sm mb-3">
+                                            <div class="input-group input-group-sm mb-3">
                                                 <div class="input-group-prepend w-25">
                                                     <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.0</span>
                                                 </div>
@@ -536,7 +537,7 @@
                                                 <div class="input-group-prepend">
                                                     <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
                                                 </div>
-                                            </div> --}}
+                                            </div>
                                             <div id="divMultiplePartsLot3_1">
 
                                             </div>
@@ -735,131 +736,17 @@
         let ProductionHistory;
         var first_molding_device_id;
         $(document).ready(function () {
-            const getFirstMoldingContactLotNumByDateMachineNum = function (prodnDate,machineNo,globalDeviceNameId,deviceName,pmCat){
-                $.ajax({
-                    type: "GET",
-                    url: "get_first_molding_contact_lot_num_by_date_machine_num",
-                    data: {
-                        "prodn_date":prodnDate,
-                        "machine_no":machineNo,
-                        "global_device_name_id":globalDeviceNameId,
-                        "device_name":deviceName,
-                        "pm_cat":pmCat,
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        if(pmCat == 1){
-                            $(`#divMultiplePartsLot1`).empty();
-                            // <div class="input-group input-group-sm mb-3">
-                            //     <div class="input-group-prepend w-25">
-                            //         <span class="input-group-text w-100" id="basic-addon1">Material Lot No.</span>
-                            //     </div>
-                            //     <input class="form-control form-control-sm" type="text" id="material_lotno" name="material_lotno" readonly>
-                            //     <div class="input-group-prepend">
-                            //         <button type="button" class="btn btn-primary" id="btnScanQrMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
-                            //     </div>
-                            // </div>
-                            $.each(response.first_molding, function(index, data) {
-                                let  contact_lot_number = data['contact_lot_number'];
-                                if(contact_lot_number =! null ){
-                                    let result =
-                                        `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot1_${index}">
-                                            <div class="input-group-prepend w-25">
-                                                <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
-                                            </div>
-                                            <input class="form-control form-control-sm pmLotNum2" type="text" id="firt_molding_id_${index}" name="firt_molding_id[]" readonly>
-                                            <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no_${index}" name="pmat_lot_no[]" disabled>
-                                            <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard_${index}" name="prodn_runcard[]" disabled>
-                                            <div class="input-group-prepend">
-                                                <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
-                                            </div>
-                                        </div>`;
-                                    $(`#divMultiplePartsLot1`).append(result);
-                                    $(`#firt_molding_id_${index}`).val(data['id']);
-                                    $(`#pmat_lot_no_${index}`).val(data['contact_lot_number']);
-                                    $(`#prodn_runcard_${index}`).val(data['production_lot']+data['production_lot_extension']);
-                                }
-                            });
-                        }
-
-                        if(pmCat == 2){
-                            $(`#divMultiplePartsLot2_0`).empty();
-                            $(`#divMultiplePartsLot2_1`).empty();
-                            $(`#divMultiplePartsLot2_2`).empty();
-                            $.each(response.sec_molding_runcard, function(index, data) {
-                                let  contact_name_lot_number_one = data['contact_name_lot_number_one'];
-                                let  contact_name_lot_number_second = data['contact_name_lot_number_second'];
-                                let  me_name_lot_number_one = data['me_name_lot_number_one'];
-                                if(contact_name_lot_number_one =! null ){
-                                    let result = `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot2_${index}">
-                                        <div class="input-group-prepend w-25">
-                                            <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
-                                        </div>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="sec_molding_runcards_id-2_0_${index}" name="sec_molding_runcards_id2_0[]"  data-ref="2_0" readonly>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_0_${index}" name="pmat_lot_no2_0[]"  data-ref="2_0" disabled>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard-2_0_${index}" name="prodn_runcard2_0[]"  data-ref="2_0" disabled>
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                    </div>`;
-                                    $(`#divMultiplePartsLot2_0`).append(result);
-                                    $(`#sec_molding_runcards_id-2_0_${index}`).val(data['id']);
-                                    $(`#pmat_lot_no-2_0_${index}`).val(data['contact_name_lot_number_one']);
-                                    $(`#prodn_runcard-2_0_${index}`).val(data['production_lot']);
-                                }
-                                if(contact_name_lot_number_second =! null ){
-                                    let result = `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot2_${index}">
-                                        <div class="input-group-prepend w-25">
-                                            <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
-                                        </div>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="sec_molding_runcards_id-2_1_${index}" name="sec_molding_runcards_id2_1[]"  data-ref="2_1" readonly>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_1_${index}" name="pmat_lot_no2_1[]"  data-ref="2_1" disabled>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard-2_1_${index}" name="prodn_runcard2_1[]"  data-ref="2_1" disabled>
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                    </div>`;
-                                    $(`#divMultiplePartsLot2_1`).append(result);
-                                    $(`#sec_molding_runcards_id-2_1_${index}`).val(data['id']);
-                                    $(`#pmat_lot_no-2_1_${index}`).val(data['contact_name_lot_number_second']);
-                                    $(`#prodn_runcard-2_1_${index}`).val(data['production_lot']);
-                                }
-                                if(me_name_lot_number_one =! null ){
-                                    let result = `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot2_${index}">
-                                        <div class="input-group-prepend w-25">
-                                            <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
-                                        </div>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="sec_molding_runcards_id-2_2_${index}" name="sec_molding_runcards_id2_2[]"  data-ref="2_2" readonly>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_2_${index}" name="pmat_lot_no2_2[]"  data-ref="2_2" disabled>
-                                        <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard-2_2_${index}" name="prodn_runcard2_2[]"  data-ref="2_2" disabled>
-                                        <div class="input-group-prepend">
-                                            <button type="button" class="btn btn-primary btnPmScan" id="btnScanQrPMaterialLotNo" form-value="formMaterialLotNo"><i class="fa fa-qrcode w-100"></i></button>
-                                        </div>
-                                    </div>`;
-                                    $(`#divMultiplePartsLot2_2`).append(result);
-                                    $(`#sec_molding_runcards_id-2_2_${index}`).val(data['id']);
-                                    $(`#pmat_lot_no-2_2_${index}`).val(data['me_name_lot_number_one']);
-                                    $(`#prodn_runcard-2_2_${index}`).val(data['production_lot']);
-                                }
-                            });
-                        }
-
-                    },error: function(data, xhr, status){
-                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
-                    }
-                });
+            const getFirstMoldingContactLotNumByDateMachineNum = function (prodnDate,machineNo){
+                console.log('prodnDate',prodnDate);
+                console.log('machineNo',machineNo);
             }
             $('#formProductionHistory').find('#prodn_date').change(function (e) {
                 e.preventDefault();
                 let prodnDate = $(this).val();
                 let machineNo = $('#formProductionHistory').find('#machine_no').val();
-                let globalDeviceNameId = $('#formProductionHistory').find('#global_device_name_id').val();
-                let deviceName = $('#formProductionHistory').find('#device_name').val();
-                let pmCat = $('#formProductionHistory').find('#txtPMCat').val();
 
-                getFirstMoldingContactLotNumByDateMachineNum(prodnDate,machineNo,globalDeviceNameId,deviceName,pmCat);
+                getFirstMoldingContactLotNumByDateMachineNum(prodnDate,machineNo);
             });
-
             // getFirstModlingDevices();
             getFirstModlingDevicesForHistory();
             // getOperatorList($('.selOpName'));
@@ -1356,7 +1243,7 @@
 
             });
 
-            $('#btnRemovePmLotNo1').on('click', function(e){ //btnRemovePmLotNo2_0
+            $('#btnRemovePmLotNo1').on('click', function(e){
                 e.preventDefault();
                 let counter = $('#pmLot1Counter').val();
 
@@ -1373,7 +1260,7 @@
             /*
                 * START OF MULTIPLE PM LOT FOR CN171P-02#IN-VE
             */
-            $('#btnAddPmLotNo2_0').on('click', function(e){ //nmodify
+            $('#btnAddPmLotNo2_0').on('click', function(e){
                 e.preventDefault();
                 let counter = $('#pmLot2Counter').val();
                 counter = Number(counter) + 1;

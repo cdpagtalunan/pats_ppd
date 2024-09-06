@@ -519,6 +519,7 @@ Route::controller(DefectsInfoController::class)->group(function () {
 Route::controller(ProductionHistoryController::class)->group(function () {
     Route::post('/add_prodn_history', 'add_prodn_history')->name('add_prodn_history');
     Route::get('/load_prodn_history_details', 'load_prodn_history_details')->name('load_prodn_history_details');
+    Route::get('/get_first_molding_contact_lot_num_by_date_machine_num', 'get_first_molding_contact_lot_num_by_date_machine_num')->name('get_first_molding_contact_lot_num_by_date_machine_num');
     // Route::get('/get_optr_list', 'get_optr_list')->name('get_optr_list');
     // Route::get('/get_material_list', 'get_material_list')->name('get_material_list');
     // Route::get('/check_material_details', 'check_material_details')->name('check_material_details');
@@ -663,3 +664,5 @@ Route::controller(MaterialProcessController::class)->group(function () {
     Route::post('/add_material_process', 'add_material_process');
     Route::post('/change_mat_proc_status', 'change_mat_proc_status');
 });
+
+

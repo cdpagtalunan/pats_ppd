@@ -13,7 +13,7 @@ class FirstMolding extends Model
 {
     protected $connection = 'mysql';
     protected $table = 'first_moldings';
-    
+
     /**
      * Get the user associated with the FirstMolding
      *
@@ -23,12 +23,15 @@ class FirstMolding extends Model
         return $this->hasOne(FirstMoldingDevice::class,'id','first_molding_device_id')->whereNull('deleted_at');
     }
 
+    public function firstMoldingMaterialList(){
+        return $this->hasOne(FirstMoldingMaterialList::class,'id','first_molding_id')->whereNull('deleted_at');
+    }
     // public function molding_ipqc_inspection_info(){
     //     return $this->hasOne(MoldingIpqcInspection::class,'id','fk_molding_id ');
     // }
 
     public function first_molding_ipqc(){
-    	return $this->hasOne(MoldingAssyIpqcInspection::class, 'fk_molding_assy_id', 'id');
+    	return $this->hasOne(MoldingAssyIpqcInspection::class, 'fk_molding_assy_id', 'id')->whereNull('deleted_at');
     }
 
     /**

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use DataTables;
+use App\Models\FirstMolding;
 use Illuminate\Http\Request;
 use App\Models\ProductionHistory;
+use App\Models\SecMoldingRuncard;
 use App\Models\FirstMoldingDevice;
 use Illuminate\Support\Facades\DB;
 use App\Models\ProductionHistoryPartsMat;
@@ -317,14 +319,13 @@ class ProductionHistoryController extends Controller
             $validator = Validator::make($data, $validation);
             if ($validator->fails()) {
                 return response()->json(['result' => '0', 'error' => $validator->messages()]);
-            }
-            else{
+            }else{
                 DB::beginTransaction();
                     // $operator = implode($request->opt_name, ', ');
                     // return $request->all();
                     $add_process_array = array(
                         'fkid_molding_devices' => $request->global_device_name_id,
-                        'status' => 0,
+                        'status' => 2,
                         'prodn_date' => $request->prodn_date,
                         'prodn_stime' => $request->prodn_stime,
                         'shift' => $request->shift,
@@ -504,6 +505,32 @@ class ProductionHistoryController extends Controller
             // 'value' =>  $arr_first_molding_device_value
             'data' => $first_molding_device
         ]);
+    }
+    public function get_first_molding_contact_lot_num_by_date_machine_num(Request $request){
+        date_default_timezone_set('Asia/Manila');
+        try {
+            $first_molding = FirstMolding::with('firstMoldingMaterialList')
+            ->whereNull('deleted_at')
+            ->where('first_molding_device_id', $request->global_device_name_id)
+            ->whereDate('created_at', '=', $request->prodn_date)
+            ->get(['id','contact_lot_number','production_lot','production_lot_extension']);
+
+            if( count($first_molding) != 0 ){
+                return response()->json(['is_success' => 'true','first_molding'=>$first_molding]);
+            }else{
+                $sec_molding_runcard = SecMoldingRuncard::whereNull('deleted_at')
+                ->where('machine_number', $request->machine_no)
+                ->where('device_name', $request->device_name)
+                ->whereDate('created_at', '=', $request->prodn_date)
+                ->get(['id','production_lot','contact_name_lot_number_one','contact_name_lot_number_second','me_name_lot_number_one','material_lot_number']);
+                return response()->json(['is_success' => 'true','sec_molding_runcard'=>$sec_molding_runcard]);
+            }
+
+
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json(['is_success' => 'false', 'exceptionError' => $e->getMessage()]);
+        }
     }
 
 }

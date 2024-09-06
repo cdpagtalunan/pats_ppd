@@ -310,7 +310,6 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
         },
         success: function (data) {
             let prodPartsMat; //collection
-
             //get machine
             getMachineDropdown($('#machine_no'), $('#device_name').val());
             $('#prodn_history_id').val(pId);
@@ -365,7 +364,6 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
                             console.log('pm_group',`pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`);
                             $(`#pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`).val(data1['pm_lot_no']);
                         }
-
                     }
                 }
                 else{
