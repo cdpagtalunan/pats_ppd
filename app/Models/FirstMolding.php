@@ -23,8 +23,8 @@ class FirstMolding extends Model
         return $this->hasOne(FirstMoldingDevice::class,'id','first_molding_device_id')->whereNull('deleted_at');
     }
 
-    public function firstMoldingMaterialList(){
-        return $this->hasOne(FirstMoldingMaterialList::class,'id','first_molding_id')->whereNull('deleted_at');
+    public function first_molding_material_list(){
+        return $this->hasOne(FirstMoldingMaterialList::class,'first_molding_id','id')->whereNull('deleted_at');
     }
     // public function molding_ipqc_inspection_info(){
     //     return $this->hasOne(MoldingIpqcInspection::class,'id','fk_molding_id ');

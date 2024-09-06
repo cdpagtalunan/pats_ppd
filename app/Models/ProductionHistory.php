@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\FirstMoldingDevice;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ProductionHistory extends Model
 {
@@ -23,6 +24,11 @@ class ProductionHistory extends Model
 
     public function prod_history_parts_mat_details(){
         return $this->hasMany(ProductionHistoryPartsMat::class, 'prod_history_id', 'id');
+    }
+
+    public function first_molding_device(){
+        return $this->hasOne(FirstMoldingDevice::class, 'id', 'fkid_molding_devices')->whereNull('deleted_at');
+
     }
 
 }

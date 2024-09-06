@@ -139,158 +139,6 @@ class ProductionHistoryController extends Controller
         ->make(true);
     }
 
-    // public function add_prodn_history(Request $request){
-
-    //     date_default_timezone_set('Asia/Manila');
-
-    //     $validation = array(
-    //         'global_device_name_id' => ['required'],
-    //         'prodn_date' => ['required'],
-    //         'prodn_stime' => ['required'],
-    //         'shift' => ['required'],
-    //         'machine_no' => ['required'],
-    //         'standard_para_date' => ['required'],
-    //         'act_cycle_time' => ['required'],
-    //         'shot_weight' => ['required'],
-    //         'product_weight' => ['required'],
-    //         'screw_most_fwd' => ['required'],
-    //         'ccd_setting_s1' => ['required'],
-    //         'ccd_setting_s2' => ['required'],
-    //         'ccd_setting_ng' => ['required'],
-    //         'remarks' => ['required'],
-    //         'opt_id' => ['required'],
-    //         'shots' => ['required'],
-    //         'prodn_etime' => ['required'],
-    //         'qc_id' => ['required'],
-    //     );
-
-    //     $data = $request->all();
-    //     $validator = Validator::make($data, $validation);
-    //     if ($validator->fails()) {
-    //         return response()->json(['result' => '0', 'error' => $validator->messages()]);
-    //     }
-    //     else{
-    //         DB::beginTransaction();
-    //         try{
-    //             // $operator = implode($request->opt_name, ', ');
-    //             // return $request->all();
-    //             $add_process_array = array(
-    //                 'fkid_molding_devices' => $request->global_device_name_id,
-    //                 'status' => 0,
-    //                 'prodn_date' => $request->prodn_date,
-    //                 'prodn_stime' => $request->prodn_stime,
-    //                 'shift' => $request->shift,
-    //                 'machine_no' => $request->machine_no,
-    //                 'standard_para_date' => $request->standard_para_date,
-    //                 // 'standard_para_attach' => $request->standard_para_attach,
-    //                 'act_cycle_time' => $request->act_cycle_time,
-    //                 'shot_weight' => $request->shot_weight,
-    //                 'product_weight' => $request->product_weight,
-    //                 'screw_most_fwd' => $request->screw_most_fwd,
-    //                 'ccd_setting_s1' => $request->ccd_setting_s1,
-    //                 'ccd_setting_s2' => $request->ccd_setting_s2,
-    //                 'ccd_setting_ng' => $request->ccd_setting_ng,
-    //                 'changes_para' => $request->changes_para,
-    //                 'remarks' => $request->remarks,
-    //                 'opt_id' => $request->opt_id,
-    //                 'shots' => $request->shots,
-    //                 'prodn_etime' => $request->prodn_etime,
-    //                 'qc_id' => $request->qc_id,
-
-    //             );
-
-    //             $edit_process_array = array(
-    //                 'status' => 2,
-    //                 'material_name' => $request->material_name,
-    //                 'material_lot' => $request->material_lotno,
-    //                 'shots' => $request->shots,
-    //                 'prodn_etime' => $request->prodn_etime,
-    //                 'qc_id' => $request->qc_id,
-
-    //             );
-    //             if(isset($production_history_id)){ // EDIT
-    //                 return 'EDIT';
-
-    //                 if($request->pm_cat == 1){
-    //                     /*
-    //                         * pmaterial_code, pmaterial_name only
-    //                         * pmat_lot_no only
-    //                     */
-    //                     $pm_code = $request->pmaterial_code;
-    //                     $pm_name = $request->pmaterial_name;
-    //                     for ($i=0; $i < count($request->pmat_lot_no); $i++) {
-    //                         ProductionHistoryPartsMat::insert([
-    //                             'prod_history_id' => $request->prodn_history_id,
-    //                             'pm_group'        => 1,
-    //                             'pm_name'         => $pm_name,
-    //                             'pm_code'         => $pm_code,
-    //                             'pm_lot_no'       => $request->pmat_lot_no[$i],
-    //                             'created_by'      => session()->get('user_id'),
-    //                             'created_at'      => NOW()
-    //                         ]);
-    //                     }
-
-    //                 }
-    //                 else if($request->pm_cat == 2){
-    //                     for ($i=0; $i < 3; $i++) {
-    //                         $pm_code = $request["pmaterial_code2_$i"];
-    //                         $pm_name = $request["pmaterial_name2_$i"];
-    //                         $counter = 0;
-    //                         foreach($request["pmat_lot_no2_$i"] AS $pm_lot_no){
-    //                             ProductionHistoryPartsMat::insert([
-    //                                 'prod_history_id' => $request->prodn_history_id,
-    //                                 'pm_group'        => "2_".$i,
-    //                                 'pm_name'         => $pm_name,
-    //                                 'pm_code'         => $pm_code,
-    //                                 'pm_lot_no'       => $pm_lot_no,
-    //                                 'created_by'      => session()->get('user_id'),
-    //                                 'created_at'      => NOW()
-    //                             ]);
-    //                             $counter++;
-    //                         }
-    //                     }
-    //                 }
-    //                 else if($request->pm_cat == 3){
-    //                     // return $request->all();
-    //                     for ($i=0; $i < 4; $i++) {
-    //                         $pm_code = $request["pmaterial_code3_$i"];
-    //                         $pm_name = $request["pmaterial_name3_$i"];
-    //                         $counter = 0;
-
-    //                         foreach($request["pmat_lot_no3_$i"] AS $pm_lot_no){
-    //                             ProductionHistoryPartsMat::insert([
-    //                                 'prod_history_id' => $request->prodn_history_id,
-    //                                 'pm_group'        => "3_".$i,
-    //                                 'pm_name'         => $pm_name,
-    //                                 'pm_code'         => $pm_code,
-    //                                 'pm_lot_no'       => $pm_lot_no,
-    //                                 'created_by'      => session()->get('user_id'),
-    //                                 'created_at'      => NOW()
-    //                             ]);
-    //                             $counter++;
-    //                         }
-    //                     }
-    //                 }
-    //                 ProductionHistory::where('id', $request->prodn_history_id)
-    //                 ->update($edit_process_array);
-    //             }
-    //             else{ // ADD
-    //                 // return $add_process_array;
-    //                 ProductionHistory::insert($add_process_array);
-    //             }
-    //             DB::commit();
-    //             return response()->json(['result' => 1, 'msg' => 'Transaction Succesful']);
-    //         }
-    //         catch(Exemption $e){
-    //             DB::rollback();
-    //             return $e;
-    //         }
-
-
-
-    //     }
-    // }
-
     public function add_prodn_history(Request $request){
         try{
             date_default_timezone_set('Asia/Manila');
@@ -314,6 +162,8 @@ class ProductionHistoryController extends Controller
                 'prodn_etime' => ['required'],
                 'qc_id' => ['required'],
             );
+
+        
 
             $data = $request->all();
             $validator = Validator::make($data, $validation);
@@ -347,18 +197,8 @@ class ProductionHistoryController extends Controller
                         'qc_id' => $request->qc_id,
 
                     );
-
-                    $edit_process_array = array(
-                        'status' => 2,
-                        'material_name' => $request->material_name,
-                        'material_lot' => $request->material_lotno,
-                        'shots' => $request->shots,
-                        'prodn_etime' => $request->prodn_etime,
-                        'qc_id' => $request->qc_id,
-
-                    );
                     if(isset($request->prodn_history_id)){ // EDIT
-                        ProductionHistory::where('id', $request->prodn_history_id)->update($edit_process_array);
+                        ProductionHistory::where('id', $request->prodn_history_id)->update($add_process_array);
                         $production_history_id = $request->prodn_history_id;
                         // $is_first_molding_deleted = ProductionHistory::find($production_history_id)->delete();
                         ProductionHistoryPartsMat::where('prod_history_id', $production_history_id)->update([
@@ -377,30 +217,31 @@ class ProductionHistoryController extends Controller
                         */
                         $pm_code = $request->pmaterial_code;
                         $pm_name = $request->pmaterial_name;
-                        for ($i=0; $i < count($request->pmat_lot_no); $i++) {
-                            ProductionHistoryPartsMat::insert([
-                                'prod_history_id' => $production_history_id,
-                                'pm_group'        => 1,
-                                'pm_name'         => $pm_name,
-                                'pm_code'         => $pm_code,
-                                'pm_lot_no'       => $request->pmat_lot_no[$i],
-                                'created_by'      => session()->get('user_id'),
-                                'created_at'      => NOW()
-                            ]);
+                        foreach($request["firt_moldings_id"] as $key => $firt_moldings_id){
+                                ProductionHistoryPartsMat::insert([
+                                    'prod_history_id' => $production_history_id,
+                                    'first_moldings_id' => $firt_moldings_id,
+                                    'pm_group'        => 1,
+                                    'pm_name'         => $pm_name,
+                                    'pm_code'         => $pm_code,
+                                    'created_by'      => session()->get('user_id'),
+                                    'created_at'      => NOW()
+                                ]);
                         }
                     }
                     else if($request->pm_cat == 2){
                         for ($i=0; $i < 3; $i++) {
-                            $pm_code = $request["pmaterial_code2_$i"];
                             $pm_name = $request["pmaterial_name2_$i"];
+                            $pm_code = $request["pmaterial_code2_$i"];
                             $counter = 0;
-                            foreach($request["pmat_lot_no2_$i"] AS $pm_lot_no){
+                            foreach($request["sec_molding_runcards_id2_$i"] as $key => $sec_molding_runcards_id){
+                                // echo json_encode($sec_molding_runcards_id);
                                 ProductionHistoryPartsMat::insert([
                                     'prod_history_id' => $production_history_id,
+                                    'sec_molding_runcards_id' => $sec_molding_runcards_id,
                                     'pm_group'        => "2_".$i,
                                     'pm_name'         => $pm_name,
                                     'pm_code'         => $pm_code,
-                                    'pm_lot_no'       => $pm_lot_no,
                                     'created_by'      => session()->get('user_id'),
                                     'created_at'      => NOW()
                                 ]);
@@ -414,14 +255,13 @@ class ProductionHistoryController extends Controller
                             $pm_code = $request["pmaterial_code3_$i"];
                             $pm_name = $request["pmaterial_name3_$i"];
                             $counter = 0;
-
-                            foreach($request["pmat_lot_no3_$i"] AS $pm_lot_no){
+                            foreach($request["sec_molding_runcards_id"] AS $sec_molding_runcards_id){
                                 ProductionHistoryPartsMat::insert([
                                     'prod_history_id' => $production_history_id,
+                                    'sec_molding_runcards_id' => $sec_molding_runcards_id,
                                     'pm_group'        => "3_".$i,
                                     'pm_name'         => $pm_name,
                                     'pm_code'         => $pm_code,
-                                    'pm_lot_no'       => $pm_lot_no,
                                     'created_by'      => session()->get('user_id'),
                                     'created_at'      => NOW()
                                 ]);
@@ -454,29 +294,26 @@ class ProductionHistoryController extends Controller
         $prod_history =  ProductionHistory::with([
             'operator_info',
             'qc_info',
+            'first_molding_device'
         ])->whereNull('deleted_at')
         ->where('id', $request->id)->first();
-        $prod_history_part_mat = ProductionHistoryPartsMat::where('prod_history_id', $prod_history->id)
-        ->select('pm_group', DB::raw('COUNT(pm_group) AS count_pm'))
-        ->whereNull('deleted_at')
-        ->groupBy('pm_group')
-        ->get();
 
-        $collection = array();
-
-        foreach($prod_history_part_mat AS $prod_hist){
-            $collection[$prod_hist->pm_group] = DB::connection('mysql')
-            ->table('production_history_parts_mats')
-            ->select('*')
-            ->where('prod_history_id', $prod_history->id)
-            ->where('pm_group', $prod_hist->pm_group)
+        if($request->pm_cat == 1){
+            $first_molding = FirstMolding::with('first_molding_material_list')
+            ->whereNull('deleted_at')
+            ->where('first_molding_device_id', $prod_history->fkid_molding_devices)
+            ->whereDate('created_at', '=', $prod_history->prodn_date)
             ->get();
+            return response()->json(['is_success' => 'true','prodHistory' => $prod_history,'first_molding'=>$first_molding]);
         }
-        return response()->json([
-            'prodHistory' => $prod_history,
-            'prodHistoryPartMat' => $prod_history_part_mat,
-            'collection' => $collection
-        ]);
+        if($request->pm_cat == 2){
+            $sec_molding_runcard = SecMoldingRuncard::whereNull('deleted_at')
+            ->where('machine_number', $prod_history->machine_no)
+            ->where('device_name', $prod_history->first_molding_device->device_name)
+            ->whereDate('created_at', '=', $prod_history->prodn_date)
+            ->get(['id','production_lot','contact_name_lot_number_one','contact_name_lot_number_second','me_name_lot_number_one','material_lot_number']);
+            return response()->json(['is_success' => 'true','prodHistory' => $prod_history,'sec_molding_runcard'=>$sec_molding_runcard]);
+        }
     }
 
     public function getMachine(Request $request){
@@ -509,12 +346,11 @@ class ProductionHistoryController extends Controller
     public function get_first_molding_contact_lot_num_by_date_machine_num(Request $request){
         date_default_timezone_set('Asia/Manila');
         try {
-            $first_molding = FirstMolding::with('firstMoldingMaterialList')
+            $first_molding = FirstMolding::with('first_molding_material_list')
             ->whereNull('deleted_at')
             ->where('first_molding_device_id', $request->global_device_name_id)
             ->whereDate('created_at', '=', $request->prodn_date)
-            ->get(['id','contact_lot_number','production_lot','production_lot_extension']);
-
+            ->get();
             if( count($first_molding) != 0 ){
                 return response()->json(['is_success' => 'true','first_molding'=>$first_molding]);
             }else{
@@ -522,7 +358,10 @@ class ProductionHistoryController extends Controller
                 ->where('machine_number', $request->machine_no)
                 ->where('device_name', $request->device_name)
                 ->whereDate('created_at', '=', $request->prodn_date)
-                ->get(['id','production_lot','contact_name_lot_number_one','contact_name_lot_number_second','me_name_lot_number_one','material_lot_number']);
+                ->get([ 'id','production_lot','contact_name_lot_number_one','contact_name_lot_number_second',
+                        'me_name_lot_number_one','material_lot_number','lot_number_eight_first_molding_id',
+                        'lot_number_nine_first_molding_id','lot_number_ten'
+                ]);
                 return response()->json(['is_success' => 'true','sec_molding_runcard'=>$sec_molding_runcard]);
             }
 

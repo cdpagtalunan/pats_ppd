@@ -198,41 +198,28 @@ function AddProdnHistory() {
                     $("#opt_name").addClass('is-invalid');
                     $("#opt_name").attr('title', JsonObject['error']['opt_id']);
                 }
-
-                // if (JsonObject['error']['shots'] === undefined) {
-                //     $("#shots").removeClass('is-invalid');
-                //     $("#shots").attr('title', '');
-                // } else {
-                //     $("#shots").addClass('is-invalid');
-                //     $("#shots").attr('title', JsonObject['error']['shots']);
-                // }
-                // if (JsonObject['error']['prodn_etime'] === undefined) {
-                //     $("#prodn_etime").removeClass('is-invalid');
-                //     $("#prodn_etime").attr('title', '');
-                // } else {
-                //     $("#prodn_etime").addClass('is-invalid');
-                //     $("#prodn_etime").attr('title', JsonObject['error']['prodn_etime']);
-                // }
-                // if (JsonObject['error']['qc_id'] === undefined) {
-                //     $("#qc_name").removeClass('is-invalid');
-                //     $("#qc_name").attr('title', '');
-                // } else {
-                //     $("#qc_name").addClass('is-invalid');
-                //     $("#qc_name").attr('title', JsonObject['error']['qc_id']);
-                // }
-                // if (JsonObject['error']['material_lot'] === undefined) {
-                //     $("#material_lotno").removeClass('is-invalid');
-                //     $("#material_lotno").attr('title', '');
-                // } else {
-                //     $("#material_lotno").addClass('is-invalid');
-                //     $("#material_lotno").attr('title', JsonObject['error']['material_lot']);
-                // }
-
-
-
-
+                if (JsonObject['error']['shots'] === undefined) {
+                    $("#shots").removeClass('is-invalid');
+                    $("#shots").attr('title', '');
+                } else {
+                    $("#shots").addClass('is-invalid');
+                    $("#shots").attr('title', JsonObject['error']['shots']);
+                }
+                if (JsonObject['error']['prodn_etime'] === undefined) {
+                    $("#prodn_etime").removeClass('is-invalid');
+                    $("#prodn_etime").attr('title', '');
+                } else {
+                    $("#prodn_etime").addClass('is-invalid');
+                    $("#prodn_etime").attr('title', JsonObject['error']['prodn_etime']);
+                }
+                if (JsonObject['error']['qc_id'] === undefined) {
+                    $("#qc_name").removeClass('is-invalid');
+                    $("#qc_name").attr('title', '');
+                } else {
+                    $("#qc_name").addClass('is-invalid');
+                    $("#qc_name").attr('title', JsonObject['error']['qc_id']);
+                }
             }
-
             // $("#ibtnSubmitIcon").removeClass('fa fa-spinner fa-pulse');
             // $("#btnSubmit").removeAttr('disabled');
             // $("#ibtnSubmitIcon").addClass('fa fa-check');
@@ -271,7 +258,7 @@ const getFirstModlingDevicesForHistory = () => {
     });
 }
 
-const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
+const getProdHistoryById = (pId, btnFunction, firstMoldingDevId,pmCat) => {
     // 0= viewing, 1-edit
     /*
         * firstMoldingDevId => for viewing purposes only.
@@ -281,7 +268,8 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
         type: "get",
         url: "get_prodn_history_by_id",
         data: {
-            "id" : pId
+            "id" : pId,
+            "pm_cat" : pmCat
         },
         dataType: "json",
         beforeSend: function(){
@@ -308,40 +296,40 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
 
             }
         },
-        success: function (data) {
+        success: function (response ) {
             let prodPartsMat; //collection
             //get machine
             getMachineDropdown($('#machine_no'), $('#device_name').val());
             $('#prodn_history_id').val(pId);
-            $('#prodn_date').val(data['prodHistory']['prodn_date']);
-            $('#prodn_stime').val(data['prodHistory']['prodn_stime']);
-            $('#shift').val(data['prodHistory']['shift']);
-            $('#machine_no').val(data['prodHistory']['machine_no']);
-            $('#standard_para_date').val(data['prodHistory']['standard_para_date']);
-            $('#standard_para_attach').val(data['prodHistory']['standard_para_attach']);
-            $('#act_cycle_time').val(data['prodHistory']['act_cycle_time']);
-            $('#shot_weight').val(data['prodHistory']['shot_weight']);
-            $('#product_weight').val(data['prodHistory']['product_weight']);
-            $('#screw_most_fwd').val(data['prodHistory']['screw_most_fwd']);
-            $('#ccd_setting_s1').val(data['prodHistory']['ccd_setting_s1']);
-            $('#ccd_setting_s2').val(data['prodHistory']['ccd_setting_s2']);
-            $('#ccd_setting_ng').val(data['prodHistory']['ccd_setting_ng']);
-            $('#changes_para').val(data['prodHistory']['changes_para']);
-            $("#remarks").val(data['prodHistory']['remarks']).trigger('change');
-            $('#opt_name').val(data['prodHistory']['operator_info']['firstname']+' '+data['prodHistory']['operator_info']['lastname']);
-            $('#opt_id').val(data['prodHistory']['opt_id']);
+            $('#prodn_date').val(response ['prodHistory']['prodn_date']);
+            $('#prodn_stime').val(response ['prodHistory']['prodn_stime']);
+            $('#shift').val(response ['prodHistory']['shift']);
+            $('#machine_no').val(response ['prodHistory']['machine_no']);
+            $('#standard_para_date').val(response ['prodHistory']['standard_para_date']);
+            $('#standard_para_attach').val(response ['prodHistory']['standard_para_attach']);
+            $('#act_cycle_time').val(response ['prodHistory']['act_cycle_time']);
+            $('#shot_weight').val(response ['prodHistory']['shot_weight']);
+            $('#product_weight').val(response ['prodHistory']['product_weight']);
+            $('#screw_most_fwd').val(response ['prodHistory']['screw_most_fwd']);
+            $('#ccd_setting_s1').val(response ['prodHistory']['ccd_setting_s1']);
+            $('#ccd_setting_s2').val(response ['prodHistory']['ccd_setting_s2']);
+            $('#ccd_setting_ng').val(response ['prodHistory']['ccd_setting_ng']);
+            $('#changes_para').val(response ['prodHistory']['changes_para']);
+            $("#remarks").val(response ['prodHistory']['remarks']).trigger('change');
+            $('#opt_name').val(response ['prodHistory']['operator_info']['firstname']+' '+response ['prodHistory']['operator_info']['lastname']);
+            $('#opt_id').val(response ['prodHistory']['opt_id']);
 
-            if (data['prodHistory']['qc_info'] != null){
-                $('#qc_name').val(data['prodHistory']['qc_info']['firstname']+' '+data['prodHistory']['qc_info']['lastname']);
+            if (response ['prodHistory']['qc_info'] != null){
+                $('#qc_name').val(response ['prodHistory']['qc_info']['firstname']+' '+response ['prodHistory']['qc_info']['lastname']);
             }else{
                 $('#qc_name').val('');
             }
-            $('#qc_id').val(data['prodHistory']['qc_id']);
+            $('#qc_id').val(response ['prodHistory']['qc_id']);
 
-            $('#shots').val(data['prodHistory']['shots']);
-            $('#prodn_etime').val(data['prodHistory']['prodn_etime']);
+            $('#shots').val(response ['prodHistory']['shots']);
+            $('#prodn_etime').val(response ['prodHistory']['prodn_etime']);
 
-            $('#material_lotno').val(data['prodHistory']['material_lot']);
+            $('#material_lotno').val(response ['prodHistory']['material_lot']);
 
             $('#shots').prop('readonly',false);
             $('#prodn_etime').prop('readonly',false);
@@ -350,36 +338,108 @@ const getProdHistoryById = (pId, btnFunction, firstMoldingDevId) => {
             $('#btnScanQrMaterialLotNo').prop('disabled',false);
             $('#btnScanQrPMaterialLotNo').prop('disabled',false);
 
-            if(data['prodHistoryPartMat'].length != 0){
-                if(firstMoldingDevId == 4 || firstMoldingDevId == 5){ // CN171P-02#IN-VE, CN171S-07#IN-VE
-                    prodPartsMat = data['prodHistory']['prod_history_parts_mat_details'];
-                    for(let x = 0; x < data['prodHistoryPartMat'].length; x++){
-                        for(let y = 1; y < data['prodHistoryPartMat'][x]['count_pm']; y++){ // for clicking the add btn for multiple
-                            $(`#btnAddPmLotNo${data['prodHistoryPartMat'][x]['pm_group']}`).click();
-                        }
+            $(`#divMultiplePartsLot1`).empty();
+            $(`#divMultipleMaterialLot`).empty();
+            $(`#divMultiplePartsLot2_0`).empty();
+            $(`#divMultiplePartsLot2_1`).empty();
+            $(`#divMultiplePartsLot2_2`).empty();
 
-                        for(let z = 0; z < data['collection'][data['prodHistoryPartMat'][x]['pm_group']].length; z++){
-                            // pmat_lot_no-2_0_0
-                            let data1 = data['collection'][data['prodHistoryPartMat'][x]['pm_group']][z];
-                            console.log('pm_group',`pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`);
-                            $(`#pmat_lot_no-${data['prodHistoryPartMat'][x]['pm_group']}_${z}`).val(data1['pm_lot_no']);
-                        }
-                    }
-                }
-                else{
-                    for(let x = 0; x < data['collection'][1].length; x++){
-                        if(x != $('#pmLot1Counter').val()){
-                            $('#btnAddPmLotNo1').click();
-                        }
+            if(pmCat == 1){
+                $.each(response.first_molding, function(index, data ) {
+                    let  contact_lot_number = data['contact_lot_number'];
+                    if(contact_lot_number =! null ){
+                        // divMultipleMaterialLot
+                        let result_material_lot =`
+                            <div class="input-group input-group-sm mb-3">
+                                <div class="input-group-prepend w-25">
+                                    <span class="input-group-text w-100" id="basic-addon1">Material Lot No.${index}</span>
+                                </div>
+                                <input class="form-control form-control-sm" type="text" id="material_lotno_${index}" name="material_lotno[]" readonly>
+                            </div>
+                        `;
+                        $(`#divMultipleMaterialLot`).append(result_material_lot);
+                        let result_part_material_lot =
+                            `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot1_${index}">
+                                <div class="input-group-prepend w-25">
+                                    <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
+                                </div>
+                                <input class="form-control form-control-sm pmLotNum2" type="hidden" id="firt_moldings_id_${index}" name="firt_moldings_id[]" readonly>
+                                <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no_${index}" name="pmat_lot_no[]" readonly>
+                                <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard_${index}" name="prodn_runcard[]" readonly>
+                            </div>`;
+                        $(`#divMultiplePartsLot1`).append(result_part_material_lot);
+                        $(`#firt_moldings_id_${index}`).val(data['id']);
+                        $(`#pmat_lot_no_${index}`).val(data['contact_lot_number']);
+                        $(`#prodn_runcard_${index}`).val(data['production_lot']+data['production_lot_extension']);
+                        $(`#material_lotno_${index}`).val(data.first_molding_material_list.virgin_material);
 
-                        $(`#pmat_lot_no_${x}`).val(data['collection'][1][x]['pm_lot_no']);
                     }
-                }
+                });
             }
+            if(pmCat == 2){
+                $.each(response.sec_molding_runcard, function(index, data) {
+                    let  contact_name_lot_number_one = data['contact_name_lot_number_one'];
+                    let  contact_name_lot_number_second = data['contact_name_lot_number_second'];
+                    let  me_name_lot_number_one = data['me_name_lot_number_one'];
+                    let result_material_lot =`
+                        <div class="input-group input-group-sm mb-3">
+                            <div class="input-group-prepend w-25">
+                                <span class="input-group-text w-100" id="basic-addon1">Material Lot No.${index}</span>
+                            </div>
+                            <input class="form-control form-control-sm" type="text" id="material_lotno_${index}" name="material_lotno[]" readonly>
+                        </div>
+                    `;
+                    $(`#divMultipleMaterialLot`).append(result_material_lot);
+                    $(`#material_lotno_${index}`).val(data['material_lot_number']);
+                    if(contact_name_lot_number_one =! null ){
+                        let result = `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot2_${index}">
+                            <div class="input-group-prepend w-25">
+                                <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
+                            </div>
+                            <input class="form-control form-control-sm pmLotNum2" type="hidden" id="sec_molding_runcards_id-2_0_${index}" name="sec_molding_runcards_id2_0[]"  data-ref="2_0" readonly>
+                            <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_0_${index}" name="pmat_lot_no2_0[]"  data-ref="2_0" readonly>
+                            <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard-2_0_${index}" name="prodn_runcard2_0[]"  data-ref="2_0" readonly>
 
-
+                        </div>`;
+                        $(`#divMultiplePartsLot2_0`).append(result);
+                        $(`#sec_molding_runcards_id-2_0_${index}`).val(data['id']);
+                        $(`#pmat_lot_no-2_0_${index}`).val(data['contact_name_lot_number_one']);
+                        $(`#prodn_runcard-2_0_${index}`).val(data['production_lot']);
+                    }
+                    if(contact_name_lot_number_second =! null ){
+                        let result = `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot2_${index}">
+                            <div class="input-group-prepend w-25">
+                                <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
+                            </div>
+                            <input class="form-control form-control-sm pmLotNum2" type="hidden" id="sec_molding_runcards_id-2_1_${index}" name="sec_molding_runcards_id2_1[]"  data-ref="2_1" readonly>
+                            <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_1_${index}" name="pmat_lot_no2_1[]"  data-ref="2_1" readonly>
+                            <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard-2_1_${index}" name="prodn_runcard2_1[]"  data-ref="2_1" readonly>
+                        </div>`;
+                        $(`#divMultiplePartsLot2_1`).append(result);
+                        $(`#sec_molding_runcards_id-2_1_${index}`).val(data['id']);
+                        $(`#pmat_lot_no-2_1_${index}`).val(data['contact_name_lot_number_second']);
+                        $(`#prodn_runcard-2_1_${index}`).val(data['production_lot']);
+                    }
+                    if(me_name_lot_number_one =! null ){
+                        let result = `<div class="input-group input-group-sm mb-3 multiplePMLotDiv" id="multiplePmLot2_${index}">
+                            <div class="input-group-prepend w-25">
+                                <span class="input-group-text w-100" id="basic-addon1"> Parts Material Lot No.${index}</span>
+                            </div>
+                            <input class="form-control form-control-sm pmLotNum2" type="hidden" id="sec_molding_runcards_id-2_2_${index}" name="sec_molding_runcards_id2_2[]"  data-ref="2_2" readonly>
+                            <input class="form-control form-control-sm pmLotNum2" type="text" id="pmat_lot_no-2_2_${index}" name="pmat_lot_no2_2[]"  data-ref="2_2" readonly>
+                            <input class="form-control form-control-sm pmLotNum2" type="text" id="prodn_runcard-2_2_${index}" name="prodn_runcard2_2[]"  data-ref="2_2" readonly>
+                        </div>`;
+                        $(`#divMultiplePartsLot2_2`).append(result);
+                        $(`#sec_molding_runcards_id-2_2_${index}`).val(data['id']);
+                        $(`#pmat_lot_no-2_2_${index}`).val(data['me_name_lot_number_one']);
+                        $(`#prodn_runcard-2_2_${index}`).val(data['production_lot']);
+                    }
+                });
+            }
+            if(pmCat == 3){
+                alert('C171S Part Material Not Found!') //TODO: Ongoing Development
+            }
             $('#modalProductionHistory').modal('show');
-
         }
     });
 }
