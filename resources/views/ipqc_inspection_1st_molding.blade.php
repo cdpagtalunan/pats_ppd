@@ -448,7 +448,7 @@
                         data: {
                             'production_lot': ScanQrCodeVal.lot_no,
                             'production_lot_extension': ScanQrCodeVal.lot_no_ext,
-                            'device_name': ScanQrCodeVal.name,
+                            'device_name': ScanQrCodeVal.device_name,
                             'process_category': 1
                         },
                         dataType: "json",
@@ -468,9 +468,9 @@
                                 $('#txtProductionLot').val(ScanQrCodeVal.lot_no +''+ ScanQrCodeVal.lot_no_ext);
                                 $('#txtPoNumber').val(ScanQrCodeVal.po);
                                 $('#txtPartCode').val(ScanQrCodeVal.code);
-                                $('#txtMaterialName').val(ScanQrCodeVal.name);
+                                $('#txtMaterialName').val(ScanQrCodeVal.device_name);
 
-                                const trimmed_mat_name = ScanQrCodeVal.name.replace(/ /g,'');
+                                const trimmed_mat_name = ScanQrCodeVal.device_name.replace(/ /g,'');
                                 GetBDrawingFromACDCS(trimmed_mat_name, 'B Drawing', $("#txtSelectDocNoBDrawing"));
                                 GetInspStandardFromACDCS(trimmed_mat_name, 'Inspection Standard', $("#txtSelectDocNoInspStandard"));
                                 GetUDFromACDCS(trimmed_mat_name, 'Urgent Direction', $("#txtSelectDocNoUD"));

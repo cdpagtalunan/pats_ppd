@@ -302,7 +302,7 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">Confirm By</span>
                                                 </div>
-                                                <input class="form-control form-control-sm" type="text" id="qc_name" name="qc_name" placeholder="QC" readonly>
+                                                <input class="form-control form-control-sm" type="text" id="qc_name" name="qc_name" placeholder="Tech/Engg" readonly>
                                                 <input class="form-control form-control-sm" type="text" id="qc_id" name="qc_id" readonly hidden>
                                                 <div class="input-group-append">
                                                     <button class="btn btn-info" type="button" title="Scan code" id="btnScanQrQCID" form-value="formQCName"><i class="fa fa-qrcode"></i></button>
@@ -1181,14 +1181,14 @@
                                 success: function(data){
                                     console.log(data)
                                     if(data['users'] != null){
-                                        if(data['users']['position'] == 0 || data['users']['position'] == 2 || data['users']['position'] == 5){
+                                        if(data['users']['position'] == 0 || data['users']['position'] == 9 || data['users']['position'] == 11){
                                             $('input[name="qc_name"]', $("#formProductionHistory")).val(data['users']['firstname']+' '+data['users']['lastname']);
                                             $('input[name="qc_id"]', $("#formProductionHistory")).val(data['users']['id']);
                                             $('#modalQrEmp').modal('hide');
                                         }else{
                                             $('input[name="qc_name"]', $("#formProductionHistory")).val('');
                                             $('input[name="qc_id"]', $("#formProductionHistory")).val('');
-                                            let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> QC not found, Please Check!</p>`;
+                                            let notif_alert = `<p style="font-size:30px; color:red;"><i class="fa fa-exclamation-triangle text-danger"></i> Technician / Engg not found, Please Check!</p>`;
                                             $('#alert_notif').html(notif_alert);
                                             $('#modalAlert_notif').modal('show');
                                             $('#modalQrEmp').modal('hide');

@@ -269,7 +269,7 @@
                                                     <input type="hidden" class="form-control form-control-sm" id="textContactLotNumberChecking" name="contact_lot_number_checking">
                                                     <div class="input-group input-group-sm mb-3">
                                                         <div class="input-group-prepend w-50">
-                                                            <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot # CT5869-VE</span>
+                                                            <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
                                                         </div>
                                                         <input type="text" class="form-control form-control-sm" id="textContactLotNumberOne" value="N/A" readonly name="contact_name_lot_number_one" placeholder="C/T Name/Lot #">
                                                         <div class="input-group-append">
@@ -278,7 +278,7 @@
                                                     </div>
                                                     <div class="input-group input-group-sm mb-3">
                                                         <div class="input-group-prepend w-50">
-                                                            <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot # CT5870</span>
+                                                            <span class="input-group-text w-100" id="basic-addon1">C/T Name/Lot #</span>
                                                         </div>
                                                         <input type="text" class="form-control form-control-sm" id="textContactLotNumberSecond" value="N/A" readonly name="contact_name_lot_number_second" placeholder="C/T Name/Lot #">
                                                         <div class="input-group-append">
@@ -325,7 +325,7 @@
                                                         <input type="time" class="form-control" id="textDryingTimeStart" name="drying_time_start" placeholder="Start">
                                                         <input type="time" class="form-control" id="textDryingTimeEnd" name="drying_time_end" readonly placeholder="End">
                                                     </div>
-
+                
                                                     <div class="input-group input-group-sm mb-3">
                                                         <span class="input-group-text w-50" id="basic-addon1">Operator</span>
                                                         <select class="form-select select2" id="selectOperator" name="operator_id">
@@ -818,7 +818,7 @@
                                 <div class="col-md-12">
                                     <!-- For Material Drying Id -->
                                     <input type="text" class="form-control" style="display: none" name="material_drying_id" id="materialDryingId">
-
+                                    
                                     <div class="input-group mb-3">
                                         <span class="input-group-text w-50" id="basic-addon1">Part Name</span>
                                         <input type="text" class="form-control" id="textPartName" name="part_name" value="CN171P-02#ME" placeholder="PartName">
@@ -846,7 +846,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                         <div class="modal-footer justify-content-between">
                             <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                             <button type="submit" id="buttonAddMaterialDrying" class="btn btn-success"><i id="iconAddMaterialDrying" class="fa fa-check"></i> Save</button>
@@ -1075,8 +1075,7 @@
                                 break;
                             case 'formContactLotNumberOne':
                                 if(qrScannerValue != ''){
-                                    let arrQrScannerValue = qrScannerValue.split("|");
-                                    $('#textContactLotNumberOne').val(arrQrScannerValue[0]);
+                                    $('#textContactLotNumberOne').val(qrScannerValue);
                                 }else{
                                     $('#textContactLotNumberOne').val('N/A');
                                     toastr.error('Please scan Contact lot number.')
@@ -1085,9 +1084,7 @@
                                 break;
                             case 'formContactLotNumberSecond':
                                 if(qrScannerValue != ''){
-                                    let qrScannerValueToJSON = JSON.parse(qrScannerValue);
-                                    let lotNumber = qrScannerValueToJSON.new_lot_no;
-                                    $('#textContactLotNumberSecond').val(lotNumber);
+                                    $('#textContactLotNumberSecond').val(qrScannerValue);
                                 }else{
                                     $('#textContactLotNumberSecond').val('N/A');
                                     toastr.error('Please scan Contact lot number.')
@@ -1096,8 +1093,8 @@
                                 break;
                             case 'formMELotNumberOne':
                                 if(qrScannerValue != ''){
-                                    let arrQrScannerValue = qrScannerValue.split("|");
-                                    $('#textMELotNumberOne').val(arrQrScannerValue[0]);
+                                    $('#textMELotNumberOne').val(qrScannerValue);
+                                    
                                     /**
                                      * Material Drying Form
                                      * only show this form if device name is equal to CN171P-02#IN-VE
@@ -1114,8 +1111,7 @@
                                 break;
                             case 'formMELotNumberSecond':
                                 if(qrScannerValue != ''){
-                                    let arrQrScannerValue = qrScannerValue.split("|");
-                                    $('#textMELotNumberSecond').val(arrQrScannerValue[0]);
+                                    $('#textMELotNumberSecond').val(qrScannerValue);
                                 }else{
                                     $('#textMELotNumberSecond').val('N/A');
                                     toastr.error('Please scan ME lot number.')
@@ -2291,14 +2287,14 @@
                 getUser($('#selectOperator'));
 
                 // Add 30mins for Drying Time End
-                $('#textDryingTimeStart').change(function (e) {
+                $('#textDryingTimeStart').change(function (e) { 
                     let dryingTimeStart = $('#textDryingTimeStart').val();
                     let dryingTimeEndWithThirtyMins = moment(dryingTimeStart, 'HH:mm').add(30, 'minutes').format('HH:mm');;
                     $('#textDryingTimeEnd').val(dryingTimeEndWithThirtyMins);
                 });
-
+                
                 // Save Material Drying form
-                $('#formMaterialDrying').submit(function (e) {
+                $('#formMaterialDrying').submit(function (e) { 
                     e.preventDefault();
 
                     let secondMoldingId = $('#textSecondMoldingId', $('#formSecondMolding')).val();
@@ -2329,7 +2325,7 @@
                         dataType: "json",
                         success: function (response) {
                             console.log(response);
-
+                            
                             $("#imageMaterialDryingBarcode").attr('src', response['qr_code']);
                             $("#bodyMaterialDryingBarcodeDetails").html(response['label']);
                             dataDetails = response['label_hidden'];

@@ -237,7 +237,7 @@
                                                 <input type="text" class="form-control form-control-sm" name="drawing_rev" id="txtDrawingRev" readonly>
                                             </div>
                                             <div class="form-group">
-                                                
+
                                                 <label class="form-label">Operator Name:</label>
                                                 {{-- <input type="text" class="form-control form-control-sm select2bs4" name="opt_name[]" id="txtOptName" readonly> --}}
                                                 {{-- <select name="opt_name[]" id="selOperator" class="form-control select2bs4 selOpName" multiple> --}}
@@ -863,7 +863,6 @@
                                 }
                             });
                         }
-
                         // console.log(explodedMat);
                         // $(`#${multipleMatId}`).val($(this).val());
                         $(this).val('');

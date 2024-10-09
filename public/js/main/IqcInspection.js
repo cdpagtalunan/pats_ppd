@@ -6,7 +6,7 @@
         iqcWhsDetails :'#tblWhsDetails',
         iqcInspected:'#tblIqcInspected'
     };
-    
+
     const dataTable = {
         iqcInspection:'', //iqcInspection
         iqcWshDetails: '',
@@ -477,7 +477,7 @@
             form.iqcInspection.find('#judgement').val(1);
         }
     }
-    const saveIqcInspection = function (){
+    const saveIqcInspection = function (){ //amodify
         let serialized_data = new FormData(form.iqcInspection[0]);
             serialized_data.append('lotNo',arrTableMod.lotNo);
             serialized_data.append('modeOfDefects',arrTableMod.modeOfDefects);

@@ -73,7 +73,7 @@
                                             <label class="form-label">PO Number</label>
                                             <div class="input-group mb-3">
                                                 <button class="btn btn-primary" id="btnScanPo" data-bs-toggle="modal" data-bs-target="#mdlScanQrCode"><i class="fa-solid fa-qrcode"></i></button>
-                                                <input type="text" class="form-control" placeholder="Search PO Number" aria-label="Username" name="po_number" id="txtSearchPONum">
+                                                <input type="text" class="form-control" placeholder="Search PO Number" name="po_number" id="txtSearchPONum">
                                             </div>
                                         </div>
                                         <div class="col-sm-2">

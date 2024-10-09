@@ -56,6 +56,8 @@
                                                     <option value="CN171P-007-1002-VE(01)">CN171P-007-1002-VE(01)</option>
                                                     <option value="CN171P-007-1002-VE(01)PREQ">CN171P-007-1002-VE(01)PREQ</option>
                                                     <option value="CN171S-007-1002-VE(01)">CN171S-007-1002-VE(01)</option>
+                                                    <option value="CN171P-02#IN-VE">CN171P-02#IN-VE</option>
+                                                    <option value="CN171P-WH-1003-VE(01)">CN171P-WH-1003-VE(01)</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -170,8 +172,7 @@
                                                 <div class="input-group-prepend w-50">
                                                     <span class="input-group-text w-100" id="basic-addon1">PO Number</span>
                                                 </div>
-                                                <input type="text" class="form-control form-control-sm" id="txtPONumber" name="po_number" placeholder="Search PO"
-                                                    oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');">
+                                                <input type="text" class="form-control form-control-sm" id="txtPONumber" name="po_number" placeholder="Search PO">
                                             </div>
                                             <div class="input-group input-group-sm mb-2">
                                                 <div class="input-group-prepend w-50">
@@ -1275,7 +1276,7 @@
                             // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
                             // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
-                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ'){
+                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ' || deviceName == 'CN171P-02#IN-VE' || deviceName == 'CN171P-WH-1003-VE(01)'){
                                 $('#sSeriesName').prop('hidden', true);
                                 $('#pSeriesName').prop('hidden', false);
                             }else if(deviceName == 'CN171S-007-1002-VE(01)'){
@@ -1334,7 +1335,7 @@
                             $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
                             $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
 
-                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ'){
+                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ' || deviceName == 'CN171P-02#IN-VE' || deviceName == 'CN171P-WH-1003-VE(01)'){
                                 if(step == 1){//Lubricant Coating Station
                                     // $('# ').removeClass('d-none'); //disable this btn clark 04152024
                                     $('#LubricantCoatingDiv').addClass('d-none');
@@ -1444,18 +1445,6 @@
                     let txtPONumber = $('#formCNAssemblyRuncard').find('#txtPONumber').val();
                     let txtDeviceName = $('#formCNAssemblyRuncard').find('#txtDeviceName').val();
 
-                    // $.ajax({
-                    //     type: "get",
-                    //     // url: "http://rapidx/rapidx-api/api/ypics_clark.php",
-                    //     url: "http://rapid/NAAYES/api/ypics.php",
-                    //     data: {
-                    //         po_number : txtPONumber,
-                    //     },
-                    //     dataType: "json",
-                    //     success: function (response) {
-                    //         console.log(response);
-                    //     }
-                    // });
                     data = {
                         'po_no'        : txtPONumber,
                         'device_name'  : txtDeviceName,
@@ -1468,32 +1457,139 @@
                         success : function(data){
                             console.log('ypics',data);
                             if(data == ""){
-                                toastr.error("No Data Found");
-                                $('#formCNAssemblyRuncard').find('#txtRuncardNo').val('');
-                                $('#formCNAssemblyRuncard').find('#txtPoQuantity').val('');
-                            }else{
-                                $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(data['PO_QTY']);
-                                let txtRuncard = txtPONumber.slice(5,10);
-
+                                console.log('ypics_blank');
+                                if(txtDeviceName == 'CN171P-007-1002-VE(01)'){
+                                    txtDeviceName = 'CN171P-02#IN-VE';
+                                }
                                 $.ajax({
                                     type: "get",
-                                    url: "get_assembly_runcard_data",
+                                    url: "get_search_po",
                                     data: {
-                                        po_number: txtPONumber,
+                                        "po" : txtPONumber
                                     },
                                     dataType: "json",
+                                    beforeSend: function(){
+                                    },
                                     success: function (response) {
-                                        let result = response['assembly_runcard_data'];
-                                        runcardCount = result.length;
+                                        // console.log(response);
+                                        if(response.length > 0){
+                                            if(response[0]['ItemName'] == txtDeviceName){
+                                                if(response[0]['OrderQty'] < $('#txtSearchReqOutput').val()){
+                                                    toastr.error('Remaining PO Qty is not enough for the required Qty ')
+                                                    $('#formCNAssemblyRuncard').find('#txtPoQuantity').val('');
+                                                    $('#formCNAssemblyRuncard').find('#txtRuncardNo').val('');
+                                                }else{
+                                                    $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(response[0]['OrderQty']);
+                                                    let txtRuncard = txtPONumber.slice(5,10);
+                                                    $.ajax({
+                                                        type: "get",
+                                                        url: "get_assembly_runcard_data",
+                                                        data: {
+                                                            po_number: txtPONumber,
+                                                        },
+                                                        dataType: "json",
+                                                        success: function (response) {
+                                                            let result = response['assembly_runcard_data'];
+                                                            runcardCount = result.length;
 
-                                        if(result.length == 0){
-                                            runcardCount = 1;
+                                                            if(result.length == 0){
+                                                                runcardCount = 1;
+                                                            }else{
+                                                                runcardCount = (result.length + 1);
+                                                            }
+                                                            $('#txtRuncardNo').val(txtRuncard +'-'+ runcardCount);
+                                                        }
+                                                    });
+                                                }
+                                            }else{
+                                                // $('#txtPONumber').val('');
+                                                $('#txtPoQuantity').val('');
+                                                $('#txtRuncardNo').val('');
+                                                toastr.error('PO Number & Device Name Doesn`t Match on Rapid PO Receive.')
+                                            }
                                         }else{
-                                            runcardCount = (result.length + 1);
+                                            // $('#txtPONumber').val('');
+                                            $('#txtPoQuantity').val('');
+                                            $('#txtRuncardNo').val('');
+                                            toastr.error('No PO Found on Rapid PO Receive.')
                                         }
-                                        $('#txtRuncardNo').val(txtRuncard +'-'+ runcardCount);
+                                        // if(response.length > 0){
+                                        //     prodData['poReceiveData'] = response[0];
+                                        //     console.log(response);
+                                        //     $.ajax({
+                                        //         type: "get",
+                                        //         url: "get_data_req_for_prod_by_po",
+                                        //         data: {
+                                        //             "item_code" : response[0]['ItemCode']
+                                        //         },
+                                        //         dataType: "json",
+                                        //         success: function (result) {
+                                        //             let result = response['assembly_runcard_data'];
+                                        //             runcardCount = result.length;
+
+                                        //             if(result.length == 0){
+                                        //                 runcardCount = 1;
+                                        //             }else{
+                                        //                 runcardCount = (result.length + 1);
+                                        //             }
+                                        //             $('#txtRuncardNo').val(txtRuncard +'-'+ runcardCount);
+
+                                        //             $('#txtSearchMatName').val(response[0]['ItemName']);
+                                        //             $('#txtSearchMatCode').val(response[0]['ItemCode']);
+                                        //             $('#txtSearchPO').val(response[0]['OrderQty']);
+                                        //             prodData['drawings'] = result
+                                        //             console.log(prodData);
+                                        //             dtDatatableProd.draw();
+                                        //         },
+                                        //         error: function(data, xhr, status){
+                                        //             console.log(data.responseJSON.msg);
+                                        //             toastr.error(data.responseJSON.msg)
+                                        //             // toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
+                                        //         }
+                                        //     });
+                                        // }
+                                        // else{
+                                        //     $('#txtSearchMatName').val('');
+                                        //     $('#txtSearchPO').val('');
+                                        //     toastr.error('No PO Found on Rapid PO Receive.')
+                                        // }
+                                    },
+                                    error: function(data, xhr, status){
+                                        toastr.error('An error occured!\n' + 'Data: ' + data + "\n" + "XHR: " + xhr + "\n" + "Status: " + status);
                                     }
                                 });
+
+                                // toastr.error("No Data Found");
+                                // $('#formCNAssemblyRuncard').find('#txtRuncardNo').val('');
+                                // $('#formCNAssemblyRuncard').find('#txtPoQuantity').val('');
+                            }else{
+                                if(data['PO_QTY'] < $('#txtSearchReqOutput').val()){
+                                    toastr.error('Remaining PO Qty is not enough for the required Qty ')
+                                    $('#formCNAssemblyRuncard').find('#txtPoQuantity').val('');
+                                    $('#formCNAssemblyRuncard').find('#txtRuncardNo').val('');
+                                }else{
+                                    $('#formCNAssemblyRuncard').find('#txtPoQuantity').val(data['PO_QTY']);
+                                    let txtRuncard = txtPONumber.slice(5,10);
+                                    $.ajax({
+                                        type: "get",
+                                        url: "get_assembly_runcard_data",
+                                        data: {
+                                            po_number: txtPONumber,
+                                        },
+                                        dataType: "json",
+                                        success: function (response) {
+                                            let result = response['assembly_runcard_data'];
+                                            runcardCount = result.length;
+
+                                            if(result.length == 0){
+                                                runcardCount = 1;
+                                            }else{
+                                                runcardCount = (result.length + 1);
+                                            }
+                                            $('#txtRuncardNo').val(txtRuncard +'-'+ runcardCount);
+                                        }
+                                    });
+                                }
                             }
                         }
                     });
@@ -1984,7 +2080,7 @@
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ'){
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ' || assy_runcard_data[0].device_name == 'CN171P-02#IN-VE' || assy_runcard_data[0].device_name == 'CN171P-WH-1003-VE(01)'){
 
                                 verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
 
@@ -2070,7 +2166,7 @@
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ'){
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ' || assy_runcard_data[0].device_name == 'CN171P-02#IN-VE' || assy_runcard_data[0].device_name == 'CN171P-WH-1003-VE(01)'){
 
                                 verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
 

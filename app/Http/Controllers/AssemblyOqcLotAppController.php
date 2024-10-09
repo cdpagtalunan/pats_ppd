@@ -172,8 +172,8 @@ class AssemblyOqcLotAppController extends Controller
         $oqc_inspections = AssemblyOqcLotAppSummary::with([
             'oqc_lot_app_summ.user',
             'oqc_lot_app_summ'
-
         ])
+        ->whereNull('deleted_at')
         ->orderBy('submission','asc')->get();
 
 

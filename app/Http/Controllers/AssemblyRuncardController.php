@@ -178,7 +178,7 @@ class AssemblyRuncardController extends Controller
         //     return [];
         // }else{
             $AssemblyRuncardData = DB::connection('mysql')->select("SELECT a.* FROM assembly_runcards AS a
-                                            WHERE a.device_name = '$request->device_name'
+                                            WHERE a.device_name = '$request->device_name' AND a.deleted_at IS NULL
                                             ORDER BY a.id DESC
             ");
 
@@ -321,7 +321,7 @@ class AssemblyRuncardController extends Controller
         date_default_timezone_set('Asia/Manila');
         $data = $request->all();
 
-        if($request->device_name == 'CN171P-007-1002-VE(01)' || $request->device_name == 'CN171P-007-1002-VE(01)PREQ'){
+        if($request->device_name == 'CN171P-007-1002-VE(01)' || $request->device_name == 'CN171P-007-1002-VE(01)PREQ' || $request->device_name == 'CN171P-02#IN-VE'|| $request->device_name == 'CN171P-WH-1003-VE(01)'){
             $validate_array = ['runcard_no' => 'required', 'po_number' => 'required', 'p_zero_two_prod_lot' => 'required'];
         }else{
             $validate_array = ['runcard_no' => 'required', 'po_number' => 'required', 's_zero_seven_prod_lot' => 'required', 's_zero_two_prod_lot' => 'required'];
@@ -404,7 +404,7 @@ class AssemblyRuncardController extends Controller
 
         if($request->step == 1){
             $validate_array = ['runcard_station' => 'required', 'input_qty' => 'required', 'ng_qty' => 'required'];
-        }else if($request->step == 2 && ($device_name->device_name == 'CN171P-007-1002-VE(01)' || $device_name->device_name == 'CN171P-007-1002-VE(01)PREQ')){//Visual Inspection
+        }else if($request->step == 2 && ($device_name->device_name == 'CN171P-007-1002-VE(01)' || $device_name->device_name == 'CN171P-007-1002-VE(01)PREQ' || $device_name->device_name == 'CN171P-02#IN-VE'|| $device_name->device_name == 'CN171P-WH-1003-VE(01)')){//Visual Inspection
             $validate_array = ['runcard_station' => 'required','input_qty' => 'required','ng_qty' => 'required','doc_no_r_drawing' => 'required','doc_no_a_drawing' => 'required', 'doc_no_g_drawing' => 'required'];
         }else if($request->step == 2 && $device_name->device_name == 'CN171S-007-1002-VE(01)'){
             $validate_array = ['runcard_station' => 'required', 'input_qty' => 'required', 'ng_qty' => 'required'];

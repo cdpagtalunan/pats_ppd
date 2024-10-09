@@ -624,6 +624,7 @@ class FirstMoldingController extends Controller
                     FROM tbl_WarehouseTransaction whs_transaction
                     INNER JOIN tbl_Warehouse whs on whs.id = whs_transaction.fkid
                     WHERE whs_transaction.Lot_number = "'.$request->first_molding_material_lot_no.'"
+                    OR whs_transaction.Remarks = "'.$request->first_molding_material_lot_no.'"
                     ORDER BY whs.PartNumber DESC
                 ');
                 $first_molding_device = FirstMoldingDevice::whereNull('deleted_at')->where('process_type',1)->where('contact_name',$tbl_whs_trasanction[0]->whs_transaction_material_type)->count();

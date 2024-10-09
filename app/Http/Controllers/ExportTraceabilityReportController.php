@@ -114,13 +114,13 @@ public function exportMoldingTraceabilityReport(Request $request){
 
         $device_name = $request->device_name.'#IN-VE';
 
-        
+        // if(str_co)
 
         //QUERY BUILDER
         $secondMoldingData = DB::connection('mysql')
         ->table('sec_molding_runcards as a')
         ->join('users as b', 'a.created_by', 'b.id',)
-        ->where('pmi_po_number', $request->po_number)
+        // ->where('pmi_po_number', $request->po_number)
         ->where('device_name', $device_name)
         ->whereBetween('a.created_at', [$request->date_from, $request->date_to])
         ->select(
@@ -136,7 +136,7 @@ public function exportMoldingTraceabilityReport(Request $request){
                 'a.lot_number_nine as lot_number_nine',
                 'a.lot_number_ten as lot_number_ten',
                 'a.me_name_lot_number_one as me_name_lot_number_one',
-                'a.me_name_lot_number_seco nd as me_name_lot_number_second',
+                'a.me_name_lot_number_second as me_name_lot_number_second',
                 'a.created_at as created_at',
                 'b.firstname as r_machine_operator'
                 )
