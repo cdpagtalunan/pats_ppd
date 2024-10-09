@@ -217,7 +217,7 @@ Route::controller(ProcessController::class)->group(function () {
 
     Route::get('/view_process', 'view_process');
     Route::post('/add_process', 'add_process');
-    Route::post('/update_status', 'update_status');
+    Route::get('/update_status', 'update_status');
     Route::get('/get_process_by_id', 'get_process_by_id');
 });
 

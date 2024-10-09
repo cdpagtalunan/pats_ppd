@@ -48,7 +48,7 @@ class StationController extends Controller
     public function save_station(Request $request){
 
         DB::beginTransaction();
-        
+
         try{
             if(isset($request->id)){
                 Station::where('id', $request->id)
@@ -56,7 +56,7 @@ class StationController extends Controller
                     'station_name' => $request->station_name,
                     'updated_by' => Auth::user()->id
                 ]);
-                
+
             }
             else{
                 Station::insert([
@@ -69,7 +69,7 @@ class StationController extends Controller
             DB::commit();
 
             return response()->json(['result' => 1, 'msg' => 'Successfully Transacted']);
-            
+
         }catch(Exemption $e){
             DB::rollback();
             return $e;
@@ -85,10 +85,9 @@ class StationController extends Controller
         try{
             Station::where('id', $request->id)
             ->update([
-                'status' => $request->status
+                'status' => 1
             ]);
             DB::commit();
-
             return response()->json(['result' => 1, 'msg' => 'Successfully Saved']);
         }catch(Exemption $e){
             DB::rollback();

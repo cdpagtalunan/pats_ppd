@@ -823,6 +823,142 @@
                                 </div>
                             </div>
                         </div>
+                        {{-- TODO: save and edit this row from SECOND MOLDING --}}
+                        <div class="row" id="divSamplingPlan" style="display: none;">
+                        {{-- <div class="row" id="divSamplingPlan"> --}}
+                            <div class="row">
+                                <h5><i class="fa-solid fa-chart-simple"></i>&nbsp;Sampling Plan</h5>
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100" id="basic-addon1">Type of Inspection</span>
+                                        </div>
+                                        <select class="form-select form-control-sm selectTypeOfInspection" id="selectTypeOfInspection" name="type_of_inspection">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Severity of Inspection</span>
+                                        </div>
+                                        <select class="form-select form-control-sm selectSeverityOfInspection" id="selectSeverityOfInspection" name="severity_of_inspection">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Inspection Level</span>
+                                        </div>
+                                        <select class="form-select form-control-sm selectInspectionLevel" id="selectInspectionLevel" name="inspection_level">
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Lot Qty.</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="textLotQuantity" name="lot_quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">AQL</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textAQL" name="aql" min="0">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Sample Size</span>
+                                        </div>
+                                        <input type="text" class="form-control form-control-sm" id="textSampleSize" name="sample_size">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Accept</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textAccept" name="accept" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Reject</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textReject" name="reject" min="0" max="1" value="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Lot Inspected</span>
+                                        </div>
+                                        <input type="number" class="form-control form-control-sm" id="textLotInspected" name="lot_inspected" onkeypress="return event.charCode >= 48 && event.charCode <= 57" value="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Lot Accepted</span>
+                                        </div>
+                                        <select class="form-select form-control-sm" id="selectLotAccepted" name="lot_accepted">
+                                            <option selected disabled>- Select -</option>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col">
+                                    <div class="input-group input-group-sm mb-3">
+                                        <div class="input-group-prepend w-50">
+                                            <span class="input-group-text w-100">Judgement</span>
+                                        </div>
+                                        <select class="form-select form-control-sm" id="selectJudgement" name="judgement" style="background-color: #e9ecef; pointer-events: none;" readonly>
+                                            <option selected disabled>- Select -</option>
+                                            <option value="0">Reject</option>
+                                            <option value="1">Accepted</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row">
                             <div class="col">

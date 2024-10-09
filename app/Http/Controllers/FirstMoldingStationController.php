@@ -154,7 +154,7 @@ class FirstMoldingStationController extends Controller
 
     public function saveFirstMoldingStation(FirstMoldingStationRequest $request)
     {
-        // return $request->station;
+        // return $request->station; 	Camera Inspection
 
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
@@ -189,7 +189,7 @@ class FirstMoldingStationController extends Controller
             // $get_first_molding_by_id[0]->first_molding_device_id;
             // DB::rollback();
             // $device_name = $get_first_molding_by_id[0]->firstMoldingDevice['device_name'];
-            if($get_first_molding_by_id[0]->first_molding_device_id == 1 && $request->station == 5 ){ //nmodify Camera Inspection LIVE
+            if($get_first_molding_by_id[0]->first_molding_device_id == 1 && $request->station == 5 || $request->station == 12){ //nmodify Camera Inspection LIVE
                 $validation = array(
                     'size_category' => ['required'],
                 );

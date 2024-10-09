@@ -243,7 +243,7 @@
                 },
                 fixedHeader: true,
                 "columns":[
-                
+
                     { "data" : "action", orderable:false, searchable:false },
                     { "data" : "label" },
                     { "data" : "process_name" }
@@ -262,7 +262,7 @@
                 },
                 fixedHeader: true,
                 "columns":[
-                
+
                     { "data" : "action", orderable:false, searchable:false },
                     { "data" : "label" },
                     { "data" : "station_name" }
@@ -322,19 +322,20 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            type: "post",
+                            type: "get",
                             url: "update_status",
                             data: {
-                                "_token": "{{ csrf_token() }}",
+                                // "_token": "{{ csrf_token() }}",
                                 "id" : pId,
                             },
                             dataType: "json",
                             success: function (response) {
+                                datatableProcesss.draw();
                             }
                         });
                     }
                 });
-               
+
             })
             /* *END SCRIPT FOR MODULE */
 
@@ -407,7 +408,7 @@
                             dataType: "json",
                             success: function (response) {
                                 datatableStation.draw();
-                                
+
                             }
                         });
                     }
