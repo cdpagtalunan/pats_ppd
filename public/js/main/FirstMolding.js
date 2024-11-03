@@ -881,9 +881,15 @@
         // TODO: firstMoldingDeviceId === 1
         console.log('first_molding_device_id',formModal.firstMolding.find("#first_molding_device_id").val());
         let firstMoldingDeviceId = formModal.firstMolding.find("#first_molding_device_id").val()
-        // if(stationId == "5"){ //nmodify Camera Inspection
-        if(firstMoldingDeviceId === "1" && stationId  === "5" || stationId === "12"){ //nmodify Camera Inspection pats_ppd rev & Oqc Inspection
-            formModal.firstMoldingStation.find('#isSelectCameraInspection').removeClass('d-none',false);
+        console.log('firstMoldingDeviceId',firstMoldingDeviceId)
+        if(firstMoldingDeviceId === "1"){ // Camera Inspection
+            if( stationId  === "5"){
+                formModal.firstMoldingStation.find('#isSelectCameraInspection').removeClass('d-none',false);
+            }
+            if( stationId === "12"){ //Oqc Inspection
+                //TODO: Judgement if any
+                formModal.firstMoldingStation.find('#isSelectCameraInspection').removeClass('d-none',false);
+            }
         }else{
             formModal.firstMoldingStation.find('#isSelectCameraInspection').addClass('d-none',true);
         }
