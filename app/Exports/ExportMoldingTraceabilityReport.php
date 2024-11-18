@@ -401,7 +401,6 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
 
                                     $defects = $secondMoldingFirstOqcData[$v]->no_of_defects;
                                     
-                                    // dd($defects);
 
                                     if($defects != 0 ){
                                         $dppm = ($defects / $secondMoldingFirstOqcData[$v]->sample_size) * 1000000;
@@ -474,6 +473,8 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                     $assemblyVisualSum = $assemblyVisualData[$c]->visual_sum;
                                     $assemblyVisualYield = $assemblyVisualData[$c]->visual_yield;
 
+
+                                    // $event->sheet->setCellValue('K'.$start_col, $assemblyVisualData[$c]->ttl_ng);
                                     $event->sheet->setCellValue('Q'.$start_col, $assemblyVisualSum);
                                     $event->sheet->setCellValue('R'.$start_col, $assemblyVisualYield.'%');
                                     $event->sheet->setCellValue('AH'.$start_col, $assemblyVisualData[$c]->visual_operator);
@@ -482,6 +483,7 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                                     $assemblyVisualSum = $assemblyVisualData[$c]->visual_sum;
                                     $assemblyVisualYield = $assemblyVisualData[$c]->visual_yield;
 
+                                    // $event->sheet->setCellValue('K'.$start_col, $assemblyVisualData[$c]->ttl_ng);
                                     $event->sheet->setCellValue('Q'.$start_col, $assemblyVisualSum);
                                     $event->sheet->setCellValue('R'.$start_col, $assemblyVisualYield.'%');
                                     $event->sheet->setCellValue('AH'.$start_col, $assemblyVisualData[$c]->visual_operator);
@@ -630,12 +632,18 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                         $event->sheet->setCellValue('A'.$start_col, $created_at);
                         $event->sheet->setCellValue('C'.$start_col, $secondMoldingData[$i]->production_lot);
                         $event->sheet->setCellValue('D'.$start_col, $secondMoldingData[$i]->po_quantity);
+                        $event->sheet->setCellValue('G'.$start_col, $secondMoldingData[$i]->sec_molding_total_machine_output); // Darren
                         $event->sheet->setCellValue('O'.$start_col, $secondMoldingData[$i]->machine_number);
                         $event->sheet->setCellValue('Q'.$start_col, $secondMoldingData[$i]->material_name);
                         $event->sheet->setCellValue('R'.$start_col, $secondMoldingData[$i]->material_lot_number);
                         $event->sheet->setCellValue('S'.$start_col, $secondMoldingData[$i]->drawing_number);
                         $event->sheet->setCellValue('T'.$start_col, $secondMoldingData[$i]->revision_number);
 
+                        $molding_ipqc_details = $this->get_ipqc_details($secondMoldingData[$i]->production_lot);// Darren
+
+                        $event->sheet->setCellValue('V'.$start_col, $molding_ipqc_details->doc_no_urgent_direction); // Darren
+                        $event->sheet->setCellValue('W'.$start_col, $molding_ipqc_details->remarks); // Darren
+                        $event->sheet->setCellValue('X'.$start_col, $molding_ipqc_details->fullname); // Darren
                         if(str_contains($secondMoldingData[$i]->machine_number, '3')){
                             $event->sheet->setCellValue('U'.$start_col, 'AB');
                         }else{
@@ -660,15 +668,26 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
 
                         for ($y=0; $y <count($assemblyData); $y++) { 
                             if ($secondMoldingData[$i]->production_lot == $assemblyData[$y]->p_zero_two_prod_lot) {
+                                $shipconData = $this->shipcon_data($assemblyData[$y]->fvi_lot_no, $assemblyData[$y]->fvi_po_no);
+
+                                // dd($shipconData);
+                                $event->sheet->setCellValue('E'.$start_col, $shipconData->shipment_date);
+                                $event->sheet->setCellValue('F'.$start_col, $shipconData->shipment_qty);
+                                $event->sheet->setCellValue('K'.$start_col, $this->total_ng_qty($assemblyData[$y]->asmbly_runcard_id));
+                                $event->sheet->setCellValue('I'.$start_col, $this->get_lot_marking_ng($assemblyData[$y]->asmbly_runcard_id));
+                                // dd($this->get_lot_marking_ng($assemblyData[$y]->asmbly_runcard_id));
+
                                 $event->sheet->setCellValue('N'.$start_col, $assemblyData[$y]->runcard_no);
                                 $event->sheet->setCellValue('M'.$start_col, $assemblyData[$y]->bundle_no);
                                 $event->sheet->setCellValue('P'.$start_col, $assemblyData[$y]->operator_name);
+                                $event->sheet->setCellValue('J'.$start_col, $assemblyData[$y]->assembly_oqc_lot_apps_print_lot);
                             }
                         }
 
                         $event->sheet->getDelegate()->getStyle('A4'.':'.'AE'.$start_col)->applyFromArray($styleBorderAll);
                         $start_col++;
                     }
+                    
                     // $event->sheet->getDelegate()->getStyle('H4'.':'.'H'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
                     // $event->sheet->getDelegate()->getStyle('I4'.':'.'I'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
                     // $event->sheet->getDelegate()->getStyle('S4'.':'.'S'.$start_col)->getNumberFormat()->setFormatCode('0.00%');
@@ -681,6 +700,70 @@ class ExportMoldingTraceabilityReport implements FromView, WithEvents, WithTitle
                 }
             },
         ];
+    }
+
+    public function shipcon_data($lot_no, $po){
+        $oqc_data = DB::connection('mysql_cn_ppts')
+        ->table('oqc_lot_apps')
+        ->join('oqc_inspections', 'oqc_inspections.oqc_lot_app_id', '=', 'oqc_lot_apps.id')
+        ->where('oqc_lot_apps.logdel', 0)
+        ->where('oqc_lot_apps.lot_no', $lot_no)
+        ->where('oqc_lot_apps.po_no',$po)
+        ->first();
+
+        $shipcon = DB::connection('mysql_cn_ppts')
+        ->table('d_label_histories')
+        ->join('d_labels', 'd_label_histories.d_label_id', '=', 'd_labels.id')
+        ->where('d_label_histories.packing_code', "{$oqc_data->packing_code}-{$oqc_data->packing_code_ext}")
+        ->whereNull('d_label_histories.deleted_at')
+        ->select('d_label_histories.*', 'd_labels.shipment_qty')
+        ->first();
+
+        return $shipcon;
+    }
+
+    public function total_ng_qty($assmbly_runcard_id){
+        $total_ng_qty = DB::connection('mysql')
+        ->table('assembly_runcard_stations')
+        ->whereNull('deleted_at')
+        ->where('assembly_runcards_id', $assmbly_runcard_id)
+        ->sum('ng_quantity');
+
+        return $total_ng_qty;
+
+    }
+
+    public function get_lot_marking_ng($assmbly_runcard_id){
+        $total_ng_qty = DB::connection('mysql')
+        ->table('assembly_runcard_stations as a')
+        ->join('stations','stations.id','=','a.station' )
+        ->whereNull('a.deleted_at')
+        ->where('a.assembly_runcards_id', 195)
+        ->select('a.*', 'stations.station_name', 'stations.id')
+        ->get();
+
+        $collection = collect($total_ng_qty)->filter(function ($total_ng_qty) {
+            return false !== stristr($total_ng_qty->station_name, 'lot marking');
+        });
+        $ng = 0;
+        if($collection){
+            $ng = $collection[0]->ng_quantity;
+        }
+
+        return $ng;
+    }
+
+    public function get_ipqc_details($prod_lot_no){
+        $ipqc_details = DB::connection('mysql')
+        ->table('molding_assy_ipqc_inspections as a')
+        ->join('users', 'users.id', 'a.ipqc_inspector_name')
+        ->where('a.production_lot', trim($prod_lot_no))
+        ->where('a.logdel', 0)
+        ->where('a.process_category', 2)
+        ->select('a.*', DB::raw("CONCAT(users.firstname,' ',users.lastname) AS fullname") )
+        ->first();
+
+        return $ipqc_details;
     }
 
 }

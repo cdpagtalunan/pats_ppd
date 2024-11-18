@@ -138,12 +138,14 @@ public function exportMoldingTraceabilityReport(Request $request){
                 'a.me_name_lot_number_one as me_name_lot_number_one',
                 'a.me_name_lot_number_second as me_name_lot_number_second',
                 'a.created_at as created_at',
-                'b.firstname as r_machine_operator'
+                'b.firstname as r_machine_operator',
+
+                'a.total_machine_output as sec_molding_total_machine_output'
                 )
         ->groupBy('a.id')
         ->get();
 
-        // return $secondMoldingData;
+        return $secondMoldingData;
 
         $secondMoldingInitialData = DB::connection('mysql')
         ->table('sec_molding_runcard_stations as a')
@@ -200,16 +202,16 @@ public function exportMoldingTraceabilityReport(Request $request){
                 'a.sec_molding_runcard_id as sec_molding_runcard_id',
                 'b.firstname as first_oqc_operator',
                 'a.sample_size as sample_size',
-                'a.ng_quantity as no_of_defects',
+                // 'a.ng_quantity as no_of_defects',
                 'a.lot_accepted  as lot_accepted',
                 'a.lot_inspected as lot_inspected',
                 DB::raw('SUM(a.input_quantity) as first_oqc_sum'),
-                DB::raw('SUM(a.station_yield)/COUNT(a.station_yield) as first_oqc_yield')
+                DB::raw('SUM(a.station_yield)/COUNT(a.station_yield) as first_oqc_yield'),
+                DB::raw('SUM(a.ng_quantity) as ttl_ng')
+
                 )
         ->groupBy('a.sec_molding_runcard_id','b.firstname')
         ->get();
-
-        // return $secondMoldingFirstOqcData;
 
         $assemblyMarkingData = DB::connection('mysql')
         ->table('assembly_runcard_stations as a')
@@ -259,23 +261,36 @@ public function exportMoldingTraceabilityReport(Request $request){
                 'c.firstname as visual_operator',
                 DB::raw('SUM(a.input_quantity) as visual_sum'),
                 DB::raw('SUM(a.station_yield) as visual_yield')
+
         )
         ->groupBy('assembly_runcards_id','s_lot_no','p_lot_no','visual_operator')
         ->get();
+
+        // return $assemblyVisualData;
+
 
         $assemblyData = DB::connection('mysql')
         ->table('assembly_runcards as a')
         ->join('assembly_fvis_runcards as b', 'a.id', 'b.prod_runcard_id')
         ->join('assembly_fvis as c', 'b.assembly_fvis_id', 'c.id')
+        ->join('assembly_oqc_lot_apps as d', 'b.assembly_fvis_id', 'd.id')
+        // ->join('assembly_runcard_stations as e', 'e.assembly_runcards_id', 'a.id')
         ->select(
+                'a.id as asmbly_runcard_id',
                 'a.p_zero_two_prod_lot as p_zero_two_prod_lot',
                 'a.runcard_no as runcard_no',       
                 'c.bundle_no as bundle_no',
-                'b.operator_name as operator_name'
+                'c.lot_no as fvi_lot_no',
+                'c.po_no as fvi_po_no',
+                'b.operator_name as operator_name',
+                'd.print_lot as assembly_oqc_lot_apps_print_lot',
+                // DB::raw('SUM(e.ng_quantity) as ttl_ng'),
         )
         ->get();
 
+        // return $secondMoldingData;
         // return $assemblyData;
+
 
         // $assemblyFVI = DB::connection('mysql')
         // ->table('assembly_fvis')
