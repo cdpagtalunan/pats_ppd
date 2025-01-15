@@ -41,36 +41,38 @@ class MimfController extends Controller
         return DataTables::of($get_mimfs)
         ->addColumn('action', function($get_mimf) use($request){
             $result = '<center>';
-            if($request->mimfCategory == 1){
-                $matrix = ' mimf_matrix-id="'. $get_mimf->pps_po_received_info->mimf_stamping_matrix_info->id .'" '; 
-                $dieset  = '';
-                $whse = ' whse-id="'. $get_mimf->pps_po_received_info->mimf_stamping_matrix_info->pps_whse_info->id .'" ';
-            }
-            else{ 
-                $matrix = ' matrix-id="'. $get_mimf->pps_po_received_info->matrix_info->id .'"  ';
-                $dieset  = ' dieset-id="'. $get_mimf->pps_po_received_info->pps_dieset_info->id .'" ';
-                $whse = '  whse-id="'. $get_mimf->pps_po_received_info->pps_dieset_info->pps_warehouse_info->id .'"  ';
-            }
-
-            if($get_mimf->pps_po_received_info->POBalance != 0){
-                // if($get_mimf->pps_request_info != null && $get_mimf->pps_request_info->updated_by == ''){
-                    $result .= '
-                    <button class="btn btn-dark btn-sm text-center 
-                        actionEditMimf" 
-                        mimf-id="'. $get_mimf->id .'" 
-                        mimf-status="'. $get_mimf->status .'" 
-                        po_received-id="'. $get_mimf->pps_po_received_info->id .'" 
-                        '.$matrix.'
-                        '.$dieset.'
-                        '.$whse.'
-                        data-bs-toggle="modal" 
-                        data-bs-target="#modalMimf"
-                        data-bs-keyboard="false" title="Edit">
-                        <i class="nav-icon fa fa-edit"></i>
-                    </button>';
-                // }
-            }else{
-                $result .= '<span class="badge badge-pill badge-success"> COMPLETED! </span>';
+            if('test' == ''){
+                if($request->mimfCategory == 1){
+                    $matrix = ' mimf_matrix-id="'. $get_mimf->pps_po_received_info->mimf_stamping_matrix_info->id .'" '; 
+                    $dieset  = '';
+                    $whse = ' whse-id="'. $get_mimf->pps_po_received_info->mimf_stamping_matrix_info->pps_whse_info->id .'" ';
+                }
+                else{ 
+                    $matrix = ' matrix-id="'. $get_mimf->pps_po_received_info->matrix_info->id .'"  ';
+                    $dieset  = ' dieset-id="'. $get_mimf->pps_po_received_info->pps_dieset_info->id .'" ';
+                    $whse = '  whse-id="'. $get_mimf->pps_po_received_info->pps_dieset_info->pps_warehouse_info->id .'"  ';
+                }
+    
+                if($get_mimf->pps_po_received_info->POBalance != 0){
+                    // if($get_mimf->pps_request_info != null && $get_mimf->pps_request_info->updated_by == ''){
+                        $result .= '
+                        <button class="btn btn-dark btn-sm text-center 
+                            actionEditMimf" 
+                            mimf-id="'. $get_mimf->id .'" 
+                            mimf-status="'. $get_mimf->status .'" 
+                            po_received-id="'. $get_mimf->pps_po_received_info->id .'" 
+                            '.$matrix.'
+                            '.$dieset.'
+                            '.$whse.'
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalMimf"
+                            data-bs-keyboard="false" title="Edit">
+                            <i class="nav-icon fa fa-edit"></i>
+                        </button>';
+                    // }
+                }else{
+                    $result .= '<span class="badge badge-pill badge-success"> COMPLETED! </span>';
+                }
             }
             $result .= '</center>';
             return $result;
@@ -212,7 +214,7 @@ class MimfController extends Controller
                     ->where('deleted', 0)
                     ->first();
 
-                $get_last_request_per_id = PPSRequest::where('mimf_id', $request->mimf_id)
+                $get_last_request_per_id = PPSRequest::where('mimf_pps_request_id', $request->mimf_id)
                     ->orderBy('created_on', 'DESC')
                     ->first();
 
@@ -292,7 +294,7 @@ class MimfController extends Controller
                             $mimf
                         );
                         
-                        $pps_request['mimf_id']  = $get_mimf_id;
+                        $pps_request['mimf_pps_request_id']  = $get_mimf_id;
                         PPSRequest::insert(
                             $pps_request
                         );
@@ -307,14 +309,14 @@ class MimfController extends Controller
 
                             if($request->update_mimf_and_pps_request == 1){
                                 // return 'EDIT PPS REQUEST';
-                                PPSRequest::where('mimf_id', $request->mimf_id)->where('pkid', $get_last_request_per_id->pkid)
+                                PPSRequest::where('mimf_pps_request_id', $request->mimf_id)->where('pkid', $get_last_request_per_id->pkid)
                                 ->update([
                                     'fk_itemlist'   => $get_itemlist_id->pkid_itemlist,
                                     'qty'           => $request_qty
                                 ]);
                             }else{
                                 // return '1ST ELSE ADD PPS REQUEST';
-                                $pps_request['mimf_id']  = $request->mimf_id;
+                                $pps_request['mimf_pps_request_id']  = $request->mimf_id;
                                 PPSRequest::insert(
                                     $pps_request
                                 );
@@ -333,14 +335,14 @@ class MimfController extends Controller
                         );
                         if($request->update_mimf_and_pps_request == 1){
                             // return 'EDIT / MIMF / PPS REQUEST';
-                            PPSRequest::where('mimf_id', $request->mimf_id)->where('pkid', $get_last_request_per_id->pkid)
+                            PPSRequest::where('mimf_pps_request_id', $request->mimf_id)->where('pkid', $get_last_request_per_id->pkid)
                             ->update([
                                 'fk_itemlist'   => $get_itemlist_id->pkid_itemlist,
                                 'qty'           => $request_qty
                             ]);
                         }else{
                             // return '2ND ELSE ADD PPS REQUEST';
-                            $pps_request['mimf_id']  = $request->mimf_id;
+                            $pps_request['mimf_pps_request_id']  = $request->mimf_id;
                             PPSRequest::insert(
                                 $pps_request
                             );
@@ -435,15 +437,17 @@ class MimfController extends Controller
         return DataTables::of($get_mimf_stamping_matrices)
         ->addColumn('action', function($get_mimf_stamping_matrix){
             $result = '<center>';
-            $result .= '
-                <button class="btn btn-dark btn-sm text-center 
-                    actionEditMimfStampingMatrix" 
-                    mimf_stamping_matrix-id="'. $get_mimf_stamping_matrix->id .'" 
-                    data-bs-toggle="modal" 
-                    data-bs-target="#modalMimfStampingMatrix" 
-                    data-bs-keyboard="false" title="Edit">
-                    <i class="nav-icon fa fa-edit"></i>
-                </button>';
+            if('test' == ''){
+                $result .= '
+                    <button class="btn btn-dark btn-sm text-center 
+                        actionEditMimfStampingMatrix" 
+                        mimf_stamping_matrix-id="'. $get_mimf_stamping_matrix->id .'" 
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalMimfStampingMatrix" 
+                        data-bs-keyboard="false" title="Edit">
+                        <i class="nav-icon fa fa-edit"></i>
+                    </button>';
+            }
             $result .= '</center>';
             return $result;
         })

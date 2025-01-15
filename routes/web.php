@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 // Controllers
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\MimfController;
+use App\Http\Controllers\MimfV2Controller;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\DeviceController;
@@ -112,6 +113,7 @@ Route::view('/receiving','receiving')->name('receiving');
 
 /* MIMF */
 Route::view('/Material_Issuance_Monitoring_Form','mimf')->name('Material_Issuance_Monitoring_Form');
+Route::view('/Material_Issuance_Monitoring_Form_V2','mimf_v2')->name('Material_Issuance_Monitoring_Form_V2');
 
 /* MOLDING */
 Route::view('/second_molding','second_molding')->name('second_molding');
@@ -121,7 +123,6 @@ Route::view('/first_molding_ipqc_inspection','first_molding_ipqc_inspection')->n
 Route::view('/ipqc_inspection_1st_molding','ipqc_inspection_1st_molding')->name('ipqc_inspection_1st_molding');
 Route::view('/ipqc_inspection_2nd_molding','ipqc_inspection_2nd_molding')->name('ipqc_inspection_2nd_molding');
 Route::view('/ipqc_inspection_assembly','ipqc_inspection_assembly')->name('ipqc_inspection_assembly');
-Route::view('/mprs','mprs')->name('mprs');
 
 /* CN ASSEMBLY */
 Route::view('/assembly','assembly')->name('assembly');
@@ -155,6 +156,9 @@ Route::view('/stamping_working_report','stamping_working_report')->name('stampin
 
 /* MACHINE PARAMETER */
 Route::view('/machine_parameter','machine_parameter')->name('machine_parameter');
+Route::view('/mprs','mprs')->name('mprs');
+Route::view('/mprs_management','mprs_management')->name('mprs_management');
+
 
 /* CASEMARK VIEW */
 Route::view('/casemark_sticker','casemark_sticker')->name('casemark_sticker');
@@ -562,6 +566,31 @@ Route::controller(MimfController::class)->group(function () {
     Route::get('/get_pps_po_recveived_item_name', 'getPpsPoReceivedItemName')->name('get_pps_po_recveived_item_name');
 });
 
+Route::controller(MimfV2Controller::class)->group(function () {
+    // REQUEST MIMF
+    Route::get('/view_mimf_v2', 'viewMimfV2')->name('view_mimf_v2');
+    Route::get('/employee_id', 'employeeID')->name('employee_id');
+    Route::post('/update_mimf_v2', 'updateMimfV2')->name('update_mimf_v2');
+    Route::get('/get_mimf_by_id_v2', 'getMimfByIdV2')->name('get_mimf_by_id_v2');
+    Route::get('/get_control_no_v2', 'getControlNoV2')->name('get_control_no_v2');
+    Route::get('/get_pmi_po', 'getPmiPoFromPoReceived')->name('get_pmi_po');
+
+    // STAMPING MIMF
+    Route::get('/view_mimf_stamping_matrix_v2', 'viewMimfStampingMatrixV2')->name('view_mimf_stamping_matrix_v2');
+    Route::get('/get_pps_po_recveived_item_code', 'getPpsPoReceivedItemCode')->name('get_pps_po_recveived_item_code');
+    Route::post('/update_mimf_stamping_matrix_v2', 'updateMimfStampingMatrixV2')->name('update_mimf_stamping_matrix_v2');
+    Route::get('/get_mimf_stamping_matrix_by_id', 'getMimfStampingMatrixById')->name('get_mimf_stamping_matrix_by_id');
+
+    // REQUEST MIMF ISSUANCE
+    Route::get('/view_mimf_pps_request', 'viewMimfPpsRequest')->name('view_mimf_pps_request');
+    Route::get('/check_request_qty_for_issuance', 'checkRequestQtyForIssuance')->name('check_request_qty_for_issuance');
+    Route::get('/get_ppd_material_type', 'getPpdMaterialType')->name('get_ppd_material_type');
+    Route::get('/get_pps_warehouse_inventory', 'getPpsWarehouseInventory')->name('get_pps_warehouse_inventory');
+    Route::get('/get_pps_request_partial_quantity', 'getPpsRequestPartialQuantity')->name('get_pps_request_partial_quantity');
+    Route::post('/create_update_mimf_pps_request', 'createUpdateMimfPpsRequest')->name('create_update_mimf_pps_request');
+    Route::get('/get_mimf_pps_request_by_id', 'getMimfPpsRequestById')->name('get_mimf_pps_request_by_id');
+});
+
 Route::controller(StampingHistoryController::class)->group(function () {
     Route::get('/view_stamping_history', 'viewStampingHistory')->name('view_stamping_history');
     Route::get('/get_stamping_prodn_material_name', 'getStampingProdnMaterialName')->name('get_stamping_prodn_material_name');
@@ -612,8 +641,6 @@ Route::controller(AssemblyFviController::class)->group(function () {
     Route::get('/validate_runcard_output', 'validate_runcard_output')->name('validate_runcard_output');
     Route::post('/submit_to_oqc_lot_app', 'submit_to_oqc_lot_app')->name('submit_to_oqc_lot_app');
     Route::get('/search_po', 'search_po')->name('search_po');
-
-
 });
 
 // ASSEMBLY OQC LOT APP

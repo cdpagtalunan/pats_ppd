@@ -345,7 +345,7 @@
                                                 <div class="input-group input-group-sm" style="width: 100%;">
                                                     <div id="BDrawingDiv" class="input-group-prepend">
                                                     </div>
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing">
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoBDrawing" name="doc_no_b_drawing" required>
                                                     </select>
                                                 </div>
                                             </div>
@@ -354,7 +354,7 @@
                                                 <div class="input-group input-group-sm" style="width: 100%;">
                                                     <div id="InspStandardDiv" class="input-group-prepend">
                                                     </div>
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard">
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoInspStandard" name="doc_no_inspection_standard" required>
                                                     </select>
                                                 </div>
                                             </div>
@@ -363,7 +363,7 @@
                                                 <div class="input-group input-group-sm" style="width: 100%;">
                                                     <div id="UDDiv" class="input-group-prepend">
                                                     </div>
-                                                    <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud">
+                                                    <select class="form-control form-control-sm" id="txtSelectDocNoUD" name="doc_no_ud" required>
                                                     </select>
                                                 </div>
                                             </div>

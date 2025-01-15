@@ -10,23 +10,27 @@ const getDocumentRequirement = (deviceName) => {
         success: function (response) {
             let aDrawing, gDrawing;
             if(response['aDrawing'].length == 1){
-                aDrawing += `<option value='${response['aDrawing'][0]['doc_no']}' selected>${response['aDrawing'][0]['doc_no']}</option>`;
+                aDrawing += `<option value='${response['aDrawing'][0]['doc_no']}' data-rev='${response['aDrawing'][0]['rev_no']}' selected>${response['aDrawing'][0]['doc_no']}</option>`;
                 $('#txtARevNo').val(response['aDrawing'][0]['rev_no']);
             }
             else{
                 for (let index = 0; index < response['aDrawing'].length; index++) {
-                    aDrawing += `<option value='${response['aDrawing'][index]['doc_no']}' selected>${response['aDrawing'][index]['doc_no']}</option>`;
+                    aDrawing += `<option value='${response['aDrawing'][index]['doc_no']}' data-rev='${response['aDrawing'][index]['rev_no']}'>${response['aDrawing'][index]['doc_no']}</option>`;
+                    $('#txtARevNo').val(response['aDrawing'][index]['rev_no']);
+
                 }
             }
 
             if(response['gDrawing'].length == 1){
-                gDrawing += `<option value='${response['gDrawing'][0]['doc_no']}' selected>${response['gDrawing'][0]['doc_no']}</option>`;
+                gDrawing += `<option value='${response['gDrawing'][0]['doc_no']}' data-rev='${response['aDrawing'][0]['rev_no']}' selected>${response['gDrawing'][0]['doc_no']}</option>`;
                 $('#txtGRevNo').val(response['gDrawing'][0]['rev_no']);
 
             }
             else{
                 for (let index = 0; index < response['gDrawing'].length; index++) {
-                    gDrawing += `<option value='${response['gDrawing'][index]['doc_no']}' selected>${response['gDrawing'][index]['doc_no']}</option>`;
+                    gDrawing += `<option value='${response['gDrawing'][index]['doc_no']}' data-rev='${response['aDrawing'][index]['rev_no']}'>${response['gDrawing'][index]['doc_no']}</option>`;
+                    $('#txtGRevNo').val(response['gDrawing'][index]['rev_no']);
+                
                 }
             }
 

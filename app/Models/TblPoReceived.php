@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\MimfStampingMatrix;
+use App\Models\TblWarehouse;
 use App\Models\TblDieset;
 use App\Models\Device;
 
@@ -27,4 +28,9 @@ class TblPoReceived extends Model
     public function mimf_stamping_matrix_info(){
         return $this->hasOne(MimfStampingMatrix::class, 'item_code','ItemCode');
     }
+
+    public function po_received_to_pps_whse_info(){
+        return $this->hasOne(TblWarehouse::class, 'PartNumber','ItemCode')->where('Factory', 3);
+    }
+
 }

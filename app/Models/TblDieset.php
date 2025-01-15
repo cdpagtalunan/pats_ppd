@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\TblWarehouse;
+use App\Models\Device;
 
 class TblDieset extends Model
 {
@@ -16,6 +17,10 @@ class TblDieset extends Model
 
     public function pps_warehouse_info(){
         return $this->hasOne(TblWarehouse::class, 'MaterialType','Material')->where('Factory', 3);
+    }
+
+    public function ppd_matrix_info(){
+        return $this->hasOne(Device::class, 'name','DeviceName');
     }
 
 }

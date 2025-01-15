@@ -217,7 +217,7 @@
                                                 <input type="text" class="form-control form-control-sm" id="textRevisionNumber" name="revision_number" placeholder="Auto generated" readonly>
                                             </div>
                                             <div class="input-group input-group-sm mb-3">
-                                                <span class="input-group-text" style="width: 50%">Production Lot</span>
+                                                <span class="input-group-text" style="width: 50%">Production Lot (Please update Rapid/DMCMS) </span>
                                                 <input type="text" class="form-control form-control-sm" style="width: 25%" id="textProductionLot" readonly name="production_lot" placeholder="Production Lot">
                                                 <input readonly type="text" class="form-control datetimepicker" style="width: 25%" id="textProductionLotTime" placeholder="07:30-04:30" name="textProductionLotTime">
                                             </div>
@@ -1081,17 +1081,26 @@
                                     $('#textContactLotNumberOne').val('N/A');
                                     toastr.error('Please scan Contact lot number.')
                                 }
+                                console.log('textContactLotNumberOne',arrQrScannerValue);
+
                                 $('#modalQrScanner').modal('hide');
                                 break;
                             case 'formContactLotNumberSecond':
                                 if(qrScannerValue != ''){
-                                    let qrScannerValueToJSON = JSON.parse(qrScannerValue);
-                                    let lotNumber = qrScannerValueToJSON.new_lot_no;
-                                    $('#textContactLotNumberSecond').val(lotNumber);
+                                    // let qrScannerValueToJSON = JSON.parse(qrScannerValue);
+                                    // // production_lot_no
+                                    // let lotNumber = qrScannerValueToJSON.new_lot_no;
+                                    // $('#textContactLotNumberSecond').val(lotNumber);
+                                    // TODO: Validation If the scanned sticker is from Stamping
+                                    // TODO: Error if the Object Data, Data need to be array
+                                    //console.log('formContactLotNumberSecond',lotNumber); 
+                                    let arrQrScannerValue = qrScannerValue.split("|");
+                                    $('#textContactLotNumberSecond').val(arrQrScannerValue[0]);
                                 }else{
                                     $('#textContactLotNumberSecond').val('N/A');
                                     toastr.error('Please scan Contact lot number.')
                                 }
+                                console.log('textContactLotNumberSecond',arrQrScannerValue);
                                 $('#modalQrScanner').modal('hide');
                                 break;
                             case 'formMELotNumberOne':
@@ -1103,7 +1112,7 @@
                                      * only show this form if device name is equal to CN171P-02#IN-VE
                                     */
                                     if($('#textDeviceName').val() == 'CN171P-02#IN-VE'){
-                                        console.log('true');
+                                        console.log('CN171P-02#IN-VE');
                                         $('#divMaterialDryingForm').removeClass('d-none');
                                     }
                                 }else{

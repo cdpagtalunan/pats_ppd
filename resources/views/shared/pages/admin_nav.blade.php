@@ -60,7 +60,7 @@
                             </a>
                         </li>
                     @endif
-                    
+
                     @if ( in_array(Auth::user()->position, [7,8]) )
                         <li class="nav-header"><strong>ADMINISTRATOR</strong></li>
                         <li class="nav-item">
@@ -101,6 +101,13 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('Material_Issuance_Monitoring_Form_V2') }}" class="nav-link">
+                                <i class="fa-solid fa-person-chalkboard"></i>
+                                <p>Material Issuance</p><br>
+                                <p class="ml-4">Monitoring Form V2</p>
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('Material_Issuance_Monitoring_Form') }}" class="nav-link">
@@ -222,7 +229,7 @@
                         </a>
                     </li> --}}
 
-                    @if (in_array(Auth::user()->position, [0,1,4,10,11]) && in_array(Auth::user()->section, [0,1]))
+                    @if (in_array(Auth::user()->position, [0,1,4,9,10,11]) && in_array(Auth::user()->section, [0,1]))
                         <li class="nav-header mt-3"><strong>STAMPING</strong></li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">
@@ -348,6 +355,14 @@
                     @if (in_array(Auth::user()->position, [0,1,4,11])  || in_array(Auth::user()->section, [0,2]))
                         <li class="nav-header mt-3 font-weight-bold">MOLDING
                             {{-- {{ Auth::user()->section }} --}}
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('mprs') }}" class="nav-link">
+                                <i class="fas fa-gears"> </i>
+                                <p>
+                                    Machine Parameter
+                                </p>
+                            </a>
                         </li>
                         <li class="nav-item has-treeview">
                             <a href="#" class="nav-link">

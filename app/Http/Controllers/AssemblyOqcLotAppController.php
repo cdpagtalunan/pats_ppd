@@ -24,6 +24,7 @@ class AssemblyOqcLotAppController extends Controller
         $fvi_inspections = AssemblyFvi::with(['oqc_lot_app.user','fvi_runcards.assy_runcard_station_details'])
                                         ->where('po_no', $request->po_no)
                                         // ->whereIn('status', [3,4])
+                                        ->where('status', 1)
                                         ->whereNull('deleted_at')
                                         ->get();
         // return $fvi_inspections;

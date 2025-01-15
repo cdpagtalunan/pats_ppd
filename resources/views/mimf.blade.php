@@ -87,7 +87,7 @@
                                                         </select>
                                                     </div>
                                                 </div>
-                                                <div class="col-7 d-flex justify-content-end mt-4">
+                                                <div class="col-7 d-flex justify-content-end mt-4 d-none">
                                                     <button button 
                                                         type="button" class="btn btn-dark mb-3 d-none" 
                                                         id="buttonAddMimf" 
@@ -131,7 +131,7 @@
                                         </div>
 
                                         <div class="tab-pane fade d-none navMimfStampingMatrix" id="mimfStampingMatrix" role="tabpanel">
-                                            <div class="text-right"> 
+                                            <div class="text-right d-none"> 
                                                 <button button type="button" class="btn btn-dark" id="buttonAddMimfStampingMatrix" data-bs-toggle="modal" data-bs-target="#modalMimfStampingMatrix" data-bs-keyboard="false"><i class="fa fa-plus fa-md"></i> New Matrix</button>
                                             </div>        
                                             <div class="table-responsive mt-3">
@@ -388,7 +388,7 @@
                                 <div class="col-6 mt-3">
                                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                                 </div>
-                                <div class="col-6 d-flex justify-content-end mt-3">
+                                <div class="col-6 d-flex justify-content-end mt-3 d-none">
                                     <button type="submit" id="btnMimf" class="btn btn-dark">
                                         <i id="iBtnMimfIcon" class="fa fa-save"></i> Save
                                     </button>
@@ -479,7 +479,7 @@
                                 <div class="col-6 mt-3">
                                     <button type="button" class="btn btn-default" data-bs-dismiss="modal">Close</button>
                                 </div>
-                                <div class="col-6 d-flex justify-content-end mt-3">
+                                <div class="col-6 d-flex justify-content-end mt-3 d-none">
                                     <button type="submit" id="btnMimfStampingMatrix" class="btn btn-dark">
                                         <i id="iBtnMimfStampingMatrixIcon" class="fa fa-save"></i> Save
                                     </button>
@@ -524,7 +524,7 @@
                         $('.navMimfStampingMatrix').addClass('d-none')
                     }
                     dataTableMimf.draw()
-                    $('#buttonAddMimf').removeClass('d-none')
+                    // $('#buttonAddMimf').removeClass('d-none')
                 })
 
                 // ======================= START MIMF DATA TABLE =======================

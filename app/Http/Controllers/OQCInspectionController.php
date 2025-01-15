@@ -330,7 +330,9 @@ class OQCInspectionController extends Controller
             $get_oqc_inspection_per_row = OQCInspection::with(['user_info'])->where('fs_productions_id', $prod_info->id)->where('logdel', 0)->orderBy('id', 'DESC')->get();
             $result = '<center>';
             if(count($get_oqc_inspection_per_row) > 0){
-                $result .= $get_oqc_inspection_per_row[0]->user_info->firstname.' '.$get_oqc_inspection_per_row[0]->user_info->lastname;
+                if($get_oqc_inspection_per_row[0]->user_info != null){
+                    $result .= $get_oqc_inspection_per_row[0]->user_info->firstname.' '.$get_oqc_inspection_per_row[0]->user_info->lastname;
+                }
             }
             $result .= '</center>';
             return $result;

@@ -265,7 +265,8 @@
                                                 </div>
                                                 {{-- <input type="text" class="form-control" id="txtADrawingNo"
                                                     name="txt_Adrawing_no" readonly=""> --}}
-                                                    <select class="form-control" name="a_drawing" id="selADrawing" style="pointer-events: none;">
+                                                    {{-- <select class="form-control" name="a_drawing" id="selADrawing" style="pointer-events: none;"> --}}
+                                                    <select class="form-control" name="a_drawing" id="selADrawing">
 
                                                     </select>
                                                 <input type="text" value="N/A" class="form-control form-control-sm"
@@ -286,7 +287,8 @@
                                                 </div>
                                                 {{-- <input type="text" class="form-control" id="txtGDrawingNo"
                                                     name="txt_Gdrawing_no" readonly=""> --}}
-                                                    <select class="form-control" name="g_drawing" id="selGDrawing" style="pointer-events: none;">
+                                                    {{-- <select class="form-control" name="g_drawing" id="selGDrawing" style="pointer-events: none;"> --}}
+                                                    <select class="form-control" name="g_drawing" id="selGDrawing">
 
                                                     </select>
                                                 <input type="text" value="N/A" class="form-control form-control-sm"
@@ -841,6 +843,16 @@
             e.preventDefault();
             validateRuncardOutput($('#txtFVIDevName').val(), $('#txtFVIDevCode').val(), "btnSubmitToLotApp");
         });
+
+        $('#selADrawing').on('change', function(){
+            let dataRev = $(this).find(':selected').data('rev');
+            $('#txtARevNo').val(dataRev)
+        })
+
+        $('#selGDrawing').on('change', function(){
+            let dataRev = $(this).find(':selected').data('rev');
+            $('#txtGRevNo').val(dataRev)
+        })
     });
 
     //   $('#txtScannedItem').on('keyup', function (e) {

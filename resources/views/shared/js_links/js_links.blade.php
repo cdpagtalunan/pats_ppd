@@ -99,12 +99,15 @@
 
 {{-- PPC --}}
 <script src="@php echo asset("public/js/main/Mimf.js?".date("YmdHis")) @endphp"></script>
+<script src="@php echo asset("public/js/main/MimfV2.js?".date("YmdHis")) @endphp"></script>
 
 {{-- PressStampingMachineChecksheet --}}
 <script src="@php echo asset("public/js/main/PressStampingMachineChecksheet.js?".date("YmdHis")) @endphp"></script>
 
 {{-- ASSEMBLY FVI --}}
-<script src="{{ asset('public/js/main/AssemblyFVI.js') }}"></script>
+{{-- <script src="{{ asset("public/js/main/AssemblyFVI.js") }}"></script> --}}
+<script src="@php echo asset("public/js/main/AssemblyFVI.js?".date("YmdHis")) @endphp"></script>
+
 
 <script src="@php echo asset("public/js/main/MachineParameter.js?".date("YmdHis")) @endphp"></script>
 

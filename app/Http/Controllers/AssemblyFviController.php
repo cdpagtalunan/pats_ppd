@@ -124,7 +124,10 @@ class AssemblyFviController extends Controller
                 unset($temp[count($temp) - 1]);
                 $device_name_print = implode('-', $temp);
                 $device_name_print = trim($device_name_print);
-                //  return $device_name_print;
+            }
+            else{
+                $exploded = explode('-',$device_name_print);
+                $device_name_print = $exploded[0];
             }
         }
 
@@ -132,7 +135,7 @@ class AssemblyFviController extends Controller
         ->table('tbl_active_docs')
         // ->where('doc_title', 'LIKE', "%$request->device_name%")
         ->where('doc_title', 'LIKE', "%$device_name_print%")
-        ->where('originator_code',"CN")
+        // ->where('originator_code',"CN")
         ->get();
 
         $a_drawing = $document->filter(
@@ -342,7 +345,7 @@ class AssemblyFviController extends Controller
         date_default_timezone_set('Asia/Manila');
         DB::beginTransaction();
         try{
-            $check = AssemblyFvisRuncard::where('prod_runcard_id',  $request->runcard_id)->exists();
+            $check = AssemblyFvisRuncard::where('prod_runcard_id',  $request->runcard_id)->whereNull('deleted_at')->exists();
 
             if(!$check){
                 $runcard_array = array(

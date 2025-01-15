@@ -324,7 +324,7 @@ class PackingListDetailsController extends Controller
     }
 
     public function getPackingListDetailsbyCtrl(Request $request){
-        $packing_list_data_by_ctrl = PackingListDetails::
+    $packing_list_data_by_ctrl = PackingListDetails::
         where('control_no', $request->packing_list_ctrl_no)
         ->get();
 

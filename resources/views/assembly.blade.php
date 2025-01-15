@@ -58,6 +58,7 @@
                                                     <option value="CN171S-007-1002-VE(01)">CN171S-007-1002-VE(01)</option>
                                                     <option value="CN171P-02#IN-VE">CN171P-02#IN-VE</option>
                                                     <option value="CN171P-WH-1003-VE(01)">CN171P-WH-1003-VE(01)</option>
+                                                    <option value="CN171P-007-1012-VE(01)">CN171P-007-1012-VE(01)</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1276,7 +1277,12 @@
                             // $('#txtDeviceName', $('#formCNAssemblyRuncard')).val($('#txtSelectDeviceName').val());
                             // $('#txtMaterialName', $('#formCNAssemblyRuncard')).val(material_details);
 
-                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ' || deviceName == 'CN171P-02#IN-VE' || deviceName == 'CN171P-WH-1003-VE(01)'){
+                            if(deviceName == 'CN171P-007-1002-VE(01)'
+                                || deviceName == 'CN171P-007-1002-VE(01)PREQ'
+                                || deviceName == 'CN171P-02#IN-VE'
+                                || deviceName == 'CN171P-WH-1003-VE(01)'
+                                || deviceName == 'CN171P-007-1012-VE(01)')
+                            {
                                 $('#sSeriesName').prop('hidden', true);
                                 $('#pSeriesName').prop('hidden', false);
                             }else if(deviceName == 'CN171S-007-1002-VE(01)'){
@@ -1335,7 +1341,12 @@
                             $("#txtSelectRuncardStation option[step='"+step+"']").attr('selected', true);
                             $("#txtRuncardStation").val($("#txtSelectRuncardStation option[step='"+step+"']").val());
 
-                            if(deviceName == 'CN171P-007-1002-VE(01)' || deviceName == 'CN171P-007-1002-VE(01)PREQ' || deviceName == 'CN171P-02#IN-VE' || deviceName == 'CN171P-WH-1003-VE(01)'){
+                            if(deviceName == 'CN171P-007-1002-VE(01)'
+                                || deviceName == 'CN171P-007-1002-VE(01)PREQ'
+                                || deviceName == 'CN171P-02#IN-VE'
+                                || deviceName == 'CN171P-WH-1003-VE(01)'
+                                || deviceName == 'CN171P-007-1012-VE(01)')
+                            {
                                 if(step == 1){//Lubricant Coating Station
                                     // $('# ').removeClass('d-none'); //disable this btn clark 04152024
                                     $('#LubricantCoatingDiv').addClass('d-none');
@@ -2080,8 +2091,12 @@
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ' || assy_runcard_data[0].device_name == 'CN171P-02#IN-VE' || assy_runcard_data[0].device_name == 'CN171P-WH-1003-VE(01)'){
-
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)'
+                                || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ'
+                                || assy_runcard_data[0].device_name == 'CN171P-02#IN-VE'
+                                || assy_runcard_data[0].device_name == 'CN171P-WH-1003-VE(01)'
+                                || assy_runcard_data[0].device_name == 'CN171P-007-1012-VE(01)')
+                            {
                                 verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
 
                             }else if(assy_runcard_data[0].device_name == 'CN171S-007-1002-VE(01)'){
@@ -2166,7 +2181,12 @@
 
                             $('#btnAddRuncardStation').attr('runcard_id', assy_runcard_data[0].id);
 
-                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)' || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ' || assy_runcard_data[0].device_name == 'CN171P-02#IN-VE' || assy_runcard_data[0].device_name == 'CN171P-WH-1003-VE(01)'){
+                            if(assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)'
+                                || assy_runcard_data[0].device_name == 'CN171P-007-1002-VE(01)PREQ'
+                                || assy_runcard_data[0].device_name == 'CN171P-02#IN-VE'
+                                || assy_runcard_data[0].device_name == 'CN171P-WH-1003-VE(01)'
+                                || assy_runcard_data[0].device_name == 'CN171P-007-1012-VE(01)')
+                            {
 
                                 verifyProdLotfromMolding(assy_runcard_data[0].p_zero_two_prod_lot, '', 'ScanPZeroTwoProdLot', 'txtPZeroTwoProdLot', 'txtPZeroTwoDeviceId', 'CN171P-02#IN-VE', 'txtPZeroTwoDevicePO','txtPZeroTwoDeviceQty');
 
