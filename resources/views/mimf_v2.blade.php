@@ -106,9 +106,9 @@
                                                             <th>Date<br>Issuance</th>
                                                             <th>YEC P.O<br> Number</th>
                                                             <th>PMI P.O<br> Number</th>
-                                                            <th>Prod'n<br>Quantity</th>
                                                             <th>Device<br>Code</th>
                                                             <th>Device<br>Name</th>
+                                                            <th>Prod'n<br>Quantity</th>
                                                             <th>PO<br>Balance</th>
                                                         </tr>
                                                     </thead>
@@ -427,7 +427,7 @@
                                         </div>
                                         <input type="text" class="form-control reset-value molding-reset-value" id="txtMimfMoldingAllowedQuantity" name="mimf_molding_allowed_quantity" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="6" readonly>
                                         <span class="input-group-text moldingOnly d-none"><strong>Balance:</strong></span>
-                                        <input type="text" class="form-control reset-value molding-reset-value" id="leftQty" name="left_quantity" placeholder="Balance" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="6" readonly>
+                                        <input type="text" class="form-control reset-value molding-reset-value" id="leftQty" name="left_quantity" placeholder="Balance" onkeypress="return event.charCode >= 48 && event.charCode <= 57" maxlength="6" value=".0" readonly>
                                     </div>
 
                                     <div class="input-group mb-3 moldingOnly resinOnly d-none">
@@ -646,9 +646,9 @@
                         /*3*/{ "data" : "date_issuance" },
                         /*4*/{ "data" : "yec_po_no" },
                         /*5*/{ "data" : "pmi_po_no" },
-                        /*6*/{ "data" : "prodn_qty" },
-                        /*7*/{ "data" : "device_code" },
-                        /*8*/{ "data" : "device_name" },
+                        /*6*/{ "data" : "device_code" },
+                        /*7*/{ "data" : "device_name" },
+                        /*8*/{ "data" : "prodn_qty" },
                         /*9*/{ "data" : "po_balance" }
                     ],
                     "columnDefs": [
@@ -809,7 +809,7 @@
                 $('#slctMimfMaterialType').change(function (e) {
                     e.preventDefault();
                     $('#txtMimfMoldingAllowedQuantity').val('')
-                    $('#leftQty').val('')
+                    $('#leftQty').val('.0')
 
                     if($(this).val() != null){
                         GetQtyFromInventory($(this).val())
@@ -837,9 +837,9 @@
                     let disabled = $('#slctMimfMaterialType')
                         $('#multiplier').val('')
                         $('#txtRequestQuantity').val('')
-                        $('#txtMimfNeededKgs').val('0')
-                        $('#txtMimfVirginMaterial').val('0')
-                        $('#txtMimfRecycled').val('0')
+                        $('#txtMimfNeededKgs').val('.0')
+                        $('#txtMimfVirginMaterial').val('.0')
+                        $('#txtMimfRecycled').val('.0')
                         $('#txtRequestQuantity').attr('readonly', false)
                         $('.auto-compute').attr('readonly', false)
                         $('#txtMimfMoldingAllowedQuantity').attr('readonly', false)
@@ -900,7 +900,7 @@
                                 $('#txtMimfVirginMaterial').val(),
                                 $('#txtMimfNeededKgs').val(),
                                 updateAllowedQty
-                            )      
+                            )
                     // if($('#txtMimfProdnQuantity').val() < $('#txtMimfMoldingAllowedQuantity').val()){
                     //     alert('Allowed Quantity is greater than the P.O Quantity')
                     //     $('#btnMimfPpsRequest').addClass('d-none')
@@ -962,6 +962,9 @@
                                         recyledComputation = (calculated*calcualateDieset[0].ppd_matrix_info.recycle_percent)/100
                                     }
                                 }
+                                $('#txtMimfVirginMaterial').val(virginMaterialComputation.toFixed(2))
+                                $('#txtMimfRecycled').val(recyledComputation.toFixed(2))
+
                                 $('#txtMimfNeededKgs').val(calculated)
                                 if(Number($('#txtMimfQuantityFromInventory').val()) < Number(calculated)){ //nmodify
                                     alert('Needed KGS is greater than the Quantity from Inventory')
@@ -970,40 +973,40 @@
                                     $('#btnMimfPpsRequest').removeClass('d-none')
                                 }
 
-                                if($('#leftQty').val() != ''){
-                                    setTimeout(() => {     
-                                        if($('#slctMoldingProductCategory').val() == 1){
-                                            if(Number($('#leftQty').val()) < Number($('#txtMimfVirginMaterial').val())){
-                                                alert('Virgin Material is greater than the Balance Quantity')
-                                                $('.auto-compute').val('0')
-                                                $('#txtMimfVirginMaterial').val('0')
-                                                $('#btnMimfPpsRequest').addClass('d-none')
-                                            }else{
-                                                $('#btnMimfPpsRequest').removeClass('d-none')
-                                            }
-                                        }else if($('#slctMoldingProductCategory').val() == 2 || $('#slctMoldingProductCategory').val() == 3){
-                                            if(Number($('#leftQty').val()) < Number($('#txtMimfNeededKgs').val())){
-                                                alert('Needed Quantity is greater than the Balance Quantity')
-                                                $('.auto-compute').val('0')
-                                                $('#txtMimfNeededKgs').val('0')
-                                                $('#btnMimfPpsRequest').addClass('d-none')
-                                            }else{
-                                                $('#btnMimfPpsRequest').removeClass('d-none')
-                                            }
-                                        }else{
-                                            console.log('STAMPING');
-                                        }
-                                    }, 300);
-                                }
+                                // if($('#leftQty').val() != ''){
+                                //     setTimeout(() => {     
+                                //         if($('#slctMoldingProductCategory').val() == 1){
+                                //             if(Number($('#leftQty').val()) < Number($('#txtMimfVirginMaterial').val())){
+                                //                 alert('Virgin Material is greater than the Balance Quantity')
+                                //                 $('.auto-compute').val('0')
+                                //                 $('#txtMimfVirginMaterial').val('0')
+                                //                 $('#btnMimfPpsRequest').addClass('d-none')
+                                //             }else{
+                                //                 $('#btnMimfPpsRequest').removeClass('d-none')
+                                //             }
+                                //         }else if($('#slctMoldingProductCategory').val() == 2 || $('#slctMoldingProductCategory').val() == 3){
+                                //             if(Number($('#leftQty').val()) < Number($('#txtMimfNeededKgs').val())){
+                                //                 alert('Needed Quantity is greater than the Balance Quantity')
+                                //                 $('.auto-compute').val('0')
+                                //                 $('#txtMimfNeededKgs').val('0')
+                                //                 $('#btnMimfPpsRequest').addClass('d-none')
+                                //             }else{
+                                //                 $('#btnMimfPpsRequest').removeClass('d-none')
+                                //             }
+                                //         }else{
+                                //             console.log('STAMPING');
+                                //         }
+                                //     }, 500);
+                                // }
+                                // $('#txtMimfVirginMaterial').val(virginMaterialComputation.toFixed(2))
+                                // $('#txtMimfRecycled').val(recyledComputation.toFixed(2))
 
-                                $('#txtMimfVirginMaterial').val(virginMaterialComputation.toFixed(2))
-                                $('#txtMimfRecycled').val(recyledComputation.toFixed(2))
                             }
                         })
                     }else{
-                        $('#txtMimfNeededKgs').val('0')
-                        $('#txtMimfVirginMaterial').val('0')
-                        $('#txtMimfRecycled').val('0')
+                        $('#txtMimfNeededKgs').val('.0')
+                        $('#txtMimfVirginMaterial').val('.0')
+                        $('#txtMimfRecycled').val('.0')
                     }
 
                     if($('#txtMimfStatus').val() != 1){
@@ -1022,7 +1025,7 @@
                 $(".auto-compute").keypress(function(){
                     $(this).val()
                     if($('#txtMimfStatus').val() != 1){
-                        setTimeout(() => {     
+                        setTimeout(() => {
                             CheckRequestQtyForIssuance(
                                 $('#txtMimfId').val(),
                                 $('#txtMimfMaterialCode').val(),

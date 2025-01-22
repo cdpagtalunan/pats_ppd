@@ -35,6 +35,8 @@ class MimfV2Controller extends Controller
         ->where('status', $request->mimfCategory)
         ->orderBy('control_no', 'DESC')
         ->get();
+        
+        // return $get_mimfs;
         return DataTables::of($get_mimfs)
         ->addColumn('action', function($get_mimf) use($request){
             $mimf_stamping_matrix_id = "";
@@ -61,7 +63,9 @@ class MimfV2Controller extends Controller
                     if($get_mimf->pps_po_received_info->po_received_to_pps_whse_info->stamping_info != null){
                         $mimf_stamping_matrix_id = $get_mimf->pps_po_received_info->po_received_to_pps_whse_info->stamping_info->id;
                     }else{
-                        $result .= '<h5 class="badge text-dark"> Device Name <br> is not found in <br> MIMF Stamping Setting </h5>';
+                        if($get_mimf->status == 1){
+                            $result .= '<h5 class="badge text-dark"> Device Name <br> is not found in <br> MIMF Stamping Setting </h5>';
+                        }
                     }
                 }
 
@@ -365,14 +369,14 @@ class MimfV2Controller extends Controller
         }
 
         $get_device = Device::with(
-            'material_process.material_details.stamping_pps_warehouse_info'
+            'material_process_details.material_details.stamping_pps_warehouse_info'
         )
         ->where('name', $request->getMimfDeviceName)
         ->get();
 
-        for ($i=0; $i < count($get_device[0]->material_process); $i++) {
-            if($get_device[0]->material_process[$i]->process == $get_category){
-                return response()->json(['getDeviceName'  => $get_device[0]->material_process[$i]]);
+        for ($i=0; $i < count($get_device[0]->material_process_details); $i++) {
+            if($get_device[0]->material_process_details[$i]->process == $get_category){
+                return response()->json(['getDeviceName'  => $get_device[0]->material_process_details[$i]]);
             }
         }
     }
@@ -382,6 +386,7 @@ class MimfV2Controller extends Controller
         ->where('MaterialType', $request->ppsWarehouseInventory)
         ->where('Factory', 3)
         ->get();
+        // return $get_inventory;
         // return     $arr_in; array_sum( $arr_in[0]->pps_warehouse_transaction_info['In']);
         if($get_inventory->isNotEmpty()){
             $in = 0;
@@ -589,12 +594,11 @@ class MimfV2Controller extends Controller
                     );
 
                     if($request->get_request_status != 1){
-
                         if(count($allowed_qty) == 0){
                             if($request->molding_product_category == 1){
-                                $insert_balanace = $request->mimf_molding_allowed_quantity - $request->mimf_needed_kgs;
+                                $insert_balanace = $request->mimf_molding_allowed_quantity - $request->mimf_virgin_material;
                             }else{
-                                $insert_balanace = $request->mimf_molding_allowed_quantity - $request->request_quantity;
+                                $insert_balanace = $request->mimf_molding_allowed_quantity - $request->mimf_needed_kgs;
                             }
 
                             $mimf_pps_request_allowed_qty['balance']  = $insert_balanace ;
