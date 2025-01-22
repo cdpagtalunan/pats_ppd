@@ -51,6 +51,7 @@ function GetPpdMaterialType(cboElement){
         success: function(response){
             result = '';
             let getDevice = response['getDeviceName'].material_details;
+            console.log('object',response['getDeviceName']);
             if(getDevice.length > 0){
                 result = '<option selected value="" disabled> --- Select --- </option>';
                 for(let index = 0; index < response['getDeviceName'].material_details.length; index++){
@@ -327,10 +328,12 @@ function CheckRequestQtyForIssuance(getMimfId,getPartnumber,productCategory,virg
                     }else{
                         $('#leftQty').val(allowedQuantity[0].balance)
                     }
+                    console.log('qwewq');
                 }else{
                     if(allowedQuantity[0].allowed_quantity == $('#txtMimfMoldingAllowedQuantity').val()){
                         $('#txtMimfMoldingAllowedQuantity').val(allowedQuantity[0].allowed_quantity)
                         $('#leftQty').val(allowedQuantity[0].balance)
+                        console.log('0');
                     }else{
                         // if(allowedQuantity[0].allowed_quantity == $('#txtMimfMoldingAllowedQuantity').val()){
                         //     $('#txtMimfMoldingAllowedQuantity').val(allowedQuantity[0].allowed_quantity)
@@ -364,33 +367,74 @@ function CheckRequestQtyForIssuance(getMimfId,getPartnumber,productCategory,virg
                         // }
 
                         if(allowedQuantity[0].allowed_quantity == $('#txtMimfMoldingAllowedQuantity').val()){
+                            console.log('1');
                             $('#txtMimfMoldingAllowedQuantity').val(allowedQuantity[0].allowed_quantity)
                             $('#leftQty').val(allowedQuantity[0].balance)
                         }else{
                             if(allowedQuantity[0].allowed_quantity > $('#txtMimfMoldingAllowedQuantity').val()){
                                 $('#btnMimfPpsRequest').removeClass('d-none')
                                 let computedBalance = Number(allowedQuantity[0].allowed_quantity - allowedQuantity[0].balance)
-                                console.log('object: ', computedBalance);
+                                console.log('2');
                                 $('#leftQty').val(Number($('#txtMimfMoldingAllowedQuantity').val()) - computedBalance)
                             }else{
+                                console.log('3');
                                 $('#btnMimfPpsRequest').removeClass('d-none')
                                 $('#leftQty').val(Number($('#txtMimfMoldingAllowedQuantity').val()) + Number(allowedQuantity[0].balance - allowedQuantity[0].allowed_quantity))
                             }
     
                             if(Number($('#txtMimfMoldingAllowedQuantity').val()) < allowedQuantity[0].balance){
+                                console.log('4');
                                 alert('Current Balance is greater than the Allowed Quantity')
                                 $('#btnMimfPpsRequest').addClass('d-none')
                                 $('#txtMimfMoldingAllowedQuantity').val(allowedQuantity[0].allowed_quantity)
                                 $('#leftQty').val(allowedQuantity[0].balance)    
                             }else if(Number($('#txtMimfMoldingAllowedQuantity').val()) == allowedQuantity[0].balance){
+                                console.log('5');
                                 $('#btnMimfPpsRequest').removeClass('d-none')
-                                $('#leftQty').val('0')
+                                $('#leftQty').val('.0')
+                            }else{
+                                console.log('6');
                             }
                         } 
                     }
                 }
+                if(productCategory == 1 && allowedQuantity[0].balance < $('#txtMimfVirginMaterial').val()){
+                    alert('Virgin Material is greater than the Balance Quantity')
+                    $('.auto-compute').val('0')
+                    $('#txtMimfVirginMaterial').val('.0')
+                    $('#txtMimfNeededKgs').val('.0')
+                    $('#btnMimfPpsRequest').addClass('d-none')
+                }else{
+                    $('#btnMimfPpsRequest').removeClass('d-none')
+                }
+                if(productCategory != 1 && allowedQuantity[0].balance < $('#txtMimfNeededKgs').val()){
+                    alert('Needed Quantity is greater than the Balance Quantity')
+                    $('.auto-compute').val('0')
+                    $('#txtMimfNeededKgs').val('.0')
+                    $('#btnMimfPpsRequest').addClass('d-none')
+                }else{
+                    $('#btnMimfPpsRequest').removeClass('d-none')
+                }
+
             }else{
                 $('#leftQty').val($('#txtMimfMoldingAllowedQuantity').val())
+                if(productCategory == 1 && Number($('#leftQty').val()) < Number($('#txtMimfVirginMaterial').val())){
+                    alert('Virgin Material is greater than the Balance Quantity')
+                    $('.auto-compute').val('0')
+                    $('#txtMimfVirginMaterial').val('.0')
+                    $('#txtMimfNeededKgs').val('.0')
+                    $('#btnMimfPpsRequest').addClass('d-none')
+                }else{
+                    $('#btnMimfPpsRequest').removeClass('d-none')
+                }
+                if(productCategory != 1 && Number($('#leftQty').val()) < Number($('#txtMimfNeededKgs').val())){
+                    alert('Needed Quantity is greater than the Balance Quantity')
+                    $('.auto-compute').val('0')
+                    $('#txtMimfNeededKgs').val('.0')
+                    $('#btnMimfPpsRequest').addClass('d-none')
+                }else{
+                    $('#btnMimfPpsRequest').removeClass('d-none')
+                }
             }
         }
     })
